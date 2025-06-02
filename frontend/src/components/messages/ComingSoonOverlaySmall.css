@@ -1,0 +1,16 @@
+/* CSS für ComingSoonOverlaySmall Komponente */
+
+/* Langsame Spin-Animation */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Klasse, die die langsame Animation verwendet */
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite; /* 3 Sekunden pro Umdrehung */
+}

@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400&family=Inter+Tight:wght@600&display=swap");
+@import "tailwindcss";
+
+body {
+  font-family: "Manrope", sans-serif;
+  font-weight: 400;
+  background-color: #f5f5f5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Manrop", sans-serif;
+  font-weight: 600;
+}
+
+@theme {
+  --color-dsp-orange: #ff863d;
+  --color-dsp-orange_medium: #fa8c45;
+  --color-dsp-orange_light: #ffe7d4;
+}
+
+/* Chrome, Safari und Edge */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 8px; /* Höhe der horizontalen Scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #ffe7d4; /* Hintergrund der Scrollbar-Spur */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff863d; /* Farbe des Daumens */
+  border-radius: 4px;
+}
+
+/* Regeln wurden in ComingSoonOverlaySmall.css verschoben */
+/* @keyframes spin-slow { ... } */
+/* .animate-spin-slow { ... } */

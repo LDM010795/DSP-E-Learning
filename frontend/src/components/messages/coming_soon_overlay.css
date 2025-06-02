@@ -1,0 +1,31 @@
+/* coming_soon_overlay.css */
+
+@keyframes spin-linear {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-linear-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.cog-spin-slow {
+  animation: spin-linear 15s linear infinite;
+}
+
+.cog-spin-medium-reverse {
+  animation: spin-linear-reverse 10s linear infinite;
+}
+
+.cog-spin-fast {
+  animation: spin-linear 5s linear infinite;
+}
