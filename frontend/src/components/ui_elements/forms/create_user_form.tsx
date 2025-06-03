@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import * as userAdminApi from "../../../util/apis/userAdminApi";
 import ButtonPrimary from "../buttons/button_primary";
 import {
@@ -159,11 +158,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className=""
-    >
+    <div className="">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Neuen Benutzer erstellen
       </h2>
@@ -343,7 +338,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
           />
         </div>
       </form>
-    </motion.div>
+    </div>
   );
 };
 

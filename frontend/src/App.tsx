@@ -11,7 +11,7 @@ import LandingPage from "./pages/landing_page";
 import UserSettings from "./pages/user_settings";
 import LoginPopup from "./pages/login";
 import SubscriptionsPage from "./pages/subscriptions";
-import AdminPanel from "./pages/admin_panel";
+import IndexAdminPanel from "./pages/admin_panel/index_admin_panel";
 import ForcePasswordChangePage from "./pages/ForcePasswordChangePage";
 import CertificationPaths from "./pages/certification_paths";
 // Utils
@@ -128,7 +128,7 @@ const AppContent: React.FC = () => {
               <Route path="/settings" element={<UserSettings />} />
 
               {/* Admin Panel Route - nur für Staff/Superuser */}
-              {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
+              {isAdmin && <Route path="/admin" element={<IndexAdminPanel />} />}
             </Route>
 
             {/* Fallback oder 404 Route */}

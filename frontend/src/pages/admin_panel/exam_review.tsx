@@ -16,19 +16,19 @@ import {
   IoContractOutline,
   IoExpandOutline,
 } from "react-icons/io5";
-import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
+import ButtonPrimary from "../../components/ui_elements/buttons/button_primary";
 import {
   useExams,
   ExamAttempt as ContextExamAttempt,
   ExamAttachment as ContextExamAttachment,
   Criterion,
-} from "../context/ExamContext";
-import LoadingSpinner from "../components/ui_elements/loading_spinner";
-import TableExamsAssessed from "../components/tables/table_exams_assessed";
-import ButtonFilterSimple from "../components/ui_elements/buttons/button_filter_simple";
-import FilterHead from "../components/filter/filter_head";
+} from "../../context/ExamContext";
+import LoadingSpinner from "../../components/ui_elements/loading_spinner";
+import TableExamsAssessed from "../../components/tables/table_exams_assessed";
+import ButtonFilterSimple from "../../components/ui_elements/buttons/button_filter_simple";
+import FilterHead from "../../components/filter/filter_head";
 import { toast } from "sonner";
-import DspNotification from "../components/toaster/notifications/DspNotification";
+import DspNotification from "../../components/toaster/notifications/DspNotification";
 
 // --- Lokale Typdefinitionen --- //
 // Entfernt: Lokale Definitionen, da sie Konflikte verursachen
