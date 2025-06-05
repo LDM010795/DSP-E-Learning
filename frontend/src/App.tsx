@@ -5,10 +5,10 @@ import Dashboard from "./pages/dashboard";
 import Modules from "./pages/modules";
 import ModuleDetail from "./pages/module_detail";
 import TaskDetails from "./pages/task_detail.tsx";
-import FinalExam from "./pages/final_exam";
-import Statistics from "./pages/statistics";
+import IndexFinalExam from "./pages/final_exam/index_final_exam";
+import IndexStatistics from "./pages/statistics/index_statistics";
 import LandingPage from "./pages/landing_page";
-import UserSettings from "./pages/user_settings";
+import IndexUserSettings from "./pages/user_settings/index_user_settings";
 import LoginPopup from "./pages/login";
 import SubscriptionsPage from "./pages/subscriptions";
 import IndexAdminPanel from "./pages/admin_panel/index_admin_panel";
@@ -119,13 +119,13 @@ const AppContent: React.FC = () => {
                 path="/modules/:moduleId/tasks/:taskId"
                 element={<TaskDetails />}
               />
-              <Route path="/final-exam" element={<FinalExam />} />
+              <Route path="/final-exam" element={<IndexFinalExam />} />
               <Route
                 path="/certification-paths"
                 element={<CertificationPaths />}
               />
-              <Route path="/user-stats" element={<Statistics />} />
-              <Route path="/settings" element={<UserSettings />} />
+              <Route path="/user-stats" element={<IndexStatistics />} />
+              <Route path="/settings" element={<IndexUserSettings />} />
 
               {/* Admin Panel Route - nur für Staff/Superuser */}
               {isAdmin && <Route path="/admin" element={<IndexAdminPanel />} />}
