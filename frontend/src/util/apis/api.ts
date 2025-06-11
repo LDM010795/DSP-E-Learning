@@ -1,14 +1,14 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-// TODO: Basis-URL aus Umgebungsvariablen holen (z.B. process.env.REACT_APP_API_URL)
-const baseURL = "/api"; // Ändere auf /api, da wir den Proxy verwenden
+// Die Basis-URL wird jetzt über Umgebungsvariablen gesteuert, mit einem Fallback für die lokale Entwicklung.
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
 const api = axios.create({
-  baseURL: baseURL,
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Wichtig für CORS
+  withCredentials: true,
 });
 
 // --- Request Interceptor ---
@@ -20,7 +20,8 @@ api.interceptors.request.use(
       const tokens = JSON.parse(storedTokens);
       if (tokens?.access) {
         // Nur hinzufügen, wenn es kein Refresh-Request ist (um Endlosschleifen zu vermeiden)
-        if (!config.url?.includes("/api/token/refresh/")) {
+        // Der Pfad ist relativ zur baseURL, daher wird "/api" hier entfernt.
+        if (!config.url?.includes("/token/refresh/")) {
           config.headers["Authorization"] = `Bearer ${tokens.access}`;
         }
       }
@@ -64,9 +65,10 @@ api.interceptors.response.use(
     };
 
     // Prüfe auf 401 Fehler UND dass es nicht die Refresh-Route selbst ist UND dass es kein Wiederholungsversuch ist
+    // Der Pfad ist relativ zur baseURL, daher wird "/api" hier entfernt.
     if (
       error.response?.status === 401 &&
-      !originalRequest.url?.includes("/api/token/refresh/") &&
+      !originalRequest.url?.includes("/token/refresh/") &&
       !originalRequest._retry &&
       !originalRequest.url?.includes("/token/") // Ignoriere Login-Endpunkt
     ) {
@@ -98,7 +100,7 @@ api.interceptors.response.use(
       const refreshToken = JSON.parse(storedTokens).refresh;
 
       try {
-        const rs = await axios.post(`${baseURL}/token/refresh/`, {
+        const rs = await axios.post(`${API_URL}/token/refresh/`, {
           refresh: refreshToken,
         });
 
