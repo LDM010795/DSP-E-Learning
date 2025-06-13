@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../components/ui_elements/buttons/button_secondary";
@@ -12,8 +12,8 @@ import type { DifficultyLevel } from "../components/tags/tag_difficulty";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import { useModules, Module, Task } from "../context/ModuleContext";
 import TaskSuccessModal from "../components/messages/TaskSuccessModal";
-import { toast } from "sonner";
-import DspNotification from "../components/toaster/notifications/DspNotification";
+// import { toast } from "sonner";
+// import DspNotification from "../components/toaster/notifications/DspNotification";
 
 function TaskDetails() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -143,50 +143,51 @@ function TaskDetails() {
     }
   }, [previousTask, moduleId, navigate, fetchModules, isPageLoading]);
 
-  const handleToggleComplete = async () => {
-    if (!currentTask || !module) return;
-    try {
-      const updatedTask = await toggleTaskCompletion(
-        currentTask.id,
-        !currentTask.completed
-      );
-      if (updatedTask) {
-        setIsSuccessModalOpen(false);
-        setIsCompleted(updatedTask.completed);
-        toast.custom((t) => (
-          <DspNotification
-            id={t}
-            type="success"
-            title="Status geändert"
-            message={`Aufgabe '${currentTask.title}' wurde als ${
-              updatedTask.completed ? "abgeschlossen" : "offen"
-            } markiert.`}
-          />
-        ));
-      } else {
-        toast.custom((t) => (
-          <DspNotification
-            id={t}
-            type="error"
-            title="Fehler"
-            message="Aufgabenstatus konnte nicht geändert werden."
-          />
-        ));
-      }
-    } catch (error) {
-      console.error("Fehler beim Ändern des Aufgabenstatus:", error);
-      const errorMsg =
-        error instanceof Error ? error.message : "Unbekannter Fehler";
-      toast.custom((t) => (
-        <DspNotification
-          id={t}
-          type="error"
-          title="Fehler"
-          message={`Status konnte nicht geändert werden: ${errorMsg}`}
-        />
-      ));
-    }
-  };
+  // TODO: Implementierung für Task-Completion Toggle wenn Backend verfügbar ist
+  // const handleToggleComplete = async () => {
+  //   if (!currentTask || !module) return;
+  //   try {
+  //     const updatedTask = await toggleTaskCompletion(
+  //       currentTask.id,
+  //       !currentTask.completed
+  //     );
+  //     if (updatedTask) {
+  //       setIsSuccessModalOpen(false);
+  //       setIsCompleted(updatedTask.completed);
+  //       toast.custom((t) => (
+  //         <DspNotification
+  //           id={t}
+  //           type="success"
+  //           title="Status geändert"
+  //           message={`Aufgabe '${currentTask.title}' wurde als ${
+  //             updatedTask.completed ? "abgeschlossen" : "offen"
+  //           } markiert.`}
+  //         />
+  //       ));
+  //     } else {
+  //       toast.custom((t) => (
+  //         <DspNotification
+  //           id={t}
+  //           type="error"
+  //           title="Fehler"
+  //           message="Aufgabenstatus konnte nicht geändert werden."
+  //         />
+  //       ));
+  //     }
+  //   } catch (error) {
+  //     console.error("Fehler beim Ändern des Aufgabenstatus:", error);
+  //     const errorMsg =
+  //       error instanceof Error ? error.message : "Unbekannter Fehler";
+  //     toast.custom((t) => (
+  //       <DspNotification
+  //         id={t}
+  //         type="error"
+  //         title="Fehler"
+  //         message={`Status konnte nicht geändert werden: ${errorMsg}`}
+  //       />
+  //     ));
+  //   }
+  // };
 
   if (loading) {
     return (

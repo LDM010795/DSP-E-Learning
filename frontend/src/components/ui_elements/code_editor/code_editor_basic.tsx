@@ -1,9 +1,4 @@
-import React, {
-  useRef,
-  useEffect,
-  useImperativeHandle,
-  forwardRef,
-} from "react";
+import { useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import * as monaco from "monaco-editor";
 
 // Handle-Typ definieren

@@ -1,5 +1,5 @@
 // Modules.tsx
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import CardPreviewSmall from "../components/cards/card_preview_small";
 import FilterHead from "../components/filter/filter_head";
@@ -247,73 +247,72 @@ function Modules() {
         Entdecke unsere Lernmodule und filtere nach deinen Interessen.
       </p>
 
-
-        <FilterHead
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          searchPlaceholder="Module durchsuchen..."
-          className="mb-8"
-        >
-          <ButtonFilterSimple
-            label="Status:"
-            options={["Nicht begonnen", "In Bearbeitung", "Abgeschlossen"]}
-            activeOptions={activeStatusFilters}
-            onOptionClick={handleStatusFilterChange}
-            onClearClick={() => setActiveStatusFilters([])}
-            activeClassName="bg-dsp-orange text-white border-dsp-orange"
+      <FilterHead
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Module durchsuchen..."
+        className="mb-8"
+      >
+        <ButtonFilterSimple
+          label="Status:"
+          options={["Nicht begonnen", "In Bearbeitung", "Abgeschlossen"]}
+          activeOptions={activeStatusFilters}
+          onOptionClick={handleStatusFilterChange}
+          onClearClick={() => setActiveStatusFilters([])}
+          activeClassName="bg-dsp-orange text-white border-dsp-orange"
+        />
+        <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
+        <ButtonFilterSimple
+          label="Schwierigkeit:"
+          options={["Einfach", "Mittel", "Schwer"]}
+          activeOptions={activeFilters}
+          onOptionClick={handleFilterChange}
+          onClearClick={() => setActiveFilters([])}
+          activeClassName="bg-dsp-orange text-white border-dsp-orange"
+        />
+        <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
+        {allCategories.length > 0 && (
+          <ButtonFilterCategory
+            allCategories={allCategories}
+            activeCategories={activeCategoryFilters}
+            onCategoryChange={handleCategoryFilterChange}
+            onClearClick={() => setActiveCategoryFilters([])}
           />
-          <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
-          <ButtonFilterSimple
-            label="Schwierigkeit:"
-            options={["Einfach", "Mittel", "Schwer"]}
-            activeOptions={activeFilters}
-            onOptionClick={handleFilterChange}
-            onClearClick={() => setActiveFilters([])}
-            activeClassName="bg-dsp-orange text-white border-dsp-orange"
-          />
-          <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
-          {allCategories.length > 0 && (
-            <ButtonFilterCategory
-              allCategories={allCategories}
-              activeCategories={activeCategoryFilters}
-              onCategoryChange={handleCategoryFilterChange}
-              onClearClick={() => setActiveCategoryFilters([])}
-            />
-          )}
-        </FilterHead>
+        )}
+      </FilterHead>
 
-        <div className="flex justify-end mb-6">
-          <div className="inline-flex rounded-md shadow-sm bg-white border border-gray-300">
-            <button
-              onClick={() => setViewMode("standard")}
-              className={clsx(
-                "relative inline-flex items-center px-3 py-1.5 rounded-l-md border-r border-gray-300 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange",
-                "cursor-pointer",
-                viewMode === "standard"
-                  ? "bg-dsp-orange text-white"
-                  : "text-gray-500 bg-white hover:bg-dsp-orange_light"
-              )}
-              aria-label="Standardansicht"
-              title="Standardansicht"
-            >
-              <IoGridOutline className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("table")}
-              className={clsx(
-                "relative inline-flex items-center px-3 py-1.5 rounded-r-md text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange",
-                "cursor-pointer",
-                viewMode === "table"
-                  ? "bg-dsp-orange text-white"
-                  : "text-gray-500 bg-white hover:bg-dsp-orange_light"
-              )}
-              aria-label="Tabellenansicht"
-              title="Tabellenansicht"
-            >
-              <IoListOutline className="h-4 w-4" />
-            </button>
-          </div>
+      <div className="flex justify-end mb-6">
+        <div className="inline-flex rounded-md shadow-sm bg-white border border-gray-300">
+          <button
+            onClick={() => setViewMode("standard")}
+            className={clsx(
+              "relative inline-flex items-center px-3 py-1.5 rounded-l-md border-r border-gray-300 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange",
+              "cursor-pointer",
+              viewMode === "standard"
+                ? "bg-dsp-orange text-white"
+                : "text-gray-500 bg-white hover:bg-dsp-orange_light"
+            )}
+            aria-label="Standardansicht"
+            title="Standardansicht"
+          >
+            <IoGridOutline className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setViewMode("table")}
+            className={clsx(
+              "relative inline-flex items-center px-3 py-1.5 rounded-r-md text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange",
+              "cursor-pointer",
+              viewMode === "table"
+                ? "bg-dsp-orange text-white"
+                : "text-gray-500 bg-white hover:bg-dsp-orange_light"
+            )}
+            aria-label="Tabellenansicht"
+            title="Tabellenansicht"
+          >
+            <IoListOutline className="h-4 w-4" />
+          </button>
         </div>
+      </div>
 
       <div className="mt-6">
         {viewMode === "standard" ? (
