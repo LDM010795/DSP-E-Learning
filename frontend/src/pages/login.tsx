@@ -8,6 +8,7 @@ import {
   IoLockClosedOutline,
 } from "react-icons/io5"; // Icons importieren
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
+import MicrosoftLoginButton from "../components/ui_elements/buttons/button_microsoft_login";
 import { useAuth } from "../context/AuthContext.tsx"; // Import useAuth
 import { useModules } from "../context/ModuleContext.tsx";
 import { useNavigate } from "react-router-dom"; // Import für Navigation
@@ -378,6 +379,54 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                 />
               </div>
             </form>
+
+            {/* Divider für Alternative Login-Methoden */}
+            <div
+              className={`transition-all duration-300 ease-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              }
+              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+            >
+              <div className="relative flex items-center justify-center my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-gray-500">oder</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Microsoft Organization Login */}
+            <div
+              className={`transition-all duration-300 ease-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              }
+              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+            >
+              <MicrosoftLoginButton
+                disabled={isLoading}
+                onSuccess={() => {
+                  console.log("Microsoft login successful!");
+                  // Module laden und zum Dashboard navigieren
+                  fetchModules().then(() => {
+                    onClose();
+                    navigate("/dashboard");
+                  });
+                }}
+                onError={(error) => {
+                  console.error("Microsoft login failed:", error);
+                  setError(error);
+                }}
+                className="w-full"
+              />
+            </div>
           </div>
         </div>
       </div>
