@@ -28,12 +28,8 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [loginStage, setLoginStage] = useState<
-    | "idle"
-    | "authenticating"
-    | "loading_data"
-    | "preparing_dashboard"
-    | "complete"
-  >("idle");
+    "authenticating" | "loading_data" | "preparing_dashboard" | "complete"
+  >("authenticating");
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
 
   const { login } = useAuth();
@@ -117,7 +113,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
         // Fehlermeldung aus der login Funktion verwenden
         setError(loginResponse.error || "Login fehlgeschlagen.");
         setShowLoadingScreen(false);
-        setLoginStage("idle");
       }
     } catch (err: unknown) {
       // Dieser Catch-Block sollte jetzt seltener getroffen werden,
@@ -125,7 +120,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
       console.error("Unerwarteter Fehler während des Login-Prozesses:", err);
       setError("Ein unerwarteter Fehler ist aufgetreten.");
       setShowLoadingScreen(false);
-      setLoginStage("idle");
     } finally {
       setIsLoading(false);
     }
@@ -472,7 +466,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                   console.error("Microsoft login failed:", error);
                   setError(error);
                   setShowLoadingScreen(false);
-                  setLoginStage("idle");
                 }}
                 className="w-full"
               />
