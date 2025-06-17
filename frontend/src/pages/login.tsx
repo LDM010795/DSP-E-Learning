@@ -1,4 +1,4 @@
-git add import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import LogoDSP from "../assets/dsp_no_background.png"; // DSP Logo importieren
 import {
   IoClose,
