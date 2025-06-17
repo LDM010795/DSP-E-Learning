@@ -6,7 +6,6 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext";
 import {
   initiateMicrosoftLogin,
@@ -15,7 +14,6 @@ import {
   extractOAuthParams,
   cleanupOAuthUrl,
   isOAuthCallback,
-  type MicrosoftCallbackResponse,
   type OrganizationInfo,
   type MicrosoftUser,
 } from "../util/apis/microsoft_auth";
@@ -35,7 +33,7 @@ interface MicrosoftLoginResult {
 }
 
 export const useMicrosoftAuth = () => {
-  const { tokens, user, isAuthenticated } = useAuth();
+  const { tokens, isAuthenticated } = useAuth();
   const [state, setState] = useState<MicrosoftAuthState>({
     isLoading: false,
     organizationInfo: null,
@@ -179,7 +177,7 @@ export const useMicrosoftAuth = () => {
       } else {
         setState((prev) => ({
           ...prev,
-          error: response.error,
+          error: response.error || null,
           isLoading: false,
         }));
         return false;
