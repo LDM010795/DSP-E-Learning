@@ -6,7 +6,6 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   initiateMicrosoftLogin,
@@ -34,7 +33,6 @@ interface MicrosoftLoginResult {
 }
 
 export const useMicrosoftAuth = () => {
-  const navigate = useNavigate();
   const { tokens, isAuthenticated } = useAuth();
   const [state, setState] = useState<MicrosoftAuthState>({
     isLoading: false,
@@ -119,11 +117,8 @@ export const useMicrosoftAuth = () => {
           // URL bereinigen
           cleanupOAuthUrl();
 
-          // Automatisch zum Dashboard navigieren
-          console.log(
-            "Microsoft login successful, redirecting to dashboard..."
-          );
-          navigate("/dashboard");
+          // Page reload für AuthContext Update
+          window.location.reload();
 
           return {
             success: true,
@@ -150,7 +145,7 @@ export const useMicrosoftAuth = () => {
           error: errorMessage,
         };
       }
-    }, [navigate]);
+    }, []);
 
   /**
    * Prüft Organization Status des aktuellen Users
@@ -204,8 +199,49 @@ export const useMicrosoftAuth = () => {
       handleMicrosoftCallback();
     }
 
-    // Microsoft Auth Success Parameter werden jetzt von der Landing Page verarbeitet
-    // Das vermeidet doppelte Verarbeitung
+    // Prüfe auf Microsoft Auth Success Parameter (von Backend Redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const microsoftAuth = urlParams.get("microsoft_auth");
+    const accessToken = urlParams.get("access_token");
+    const refreshToken = urlParams.get("refresh_token");
+    const authError = urlParams.get("error");
+
+    if (microsoftAuth === "success" && accessToken && refreshToken) {
+      console.log("Microsoft authentication successful, storing tokens...");
+
+      // JWT Tokens im localStorage speichern
+      const authTokens = {
+        access: accessToken,
+        refresh: refreshToken,
+      };
+      localStorage.setItem("authTokens", JSON.stringify(authTokens));
+
+      // URL Parameter bereinigen
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, "", cleanUrl);
+
+      // Falls User nicht bereits auf Dashboard ist, navigiere dorthin
+      if (window.location.pathname !== "/dashboard") {
+        console.log("Redirecting to dashboard after Microsoft login...");
+        window.location.href = "/dashboard";
+      } else {
+        // Bereits auf Dashboard → nur reload für AuthContext Update
+        window.location.reload();
+      }
+    } else if (authError) {
+      console.error("Microsoft authentication error:", authError);
+      const errorDescription =
+        urlParams.get("error_description") || "Authentication failed";
+      setState((prev) => ({
+        ...prev,
+        error: `Microsoft Login fehlgeschlagen: ${errorDescription}`,
+        isLoading: false,
+      }));
+
+      // URL Parameter bereinigen
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, "", cleanUrl);
+    }
   }, [handleMicrosoftCallback]);
 
   /**

@@ -9,7 +9,6 @@ import {
 } from "react-icons/io5"; // Icons importieren
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
 import MicrosoftLoginButton from "../components/ui_elements/buttons/button_microsoft_login";
-import LoadingScreen from "../components/ui_elements/loading_screen";
 import { useAuth } from "../context/AuthContext.tsx"; // Import useAuth
 import { useModules } from "../context/ModuleContext.tsx";
 import { useNavigate } from "react-router-dom"; // Import für Navigation
@@ -100,16 +99,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
       setIsLoading(false);
     }
   };
-
-  // Zeige Loading Screen wenn Login läuft
-  if (isLoading) {
-    return (
-      <LoadingScreen
-        message="Anmeldung läuft..."
-        submessage="Bitte haben Sie einen Moment Geduld"
-      />
-    );
-  }
 
   const handleClose = () => {
     if (!isLoading) {
