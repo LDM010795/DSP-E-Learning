@@ -216,8 +216,8 @@ export const useMicrosoftAuth = () => {
       };
       localStorage.setItem("authTokens", JSON.stringify(authTokens));
 
-      // URL Parameter bereinigen
-      const cleanUrl = window.location.origin + window.location.pathname;
+      // URL Parameter bereinigen und microsoft_auth=success Parameter hinzufügen
+      const cleanUrl = `${window.location.origin}${window.location.pathname}?microsoft_auth=success`;
       window.history.replaceState({}, "", cleanUrl);
 
       // Page reload für AuthContext Update

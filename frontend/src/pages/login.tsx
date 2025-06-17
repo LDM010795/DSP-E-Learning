@@ -36,6 +36,44 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
   const { fetchModules } = useModules();
   const navigate = useNavigate();
 
+  // Microsoft Auth Success Detection
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const microsoftAuth = urlParams.get("microsoft_auth");
+
+    if (microsoftAuth === "success") {
+      // Microsoft Login erfolgreich - zeige Loading Screen
+      setShowLoadingScreen(true);
+      setLoginStage("authenticating");
+
+      // Simuliere den Login-Prozess
+      const handleMicrosoftSuccess = async () => {
+        // Stage 1: Authentifizierung abgeschlossen
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        setLoginStage("loading_data");
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        // Module laden
+        await fetchModules();
+
+        setLoginStage("preparing_dashboard");
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        setLoginStage("complete");
+
+        // Navigation zum Dashboard
+        setTimeout(() => {
+          setShowLoadingScreen(false);
+          onClose();
+          navigate("/dashboard");
+        }, 1000);
+      };
+
+      handleMicrosoftSuccess();
+    }
+  }, [fetchModules, navigate, onClose]);
+
   // Animation beim Mounten
   useEffect(() => {
     // Kurze Verzögerung für besseren visuellen Effekt
@@ -438,29 +476,12 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
               <MicrosoftLoginButton
                 disabled={isLoading}
                 onLoginStart={() => {
-                  setShowLoadingScreen(true);
-                  setLoginStage("authenticating");
+                  // Kein Loading Screen beim Start - nur beim Zurückkommen
                 }}
-                onSuccess={async () => {
-                  console.log("Microsoft login successful!");
-                  setShowLoadingScreen(true);
-                  setLoginStage("loading_data");
-
-                  // Module laden und zum Dashboard navigieren
-                  await new Promise((resolve) => setTimeout(resolve, 800)); // UX Pause
-                  await fetchModules();
-
-                  setLoginStage("preparing_dashboard");
-                  await new Promise((resolve) => setTimeout(resolve, 600)); // UX Pause
-
-                  setLoginStage("complete");
-
-                  // Warten auf onComplete Callback
-                  setTimeout(() => {
-                    setShowLoadingScreen(false);
-                    onClose();
-                    navigate("/dashboard");
-                  }, 1000);
+                onSuccess={() => {
+                  // Microsoft Login wird jetzt über URL-Parameter erkannt
+                  // Keine direkte Aktion nötig, da useEffect das übernimmt
+                  console.log("Microsoft login redirect started...");
                 }}
                 onError={(error) => {
                   console.error("Microsoft login failed:", error);
