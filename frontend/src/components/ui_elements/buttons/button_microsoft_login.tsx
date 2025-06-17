@@ -6,13 +6,14 @@
 
 import React from "react";
 import { useMicrosoftAuth } from "../../../hooks/use_microsoft_auth";
+import LoadingScreen from "../loading_screen";
 
 interface MicrosoftLoginButtonProps {
   className?: string;
   disabled?: boolean;
   onError?: (error: string) => void;
   onSuccess?: () => void;
-  onLoginStart?: () => void;
+  showFullScreenLoading?: boolean;
 }
 
 const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
@@ -20,7 +21,7 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
   disabled = false,
   onError,
   onSuccess,
-  onLoginStart,
+  showFullScreenLoading = false,
 }) => {
   const {
     startMicrosoftLogin,
@@ -34,7 +35,6 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
   const handleMicrosoftLogin = async () => {
     try {
       clearError();
-      onLoginStart?.(); // Trigger loading screen start
       const result = await startMicrosoftLogin();
 
       if (result.success) {
@@ -48,6 +48,16 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
       onError?.(errorMessage);
     }
   };
+
+  // Zeige Full-Screen Loading wenn aktiviert
+  if (isLoading && showFullScreenLoading) {
+    return (
+      <LoadingScreen
+        message="Microsoft Authentifizierung läuft..."
+        submessage="Sie werden zu Microsoft weitergeleitet"
+      />
+    );
+  }
 
   // Wenn User bereits Microsoft User ist, zeige Status
   if (isMicrosoftUser && organizationInfo) {

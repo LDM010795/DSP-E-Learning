@@ -1,389 +1,230 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LogoDSP from "../../assets/dsp_no_background.png";
-import {
-  IoStatsChart,
-  IoTrendingUp,
-  IoAnalytics,
-  IoBarChart,
-  IoCheckmark,
-  IoSync,
-  IoWarning,
-} from "react-icons/io5";
 
 interface LoadingScreenProps {
-  isVisible: boolean;
-  stage?:
-    | "authenticating"
-    | "loading_data"
-    | "preparing_dashboard"
-    | "complete";
   message?: string;
-  onComplete?: () => void;
+  submessage?: string;
 }
 
-interface AnalyticsData {
-  label: string;
-  value: number;
-  trend: "up" | "down" | "stable";
+interface TableDataItem {
+  metric: string;
+  value: number | string;
   change: string;
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({
-  isVisible,
-  stage = "authenticating",
-  message,
-  onComplete,
+  message = "Authentifizierung läuft...",
+  submessage = "Bitte haben Sie einen Moment Geduld",
 }) => {
-  const [progress, setProgress] = useState(0);
-  const [currentAnalytics, setCurrentAnalytics] = useState<AnalyticsData[]>([]);
-  const [animatedValues, setAnimatedValues] = useState<number[]>([]);
+  const [currentDataIndex, setCurrentDataIndex] = useState(0);
 
-  // Simulierte Analytics-Daten
-  const analyticsData: AnalyticsData[] = [
-    { label: "Lernfortschritt", value: 87, trend: "up", change: "+12%" },
-    { label: "Module abgeschlossen", value: 23, trend: "up", change: "+5" },
-    { label: "Übungen gelöst", value: 156, trend: "up", change: "+28" },
-    {
-      label: "Durchschnittliche Bewertung",
-      value: 92,
-      trend: "stable",
-      change: "±0%",
-    },
-    { label: "Lernzeit (Stunden)", value: 42, trend: "up", change: "+8h" },
-    { label: "Zertifikate", value: 7, trend: "up", change: "+2" },
+  // Fake-Daten für spielerische Tabellenanalyse
+  const tableData: TableDataItem[] = [
+    { metric: "Benutzer online", value: 127, change: "+12%" },
+    { metric: "Module absolviert", value: 1284, change: "+8%" },
+    { metric: "Prüfungen heute", value: 43, change: "+15%" },
+    { metric: "Erfolgsrate", value: "94%", change: "+2%" },
+    { metric: "Aktive Kurse", value: 89, change: "+5%" },
+    { metric: "Zertifikate", value: 567, change: "+18%" },
   ];
 
-  // Stage-spezifische Nachrichten
-  const stageMessages = {
-    authenticating: "Authentifizierung läuft...",
-    loading_data: "Daten werden geladen...",
-    preparing_dashboard: "Dashboard wird vorbereitet...",
-    complete: "Anmeldung erfolgreich!",
-  };
+  const [animatedData, setAnimatedData] = useState<TableDataItem[]>(tableData);
 
-  // Progress Animation basierend auf Stage
+  // Animiere die Tabellendaten
   useEffect(() => {
-    const stageProgress = {
-      authenticating: 30,
-      loading_data: 65,
-      preparing_dashboard: 90,
-      complete: 100,
-    };
-
-    const targetProgress = stageProgress[stage];
-    const startProgress = progress;
-    const duration = 1500; // 1.5 Sekunden
-    const steps = 60;
-    const increment = (targetProgress - startProgress) / steps;
-
-    let currentStep = 0;
     const interval = setInterval(() => {
-      currentStep++;
-      const newProgress = Math.min(
-        startProgress + increment * currentStep,
-        targetProgress
-      );
-      setProgress(newProgress);
+      setCurrentDataIndex((prev) => (prev + 1) % tableData.length);
 
-      if (currentStep >= steps || newProgress >= targetProgress) {
-        clearInterval(interval);
-        setProgress(targetProgress);
-
-        // Auto-complete wenn 100% erreicht
-        if (targetProgress === 100 && onComplete) {
-          setTimeout(onComplete, 500);
-        }
-      }
-    }, duration / steps);
-
-    return () => clearInterval(interval);
-  }, [stage, onComplete]);
-
-  // Analytics Animation
-  useEffect(() => {
-    if (!isVisible) return;
-
-    // Initialisiere Analytics-Daten
-    setCurrentAnalytics(analyticsData);
-    setAnimatedValues(analyticsData.map(() => 0));
-
-    // Animiere Werte nach und nach
-    const animateValues = () => {
-      analyticsData.forEach((item, index) => {
-        setTimeout(() => {
-          const steps = 30;
-          const increment = item.value / steps;
-          let currentStep = 0;
-
-          const valueInterval = setInterval(() => {
-            currentStep++;
-            const newValue = Math.min(increment * currentStep, item.value);
-
-            setAnimatedValues((prev) => {
-              const newValues = [...prev];
-              newValues[index] = newValue;
-              return newValues;
-            });
-
-            if (currentStep >= steps) {
-              clearInterval(valueInterval);
-            }
-          }, 50);
-        }, index * 200); // Staggered animation
-      });
-    };
-
-    // Periodische Werteänderungen für Dynamik
-    const updateInterval = setInterval(() => {
-      setCurrentAnalytics((prev) =>
-        prev.map((item) => ({
+      // Simuliere sich ändernde Werte
+      setAnimatedData(
+        tableData.map((item) => ({
           ...item,
-          value: item.value + Math.floor(Math.random() * 3) - 1, // ±1 Variation
+          value:
+            typeof item.value === "number"
+              ? item.value + Math.floor(Math.random() * 5) - 2
+              : item.value,
+          change:
+            Math.random() > 0.5
+              ? "+" + Math.floor(Math.random() * 20) + "%"
+              : "-" + Math.floor(Math.random() * 5) + "%",
         }))
       );
-    }, 3000);
+    }, 2000);
 
-    setTimeout(animateValues, 500);
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => clearInterval(updateInterval);
-  }, [isVisible]);
-
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case "up":
-        return <IoTrendingUp className="text-green-500" />;
-      case "down":
-        return <IoTrendingUp className="text-red-500 transform rotate-180" />;
-      default:
-        return <IoAnalytics className="text-gray-500" />;
-    }
-  };
-
-  const getStageIcon = () => {
-    switch (stage) {
-      case "authenticating":
-        return <IoSync className="animate-spin text-dsp-orange" />;
-      case "loading_data":
-        return <IoBarChart className="text-dsp-orange" />;
-      case "preparing_dashboard":
-        return <IoStatsChart className="text-dsp-orange" />;
-      case "complete":
-        return <IoCheckmark className="text-green-500" />;
-      default:
-        return <IoSync className="animate-spin text-dsp-orange" />;
-    }
-  };
-
-  if (!isVisible) return null;
+  useEffect(() => {
+    setAnimatedData(tableData);
+  }, []);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 backdrop-blur-sm"
-      >
-        <div className="w-full max-w-4xl mx-auto px-6">
-          {/* Haupt-Container */}
-          <motion.div
-            initial={{ scale: 0.9, y: 50 }}
-            animate={{ scale: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200"
-          >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-dsp-orange to-dsp-orange_medium p-8 text-white relative overflow-hidden">
-              {/* Hintergrund-Animation */}
-              <div className="absolute inset-0 opacity-20">
-                <motion.div
-                  animate={{
-                    x: [0, 100, 0],
-                    y: [0, -50, 0],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="absolute top-4 left-4 text-6xl"
-                >
-                  <IoStatsChart />
-                </motion.div>
-                <motion.div
-                  animate={{
-                    x: [100, 0, 100],
-                    y: [50, 0, 50],
-                  }}
-                  transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "linear",
-                    delay: 2,
-                  }}
-                  className="absolute bottom-4 right-4 text-5xl"
-                >
-                  <IoAnalytics />
-                </motion.div>
-              </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-100">
+      {/* Animierte Hintergrund-Kreise */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute top-20 left-20 w-32 h-32 bg-orange-200/30 rounded-full filter blur-xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 right-20 w-48 h-48 bg-orange-300/20 rounded-full filter blur-2xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.2, 0.5, 0.2],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/3 w-24 h-24 bg-orange-400/25 rounded-full filter blur-lg"
+          animate={{
+            scale: [1, 1.3, 1],
+            x: [0, 20, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+      </div>
 
-              {/* Content */}
-              <div className="relative z-10 text-center">
-                <motion.img
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  src={LogoDSP}
-                  alt="DataSmart Point Logo"
-                  className="h-16 mx-auto mb-4"
-                />
+      {/* Hauptinhalt */}
+      <div className="relative z-10 text-center max-w-md mx-auto px-6">
+        {/* Logo mit Animation */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mb-8"
+        >
+          <img
+            src={LogoDSP}
+            alt="DataSmart Point Logo"
+            className="h-20 mx-auto"
+          />
+        </motion.div>
 
-                <motion.h1
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-2xl font-bold mb-2"
-                >
-                  DataSmart Point E-Learning
-                </motion.h1>
+        {/* Titel und Nachricht */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-8"
+        >
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">{message}</h2>
+          <p className="text-gray-600">{submessage}</p>
+        </motion.div>
 
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="flex items-center justify-center gap-2 text-lg"
-                >
-                  {getStageIcon()}
-                  <span>{message || stageMessages[stage]}</span>
-                </motion.div>
-              </div>
-            </div>
+        {/* Animierter Loading Spinner */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mb-8"
+        >
+          <div className="relative mx-auto w-16 h-16">
+            <motion.div className="absolute inset-0 border-4 border-orange-200 rounded-full" />
+            <motion.div
+              className="absolute inset-0 border-4 border-orange-500 rounded-full border-t-transparent"
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          </div>
+        </motion.div>
 
-            {/* Content Area */}
-            <div className="p-8 space-y-6">
-              {/* Progress Bar */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.8 }}
-                className="space-y-2"
-              >
-                <div className="flex justify-between items-center text-sm text-gray-600">
-                  <span>Fortschritt</span>
-                  <span>{Math.round(progress)}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+        {/* Spielerische Datenanalyse-Tabelle */}
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-4"
+        >
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+            📊 Live Analytics
+          </h3>
+          <div className="space-y-2">
+            <AnimatePresence mode="wait">
+              {animatedData
+                .slice(currentDataIndex, currentDataIndex + 3)
+                .map((item, index) => (
                   <motion.div
-                    className="h-full bg-gradient-to-r from-dsp-orange to-dsp-orange_medium rounded-full shadow-sm"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                  />
-                </div>
-              </motion.div>
-
-              {/* Analytics Dashboard */}
-              <motion.div
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="space-y-4"
-              >
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                  <IoAnalytics className="text-dsp-orange" />
-                  Live Analytics Dashboard
-                </h3>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {currentAnalytics.map((item, index) => (
-                    <motion.div
-                      key={item.label}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 1.2 + index * 0.1 }}
-                      className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-gray-600 font-medium">
-                          {item.label}
-                        </span>
-                        {getTrendIcon(item.trend)}
-                      </div>
-
-                      <div className="space-y-1">
-                        <motion.div
-                          className="text-2xl font-bold text-gray-800"
-                          animate={{ scale: [1, 1.05, 1] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          {Math.round(animatedValues[index] || 0)}
-                          {item.label.includes("Bewertung") ||
-                          item.label.includes("Lernfortschritt")
-                            ? "%"
-                            : ""}
-                        </motion.div>
-
-                        <div
-                          className={`text-xs font-medium ${
-                            item.trend === "up"
-                              ? "text-green-600"
-                              : item.trend === "down"
-                              ? "text-red-600"
-                              : "text-gray-600"
-                          }`}
-                        >
-                          {item.change}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Status Messages */}
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                className="text-center space-y-2"
-              >
-                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                  {stage !== "complete" && (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="w-4 h-4 border-2 border-dsp-orange border-t-transparent rounded-full"
-                    />
-                  )}
-                  <span>
-                    {stage === "complete"
-                      ? "Anmeldung erfolgreich! Weiterleitung zum Dashboard..."
-                      : "Dein personalisiertes Dashboard wird vorbereitet..."}
-                  </span>
-                </div>
-
-                {stage === "authenticating" && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-xs text-orange-600 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 inline-flex items-center gap-1"
+                    key={`${item.metric}-${currentDataIndex}-${index}`}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 20, opacity: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="flex justify-between items-center text-xs"
                   >
-                    <IoWarning />
-                    Beim ersten Start kann die Anmeldung bis zu 30 Sekunden
-                    dauern
+                    <span className="text-gray-600">{item.metric}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-800">
+                        {item.value}
+                      </span>
+                      <span
+                        className={`px-1 py-0.5 rounded text-xs ${
+                          item.change.startsWith("+")
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
+                        }`}
+                      >
+                        {item.change}
+                      </span>
+                    </div>
                   </motion.div>
-                )}
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+                ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Fortschrittsbalken */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.5, delay: 0.8 }}
+          className="mt-6 w-full bg-gray-200 rounded-full h-1 overflow-hidden"
+        >
+          <motion.div
+            className="h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full"
+            animate={{ x: ["-100%", "100%"] }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </motion.div>
+
+        {/* Status-Text */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1 }}
+          className="text-xs text-gray-500 mt-4"
+        >
+          Optimiert für schnellere Anmeldung ⚡
+        </motion.p>
+      </div>
+    </div>
   );
 };
 

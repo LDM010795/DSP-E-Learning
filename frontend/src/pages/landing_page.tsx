@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, useMotionValue, useTransform } from "framer-motion"; // Importiere von framer-motion
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../components/ui_elements/buttons/button_secondary";
 import LogoDSP from "../assets/dsp_no_background.png"; // Importiere das Logo
+import LoadingScreen from "../components/ui_elements/loading_screen";
 import useScrollAnimation from "../hooks/useScrollAnimation"; // Importiere den Hook
+import { useAuth } from "../context/AuthContext";
 import {
   IoRocketOutline,
   IoLayersOutline,
@@ -67,10 +69,16 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 );
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
   // State für Parallax-Effekt
   const [scrollY, setScrollY] = useState(0);
   // State für das Video-Modal
   const [isVideoModalOpen, setVideoModalOpen] = useState(false);
+  // State für Microsoft Auth Verarbeitung
+  const [isMicrosoftAuthProcessing, setIsMicrosoftAuthProcessing] =
+    useState(false);
 
   // Motion Values für Mausposition
   const mouseX = useMotionValue(0);
@@ -84,6 +92,49 @@ function LandingPage() {
   const circle2Y = useTransform(mouseY, (val) => val / -15);
   const circle3X = useTransform(mouseX, (val) => val / 20);
   const circle3Y = useTransform(mouseY, (val) => val / -8);
+
+  // Microsoft OAuth Callback Verarbeitung
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const microsoftAuth = urlParams.get("microsoft_auth");
+    const accessToken = urlParams.get("access_token");
+    const refreshToken = urlParams.get("refresh_token");
+    const authError = urlParams.get("error");
+
+    if (microsoftAuth === "success" && accessToken && refreshToken) {
+      console.log("Microsoft authentication successful, processing...");
+      setIsMicrosoftAuthProcessing(true);
+
+      // JWT Tokens im localStorage speichern
+      const authTokens = {
+        access: accessToken,
+        refresh: refreshToken,
+      };
+      localStorage.setItem("authTokens", JSON.stringify(authTokens));
+
+      // URL Parameter bereinigen
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, "", cleanUrl);
+
+      // Kurz warten und dann zum Dashboard navigieren
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } else if (authError) {
+      console.error("Microsoft authentication error:", authError);
+      // URL Parameter bereinigen
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, "", cleanUrl);
+    }
+  }, [navigate]);
+
+  // Automatische Weiterleitung wenn bereits eingeloggt
+  useEffect(() => {
+    if (isAuthenticated && !authLoading && !isMicrosoftAuthProcessing) {
+      console.log("User already authenticated, redirecting to dashboard...");
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, authLoading, isMicrosoftAuthProcessing, navigate]);
 
   // Effekt zum Aktualisieren der Scroll-Position und Mausposition
   useEffect(() => {
@@ -106,6 +157,25 @@ function LandingPage() {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [mouseX, mouseY]); // Abhängigkeiten hinzufügen
+
+  // Zeige Loading Screen während Microsoft Auth Verarbeitung oder Auth Loading
+  if (isMicrosoftAuthProcessing) {
+    return (
+      <LoadingScreen
+        message="Microsoft Anmeldung erfolgreich!"
+        submessage="Sie werden zum Dashboard weitergeleitet..."
+      />
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <LoadingScreen
+        message="System wird geladen..."
+        submessage="Bitte haben Sie einen Moment Geduld"
+      />
+    );
+  }
 
   return (
     <div className="bg-gradient-to-b from-white to-gray-50 overflow-x-hidden mx-[-80px] my-[-40px]">
