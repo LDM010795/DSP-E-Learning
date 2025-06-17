@@ -9,6 +9,7 @@ import {
 } from "react-icons/io5"; // Icons importieren
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
 import MicrosoftLoginButton from "../components/ui_elements/buttons/button_microsoft_login";
+import LoadingScreen from "../components/ui_elements/loading_screen";
 import { useAuth } from "../context/AuthContext.tsx"; // Import useAuth
 import { useModules } from "../context/ModuleContext.tsx";
 import { useNavigate } from "react-router-dom"; // Import für Navigation
@@ -26,6 +27,14 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [loginStage, setLoginStage] = useState<
+    | "idle"
+    | "authenticating"
+    | "loading_data"
+    | "preparing_dashboard"
+    | "complete"
+  >("idle");
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false);
 
   const { login } = useAuth();
   const { fetchModules } = useModules();
@@ -56,6 +65,8 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
 
     setError(null);
     setIsLoading(true);
+    setShowLoadingScreen(true);
+    setLoginStage("authenticating");
 
     try {
       const loginResponse = await login({ username: email, password });
@@ -76,25 +87,45 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
         // Prüfe, ob Passwortänderung erforderlich ist
         if (loginResponse.require_password_change) {
           console.log("Passwortänderung erforderlich, leite weiter...");
+          setShowLoadingScreen(false);
           navigate("/force-password-change");
           onClose(); // Schließe das Login-Popup
         } else {
           console.log(
             "Keine Passwortänderung erforderlich, lade Module und gehe zum Dashboard."
           );
+
+          // Progressiv durch die Stages
+          setLoginStage("loading_data");
+          await new Promise((resolve) => setTimeout(resolve, 800)); // Kurze Pause für UX
+
           await fetchModules(); // Module nach erfolgreichem Login laden
-          onClose(); // Schließe das Login-Popup
-          navigate("/dashboard");
+
+          setLoginStage("preparing_dashboard");
+          await new Promise((resolve) => setTimeout(resolve, 600)); // Kurze Pause für UX
+
+          setLoginStage("complete");
+
+          // Warten auf onComplete Callback vom LoadingScreen
+          setTimeout(() => {
+            setShowLoadingScreen(false);
+            onClose(); // Schließe das Login-Popup
+            navigate("/dashboard");
+          }, 1000);
         }
       } else {
         // Fehlermeldung aus der login Funktion verwenden
         setError(loginResponse.error || "Login fehlgeschlagen.");
+        setShowLoadingScreen(false);
+        setLoginStage("idle");
       }
     } catch (err: unknown) {
       // Dieser Catch-Block sollte jetzt seltener getroffen werden,
       // da Fehler idealerweise in der login-Funktion behandelt werden.
       console.error("Unerwarteter Fehler während des Login-Prozesses:", err);
       setError("Ein unerwarteter Fehler ist aufgetreten.");
+      setShowLoadingScreen(false);
+      setLoginStage("idle");
     } finally {
       setIsLoading(false);
     }
@@ -412,17 +443,36 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
             >
               <MicrosoftLoginButton
                 disabled={isLoading}
-                onSuccess={() => {
+                onLoginStart={() => {
+                  setShowLoadingScreen(true);
+                  setLoginStage("authenticating");
+                }}
+                onSuccess={async () => {
                   console.log("Microsoft login successful!");
+                  setShowLoadingScreen(true);
+                  setLoginStage("loading_data");
+
                   // Module laden und zum Dashboard navigieren
-                  fetchModules().then(() => {
+                  await new Promise((resolve) => setTimeout(resolve, 800)); // UX Pause
+                  await fetchModules();
+
+                  setLoginStage("preparing_dashboard");
+                  await new Promise((resolve) => setTimeout(resolve, 600)); // UX Pause
+
+                  setLoginStage("complete");
+
+                  // Warten auf onComplete Callback
+                  setTimeout(() => {
+                    setShowLoadingScreen(false);
                     onClose();
                     navigate("/dashboard");
-                  });
+                  }, 1000);
                 }}
                 onError={(error) => {
                   console.error("Microsoft login failed:", error);
                   setError(error);
+                  setShowLoadingScreen(false);
+                  setLoginStage("idle");
                 }}
                 className="w-full"
               />
@@ -430,6 +480,17 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
           </div>
         </div>
       </div>
+
+      {/* Loading Screen Overlay */}
+      <LoadingScreen
+        isVisible={showLoadingScreen}
+        stage={loginStage}
+        onComplete={() => {
+          setShowLoadingScreen(false);
+          onClose();
+          navigate("/dashboard");
+        }}
+      />
     </div>
   );
 };

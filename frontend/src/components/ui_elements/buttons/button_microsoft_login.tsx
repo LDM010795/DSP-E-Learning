@@ -12,6 +12,7 @@ interface MicrosoftLoginButtonProps {
   disabled?: boolean;
   onError?: (error: string) => void;
   onSuccess?: () => void;
+  onLoginStart?: () => void;
 }
 
 const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
@@ -19,6 +20,7 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
   disabled = false,
   onError,
   onSuccess,
+  onLoginStart,
 }) => {
   const {
     startMicrosoftLogin,
@@ -32,6 +34,7 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
   const handleMicrosoftLogin = async () => {
     try {
       clearError();
+      onLoginStart?.(); // Trigger loading screen start
       const result = await startMicrosoftLogin();
 
       if (result.success) {
