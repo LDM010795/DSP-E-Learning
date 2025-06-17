@@ -98,9 +98,18 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
           <MicrosoftIcon />
         )}
         <span>
-          {isLoading ? "Anmeldung läuft..." : "Mit Microsoft anmelden"}
+          {isLoading ? "Authentifizierung läuft..." : "Mit Microsoft anmelden"}
         </span>
       </button>
+
+      {isLoading && (
+        <div className="text-xs text-blue-600 text-center space-y-1">
+          <p>⚡ Optimiert für schnellere Anmeldung</p>
+          <p>
+            Falls es länger dauert, wird beim ersten Mal der Server gestartet
+          </p>
+        </div>
+      )}
 
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
