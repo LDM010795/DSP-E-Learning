@@ -37,7 +37,9 @@ class LRUCache<K, V> {
     } else if (this.cache.size >= this.maxSize) {
       // Remove least recently used (first item)
       const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
+      if (firstKey !== undefined) {
+        this.cache.delete(firstKey);
+      }
     }
     this.cache.set(key, value);
   }
@@ -135,7 +137,7 @@ export function useMemoizedComputation<T>(
     a.length === b.length && a.every((val, i) => val === b[i])
 ): T {
   const depsRef = useRef<unknown[]>(deps);
-  const resultRef = useRef<T>();
+  const resultRef = useRef<T | undefined>(undefined);
   const hasComputedRef = useRef(false);
 
   // Check if dependencies have changed
@@ -167,7 +169,7 @@ export function useShallowMemo<T extends Record<string, unknown>>(
   factory: () => T,
   deps: unknown[]
 ): T {
-  const prevResult = useRef<T>();
+  const prevResult = useRef<T | undefined>(undefined);
 
   return useMemo(() => {
     const result = factory();
@@ -207,9 +209,12 @@ export function useStableCallback<TArgs extends unknown[], TReturn>(
     callbackRef.current = callback;
   }
 
-  return useCallback((...args: TArgs) => {
-    return callbackRef.current(...args);
-  }, []);
+  return useCallback(
+    (...args: TArgs) => {
+      return callbackRef.current(...args);
+    },
+    [callbackRef]
+  );
 }
 
 /**

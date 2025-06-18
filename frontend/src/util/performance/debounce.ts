@@ -1,47 +1,30 @@
 /**
- * Generic Debounce Utility for Performance Optimization
+ * Debouncing Utilities for Performance Optimization
  *
- * Delays function execution until after a specified delay has passed since
- * the last time it was invoked. Perfect for search inputs, API calls, and
- * resize handlers to reduce unnecessary executions.
- *
- * @example
- * ```typescript
- * const debouncedSearch = debounce((query: string) => {
- *   api.search(query);
- * }, 300);
- *
- * // Usage in component
- * const handleSearch = debouncedSearch.bind(null);
- * ```
+ * Provides utilities for debouncing function calls and user inputs
+ * to prevent excessive API calls and improve performance.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DebouncedFunction<T extends (...args: any[]) => any> = (
-  ...args: Parameters<T>
-) => void;
+import { useEffect, useRef, useState, useCallback } from "react";
 
-interface DebouncedWithCancel<T extends (...args: any[]) => any>
-  extends DebouncedFunction<T> {
+// Type definitions
+interface DebouncedFunction<T extends (...args: unknown[]) => unknown> {
+  (...args: Parameters<T>): void;
   cancel: () => void;
   flush: () => void;
 }
 
 /**
- * Creates a debounced version of the provided function
- *
- * @param func - Function to debounce
- * @param delay - Delay in milliseconds
- * @param immediate - Execute on leading edge instead of trailing edge
- * @returns Debounced function with cancel and flush methods
+ * Creates a debounced function that delays invoking func until after wait milliseconds
+ * have elapsed since the last time the debounced function was invoked.
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  delay: number,
+  wait: number,
   immediate = false
-): DebouncedWithCancel<T> {
-  let timeoutId: NodeJS.Timeout | null = null;
-  let lastArgs: Parameters<T> | null = null;
+): DebouncedFunction<T> {
+  let timeoutId: number | undefined;
+  let lastArgs: Parameters<T> | undefined;
 
   const debouncedFunction = (...args: Parameters<T>): void => {
     lastArgs = args;
@@ -52,42 +35,40 @@ export function debounce<T extends (...args: any[]) => any>(
       clearTimeout(timeoutId);
     }
 
-    timeoutId = setTimeout(() => {
-      timeoutId = null;
+    timeoutId = window.setTimeout(() => {
+      timeoutId = undefined;
       if (!immediate && lastArgs) {
         func(...lastArgs);
       }
-    }, delay);
+    }, wait);
 
     if (callNow) {
       func(...args);
     }
   };
 
-  // Cancel pending execution
   debouncedFunction.cancel = (): void => {
     if (timeoutId) {
       clearTimeout(timeoutId);
-      timeoutId = null;
-      lastArgs = null;
+      timeoutId = undefined;
+      lastArgs = undefined;
     }
   };
 
-  // Execute immediately with last arguments
   debouncedFunction.flush = (): void => {
     if (timeoutId && lastArgs) {
       clearTimeout(timeoutId);
       func(...lastArgs);
-      timeoutId = null;
-      lastArgs = null;
+      timeoutId = undefined;
+      lastArgs = undefined;
     }
   };
 
-  return debouncedFunction as DebouncedWithCancel<T>;
+  return debouncedFunction;
 }
 
 /**
- * React hook version of debounce for component state
+ * React hook for debounced values
  *
  * @example
  * ```typescript
@@ -96,18 +77,16 @@ export function debounce<T extends (...args: any[]) => any>(
  *
  * useEffect(() => {
  *   if (debouncedSearchTerm) {
- *     performSearch(debouncedSearchTerm);
+ *     searchAPI(debouncedSearchTerm);
  *   }
  * }, [debouncedSearchTerm]);
  * ```
  */
-import { useState, useEffect } from "react";
-
 export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
+    const handler = window.setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
 
@@ -117,4 +96,39 @@ export function useDebounce<T>(value: T, delay: number): T {
   }, [value, delay]);
 
   return debouncedValue;
+}
+
+/**
+ * React hook for debounced callbacks
+ *
+ * @example
+ * ```typescript
+ * const debouncedCallback = useDebouncedCallback(
+ *   (searchTerm: string) => {
+ *     searchAPI(searchTerm);
+ *   },
+ *   300
+ * );
+ * ```
+ */
+export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
+  callback: T,
+  delay: number,
+  deps: React.DependencyList = []
+): T {
+  const debouncedCallback = useRef<DebouncedFunction<T> | null>(null);
+
+  const memoizedCallback = useCallback(callback, deps);
+
+  useEffect(() => {
+    debouncedCallback.current = debounce(memoizedCallback, delay);
+
+    return () => {
+      debouncedCallback.current?.cancel();
+    };
+  }, [memoizedCallback, delay]);
+
+  return useCallback((...args: Parameters<T>) => {
+    debouncedCallback.current?.(...args);
+  }, [] as React.DependencyList) as T;
 }

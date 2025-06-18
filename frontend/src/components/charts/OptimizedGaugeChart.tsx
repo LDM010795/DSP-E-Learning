@@ -2,7 +2,7 @@
  * Performance-Optimized Gauge Chart Component
  *
  * Demonstrates best practices for heavy chart components including:
- * - Lazy loading with intersection observer
+ * - Lazy loading with React.lazy
  * - Memoized chart options to prevent unnecessary re-renders
  * - Dynamic import for chart library
  * - Fallback UI during loading
@@ -10,12 +10,8 @@
  * This serves as a template for optimizing other chart components.
  */
 
-import React, { memo } from "react";
-import {
-  useShallowMemo,
-  useMemoizedComputation,
-  createVendorLazy,
-} from "../../util/performance";
+import React, { memo, Suspense } from "react";
+import { useShallowMemo, useMemoizedComputation } from "../../util/performance";
 
 interface OptimizedGaugeChartProps {
   progressValue: number;
@@ -27,17 +23,16 @@ interface OptimizedGaugeChartProps {
 }
 
 // Performance optimization: Lazy load the heavy ECharts library
-const LazyReactECharts = createVendorLazy(() => import("echarts-for-react"), {
-  minHeight: 300,
-  fallback: (
-    <div className="w-full h-[300px] flex items-center justify-center bg-gray-100 rounded-lg">
-      <div className="animate-pulse">
-        <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4"></div>
-        <div className="text-sm text-gray-500">Loading chart...</div>
-      </div>
+const ReactECharts = React.lazy(() => import("echarts-for-react"));
+
+const LoadingFallback = () => (
+  <div className="w-full h-[300px] flex items-center justify-center bg-gray-100 rounded-lg">
+    <div className="animate-pulse">
+      <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4"></div>
+      <div className="text-sm text-gray-500">Loading chart...</div>
     </div>
-  ),
-});
+  </div>
+);
 
 const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
   ({
@@ -50,7 +45,6 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
   }) => {
     // Performance optimization: Memoize expensive chart options calculation
     const chartOptions = useMemoizedComputation(
-      `gauge-options-${progressValue}-${primaryColor}`,
       () => ({
         series: [
           {
@@ -114,12 +108,14 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
 
     return (
       <div className="mx-auto" style={{ width: `${width}px` }}>
-        <LazyReactECharts
-          option={chartOptions}
-          style={containerStyle}
-          opts={{ renderer: "canvas" }} // Canvas renderer is faster for simple charts
-          lazyUpdate={true} // Optimize updates
-        />
+        <Suspense fallback={<LoadingFallback />}>
+          <ReactECharts
+            option={chartOptions}
+            style={containerStyle}
+            opts={{ renderer: "canvas" }} // Canvas renderer is faster for simple charts
+            lazyUpdate={true} // Optimize updates
+          />
+        </Suspense>
       </div>
     );
   }

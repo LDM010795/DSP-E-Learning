@@ -9,7 +9,6 @@ import {
 } from "react-icons/io5";
 import { FaCheckCircle } from "react-icons/fa";
 import ButtonPrimary from "../ui_elements/buttons/button_primary";
-import ButtonSecondary from "../ui_elements/buttons/button_secondary";
 import { throttle } from "../../util/performance";
 
 interface TaskSuccessModalProps {

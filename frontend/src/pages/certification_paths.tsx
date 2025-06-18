@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import TagDifficulty from "../components/tags/tag_difficulty";
 import * as Icons from "react-icons/io5";
@@ -10,7 +10,6 @@ import {
   AccordionItem,
 } from "../components/ui_elements/accordions/accordion";
 import CardBadge from "../components/cards/card_badge";
-import axios from "axios";
 import clsx from "clsx";
 import { useCachedApi } from "../util/performance";
 

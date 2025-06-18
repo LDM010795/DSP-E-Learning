@@ -67,6 +67,9 @@ const UserList: React.FC = () => {
 
   // Benutzer-Funktionen
   const handleDeleteUser = (userId: number) => {
+    // Prüfen, ob das users Array existiert und den Benutzer finden
+    if (!users) return;
+
     // Prüfen, ob der zu löschende Benutzer ein Admin oder Superuser ist
     const userToDelete = users.find((user) => user.id === userId);
     if (userToDelete && (userToDelete.is_staff || userToDelete.is_superuser)) {
@@ -136,7 +139,7 @@ const UserList: React.FC = () => {
   // Gefilterte Benutzerliste
   const filteredUsers = useMemo(
     () =>
-      users.filter((user) => {
+      (users || []).filter((user) => {
         const term = userSearchTerm.toLowerCase();
         return (
           user.username.toLowerCase().includes(term) ||
