@@ -1,12 +1,12 @@
 /**
  * Microsoft Organization Authentication API
  *
- * Handles Microsoft OAuth2 flows for DSP organization users
+ * Sicheres System mit temporären Auth-Codes für Token-Übertragung
  */
 
 import axios from "axios";
 
-// Basis-URL für Microsoft Services (separater Service)
+// Basis-URL für Microsoft Services
 const MICROSOFT_API_URL =
   import.meta.env.VITE_MICROSOFT_API_URL ||
   "http://127.0.0.1:8000/api/microsoft";
@@ -30,47 +30,47 @@ export interface MicrosoftLoginResponse {
   instructions: string[];
 }
 
-export interface MicrosoftCallbackRequest {
-  code: string;
-  state: string;
-}
-
-export interface MicrosoftUser {
-  id: number;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  is_staff: boolean;
-  is_superuser: boolean;
-}
-
-export interface OrganizationInfo {
-  display_name: string;
-  job_title: string;
-  department: string;
-  office_location: string;
-  account_enabled: boolean;
-}
-
-export interface MicrosoftCallbackResponse {
+export interface MicrosoftTokensResponse {
   success: boolean;
   message: string;
-  user: MicrosoftUser;
-  organization_info: OrganizationInfo;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    is_staff: boolean;
+    is_superuser: boolean;
+  };
+  role_info: {
+    role_name: string;
+    groups: string[];
+    is_staff: boolean;
+    is_superuser: boolean;
+    permissions: {
+      can_access_admin: boolean;
+      can_manage_users: boolean;
+      can_grade_exams: boolean;
+    };
+  };
+  organization_info: {
+    display_name: string;
+    job_title: string;
+    department: string;
+    office_location: string;
+    account_enabled: boolean;
+  };
   tokens: {
     access: string;
     refresh: string;
   };
   expires_in: number;
-  error?: string;
-  error_code?: string;
 }
 
-export interface UserStatusResponse {
+export interface MicrosoftUserStatusResponse {
   success: boolean;
   active: boolean;
-  user: {
+  user?: {
     email: string;
     display_name: string;
     job_title: string;
@@ -80,73 +80,62 @@ export interface UserStatusResponse {
   error?: string;
 }
 
+export interface MicrosoftErrorResponse {
+  success: false;
+  error: string;
+  error_code?: string;
+}
+
 // --- API Functions ---
 
 /**
- * Startet Microsoft Organization Login Flow
- *
- * @returns Promise mit Microsoft Login URL und State
+ * 1. Startet Microsoft Organization Login Flow
  */
-export const initiateMicrosoftLogin =
+export const startMicrosoftLogin =
   async (): Promise<MicrosoftLoginResponse> => {
     try {
       const response = await microsoftApi.get<MicrosoftLoginResponse>(
         "/auth/login/"
       );
       return response.data;
-    } catch (error: any) {
-      console.error("Microsoft login initiation failed:", error);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { error?: string } } };
       throw new Error(
-        error.response?.data?.error || "Failed to initiate Microsoft login"
+        axiosError.response?.data?.error || "Failed to start Microsoft login"
       );
     }
   };
 
 /**
- * Verarbeitet Microsoft OAuth2 Callback
- *
- * @param code - Authorization Code von Microsoft
- * @param state - State Parameter für Security
- * @returns Promise mit User-Daten und JWT Tokens
+ * 2. SICHER: Holt Tokens per JSON mit temporärem Auth-Code
  */
-export const processMicrosoftCallback = async (
-  code: string,
-  state: string
-): Promise<MicrosoftCallbackResponse> => {
+export const getMicrosoftTokens = async (
+  authCode: string
+): Promise<MicrosoftTokensResponse> => {
   try {
-    const response = await microsoftApi.post<MicrosoftCallbackResponse>(
-      "/auth/callback/",
-      { code, state }
+    const response = await microsoftApi.post<MicrosoftTokensResponse>(
+      "/auth/tokens/",
+      {
+        auth_code: authCode,
+      }
     );
     return response.data;
-  } catch (error: any) {
-    console.error("Microsoft callback processing failed:", error);
-
-    // Spezifische Fehlerbehandlung
-    if (error.response?.status === 403) {
-      throw new Error(
-        error.response.data?.error ||
-          "Zugriff verweigert: Sie müssen ein aktiver DSP-Mitarbeiter sein."
-      );
-    }
-
+  } catch (error: unknown) {
+    const axiosError = error as { response?: { data?: { error?: string } } };
     throw new Error(
-      error.response?.data?.error || "Microsoft authentication failed"
+      axiosError.response?.data?.error || "Failed to get authentication tokens"
     );
   }
 };
 
 /**
- * Prüft den aktuellen Organization-Status des Users
- *
- * @param accessToken - JWT Access Token
- * @returns Promise mit User Status in der Organization
+ * 3. Prüft Organization User Status
  */
-export const checkOrganizationUserStatus = async (
+export const checkMicrosoftUserStatus = async (
   accessToken: string
-): Promise<UserStatusResponse> => {
+): Promise<MicrosoftUserStatusResponse> => {
   try {
-    const response = await microsoftApi.get<UserStatusResponse>(
+    const response = await microsoftApi.get<MicrosoftUserStatusResponse>(
       "/auth/user-status/",
       {
         headers: {
@@ -155,65 +144,52 @@ export const checkOrganizationUserStatus = async (
       }
     );
     return response.data;
-  } catch (error: any) {
-    console.error("Organization user status check failed:", error);
+  } catch (error: unknown) {
+    const axiosError = error as { response?: { data?: { error?: string } } };
     throw new Error(
-      error.response?.data?.error || "Failed to check organization status"
+      axiosError.response?.data?.error || "Failed to check user status"
     );
   }
 };
 
-// --- Helper Functions ---
+// --- Utility Functions ---
 
 /**
- * Extrahiert OAuth2 Parameters aus URL
- *
- * @param url - URL mit OAuth2 Callback Parameters
- * @returns Object mit code und state, oder null
+ * Extrahiert Auth-Code aus URL-Parametern (nach Microsoft Redirect)
  */
-export const extractOAuthParams = (url: string = window.location.href) => {
-  try {
-    const urlObj = new URL(url);
-    const code = urlObj.searchParams.get("code");
-    const state = urlObj.searchParams.get("state");
-    const error = urlObj.searchParams.get("error");
-    const errorDescription = urlObj.searchParams.get("error_description");
+export const extractAuthCodeFromUrl = (): {
+  authCode?: string;
+  success?: boolean;
+  error?: string;
+  errorDescription?: string;
+} => {
+  const urlParams = new URLSearchParams(window.location.search);
 
-    if (error) {
-      throw new Error(errorDescription || error);
-    }
-
-    if (code && state) {
-      return { code, state };
-    }
-
-    return null;
-  } catch (error) {
-    console.error("Failed to extract OAuth params:", error);
-    return null;
-  }
+  return {
+    authCode: urlParams.get("auth_code") || undefined,
+    success: urlParams.get("microsoft_auth") === "success",
+    error: urlParams.get("error") || undefined,
+    errorDescription: urlParams.get("error_description") || undefined,
+  };
 };
 
 /**
- * Bereinigt OAuth2 Parameters aus der URL
+ * Räumt URL-Parameter nach Login auf
  */
-export const cleanupOAuthUrl = () => {
+export const cleanupUrlAfterAuth = (): void => {
   const url = new URL(window.location.href);
-  url.searchParams.delete("code");
-  url.searchParams.delete("state");
+  url.searchParams.delete("microsoft_auth");
+  url.searchParams.delete("auth_code");
   url.searchParams.delete("error");
   url.searchParams.delete("error_description");
 
-  // URL ohne Parameter setzen
-  window.history.replaceState({}, document.title, url.pathname);
+  window.history.replaceState({}, document.title, url.toString());
 };
 
-/**
- * Prüft ob die aktuelle URL OAuth2 Callback Parameters enthält
- */
-export const isOAuthCallback = (): boolean => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has("code") && urlParams.has("state");
+export default {
+  startMicrosoftLogin,
+  getMicrosoftTokens,
+  checkMicrosoftUserStatus,
+  extractAuthCodeFromUrl,
+  cleanupUrlAfterAuth,
 };
-
-export default microsoftApi;

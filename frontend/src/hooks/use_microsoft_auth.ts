@@ -1,275 +1,162 @@
 /**
- * Microsoft Organization Authentication Hook
+ * React Hook für sichere Microsoft Organization Authentication
  *
- * Handles Microsoft OAuth2 flows for DSP organization users
- * Separate from main AuthContext for clarity and modularity
+ * Implementiert OAuth2-Flow mit temporären Auth-Codes für sichere Token-Übertragung
  */
 
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
-  initiateMicrosoftLogin,
-  processMicrosoftCallback,
-  checkOrganizationUserStatus,
-  extractOAuthParams,
-  cleanupOAuthUrl,
-  isOAuthCallback,
-  type OrganizationInfo,
-  type MicrosoftUser,
+  startMicrosoftLogin,
+  getMicrosoftTokens,
+  extractAuthCodeFromUrl,
+  cleanupUrlAfterAuth,
+  MicrosoftTokensResponse,
 } from "../util/apis/microsoft_auth";
 
-interface MicrosoftAuthState {
+interface UseMicrosoftAuthReturn {
   isLoading: boolean;
-  organizationInfo: OrganizationInfo | null;
   error: string | null;
+  isAuthenticated: boolean;
+  loginWithMicrosoft: () => Promise<void>;
+  handleAuthCallback: () => Promise<void>;
+  clearError: () => void;
 }
 
-interface MicrosoftLoginResult {
-  success: boolean;
-  user?: MicrosoftUser;
-  organization_info?: OrganizationInfo;
-  error?: string;
-  redirect_url?: string;
-}
-
-export const useMicrosoftAuth = () => {
-  const { tokens, isAuthenticated } = useAuth();
-  const [state, setState] = useState<MicrosoftAuthState>({
-    isLoading: false,
-    organizationInfo: null,
-    error: null,
-  });
+export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   /**
-   * Startet Microsoft Organization Login Flow
+   * Startet den Microsoft Login-Flow
    */
-  const startMicrosoftLogin =
-    useCallback(async (): Promise<MicrosoftLoginResult> => {
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-      try {
-        const response = await initiateMicrosoftLogin();
-
-        if (response.success) {
-          // User zu Microsoft weiterleiten
-          window.location.href = response.redirect_url;
-
-          return {
-            success: true,
-            redirect_url: response.redirect_url,
-          };
-        } else {
-          throw new Error(
-            response.message || "Failed to initiate Microsoft login"
-          );
-        }
-      } catch (error: any) {
-        const errorMessage =
-          error.message || "Microsoft login initiation failed";
-        setState((prev) => ({
-          ...prev,
-          error: errorMessage,
-          isLoading: false,
-        }));
-
-        return {
-          success: false,
-          error: errorMessage,
-        };
-      }
-    }, []);
-
-  /**
-   * Verarbeitet Microsoft OAuth2 Callback
-   */
-  const handleMicrosoftCallback =
-    useCallback(async (): Promise<MicrosoftLoginResult> => {
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-      try {
-        // OAuth Parameters aus URL extrahieren
-        const oauthParams = extractOAuthParams();
-
-        if (!oauthParams) {
-          throw new Error("No valid OAuth parameters found in URL");
-        }
-
-        const { code, state } = oauthParams;
-
-        // Callback verarbeiten
-        const response = await processMicrosoftCallback(code, state);
-
-        if (response.success) {
-          // JWT Tokens im localStorage speichern (wie normaler Login)
-          const authTokens = {
-            access: response.tokens.access,
-            refresh: response.tokens.refresh,
-          };
-          localStorage.setItem("authTokens", JSON.stringify(authTokens));
-
-          // Organization Info speichern
-          setState((prev) => ({
-            ...prev,
-            organizationInfo: response.organization_info,
-            isLoading: false,
-          }));
-
-          // URL bereinigen
-          cleanupOAuthUrl();
-
-          // Page reload für AuthContext Update
-          window.location.reload();
-
-          return {
-            success: true,
-            user: response.user,
-            organization_info: response.organization_info,
-          };
-        } else {
-          throw new Error(response.error || "Microsoft authentication failed");
-        }
-      } catch (error: any) {
-        const errorMessage =
-          error.message || "Microsoft callback processing failed";
-        setState((prev) => ({
-          ...prev,
-          error: errorMessage,
-          isLoading: false,
-        }));
-
-        // URL trotzdem bereinigen
-        cleanupOAuthUrl();
-
-        return {
-          success: false,
-          error: errorMessage,
-        };
-      }
-    }, []);
-
-  /**
-   * Prüft Organization Status des aktuellen Users
-   */
-  const checkOrganizationStatus = useCallback(async (): Promise<boolean> => {
-    if (!tokens?.access || !isAuthenticated) {
-      return false;
-    }
-
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
+  const loginWithMicrosoft = useCallback(async (): Promise<void> => {
     try {
-      const response = await checkOrganizationUserStatus(tokens.access);
+      setIsLoading(true);
+      setError(null);
 
-      if (response.success) {
-        setState((prev) => ({
-          ...prev,
-          organizationInfo: {
-            display_name: response.user.display_name,
-            job_title: response.user.job_title,
-            department: response.user.department,
-            office_location: "",
-            account_enabled: response.user.account_enabled,
-          },
-          isLoading: false,
-        }));
+      // 1. Login URL von Backend holen
+      const loginResponse = await startMicrosoftLogin();
 
-        return response.active;
-      } else {
-        setState((prev) => ({
-          ...prev,
-          error: response.error || null,
-          isLoading: false,
-        }));
-        return false;
+      if (!loginResponse.success || !loginResponse.redirect_url) {
+        throw new Error("Failed to generate Microsoft login URL");
       }
-    } catch (error: any) {
-      const errorMessage = error.message || "Organization status check failed";
-      setState((prev) => ({ ...prev, error: errorMessage, isLoading: false }));
-      return false;
+
+      // 2. Zu Microsoft OAuth2 weiterleiten
+      window.location.href = loginResponse.redirect_url;
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Microsoft login failed";
+      setError(errorMessage);
+      console.error("Microsoft login error:", err);
+    } finally {
+      setIsLoading(false);
     }
-  }, [tokens?.access, isAuthenticated]);
+  }, []);
 
   /**
-   * Automatische Callback-Behandlung beim Component Mount
+   * Verarbeitet OAuth2 Callback nach Microsoft Redirect
    */
-  useEffect(() => {
-    // Prüfe ob aktuelle URL OAuth Callback Parameter enthält
-    if (isOAuthCallback()) {
-      console.log("Microsoft OAuth callback detected, processing...");
-      handleMicrosoftCallback();
-    }
+  const handleAuthCallback = useCallback(async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    // Prüfe auf Microsoft Auth Success Parameter (von Backend Redirect)
-    const urlParams = new URLSearchParams(window.location.search);
-    const microsoftAuth = urlParams.get("microsoft_auth");
-    const accessToken = urlParams.get("access_token");
-    const refreshToken = urlParams.get("refresh_token");
-    const authError = urlParams.get("error");
+      // 1. Auth-Code und Status aus URL extrahieren
+      const {
+        authCode,
+        success,
+        error: urlError,
+        errorDescription,
+      } = extractAuthCodeFromUrl();
 
-    if (microsoftAuth === "success" && accessToken && refreshToken) {
-      console.log("Microsoft authentication successful, storing tokens...");
+      // 2. Fehler-Behandlung
+      if (urlError) {
+        throw new Error(errorDescription || urlError);
+      }
 
-      // JWT Tokens im localStorage speichern
+      if (!success || !authCode) {
+        throw new Error("Microsoft authentication was not successful");
+      }
+
+      // 3. SICHER: Tokens per JSON mit Auth-Code abholen
+      const tokenResponse: MicrosoftTokensResponse = await getMicrosoftTokens(
+        authCode
+      );
+
+      if (!tokenResponse.success) {
+        throw new Error(
+          tokenResponse.message || "Failed to get authentication tokens"
+        );
+      }
+
+      // 4. Tokens direkt im localStorage speichern (wie normaler Login)
       const authTokens = {
-        access: accessToken,
-        refresh: refreshToken,
+        access: tokenResponse.tokens.access,
+        refresh: tokenResponse.tokens.refresh,
       };
       localStorage.setItem("authTokens", JSON.stringify(authTokens));
 
-      // URL Parameter bereinigen
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, "", cleanUrl);
+      // 5. URL aufräumen (keine sensiblen Daten)
+      cleanupUrlAfterAuth();
 
-      // Page reload für AuthContext Update
-      window.location.reload();
-    } else if (authError) {
-      console.error("Microsoft authentication error:", authError);
-      const errorDescription =
-        urlParams.get("error_description") || "Authentication failed";
-      setState((prev) => ({
-        ...prev,
-        error: `Microsoft Login fehlgeschlagen: ${errorDescription}`,
-        isLoading: false,
-      }));
+      // 6. Zu Dashboard weiterleiten
+      navigate("/dashboard");
 
-      // URL Parameter bereinigen
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, "", cleanUrl);
+      console.log("Microsoft authentication successful:", {
+        user: tokenResponse.user.email,
+        role: tokenResponse.role_info.role_name,
+        groups: tokenResponse.role_info.groups,
+        permissions: tokenResponse.role_info.permissions,
+        organization: tokenResponse.organization_info.display_name,
+      });
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Authentication callback failed";
+      setError(errorMessage);
+      console.error("Microsoft auth callback error:", err);
+
+      // Bei Fehler zur Login-Seite zurück
+      cleanupUrlAfterAuth();
+      navigate("/login");
+    } finally {
+      setIsLoading(false);
     }
-  }, [handleMicrosoftCallback]);
+  }, [navigate]);
 
   /**
-   * Organization Status laden wenn User eingeloggt ist
+   * Automatische Callback-Behandlung bei Page Load
    */
   useEffect(() => {
-    if (isAuthenticated && tokens?.access && !state.organizationInfo) {
-      checkOrganizationStatus();
+    // Prüfen ob es ein Microsoft Auth Callback ist
+    const { success, authCode, error: urlError } = extractAuthCodeFromUrl();
+
+    if (success && authCode) {
+      // Positive Callback - Tokens holen
+      handleAuthCallback();
+    } else if (urlError) {
+      // Fehler-Callback
+      setError(`Microsoft authentication failed: ${urlError}`);
+      cleanupUrlAfterAuth();
     }
-  }, [
-    isAuthenticated,
-    tokens?.access,
-    state.organizationInfo,
-    checkOrganizationStatus,
-  ]);
+  }, [handleAuthCallback]);
+
+  /**
+   * Fehler zurücksetzen
+   */
+  const clearError = useCallback((): void => {
+    setError(null);
+  }, []);
 
   return {
-    // State
-    isLoading: state.isLoading,
-    organizationInfo: state.organizationInfo,
-    error: state.error,
-
-    // Actions
-    startMicrosoftLogin,
-    handleMicrosoftCallback,
-    checkOrganizationStatus,
-
-    // Helpers
-    isMicrosoftUser: !!state.organizationInfo,
-    isOAuthCallback: isOAuthCallback(),
-
-    // Clear error
-    clearError: () => setState((prev) => ({ ...prev, error: null })),
+    isLoading,
+    error,
+    isAuthenticated,
+    loginWithMicrosoft,
+    handleAuthCallback,
+    clearError,
   };
 };
-
-export default useMicrosoftAuth;

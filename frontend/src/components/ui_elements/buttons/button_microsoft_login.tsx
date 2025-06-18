@@ -1,7 +1,7 @@
 /**
  * Microsoft Organization Login Button Component
  *
- * Provides a clean UI for Microsoft Organization authentication
+ * Sicherer Button für Microsoft Organization Authentication mit temporären Auth-Codes
  */
 
 import React from "react";
@@ -20,144 +20,66 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
   onError,
   onSuccess,
 }) => {
-  const {
-    startMicrosoftLogin,
-    isLoading,
-    error,
-    clearError,
-    organizationInfo,
-    isMicrosoftUser,
-  } = useMicrosoftAuth();
+  const { isLoading, error, loginWithMicrosoft, clearError } = useMicrosoftAuth();
 
-  const handleMicrosoftLogin = async () => {
+  const handleMicrosoftLogin = async (): Promise<void> => {
     try {
       clearError();
-      const result = await startMicrosoftLogin();
-
-      if (result.success) {
-        onSuccess?.();
-      } else {
-        onError?.(result.error || "Microsoft login failed");
-      }
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Microsoft login failed";
+      await loginWithMicrosoft();
+      onSuccess?.();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Microsoft login failed";
       onError?.(errorMessage);
     }
   };
 
-  // Wenn User bereits Microsoft User ist, zeige Status
-  if (isMicrosoftUser && organizationInfo) {
-    return (
-      <div
-        className={`flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg ${className}`}
-      >
-        <div className="flex-shrink-0">
-          <svg
-            className="w-6 h-6 text-green-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-green-800">
-            Mit Microsoft angemeldet
-          </p>
-          <p className="text-sm text-green-600">
-            {organizationInfo.display_name} • {organizationInfo.department}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Fehlerbehandlung
+  React.useEffect(() => {
+    if (error) {
+      onError?.(error);
+    }
+  }, [error, onError]);
 
   return (
-    <div className="space-y-3">
-      <button
-        onClick={handleMicrosoftLogin}
-        disabled={disabled || isLoading}
-        className={`
-          flex items-center justify-center gap-3 w-full px-4 py-3 
-          bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg
-          transition-colors duration-200
-          disabled:opacity-50 disabled:cursor-not-allowed
-          ${className}
-        `}
+    <button
+      type="button"
+      onClick={handleMicrosoftLogin}
+      disabled={disabled || isLoading}
+      className={`
+        flex items-center justify-center gap-3 w-full px-4 py-3 
+        bg-white border border-gray-300 rounded-lg shadow-sm
+        hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+        disabled:opacity-50 disabled:cursor-not-allowed
+        transition-colors duration-200
+        text-gray-700 font-medium
+        ${className}
+      `}
+      aria-label="Mit Microsoft anmelden"
+    >
+      {/* Microsoft Logo */}
+      <svg
+        className="w-5 h-5"
+        viewBox="0 0 23 23"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        {isLoading ? (
-          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <MicrosoftIcon />
-        )}
-        <span>
-          {isLoading ? "Anmeldung läuft..." : "Mit Microsoft anmelden"}
-        </span>
-      </button>
+        <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+        <rect x="12" y="1" width="10" height="10" fill="#00A4EF" />
+        <rect x="1" y="12" width="10" height="10" fill="#00BCF2" />
+        <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+      </svg>
 
-      {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-start gap-2">
-            <svg
-              className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-red-800">
-                Anmeldung fehlgeschlagen
-              </p>
-              <p className="text-sm text-red-600 mt-1">{error}</p>
-            </div>
-            <button
-              onClick={clearError}
-              className="text-red-400 hover:text-red-600"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+      {/* Button Text */}
+      <span>
+        {isLoading ? "Anmeldung läuft..." : "Mit Microsoft anmelden"}
+      </span>
+
+      {/* Loading Spinner */}
+      {isLoading && (
+        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-blue-600"></div>
       )}
-
-      <div className="text-xs text-gray-500 text-center">
-        Nur für aktive DSP-Mitarbeiter verfügbar
-      </div>
-    </div>
+    </button>
   );
 };
-
-// Microsoft Icon Component
-const MicrosoftIcon: React.FC = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z" />
-  </svg>
-);
 
 export default MicrosoftLoginButton;
