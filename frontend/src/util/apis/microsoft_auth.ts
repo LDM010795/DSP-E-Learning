@@ -94,11 +94,12 @@ export const initiateMicrosoftLogin =
         "/auth/login/"
       );
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Microsoft login initiation failed:", error);
-      throw new Error(
-        error.response?.data?.error || "Failed to initiate Microsoft login"
-      );
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error 
+        : "Failed to initiate Microsoft login";
+      throw new Error(errorMessage || "Failed to initiate Microsoft login");
     }
   };
 
@@ -135,6 +136,35 @@ export const processMicrosoftCallback = async (
     );
   }
 };
+
+/**
+ * Holt Microsoft Auth Tokens sicher aus der Session (nach OAuth2 Redirect)
+ *
+ * @returns Promise mit User-Daten und JWT Tokens aus Session
+ */
+export const getMicrosoftAuthTokens =
+  async (): Promise<MicrosoftCallbackResponse> => {
+    try {
+      const response = await microsoftApi.get<MicrosoftCallbackResponse>(
+        "/auth/tokens/"
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error("Failed to get Microsoft auth tokens:", error);
+
+      // Spezifische Fehlerbehandlung
+      if (error.response?.status === 404) {
+        throw new Error(
+          "Keine Authentication-Daten gefunden. Bitte erneut anmelden."
+        );
+      }
+
+      throw new Error(
+        error.response?.data?.error ||
+          "Failed to retrieve authentication tokens"
+      );
+    }
+  };
 
 /**
  * Prüft den aktuellen Organization-Status des Users

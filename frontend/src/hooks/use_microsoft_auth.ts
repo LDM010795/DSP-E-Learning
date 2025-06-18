@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 import {
   initiateMicrosoftLogin,
   processMicrosoftCallback,
+  getMicrosoftAuthTokens,
   checkOrganizationUserStatus,
   extractOAuthParams,
   cleanupOAuthUrl,
@@ -199,49 +200,86 @@ export const useMicrosoftAuth = () => {
       handleMicrosoftCallback();
     }
 
-    // Prüfe auf Microsoft Auth Success Parameter (von Backend Redirect)
-    const urlParams = new URLSearchParams(window.location.search);
-    const microsoftAuth = urlParams.get("microsoft_auth");
-    const accessToken = urlParams.get("access_token");
-    const refreshToken = urlParams.get("refresh_token");
-    const authError = urlParams.get("error");
+    // Prüfe auf Microsoft Auth Success Parameter (von Backend Redirect) - NEUE SICHERE METHODE
+    const handleMicrosoftAuthSuccess = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const microsoftAuth = urlParams.get("microsoft_auth");
+      const authError = urlParams.get("error");
 
-    if (microsoftAuth === "success" && accessToken && refreshToken) {
-      console.log("Microsoft authentication successful, storing tokens...");
+      if (microsoftAuth === "success") {
+        console.log(
+          "Microsoft authentication successful, retrieving tokens from session..."
+        );
+        setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      // JWT Tokens im localStorage speichern
-      const authTokens = {
-        access: accessToken,
-        refresh: refreshToken,
-      };
-      localStorage.setItem("authTokens", JSON.stringify(authTokens));
+        try {
+          // NEUE SICHERE METHODE: Tokens aus Session via API holen
+          const authData = await getMicrosoftAuthTokens();
 
-      // URL Parameter bereinigen
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, "", cleanUrl);
+          if (authData.success) {
+            // JWT Tokens im localStorage speichern
+            const authTokens = {
+              access: authData.tokens.access,
+              refresh: authData.tokens.refresh,
+            };
+            localStorage.setItem("authTokens", JSON.stringify(authTokens));
 
-      // Falls User nicht bereits auf Dashboard ist, navigiere dorthin
-      if (window.location.pathname !== "/dashboard") {
-        console.log("Redirecting to dashboard after Microsoft login...");
-        window.location.href = "/dashboard";
-      } else {
-        // Bereits auf Dashboard → nur reload für AuthContext Update
-        window.location.reload();
+            // Organization Info speichern
+            setState((prev) => ({
+              ...prev,
+              organizationInfo: authData.organization_info,
+              isLoading: false,
+            }));
+
+            console.log("Microsoft authentication completed successfully!");
+
+            // URL Parameter bereinigen
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, "", cleanUrl);
+
+            // Falls User nicht bereits auf Dashboard ist, navigiere dorthin
+            if (window.location.pathname !== "/dashboard") {
+              console.log("Redirecting to dashboard after Microsoft login...");
+              window.location.href = "/dashboard";
+            } else {
+              // Bereits auf Dashboard → nur reload für AuthContext Update
+              window.location.reload();
+            }
+          } else {
+            throw new Error(
+              authData.error || "Failed to retrieve authentication data"
+            );
+          }
+        } catch (error: any) {
+          console.error("Failed to retrieve Microsoft auth tokens:", error);
+          setState((prev) => ({
+            ...prev,
+            error: `Microsoft Login fehlgeschlagen: ${error.message}`,
+            isLoading: false,
+          }));
+
+          // URL Parameter bereinigen
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, "", cleanUrl);
+        }
+      } else if (authError) {
+        console.error("Microsoft authentication error:", authError);
+        const errorDescription =
+          urlParams.get("error_description") || "Authentication failed";
+        setState((prev) => ({
+          ...prev,
+          error: `Microsoft Login fehlgeschlagen: ${errorDescription}`,
+          isLoading: false,
+        }));
+
+        // URL Parameter bereinigen
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, "", cleanUrl);
       }
-    } else if (authError) {
-      console.error("Microsoft authentication error:", authError);
-      const errorDescription =
-        urlParams.get("error_description") || "Authentication failed";
-      setState((prev) => ({
-        ...prev,
-        error: `Microsoft Login fehlgeschlagen: ${errorDescription}`,
-        isLoading: false,
-      }));
+    };
 
-      // URL Parameter bereinigen
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, "", cleanUrl);
-    }
+    // Microsoft Auth Success behandeln
+    handleMicrosoftAuthSuccess();
   }, [handleMicrosoftCallback]);
 
   /**
