@@ -237,12 +237,17 @@ export const useMicrosoftAuth = () => {
             const cleanUrl = window.location.origin + window.location.pathname;
             window.history.replaceState({}, "", cleanUrl);
 
-            // Falls User nicht bereits auf Dashboard ist, navigiere dorthin
-            if (window.location.pathname !== "/dashboard") {
-              console.log("Redirecting to dashboard after Microsoft login...");
-              window.location.href = "/dashboard";
+            // Prüfe wohin weitergeleitet werden soll
+            const redirectTo = urlParams.get("redirect_to") || "dashboard";
+
+            // Falls User nicht bereits auf der Ziel-Route ist, navigiere dorthin
+            if (window.location.pathname !== `/${redirectTo}`) {
+              console.log(
+                `Redirecting to ${redirectTo} after Microsoft login...`
+              );
+              window.location.href = `/${redirectTo}`;
             } else {
-              // Bereits auf Dashboard → nur reload für AuthContext Update
+              // Bereits auf Ziel-Route → nur reload für AuthContext Update
               window.location.reload();
             }
           } else {
