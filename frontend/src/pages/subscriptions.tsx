@@ -12,6 +12,7 @@ import {
   IoBuildOutline,
 } from "react-icons/io5";
 import ComingSoonRibbon from "../components/messages/coming_soon_ribbon";
+import { throttle } from "../util/performance";
 
 // Animation Variants
 const pageVariants = {
@@ -116,25 +117,29 @@ const SubscriptionsPage: React.FC = () => {
 
   // Effekt zum Aktualisieren der Scroll-Position und Mausposition
   useEffect(() => {
-    const handleScroll = () => {
+    // Throttled Event Handler für bessere Performance (60fps = ~16ms)
+    const throttledHandleScroll = throttle(() => {
       setScrollY(window.scrollY);
-    };
-    const handleMouseMove = (event: MouseEvent) => {
+    }, 16);
+
+    const throttledHandleMouseMove = throttle((event: MouseEvent) => {
       // Setze die Motion Values relativ zur Fenstergröße
       mouseX.set(event.clientX - window.innerWidth / 2);
       mouseY.set(event.clientY - window.innerHeight / 2);
-    };
+    }, 16);
 
-    // Listener hinzufügen
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("mousemove", handleMouseMove);
+    // Listener hinzufügen mit passive: true für bessere Performance
+    window.addEventListener("scroll", throttledHandleScroll, { passive: true });
+    window.addEventListener("mousemove", throttledHandleMouseMove, {
+      passive: true,
+    });
 
     // Cleanup-Funktion
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", throttledHandleScroll);
+      window.removeEventListener("mousemove", throttledHandleMouseMove);
     };
-  }, [mouseX, mouseY]); // Abhängigkeiten hinzufügen
+  }, [mouseX, mouseY]);
 
   // Beispiel-Daten für Abo-Pläne
   const plans = [

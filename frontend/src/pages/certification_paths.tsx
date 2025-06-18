@@ -12,6 +12,7 @@ import {
 import CardBadge from "../components/cards/card_badge";
 import axios from "axios";
 import clsx from "clsx";
+import { useCachedApi } from "../util/performance";
 
 // --- NEUE INTERFACES basierend auf Backend Serializer ---
 
@@ -165,17 +166,36 @@ function CertificationPaths() {
   const { allExams, loadingAllExams, errorAllExams, completedExams } =
     useExams();
 
-  // State für Zertifikatspfade
-  const [certificationPaths, setCertificationPaths] = useState<
-    ApiCertificationPath[]
-  >([]);
-  const [loadingPaths, setLoadingPaths] = useState<boolean>(true);
-  const [errorPaths, setErrorPaths] = useState<string | null>(null);
-
   // State für das Popup
   const [selectedExamForPopup, setSelectedExamForPopup] = useState<Exam | null>(
     null
   );
+
+  // Cached API für Certification Paths mit 5-Minuten Cache
+  const {
+    data: certificationPaths,
+    isLoading: loadingPaths,
+    error: pathsError,
+  } = useCachedApi(
+    "certification-paths",
+    async () => {
+      const response = await api.get<ApiCertificationPath[]>(
+        "/exams/certification-paths/"
+      );
+      // Sortiere Pfade nach 'order', dann 'title'
+      const sortedPaths = (response.data || []).sort(
+        (a, b) =>
+          (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title)
+      );
+      return sortedPaths;
+    },
+    { ttl: 300000 } // 5 Minuten Cache
+  );
+
+  // Error handling
+  const errorPaths = pathsError
+    ? "Zertifikatspfade konnten nicht geladen werden."
+    : null;
 
   // Kombinierter Lade- und Fehlerstatus (ohne Module Context)
   const isLoading = loadingAllExams || loadingPaths;
@@ -186,47 +206,6 @@ function CertificationPaths() {
     // Nutzt completedExams (Typ ExamAttempt[]) aus dem Context
     return new Set(completedExams.map((attempt) => attempt.exam.id));
   }, [completedExams]); // Neu berechnen, wenn sich completedExams ändern
-
-  // Datenabruf für Pfade
-  useEffect(() => {
-    const fetchPaths = async () => {
-      setLoadingPaths(true);
-      setErrorPaths(null);
-      try {
-        const response = await api.get<ApiCertificationPath[]>(
-          "/exams/certification-paths/" // Pfad ist bereits korrigiert
-        );
-        // Sortiere Pfade nach 'order', dann 'title'
-        const sortedPaths = (response.data || []).sort(
-          (a, b) =>
-            (a.order ?? 999) - (b.order ?? 999) ||
-            a.title.localeCompare(b.title)
-        );
-        setCertificationPaths(sortedPaths);
-      } catch (err) {
-        console.error("Fehler beim Laden der Zertifikatspfade:", err);
-        let message = "Zertifikatspfade konnten nicht geladen werden.";
-
-        if (axios.isAxiosError(err)) {
-          // Versuche, Details aus dem Axios-Fehler zu extrahieren
-          message = err.response?.data?.detail || err.message || message;
-        } else if (err instanceof Error) {
-          // Standard Error Objekt
-          message = err.message;
-        } else if (typeof err === "string") {
-          // Nur ein String als Fehler?
-          message = err;
-        }
-        // Fallback bleibt die generische Nachricht
-
-        setErrorPaths(message);
-      } finally {
-        setLoadingPaths(false);
-      }
-    };
-
-    fetchPaths();
-  }, []);
 
   // --- Handler ---
   const handleOpenExamDetails = (examId: number) => {
@@ -293,7 +272,7 @@ function CertificationPaths() {
         Abschlussprüfungen.
       </p>
 
-      {certificationPaths.length > 0 ? (
+      {certificationPaths && certificationPaths.length > 0 ? (
         <Accordion className="">
           {certificationPaths.map((path) => {
             const IconComponent = getIconComponent(path.icon);

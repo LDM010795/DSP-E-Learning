@@ -9,7 +9,6 @@
  * import {
  *   debounce,
  *   useDebounce,
- *   useIntersectionObserver,
  *   AdvancedCache
  * } from '../util/performance';
  * ```
@@ -31,16 +30,7 @@ export {
   LRUCache,
 } from "./memoization";
 
-// Lazy loading utilities
-export {
-  useIntersectionObserver,
-  LazyWrapper,
-  LazyImage,
-  withLazyLoading,
-  createLazyRoute,
-  createVendorLazy,
-  preloadComponent,
-} from "./lazyLoad";
+// Lazy loading utilities removed - using specific LazyLoadChartWrapper instead
 
 // Caching utilities
 export {

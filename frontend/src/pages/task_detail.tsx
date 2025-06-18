@@ -102,46 +102,28 @@ function TaskDetails() {
     setIsSuccessModalOpen(false);
   }, []);
 
-  const handleGoToNextFromModal = useCallback(async () => {
+  const handleGoToNextFromModal = useCallback(() => {
     setIsSuccessModalOpen(false);
-    try {
-      console.log("Modal 'Weiter'-Button geklickt, aktualisiere Module...");
-      await fetchModules();
-    } catch (err) {
-      console.error("Fehler beim fetchModules nach Modal-Weiter:", err);
-    }
     if (nextTask) {
       navigate(`/modules/${moduleId}/tasks/${nextTask.id}`);
     } else {
       navigate(`/modules/${moduleId}`);
     }
-  }, [nextTask, moduleId, navigate, fetchModules]);
+  }, [nextTask, moduleId, navigate]);
 
-  const handleNavigateToNextOnPage = useCallback(async () => {
+  const handleNavigateToNextOnPage = useCallback(() => {
     if (!nextTask || isPageLoading) return;
     setIsPageLoading(true);
-    try {
-      await fetchModules();
-      navigate(`/modules/${moduleId}/tasks/${nextTask.id}`);
-    } catch (err) {
-      console.error("Fehler beim fetchModules/Navigieren (Nächste):", err);
-    } finally {
-      setTimeout(() => setIsPageLoading(false), 50);
-    }
-  }, [nextTask, moduleId, navigate, fetchModules, isPageLoading]);
+    navigate(`/modules/${moduleId}/tasks/${nextTask.id}`);
+    setTimeout(() => setIsPageLoading(false), 50);
+  }, [nextTask, moduleId, navigate, isPageLoading]);
 
-  const handleNavigateToPreviousOnPage = useCallback(async () => {
+  const handleNavigateToPreviousOnPage = useCallback(() => {
     if (!previousTask || isPageLoading) return;
     setIsPageLoading(true);
-    try {
-      await fetchModules();
-      navigate(`/modules/${moduleId}/tasks/${previousTask.id}`);
-    } catch (err) {
-      console.error("Fehler beim fetchModules/Navigieren (Vorherige):", err);
-    } finally {
-      setTimeout(() => setIsPageLoading(false), 50);
-    }
-  }, [previousTask, moduleId, navigate, fetchModules, isPageLoading]);
+    navigate(`/modules/${moduleId}/tasks/${previousTask.id}`);
+    setTimeout(() => setIsPageLoading(false), 50);
+  }, [previousTask, moduleId, navigate, isPageLoading]);
 
   // TODO: Implementierung für Task-Completion Toggle wenn Backend verfügbar ist
   // const handleToggleComplete = async () => {

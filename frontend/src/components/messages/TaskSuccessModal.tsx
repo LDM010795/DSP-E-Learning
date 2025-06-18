@@ -9,6 +9,8 @@ import {
 } from "react-icons/io5";
 import { FaCheckCircle } from "react-icons/fa";
 import ButtonPrimary from "../ui_elements/buttons/button_primary";
+import ButtonSecondary from "../ui_elements/buttons/button_secondary";
+import { throttle } from "../../util/performance";
 
 interface TaskSuccessModalProps {
   isOpen: boolean;
@@ -31,17 +33,18 @@ const TaskSuccessModal: React.FC<TaskSuccessModalProps> = ({
   });
   const [confettiRunning, setConfettiRunning] = useState(false);
 
-  // Aktualisiere Fensterdimensionen
+  // Aktualisiere Fensterdimensionen mit Throttling
   useEffect(() => {
-    const handleResize = () => {
+    // Throttled Event Handler für bessere Performance (120ms für Resize)
+    const throttledHandleResize = throttle(() => {
       setWindowDimensions({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-    };
+    }, 120);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", throttledHandleResize, { passive: true });
+    return () => window.removeEventListener("resize", throttledHandleResize);
   }, []);
 
   // Starte Konfetti, wenn das Modal geöffnet wird

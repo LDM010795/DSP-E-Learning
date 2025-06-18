@@ -6,6 +6,7 @@ import TableUserList from "../../components/tables/table_user_list";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
+import { useCachedApi } from "../../util/performance";
 
 // Benutzer Interface
 interface User {
@@ -24,42 +25,45 @@ interface User {
 
 const UserList: React.FC = () => {
   const { user } = useAuth();
-
-  // Zustandsvariablen für die Benutzer
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [userSearchTerm, setUserSearchTerm] = useState("");
 
   // Bestätigungsmodal für Löschvorgänge
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
-  // Daten laden
-  const fetchUsers = async () => {
-    if (!user?.is_superuser) {
-      setUsers([]);
-      setLoading(false);
-      return;
-    }
-    try {
-      setLoading(true);
+  // Cached API für Benutzer-Liste mit 2-Minuten Cache
+  const {
+    data: users,
+    isLoading: loading,
+    error: apiError,
+    refresh: fetchUsers,
+  } = useCachedApi(
+    "admin-users",
+    async () => {
+      if (!user?.is_superuser) {
+        return [];
+      }
       const usersResponse = await userAdminApi.getAllUsers();
-      setUsers(usersResponse as User[]);
-      setError(null);
-    } catch (err) {
-      console.error("Fehler beim Laden der Benutzer:", err);
+      return usersResponse as User[];
+    },
+    {
+      ttl: 120000, // 2 Minuten Cache
+      enabled: !!user?.is_superuser,
+    }
+  );
+
+  const [error, setError] = useState<string | null>(null);
+
+  // Error aus API in lokalen State übertragen
+  useEffect(() => {
+    if (apiError) {
       setError(
         "Benutzerdaten konnten nicht geladen werden. Bitte versuche es später erneut."
       );
-    } finally {
-      setLoading(false);
+    } else {
+      setError(null);
     }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [user?.is_superuser]);
+  }, [apiError]);
 
   // Benutzer-Funktionen
   const handleDeleteUser = (userId: number) => {
@@ -74,17 +78,20 @@ const UserList: React.FC = () => {
   };
 
   const confirmDeleteUser = async () => {
-    if (userToDelete === null) return;
+    if (userToDelete === null || !users) return;
 
     try {
-      setLoading(true);
       await userAdminApi.deleteUser(userToDelete);
-      setUsers(users.filter((user) => user.id !== userToDelete));
+
+      // Cache invalidieren und neu laden
+      await fetchUsers();
+
       setShowDeleteConfirm(false);
       const deletedUserName =
         users.find((u) => u.id === userToDelete)?.username ||
         `ID ${userToDelete}`;
       setUserToDelete(null);
+
       // ERFOLG-TOAST
       toast.custom((t) => (
         <DspNotification
@@ -100,7 +107,8 @@ const UserList: React.FC = () => {
         err instanceof Error
           ? err.message
           : "Ein unbekannter Fehler ist aufgetreten.";
-      setError("Benutzer konnte nicht gelöscht werden."); // Behalte ggf. den Fehler im State
+      setError("Benutzer konnte nicht gelöscht werden.");
+
       // FEHLER-TOAST
       toast.custom((t) => (
         <DspNotification
@@ -110,19 +118,17 @@ const UserList: React.FC = () => {
           message={`Benutzer konnte nicht gelöscht werden: ${errorMsg}`}
         />
       ));
-    } finally {
-      setLoading(false);
     }
   };
 
   // Berechne Statistiken
   const stats = useMemo(
     () => ({
-      totalUsers: users.length,
-      staffUsers: users.filter((u) => u.is_staff).length,
-      superUsers: users.filter((u) => u.is_superuser).length,
-      activeUsers: users.filter((u) => u.is_active).length,
-      inactiveUsers: users.filter((u) => !u.is_active).length,
+      totalUsers: users?.length || 0,
+      staffUsers: users?.filter((u) => u.is_staff).length || 0,
+      superUsers: users?.filter((u) => u.is_superuser).length || 0,
+      activeUsers: users?.filter((u) => u.is_active).length || 0,
+      inactiveUsers: users?.filter((u) => !u.is_active).length || 0,
     }),
     [users]
   );

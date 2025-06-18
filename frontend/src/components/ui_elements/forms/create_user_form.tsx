@@ -8,6 +8,7 @@ import {
   IoCheckmarkOutline,
 } from "react-icons/io5";
 import clsx from "clsx";
+import { useDebounce } from "../../../util/performance";
 
 interface CreateUserFormProps {
   onUserCreated?: () => void;
@@ -30,6 +31,58 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
+
+  // Debounced Form Data für Validierung (500ms Verzögerung)
+  const debouncedFormData = useDebounce(formData, 500);
+
+  // Validierungsfunktion
+  const validateField = (field: string, value: string): string | null => {
+    switch (field) {
+      case "username":
+        if (!value || value.length < 3) {
+          return "Benutzername muss mindestens 3 Zeichen lang sein.";
+        }
+        break;
+      case "email":
+        if (!value || !value.includes("@")) {
+          return "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+        }
+        break;
+      case "first_name":
+        if (!value) {
+          return "Bitte geben Sie einen Vornamen ein.";
+        }
+        break;
+      case "last_name":
+        if (!value) {
+          return "Bitte geben Sie einen Nachnamen ein.";
+        }
+        break;
+    }
+    return null;
+  };
+
+  // Debounced Validierung
+  React.useEffect(() => {
+    const errors: Record<string, string> = {};
+
+    Object.keys(debouncedFormData).forEach((field) => {
+      if (field !== "is_staff") {
+        const error = validateField(
+          field,
+          debouncedFormData[field as keyof typeof debouncedFormData] as string
+        );
+        if (error) {
+          errors[field] = error;
+        }
+      }
+    });
+
+    setValidationErrors(errors);
+  }, [debouncedFormData]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -40,6 +93,15 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    // Clear error for this field immediately when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const validateForm = () => {

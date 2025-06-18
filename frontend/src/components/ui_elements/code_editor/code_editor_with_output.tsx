@@ -9,6 +9,7 @@ import { IoChevronDown, IoChevronUp, IoRefresh } from "react-icons/io5";
 import { motion, useAnimation } from "framer-motion";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import axios, { AxiosResponse } from "axios";
+import { useDebounce } from "../../../util/performance";
 
 // Ergebnis der Testläufe
 interface TestResultDetails {
@@ -48,6 +49,9 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
   const editorBasicRef = useRef<CodeEditorBasicHandle>(null);
   const resetIconControls = useAnimation();
 
+  // Debounced Code für Auto-Syntax-Checking (1000ms Verzögerung)
+  const debouncedCode = useDebounce(currentCode, 1000);
+
   // Reset editor if initialCode or taskId changes
   useEffect(() => {
     setCurrentCode(initialCode);
@@ -56,6 +60,23 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
     setTestSummary(null);
     setIsOutputVisible(true); // Show output on reset/change
   }, [initialCode, taskId]);
+
+  // Optional: Auto-Syntax-Checking bei Code-Änderungen
+  useEffect(() => {
+    if (debouncedCode && debouncedCode !== initialCode) {
+      // Hier könnte Syntax-Checking implementiert werden
+      console.log(
+        "Code changed for syntax checking:",
+        debouncedCode.length,
+        "characters"
+      );
+    }
+  }, [debouncedCode, initialCode]);
+
+  const handleCodeChange = (newCode: string) => {
+    setCurrentCode(newCode);
+    // Output nur bei explizitem Run löschen, nicht bei Code-Änderungen
+  };
 
   const handleRunCode = useCallback(async () => {
     if (taskId === null) {
@@ -216,7 +237,7 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
           ref={editorBasicRef}
           className="w-full h-full rounded-lg border border-gray-300 overflow-hidden"
           initialValue={currentCode}
-          onChange={setCurrentCode}
+          onChange={handleCodeChange}
         />
       </div>
       {/* Output Area */}

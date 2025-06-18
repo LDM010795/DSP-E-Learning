@@ -114,7 +114,10 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       console.log("ModuleContext: Module sortiert und gesetzt");
       return sortedModules;
     },
-    [isAuthenticated, user?.user_id]
+    {
+      ttl: 300000, // 5 Minuten Cache
+      enabled: true, // Immer aktiviert
+    }
   );
 
   // Performance optimization: Stable callback for fetchModules

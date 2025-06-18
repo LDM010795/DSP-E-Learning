@@ -414,11 +414,9 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                 disabled={isLoading}
                 onSuccess={() => {
                   console.log("Microsoft login successful!");
-                  // Module laden und zum Dashboard navigieren
-                  fetchModules().then(() => {
-                    onClose();
-                    navigate("/dashboard");
-                  });
+                  // ModuleContext lädt automatisch nach erfolgreicher Authentifizierung
+                  onClose();
+                  navigate("/dashboard");
                 }}
                 onError={(error) => {
                   console.error("Microsoft login failed:", error);
