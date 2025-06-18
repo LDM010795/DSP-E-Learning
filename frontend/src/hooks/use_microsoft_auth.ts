@@ -1,7 +1,7 @@
 /**
- * React Hook für sichere Microsoft Organization Authentication
+ * React Hook für generische Microsoft Organization Authentication
  *
- * Implementiert OAuth2-Flow mit temporären Auth-Codes für sichere Token-Übertragung
+ * Implementiert direkten JSON-API Ansatz für generische Software-Nutzung
  */
 
 import { useState, useEffect, useCallback } from "react";
@@ -9,10 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   startMicrosoftLogin,
-  getMicrosoftTokens,
-  extractAuthCodeFromUrl,
+  authenticateWithMicrosoft,
+  extractCallbackFromUrl,
   cleanupUrlAfterAuth,
-  MicrosoftTokensResponse,
+  MicrosoftAuthResponse,
 } from "../util/apis/microsoft_auth";
 
 interface UseMicrosoftAuthReturn {
@@ -20,7 +20,7 @@ interface UseMicrosoftAuthReturn {
   error: string | null;
   isAuthenticated: boolean;
   loginWithMicrosoft: () => Promise<void>;
-  handleAuthCallback: () => Promise<void>;
+  handleMicrosoftCallback: () => Promise<void>;
   clearError: () => void;
 }
 
@@ -58,60 +58,62 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
   }, []);
 
   /**
-   * Verarbeitet OAuth2 Callback nach Microsoft Redirect
+   * Verarbeitet Microsoft OAuth2 Callback nach Redirect
    */
-  const handleAuthCallback = useCallback(async (): Promise<void> => {
+  const handleMicrosoftCallback = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // 1. Auth-Code und Status aus URL extrahieren
+      // 1. Code und State aus URL extrahieren
       const {
-        authCode,
-        success,
+        code,
+        state,
         error: urlError,
         errorDescription,
-      } = extractAuthCodeFromUrl();
+      } = extractCallbackFromUrl();
 
       // 2. Fehler-Behandlung
       if (urlError) {
         throw new Error(errorDescription || urlError);
       }
 
-      if (!success || !authCode) {
-        throw new Error("Microsoft authentication was not successful");
+      if (!code || !state) {
+        throw new Error("Missing code or state parameter from Microsoft");
       }
 
-      // 3. SICHER: Tokens per JSON mit Auth-Code abholen
-      const tokenResponse: MicrosoftTokensResponse = await getMicrosoftTokens(
-        authCode
-      );
+      // 3. DIREKTE API: Authentication mit Code und State
+      const authResponse: MicrosoftAuthResponse =
+        await authenticateWithMicrosoft({
+          code,
+          state,
+        });
 
-      if (!tokenResponse.success) {
+      if (!authResponse.success) {
         throw new Error(
-          tokenResponse.message || "Failed to get authentication tokens"
+          authResponse.message || "Microsoft authentication failed"
         );
       }
 
       // 4. Tokens direkt im localStorage speichern (wie normaler Login)
       const authTokens = {
-        access: tokenResponse.tokens.access,
-        refresh: tokenResponse.tokens.refresh,
+        access: authResponse.tokens.access,
+        refresh: authResponse.tokens.refresh,
       };
       localStorage.setItem("authTokens", JSON.stringify(authTokens));
 
       // 5. URL aufräumen (keine sensiblen Daten)
       cleanupUrlAfterAuth();
 
-      // 6. Zu Dashboard weiterleiten
+      // 6. Zum Dashboard weiterleiten (Frontend-spezifisches Routing)
       navigate("/dashboard");
 
       console.log("Microsoft authentication successful:", {
-        user: tokenResponse.user.email,
-        role: tokenResponse.role_info.role_name,
-        groups: tokenResponse.role_info.groups,
-        permissions: tokenResponse.role_info.permissions,
-        organization: tokenResponse.organization_info.display_name,
+        user: authResponse.user.email,
+        role: authResponse.role_info.role_name,
+        groups: authResponse.role_info.groups,
+        permissions: authResponse.role_info.permissions,
+        organization: authResponse.organization_info.display_name,
       });
     } catch (err) {
       const errorMessage =
@@ -119,9 +121,9 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
       setError(errorMessage);
       console.error("Microsoft auth callback error:", err);
 
-      // Bei Fehler zur Login-Seite zurück
+      // Bei Fehler URL aufräumen und zur Startseite
       cleanupUrlAfterAuth();
-      navigate("/login");
+      navigate("/");
     } finally {
       setIsLoading(false);
     }
@@ -131,18 +133,18 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
    * Automatische Callback-Behandlung bei Page Load
    */
   useEffect(() => {
-    // Prüfen ob es ein Microsoft Auth Callback ist
-    const { success, authCode, error: urlError } = extractAuthCodeFromUrl();
+    // Prüfen ob es Microsoft OAuth Callback-Parameter gibt
+    const { code, state, error: urlError } = extractCallbackFromUrl();
 
-    if (success && authCode) {
-      // Positive Callback - Tokens holen
-      handleAuthCallback();
+    if (code && state) {
+      // Positive Callback - Authentication durchführen
+      handleMicrosoftCallback();
     } else if (urlError) {
       // Fehler-Callback
       setError(`Microsoft authentication failed: ${urlError}`);
       cleanupUrlAfterAuth();
     }
-  }, [handleAuthCallback]);
+  }, [handleMicrosoftCallback]);
 
   /**
    * Fehler zurücksetzen
@@ -156,7 +158,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
     error,
     isAuthenticated,
     loginWithMicrosoft,
-    handleAuthCallback,
+    handleMicrosoftCallback,
     clearError,
   };
 };

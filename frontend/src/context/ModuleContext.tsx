@@ -1,12 +1,13 @@
 import React, {
   createContext,
-  useState,
-  useEffect,
   useContext,
   ReactNode,
+  useCallback,
 } from "react";
 import api from "../util/apis/api";
 import { useAuth } from "./AuthContext"; // Direkte Verwendung des AuthContext
+// Performance optimization imports
+import { useShallowMemo, useCachedApi } from "../util/performance";
 
 // --- Type Definitions (Derived from Backend Models) ---
 
@@ -71,24 +72,25 @@ interface ModuleProviderProps {
 }
 
 export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth(); // Verwenden des AuthContext (nur isAuthenticated)
-  const [modules, setModules] = useState<Module[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
+  const { isAuthenticated, user } = useAuth(); // Verwenden des AuthContext
 
-  const fetchModules = async () => {
-    // Prüfen des Auth-Status direkt über den AuthContext
-    if (!isAuthenticated) {
-      console.log("ModuleContext: Nicht authentifiziert, setze Module zurück");
-      setModules([]);
-      setLoading(false);
-      return;
-    }
+  // Performance optimization: Use cached API for modules with user-specific cache key
+  const {
+    data: modules,
+    isLoading: loading,
+    error,
+    refresh: fetchModules,
+  } = useCachedApi(
+    `modules-${user?.user_id || "anonymous"}`, // User-specific cache key
+    async () => {
+      if (!isAuthenticated) {
+        console.log(
+          "ModuleContext: Nicht authentifiziert, setze Module zurück"
+        );
+        return [];
+      }
 
-    console.log("ModuleContext: Lade Module für authentifizierten Benutzer");
-    setLoading(true);
-    setError(null);
-    try {
+      console.log("ModuleContext: Lade Module für authentifizierten Benutzer");
       const response = await api.get<Module[]>("/modules/user/");
       console.log(
         "ModuleContext: API-Antwort erhalten",
@@ -96,6 +98,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         "Module"
       );
 
+      // Performance optimization: Memoized sorting to avoid repeated calculations
       const sortedModules = response.data
         .map((module) => ({
           ...module,
@@ -107,38 +110,28 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         .sort((a, b) => {
           return a.title.localeCompare(b.title);
         });
-      setModules(sortedModules);
+
       console.log("ModuleContext: Module sortiert und gesetzt");
-    } catch (err) {
-      console.error("Error fetching modules:", err);
-      const fetchError =
-        err instanceof Error ? err : new Error("Failed to fetch modules");
-      setError(fetchError);
-      setModules([]); // Clear modules on error
-    } finally {
-      setLoading(false);
-    }
-  };
+      return sortedModules;
+    },
+    [isAuthenticated, user?.user_id]
+  );
 
-  // Laden der Module, wenn der Benutzer authentifiziert ist
-  useEffect(() => {
-    console.log(
-      "ModuleContext: Auth-Status geändert, isAuthenticated =",
-      isAuthenticated
-    );
-    if (isAuthenticated) {
-      fetchModules();
-    } else {
-      setModules([]);
-    }
-  }, [isAuthenticated]); // Direkte Abhängigkeit vom Auth-Status
+  // Performance optimization: Stable callback for fetchModules
+  const stableFetchModules = useCallback(async () => {
+    await fetchModules();
+  }, [fetchModules]);
 
-  const value: ModuleContextType = {
-    modules,
-    loading,
-    error,
-    fetchModules,
-  };
+  // Performance optimization: Memoize context value to prevent unnecessary re-renders
+  const value = useShallowMemo(
+    () => ({
+      modules: modules || [],
+      loading,
+      error,
+      fetchModules: stableFetchModules,
+    }),
+    [modules, loading, error, stableFetchModules]
+  );
 
   return (
     <ModuleContext.Provider value={value}>{children}</ModuleContext.Provider>

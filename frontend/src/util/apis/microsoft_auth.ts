@@ -1,7 +1,7 @@
 /**
  * Microsoft Organization Authentication API
  *
- * Sicheres System mit temporären Auth-Codes für Token-Übertragung
+ * GENERISCHE API für Microsoft Authentication - Routing wird im Frontend gehandhabt
  */
 
 import axios from "axios";
@@ -30,7 +30,12 @@ export interface MicrosoftLoginResponse {
   instructions: string[];
 }
 
-export interface MicrosoftTokensResponse {
+export interface MicrosoftCallbackRequest {
+  code: string;
+  state: string;
+}
+
+export interface MicrosoftAuthResponse {
   success: boolean;
   message: string;
   user: {
@@ -50,7 +55,7 @@ export interface MicrosoftTokensResponse {
     permissions: {
       can_access_admin: boolean;
       can_manage_users: boolean;
-      can_grade_exams: boolean;
+      can_manage_content: boolean;
     };
   };
   organization_info: {
@@ -107,23 +112,22 @@ export const startMicrosoftLogin =
   };
 
 /**
- * 2. SICHER: Holt Tokens per JSON mit temporärem Auth-Code
+ * 2. GENERISCHE API: Sendet OAuth Code und State für Authentication
  */
-export const getMicrosoftTokens = async (
-  authCode: string
-): Promise<MicrosoftTokensResponse> => {
+export const authenticateWithMicrosoft = async (
+  callbackData: MicrosoftCallbackRequest
+): Promise<MicrosoftAuthResponse> => {
   try {
-    const response = await microsoftApi.post<MicrosoftTokensResponse>(
-      "/auth/tokens/",
-      {
-        auth_code: authCode,
-      }
+    const response = await microsoftApi.post<MicrosoftAuthResponse>(
+      "/auth/callback/",
+      callbackData
     );
     return response.data;
   } catch (error: unknown) {
     const axiosError = error as { response?: { data?: { error?: string } } };
     throw new Error(
-      axiosError.response?.data?.error || "Failed to get authentication tokens"
+      axiosError.response?.data?.error ||
+        "Failed to authenticate with Microsoft"
     );
   }
 };
@@ -155,31 +159,31 @@ export const checkMicrosoftUserStatus = async (
 // --- Utility Functions ---
 
 /**
- * Extrahiert Auth-Code aus URL-Parametern (nach Microsoft Redirect)
+ * Extrahiert Auth-Code und State aus URL-Parametern (nach Microsoft Redirect)
  */
-export const extractAuthCodeFromUrl = (): {
-  authCode?: string;
-  success?: boolean;
+export const extractCallbackFromUrl = (): {
+  code?: string;
+  state?: string;
   error?: string;
   errorDescription?: string;
 } => {
   const urlParams = new URLSearchParams(window.location.search);
 
   return {
-    authCode: urlParams.get("auth_code") || undefined,
-    success: urlParams.get("microsoft_auth") === "success",
+    code: urlParams.get("code") || undefined,
+    state: urlParams.get("state") || undefined,
     error: urlParams.get("error") || undefined,
     errorDescription: urlParams.get("error_description") || undefined,
   };
 };
 
 /**
- * Räumt URL-Parameter nach Login auf
+ * Räumt URL-Parameter nach Microsoft OAuth auf
  */
 export const cleanupUrlAfterAuth = (): void => {
   const url = new URL(window.location.href);
-  url.searchParams.delete("microsoft_auth");
-  url.searchParams.delete("auth_code");
+  url.searchParams.delete("code");
+  url.searchParams.delete("state");
   url.searchParams.delete("error");
   url.searchParams.delete("error_description");
 
@@ -188,8 +192,8 @@ export const cleanupUrlAfterAuth = (): void => {
 
 export default {
   startMicrosoftLogin,
-  getMicrosoftTokens,
+  authenticateWithMicrosoft,
   checkMicrosoftUserStatus,
-  extractAuthCodeFromUrl,
+  extractCallbackFromUrl,
   cleanupUrlAfterAuth,
 };

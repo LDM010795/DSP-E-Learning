@@ -8,6 +8,8 @@ import React, {
 } from "react";
 import api from "../util/apis/api";
 import { useAuth } from "./AuthContext";
+// Performance optimization imports (prepared for future use)
+// import { useShallowMemo, debounce } from "../util/performance";
 
 // Typ-Definitionen für Exam-bezogene Daten
 export interface Criterion {
