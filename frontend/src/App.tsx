@@ -29,12 +29,16 @@ import { ModuleProvider } from "./context/ModuleContext";
 import { ExamProvider } from "./context/ExamContext";
 import ProtectedRoute from "./components/utils/ProtectedRoute.tsx";
 import { Toaster } from "sonner";
+import { useMicrosoftAuth } from "./hooks/use_microsoft_auth"; // 🔥 NEU
 
 // Verschiebe Navigationsdaten und die Hauptlogik in eine separate Komponente,
 // damit `useAuth` verwendet werden kann.
 const AppContent: React.FC = () => {
   const { user, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
+
+  // 🔥 Microsoft OAuth Hook mit Loading State
+  const { isLoading: isOAuthLoading } = useMicrosoftAuth();
 
   const openLoginPopup = () => setLoginPopupOpen(true);
   const closeLoginPopup = () => setLoginPopupOpen(false);
@@ -81,9 +85,21 @@ const AppContent: React.FC = () => {
       ]
     : [{ title: "Einloggen", action: openLoginPopup }];
 
-  // Zeige einen Ladezustand, während der AuthContext initialisiert wird
-  if (isLoading) {
-    return <div>Wird geladen...</div>; // Oder eine schönere Ladeanzeige
+  // Zeige Loading während AuthContext ODER OAuth läuft
+  if (isLoading || isOAuthLoading) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-gray-50">
+        <img src={LogoDSP} alt="DSP Logo" className="h-16 mb-8 opacity-90" />
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+          <p className="text-gray-600 text-lg font-medium">
+            {isOAuthLoading
+              ? "Microsoft Anmeldung läuft..."
+              : "E-Learning wird geladen..."}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

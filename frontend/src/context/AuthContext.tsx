@@ -49,6 +49,7 @@ interface AuthContextType {
     password: string;
   }) => Promise<LoginResult>;
   logout: () => void;
+  setAuthTokens: (tokens: AuthTokens) => void; // 🔥 NEU für OAuth Login
   isLoading: boolean;
 }
 
@@ -232,11 +233,44 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     // Lokale Daten immer entfernen
     localStorage.removeItem("authTokens");
+
+    // 🔥 NEU: OAuth Session State clearen für erneuten Login
+    sessionStorage.removeItem("ms_oauth_processed");
+    console.log("🧹 OAuth Session State beim Logout zurückgesetzt");
+
     setTokens(null);
     setUser(null);
     setIsLoading(false);
     // Optional: Navigiere zur Startseite
     // window.location.href = '/'; // Oder useNavigate verwenden
+  }, []);
+
+  // 🔥 NEU: setAuthTokens für OAuth Login (Microsoft, Google, etc.)
+  const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
+    try {
+      setIsLoading(true);
+      const decoded = jwtDecode<DecodedToken>(newTokens.access);
+
+      // Performance optimization: Update cache with new user data
+      tokenCache.set("current_user", decoded);
+
+      localStorage.setItem("authTokens", JSON.stringify(newTokens));
+      setTokens(newTokens); // ← Das löst useEffect aus und aktualisiert User
+      setUser(decoded);
+
+      console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
+        user: decoded.username,
+        exp: new Date(decoded.exp! * 1000).toLocaleString(),
+      });
+    } catch (error) {
+      console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
+      // Cleanup bei Fehler
+      localStorage.removeItem("authTokens");
+      setTokens(null);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   // Die Token-Refresh-Logik ist jetzt im Axios-Interceptor in api.ts
@@ -249,9 +283,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       isAuthenticated: !!tokens,
       login,
       logout,
+      setAuthTokens, // 🔥 NEU hinzufügen
       isLoading,
     }),
-    [tokens, user, login, logout, isLoading]
+    [tokens, user, login, logout, setAuthTokens, isLoading] // setAuthTokens hinzufügen
   );
 
   return (

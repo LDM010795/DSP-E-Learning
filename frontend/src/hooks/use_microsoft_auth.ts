@@ -4,7 +4,7 @@
  * Implementiert direkten JSON-API Ansatz für generische Software-Nutzung
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -22,13 +22,18 @@ interface UseMicrosoftAuthReturn {
   loginWithMicrosoft: () => Promise<void>;
   handleMicrosoftCallback: () => Promise<void>;
   clearError: () => void;
+  resetOAuthSession: () => void;
 }
 
 export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setAuthTokens } = useAuth(); // 🔥 setAuthTokens hinzufügen
+
+  // 🔒 React StrictMode Protection: Verhindert doppelte OAuth-Callback-Verarbeitung
+  const callbackProcessedRef = useRef(false);
+  const isProcessingRef = useRef(false);
 
   /**
    * Startet den Microsoft Login-Flow
@@ -52,7 +57,6 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         err instanceof Error ? err.message : "Microsoft login failed";
       setError(errorMessage);
       console.error("Microsoft login error:", err);
-    } finally {
       setIsLoading(false);
     }
   }, []);
@@ -61,7 +65,16 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
    * Verarbeitet Microsoft OAuth2 Callback nach Redirect
    */
   const handleMicrosoftCallback = useCallback(async (): Promise<void> => {
+    // 🔒 Doppelte Verarbeitung verhindern
+    if (isProcessingRef.current) {
+      console.log(
+        "OAuth Callback wird bereits verarbeitet - überspringe doppelte Ausführung"
+      );
+      return;
+    }
+
     try {
+      isProcessingRef.current = true;
       setIsLoading(true);
       setError(null);
 
@@ -82,6 +95,8 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         throw new Error("Missing code or state parameter from Microsoft");
       }
 
+      console.log("🚀 Starte Microsoft Authentication mit Backend...");
+
       // 3. DIREKTE API: Authentication mit Code und State
       const authResponse: MicrosoftAuthResponse =
         await authenticateWithMicrosoft({
@@ -95,62 +110,139 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         );
       }
 
-      // 4. Tokens direkt im localStorage speichern (wie normaler Login)
+      // 4. 🔥 AuthContext aktualisieren STATT nur localStorage
       const authTokens = {
         access: authResponse.tokens.access,
         refresh: authResponse.tokens.refresh,
       };
-      localStorage.setItem("authTokens", JSON.stringify(authTokens));
+
+      // AuthContext über Login informieren (triggert useEffect und User Update)
+      setAuthTokens(authTokens);
 
       // 5. URL aufräumen (keine sensiblen Daten)
       cleanupUrlAfterAuth();
 
-      // 6. Zum Dashboard weiterleiten (Frontend-spezifisches Routing)
-      navigate("/dashboard");
-
-      console.log("Microsoft authentication successful:", {
+      console.log("✅ Microsoft authentication successful:", {
         user: authResponse.user.email,
         role: authResponse.role_info.role_name,
         groups: authResponse.role_info.groups,
         permissions: authResponse.role_info.permissions,
         organization: authResponse.organization_info.display_name,
       });
+
+      // 6. Kurze Verzögerung für bessere UX, dann zum Dashboard weiterleiten
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Authentication callback failed";
       setError(errorMessage);
-      console.error("Microsoft auth callback error:", err);
+      console.error("❌ Microsoft auth callback error:", err);
 
       // Bei Fehler URL aufräumen und zur Startseite
       cleanupUrlAfterAuth();
       navigate("/");
     } finally {
       setIsLoading(false);
+      isProcessingRef.current = false;
     }
   }, [navigate]);
 
   /**
    * Automatische Callback-Behandlung bei Page Load
+   * React StrictMode Protection: Verhindert doppelte Ausführung
    */
   useEffect(() => {
+    // 🔒 StrictMode Protection: Nur einmal ausführen pro Session
+    const sessionKey = "ms_oauth_processed";
+    const alreadyProcessed =
+      sessionStorage.getItem(sessionKey) === "true" ||
+      callbackProcessedRef.current;
+
+    // 🔥 NEU: Wenn User bereits eingeloggt ist, OAuth Callback überspringen
+    if (isAuthenticated) {
+      console.log("🔒 User bereits eingeloggt - OAuth Callback überspringe");
+      return;
+    }
+
+    if (alreadyProcessed) {
+      console.log(
+        "🔒 OAuth Callback bereits verarbeitet in dieser Session - überspringe"
+      );
+      return;
+    }
+
     // Prüfen ob es Microsoft OAuth Callback-Parameter gibt
     const { code, state, error: urlError } = extractCallbackFromUrl();
 
-    if (code && state) {
-      // Positive Callback - Authentication durchführen
-      handleMicrosoftCallback();
-    } else if (urlError) {
-      // Fehler-Callback
-      setError(`Microsoft authentication failed: ${urlError}`);
+    // DEBUG: Log was wir gefunden haben
+    if (code || state || urlError) {
+      console.log("🔍 Microsoft Auth Hook - URL Parameter gefunden:", {
+        code: code ? "vorhanden" : "nicht vorhanden",
+        state: state ? "vorhanden" : "nicht vorhanden",
+        urlError: urlError || "kein Fehler",
+        currentPath: window.location.pathname,
+        strictModeProtection: alreadyProcessed ? "AKTIV" : "INAKTIV",
+        userAuthenticated: isAuthenticated ? "JA" : "NEIN",
+      });
+    }
+
+    // Sicherheitscheck: Nur Microsoft Callbacks verarbeiten wenn wir wirklich OAuth Parameter haben
+    const hasMicrosoftParams = !!(code && state) || !!urlError;
+
+    // Zusätzlicher Check: Sind wir auf einer Seite wo Microsoft Callbacks erwartet werden?
+    const isCallbackPage =
+      window.location.pathname === "/" ||
+      window.location.pathname === "/login" ||
+      window.location.pathname.includes("callback");
+
+    if (hasMicrosoftParams && isCallbackPage) {
+      // 🔒 Lock setzen BEVOR wir verarbeiten (doppelte Sicherheit)
+      callbackProcessedRef.current = true;
+      sessionStorage.setItem(sessionKey, "true");
+
+      // 🔥 Loading aktivieren bei OAuth Callback
+      setIsLoading(true);
+
+      if (code && state) {
+        console.log("🔄 Verarbeite Microsoft OAuth Callback...");
+        // Positive Callback - Authentication durchführen
+        handleMicrosoftCallback();
+      } else if (urlError) {
+        // Fehler-Callback
+        setError(`Microsoft authentication failed: ${urlError}`);
+        cleanupUrlAfterAuth();
+        setIsLoading(false); // Bei Fehler Loading beenden
+      }
+    } else if (hasMicrosoftParams && !isCallbackPage) {
+      // Cleanup hängende OAuth Parameter wenn wir nicht auf einer Callback-Seite sind
+      console.log("🧹 Cleanup: Entferne hängende Microsoft OAuth Parameter");
       cleanupUrlAfterAuth();
     }
-  }, [handleMicrosoftCallback]);
+
+    // 🧹 Cleanup-Funktion für React StrictMode
+    return () => {
+      // Lock wird NICHT zurückgesetzt, da OAuth nur einmal pro Session laufen soll
+      // Das verhindert StrictMode-bedingte doppelte Ausführung
+    };
+  }, [handleMicrosoftCallback, isAuthenticated]); // 🔥 isAuthenticated dependency hinzufügen
 
   /**
    * Fehler zurücksetzen
    */
   const clearError = useCallback((): void => {
     setError(null);
+  }, []);
+
+  /**
+   * Reset OAuth Session State (für Logout)
+   * Ermöglicht erneuten Login nach Logout
+   */
+  const resetOAuthSession = useCallback((): void => {
+    callbackProcessedRef.current = false;
+    sessionStorage.removeItem("ms_oauth_processed");
+    console.log("🧹 OAuth Session State zurückgesetzt");
   }, []);
 
   return {
@@ -160,5 +252,6 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
     loginWithMicrosoft,
     handleMicrosoftCallback,
     clearError,
+    resetOAuthSession,
   };
 };

@@ -9,6 +9,7 @@ import {
 } from "react-icons/io5"; // Icons importieren
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
 import MicrosoftLoginButton from "../components/ui_elements/buttons/button_microsoft_login";
+import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import { useAuth } from "../context/AuthContext.tsx"; // Import useAuth
 import { useModules } from "../context/ModuleContext.tsx";
 import { useNavigate } from "react-router-dom"; // Import für Navigation
@@ -26,6 +27,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const { login } = useAuth();
   const { fetchModules } = useModules();
@@ -65,6 +67,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
 
       if (loginResponse.success) {
         console.log("Login erfolgreich, AuthContext aktualisiert.");
+        setLoginSuccess(true);
 
         // Anmeldedaten merken
         if (rememberMe) {
@@ -76,15 +79,21 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
         // Prüfe, ob Passwortänderung erforderlich ist
         if (loginResponse.require_password_change) {
           console.log("Passwortänderung erforderlich, leite weiter...");
-          navigate("/force-password-change");
-          onClose(); // Schließe das Login-Popup
+          // Kleine Verzögerung für bessere UX
+          setTimeout(() => {
+            navigate("/force-password-change");
+            onClose(); // Schließe das Login-Popup
+          }, 1000);
         } else {
           console.log(
             "Keine Passwortänderung erforderlich, lade Module und gehe zum Dashboard."
           );
           await fetchModules(); // Module nach erfolgreichem Login laden
-          onClose(); // Schließe das Login-Popup
-          navigate("/dashboard");
+          // Kleine Verzögerung für bessere UX
+          setTimeout(() => {
+            onClose(); // Schließe das Login-Popup
+            navigate("/dashboard");
+          }, 1000);
         }
       } else {
         // Fehlermeldung aus der login Funktion verwenden
@@ -202,230 +211,252 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
             <IoClose />
           </button>
 
-          <div className="space-y-4">
-            <h2
-              className={`text-2xl font-semibold text-gray-800 text-center
-              transition-all duration-300 ease-out
-              ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-2"
-              }
-              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-            >
-              Anmelden
-            </h2>
-            <p
-              className={`text-sm text-gray-500 text-center
-              transition-all duration-300 ease-out
-              ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-2"
-              }
-              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-            >
-              Gib deine Anmeldedaten ein, um auf dein Konto zuzugreifen.
-            </p>
+          {/* Ladebildschirm für Login-Success und Routing */}
+          {isLoading && loginSuccess && (
+            <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+              <LoadingSpinner
+                message="Login erfolgreich! Weiterleitung zum Dashboard..."
+                size="large"
+              />
+            </div>
+          )}
 
-            {/* Error Message mit subtilerer Animation */}
-            {error && (
-              <div
-                className={`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative
+          {/* Login Form - nur anzeigen wenn nicht erfolgreich geladen wird */}
+          {!(isLoading && loginSuccess) && (
+            <div className="space-y-4">
+              <h2
+                className={`text-2xl font-semibold text-gray-800 text-center
+              transition-all duration-300 ease-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              }
+              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+              >
+                Anmelden
+              </h2>
+              <p
+                className={`text-sm text-gray-500 text-center
+              transition-all duration-300 ease-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              }
+              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+              >
+                Gib deine Anmeldedaten ein, um auf dein Konto zuzugreifen.
+              </p>
+
+              {/* Error Message mit subtilerer Animation */}
+              {error && (
+                <div
+                  className={`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative
                   transition-all duration-300`}
-                role="alert"
-              >
-                <span className="block sm:inline">{error}</span>
-              </div>
-            )}
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleLoginSubmit();
-              }}
-              className="space-y-4"
-            >
-              {/* Benutzername Input mit angepasster Animation */}
-              <div
-                className={`transition-all duration-300 ease-out
-                ${
-                  isVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-2"
-                }
-                ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-              >
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  role="alert"
                 >
-                  Benutzername
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <IoMailOutline />
-                  </span>
-                  <input
-                    type="text"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm
-                      focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange
-                      transition-all duration-200 ease-in-out
-                      hover:border-dsp-orange cursor-pointer"
-                    placeholder="Benutzername"
-                  />
+                  <span className="block sm:inline">{error}</span>
                 </div>
-              </div>
+              )}
 
-              {/* Passwort Input mit angepasster Animation */}
-              <div
-                className={`transition-all duration-300 ease-out
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleLoginSubmit();
+                }}
+                className="space-y-4"
+              >
+                {/* Benutzername Input mit angepasster Animation */}
+                <div
+                  className={`transition-all duration-300 ease-out
                 ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-2"
                 }
                 ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-              >
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Passwort
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <IoLockClosedOutline />
-                  </span>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Benutzername
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                      <IoMailOutline />
+                    </span>
+                    <input
+                      type="text"
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm
                       focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange
                       transition-all duration-200 ease-in-out
                       hover:border-dsp-orange cursor-pointer"
-                    placeholder="********"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 
+                      placeholder="Benutzername"
+                    />
+                  </div>
+                </div>
+
+                {/* Passwort Input mit angepasster Animation */}
+                <div
+                  className={`transition-all duration-300 ease-out
+                ${
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-2"
+                }
+                ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+                >
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Passwort
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                      <IoLockClosedOutline />
+                    </span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm
+                      focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange
+                      transition-all duration-200 ease-in-out
+                      hover:border-dsp-orange cursor-pointer"
+                      placeholder="********"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 
                       text-gray-400 hover:text-gray-600 cursor-pointer
                       transition-all duration-200 ease-in-out hover:scale-105"
-                    aria-label={
-                      showPassword ? "Passwort verbergen" : "Passwort anzeigen"
-                    }
-                  >
-                    {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
-                  </button>
+                      aria-label={
+                        showPassword
+                          ? "Passwort verbergen"
+                          : "Passwort anzeigen"
+                      }
+                    >
+                      {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Anmeldedaten merken Checkbox */}
-              <div
-                className={`transition-all duration-300 ease-out
+                {/* Anmeldedaten merken Checkbox */}
+                <div
+                  className={`transition-all duration-300 ease-out
                 ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-2"
                 }
                 ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-              >
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={() => setRememberMe(!rememberMe)}
-                    className="h-4 w-4 text-dsp-orange focus:ring-dsp-orange border-gray-300 rounded cursor-pointer"
-                  />
-                  <label
-                    htmlFor="remember-me"
-                    className="ml-2 block text-sm text-gray-700 cursor-pointer"
-                  >
-                    Anmeldedaten merken
-                  </label>
+                >
+                  <div className="flex items-center">
+                    <input
+                      id="remember-me"
+                      name="remember-me"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={() => setRememberMe(!rememberMe)}
+                      className="h-4 w-4 text-dsp-orange focus:ring-dsp-orange border-gray-300 rounded cursor-pointer"
+                    />
+                    <label
+                      htmlFor="remember-me"
+                      className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                    >
+                      Anmeldedaten merken
+                    </label>
+                  </div>
                 </div>
-              </div>
 
-              {/* Submit Button mit angepasster Animation */}
-              <div
-                className={`transition-all duration-300 ease-out
+                {/* Submit Button mit angepasster Animation */}
+                <div
+                  className={`transition-all duration-300 ease-out
                 ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-2"
                 }
                 ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-              >
-                <ButtonPrimary
-                  onClick={handleLoginSubmit}
-                  title={isLoading ? "Anmelden..." : "Anmelden"}
-                  classNameButton={`w-full transform transition-all duration-200 ease-in-out
+                >
+                  <ButtonPrimary
+                    onClick={handleLoginSubmit}
+                    title={isLoading ? "Anmelden..." : "Anmelden"}
+                    classNameButton={`w-full transform transition-all duration-200 ease-in-out
                     ${
                       isLoading
                         ? "opacity-70 cursor-not-allowed"
                         : "hover:scale-[1.01]"
                     }`}
+                    disabled={isLoading}
+                  />
+                </div>
+              </form>
+
+              {/* Divider für Alternative Login-Methoden */}
+              <div
+                className={`transition-all duration-300 ease-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              }
+              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+              >
+                <div className="relative flex items-center justify-center my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-4 bg-white text-gray-500">oder</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Microsoft Organization Login */}
+              <div
+                className={`transition-all duration-300 ease-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2"
+              }
+              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
+              >
+                <MicrosoftLoginButton
                   disabled={isLoading}
+                  onSuccess={() => {
+                    console.log("Microsoft login successful!");
+                    setLoginSuccess(true);
+                    setIsLoading(true);
+
+                    // ModuleContext lädt automatisch nach erfolgreicher Authentifizierung
+                    setTimeout(() => {
+                      onClose();
+                      navigate("/dashboard");
+                    }, 1000);
+                  }}
+                  onError={(error) => {
+                    console.error("Microsoft login failed:", error);
+                    setError(error);
+                    setIsLoading(false);
+                    setLoginSuccess(false);
+                  }}
+                  className="w-full"
                 />
               </div>
-            </form>
-
-            {/* Divider für Alternative Login-Methoden */}
-            <div
-              className={`transition-all duration-300 ease-out
-              ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-2"
-              }
-              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-            >
-              <div className="relative flex items-center justify-center my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-white text-gray-500">oder</span>
-                </div>
-              </div>
             </div>
-
-            {/* Microsoft Organization Login */}
-            <div
-              className={`transition-all duration-300 ease-out
-              ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-2"
-              }
-              ${isClosing ? "opacity-0 translate-y-2" : ""}`}
-            >
-              <MicrosoftLoginButton
-                disabled={isLoading}
-                onSuccess={() => {
-                  console.log("Microsoft login successful!");
-                  // ModuleContext lädt automatisch nach erfolgreicher Authentifizierung
-                  onClose();
-                  navigate("/dashboard");
-                }}
-                onError={(error) => {
-                  console.error("Microsoft login failed:", error);
-                  setError(error);
-                }}
-                className="w-full"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
