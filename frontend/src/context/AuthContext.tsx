@@ -216,7 +216,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (refreshToken) {
       try {
         // Sende das Refresh-Token an den Logout-Endpunkt
-        await api.post("/users/logout/", { refresh: refreshToken });
+        await api.post("/users/logout/", { refresh_token: refreshToken });
         console.log("Logout successful on backend.");
       } catch (error) {
         // Fehler beim Backend-Logout ignorieren oder loggen, aber trotzdem lokal ausloggen
