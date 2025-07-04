@@ -39,19 +39,28 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         to={to}
         onMouseEnter={handleMouseEnter}
         className={clsx(
-          "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden",
+          "flex items-center gap-3 px-8 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden",
           {
             // Active state - enhanced with subtle animations
-            "bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white shadow-lg shadow-[#ff863d]/25":
+            "bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white shadow-sm shadow-[#ff863d]/20":
               isActive,
             // Inactive state - subtle hover effects
-            "text-gray-700 hover:text-[#ff863d] hover:bg-[#ff863d]/5 border border-transparent hover:border-[#ff863d]/20 backdrop-blur-sm hover:shadow-sm":
+            "text-gray-700 hover:text-[#ff863d] hover:bg-[#ff863d]/5 border border-transparent hover:border-[#ff863d]/20":
               !isActive,
           },
           className
         )}
         aria-current={isActive ? "page" : undefined}
       >
+        {/* Active indicator dot */}
+        {isActive && (
+          <motion.div 
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        )}
+
         {/* Background gradient effect for hover */}
         {!isActive && (
           <motion.div 
@@ -84,15 +93,6 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         >
           {children}
         </motion.span>
-
-        {/* Active indicator dot */}
-        {isActive && (
-          <motion.div 
-            className="absolute right-2 w-2 h-2 bg-white rounded-full shadow-sm"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-        )}
 
         {/* Ripple effect on click */}
         <motion.div
