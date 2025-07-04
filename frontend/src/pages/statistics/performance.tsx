@@ -14,10 +14,10 @@ import SubBackground from "../../components/layouts/SubBackground";
 
 // Platzhalterdaten (Beispiele)
 const exercisePerformanceData = [
-  { name: "Python", korrekt: 80, inkorrekt: 20 },
-  { name: "Excel", korrekt: 90, inkorrekt: 10 },
-  { name: "SQL", korrekt: 75, inkorrekt: 25 },
-  { name: "Power BI", korrekt: 85, inkorrekt: 15 },
+  { exercise: "Python", score: 80, maxScore: 100 },
+  { exercise: "Excel", score: 90, maxScore: 100 },
+  { exercise: "SQL", score: 75, maxScore: 100 },
+  { exercise: "Power BI", score: 85, maxScore: 100 },
 ];
 
 const learningSpeedData = [
@@ -94,7 +94,7 @@ const Performance: React.FC = () => {
           <LazyLoadChartWrapper
             component={ExercisePerformanceChart}
             minHeight={250}
-            chartProps={{ data: exercisePerformanceData }}
+            chartProps={{ exerciseData: exercisePerformanceData }}
           />
         </ChartCard>
 

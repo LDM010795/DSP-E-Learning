@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { IoSyncOutline, IoHourglassOutline, IoEllipsisHorizontalOutline } from "react-icons/io5";
+import { IoSyncOutline, IoHourglassOutline } from "react-icons/io5";
 
 type LoadingVariant = "spinner" | "dots" | "hourglass" | "pulse";
 type LoadingSize = "xs" | "sm" | "md" | "lg" | "xl";
