@@ -39,14 +39,7 @@ export default defineConfig({
     },
     
     // Optimize minification
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console logs in production
-        drop_debugger: true,
-        pure_funcs: ['console.log'], // Remove specific console functions
-      },
-    },
+    minify: 'esbuild',
     
     // Optimize chunk size warnings - Allow larger chunks for SPA feeling
     chunkSizeWarningLimit: 2000,
