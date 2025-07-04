@@ -1,25 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import "./App.css";
-// Pages
-import Dashboard from "./pages/dashboard";
-import Modules from "./pages/modules";
-import ModuleDetail from "./pages/module_detail";
-import TaskDetails from "./pages/task_detail.tsx";
-import IndexFinalExam from "./pages/final_exam/index_final_exam";
-import IndexStatistics from "./pages/statistics/index_statistics";
-import LandingPage from "./pages/landing_page";
-import IndexUserSettings from "./pages/user_settings/index_user_settings";
-import LoginPopup from "./pages/login";
-import SubscriptionsPage from "./pages/subscriptions";
-import IndexAdminPanel from "./pages/admin_panel/index_admin_panel";
-import ForcePasswordChangePage from "./pages/ForcePasswordChangePage";
-import CertificationPaths from "./pages/certification_paths";
-import ContentDemo from "./pages/ContentDemo";
+
+// Lazy load all pages for optimal code splitting
+const Dashboard = React.lazy(() => import("./pages/dashboard"));
+const Modules = React.lazy(() => import("./pages/modules"));
+const ModuleDetail = React.lazy(() => import("./pages/module_detail"));
+const TaskDetails = React.lazy(() => import("./pages/task_detail.tsx"));
+const IndexFinalExam = React.lazy(() => import("./pages/final_exam/index_final_exam"));
+const IndexStatistics = React.lazy(() => import("./pages/statistics/index_statistics"));
+const LandingPage = React.lazy(() => import("./pages/landing_page"));
+const IndexUserSettings = React.lazy(() => import("./pages/user_settings/index_user_settings"));
+const LoginPopup = React.lazy(() => import("./pages/login"));
+const SubscriptionsPage = React.lazy(() => import("./pages/subscriptions"));
+const IndexAdminPanel = React.lazy(() => import("./pages/admin_panel/index_admin_panel"));
+const ForcePasswordChangePage = React.lazy(() => import("./pages/ForcePasswordChangePage"));
+const CertificationPaths = React.lazy(() => import("./pages/certification_paths"));
+const ContentDemo = React.lazy(() => import("./pages/ContentDemo"));
+
 // Utils
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Components
 import HeaderNavigation from "./components/layouts/header.tsx";
 import DSPBackground from "./components/layouts/DSPBackground.tsx";
+import LoadingSpinner from "./components/ui_elements/loading_spinner.tsx";
 //Assets
 import LogoDSP from "./assets/dsp_no_background.png";
 
@@ -32,6 +35,18 @@ import { ExamProvider } from "./context/ExamContext";
 import ProtectedRoute from "./components/utils/ProtectedRoute.tsx";
 import { Toaster } from "sonner";
 import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
+
+// Performance-optimized loading fallback component
+const PageLoadingFallback = () => (
+  <div className="flex items-center justify-center h-64">
+    <LoadingSpinner 
+      message="Seite wird geladen..." 
+      size="lg" 
+      variant="pulse" 
+      showBackground={false} 
+    />
+  </div>
+);
 
 // Verschiebe Navigationsdaten und die Hauptlogik in eine separate Komponente,
 // damit `useAuth` verwendet werden kann.
@@ -121,48 +136,54 @@ const AppContent: React.FC = () => {
       {/* Main Content */}
       <main className="flex-grow overflow-auto  ">
         <div className="mx-20 my-10 ">
-          <Routes>
-            {/* Öffentliche Routen */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/subscriptions" element={<SubscriptionsPage />} />
+          <Suspense fallback={<PageLoadingFallback />}>
+            <Routes>
+              {/* Öffentliche Routen */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/subscriptions" element={<SubscriptionsPage />} />
 
-            {/* Geschützte Routen mit ProtectedRoute umschließen */}
-            <Route element={<ProtectedRoute />}>
-              {/* Neue Route für erzwungene Passwortänderung */}
-              <Route
-                path="/force-password-change"
-                element={<ForcePasswordChangePage />}
-              />
-              {/* NEU: Content Demo Route */}
-              <Route path="/content-demo" element={<ContentDemo />} />
-              {/* Bestehende Kind-Routen von ProtectedRoute */}
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/modules" element={<Modules />} />
-              <Route path="/modules/:moduleId" element={<ModuleDetail />} />
-              <Route
-                path="/modules/:moduleId/tasks/:taskId"
-                element={<TaskDetails />}
-              />
-              <Route path="/final-exam" element={<IndexFinalExam />} />
-              <Route
-                path="/certification-paths"
-                element={<CertificationPaths />}
-              />
-              <Route path="/user-stats" element={<IndexStatistics />} />
-              <Route path="/settings" element={<IndexUserSettings />} />
+              {/* Geschützte Routen mit ProtectedRoute umschließen */}
+              <Route element={<ProtectedRoute />}>
+                {/* Neue Route für erzwungene Passwortänderung */}
+                <Route
+                  path="/force-password-change"
+                  element={<ForcePasswordChangePage />}
+                />
+                {/* NEU: Content Demo Route */}
+                <Route path="/content-demo" element={<ContentDemo />} />
+                {/* Bestehende Kind-Routen von ProtectedRoute */}
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/modules" element={<Modules />} />
+                <Route path="/modules/:moduleId" element={<ModuleDetail />} />
+                <Route
+                  path="/modules/:moduleId/tasks/:taskId"
+                  element={<TaskDetails />}
+                />
+                <Route path="/final-exam" element={<IndexFinalExam />} />
+                <Route
+                  path="/certification-paths"
+                  element={<CertificationPaths />}
+                />
+                <Route path="/user-stats" element={<IndexStatistics />} />
+                <Route path="/settings" element={<IndexUserSettings />} />
 
-              {/* Admin Panel Route - nur für Staff/Superuser */}
-              {isAdmin && <Route path="/admin" element={<IndexAdminPanel />} />}
-            </Route>
+                {/* Admin Panel Route - nur für Staff/Superuser */}
+                {isAdmin && <Route path="/admin" element={<IndexAdminPanel />} />}
+              </Route>
 
-            {/* Fallback oder 404 Route */}
-            {/* <Route path="*" element={<NotFoundPage />} /> */}
-          </Routes>
+              {/* Fallback oder 404 Route */}
+              {/* <Route path="*" element={<NotFoundPage />} /> */}
+            </Routes>
+          </Suspense>
         </div>
       </main>
 
       {/* Login Popup */}
-      {isLoginPopupOpen && <LoginPopup onClose={closeLoginPopup} />}
+      {isLoginPopupOpen && (
+        <Suspense fallback={<PageLoadingFallback />}>
+          <LoginPopup onClose={closeLoginPopup} />
+        </Suspense>
+      )}
     </div>
   );
 };
