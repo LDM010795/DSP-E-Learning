@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import clsx from "clsx";
 import LinkSidebar from "../ui_elements/links/link_sidebar";
@@ -19,7 +19,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
   );
 
   const filteredRightContent = rightContent.filter(
-    (item) => !("requiresAuth" in item) || (item.requiresAuth && isAuthenticated)
+    (item) =>
+      !("requiresAuth" in item) || (item.requiresAuth && isAuthenticated)
   );
 
   const renderNavLinks = (navLinks: NavLink[], showTitle = true) =>
@@ -121,7 +122,9 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
             <nav className="max-w-[95vw] mx-auto p-4">
               {/* Main Navigation */}
               <div className="mb-4">
-                <p className="text-xs font-medium text-gray-500 mb-2 px-2">Navigation</p>
+                <p className="text-xs font-medium text-gray-500 mb-2 px-2">
+                  Navigation
+                </p>
                 <ul className="space-y-1">
                   {filteredLinks.map((link, index) => (
                     <li key={index}>
@@ -141,7 +144,9 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
               {/* Account Section */}
               {filteredRightContent.length > 0 && (
                 <div className="pt-3 border-t border-gray-100">
-                  <p className="text-xs font-medium text-gray-500 mb-2 px-2">Account</p>
+                  <p className="text-xs font-medium text-gray-500 mb-2 px-2">
+                    Account
+                  </p>
                   <ul className="space-y-1">
                     {filteredRightContent.map((item, index) => (
                       <li key={index}>
@@ -165,7 +170,9 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                             aria-label={item.title}
                           >
                             {item.icon && (
-                              <span className="mr-2 text-gray-500">{item.icon}</span>
+                              <span className="mr-2 text-gray-500">
+                                {item.icon}
+                              </span>
                             )}
                             <span>{item.title}</span>
                           </button>

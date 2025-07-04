@@ -1,87 +1,110 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import fs from "fs";
+
+// Plugin, um fehlende Monaco Editor Source Maps zu ignorieren
+function ignoreMonacoMarkedSourceMap() {
+  const mapFileName = "marked.umd.js.map";
+  return {
+    name: "ignore-monaco-marked-sourcemap",
+    load(id: string) {
+      if (id.endsWith(mapFileName) && id.includes("monaco-editor")) {
+        // Liefere eine leere Source Map, um Fehler zu vermeiden
+        return {
+          code: "{}",
+          map: null,
+        };
+      }
+      // Für die JS-Datei selbst entfernen wir die SourceMappingURL-Zeile
+      if (id.endsWith("/marked.js") && id.includes("monaco-editor")) {
+        const original = fs.readFileSync(id, "utf-8");
+        const filtered = original.replace(/\/\/# sourceMappingURL=.*/gm, "");
+        return {
+          code: filtered,
+          map: null,
+        };
+      }
+      return null;
+    },
+  };
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), ignoreMonacoMarkedSourceMap()],
   server: {
-    // Preload critical resources
     preTransformRequests: true,
-    // Fix sourcemap issues
-    sourcemapIgnoreList: (sourcePath) => {
-      return sourcePath.includes('node_modules/monaco-editor')
-    }
   },
-  
-  // Performance optimizations for SPA feeling
+
   build: {
-    // Target modern browsers for better optimizations
-    target: 'es2020',
-    
-    // Optimize chunk size - Less aggressive splitting for SPA feeling
+    sourcemap: false,
     rollupOptions: {
       output: {
-        // Strategic chunk splitting for optimal caching and SPA performance
         manualChunks: {
-          // Core app bundle - Keep pages together for instant navigation
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          
-          // Heavy libraries - Only split these for lazy loading
-          'vendor-charts': ['echarts', 'echarts-for-react'],
-          'vendor-monaco': ['monaco-editor', '@monaco-editor/react'],
-          
-          // UI libraries - Keep together for consistent UX
-          'vendor-ui': ['framer-motion', 'clsx', 'lucide-react', 'react-icons'],
-          'vendor-utils': ['axios', 'jwt-decode', 'sonner'],
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-charts": ["echarts", "echarts-for-react"],
+          "vendor-monaco": ["monaco-editor", "@monaco-editor/react"],
+          "vendor-ui": ["framer-motion", "clsx", "lucide-react", "react-icons"],
+          "vendor-utils": ["axios", "jwt-decode", "sonner"],
+        },
+      },
+      onwarn(warning, warn) {
+        // Ignoriere Source Map Warnungen für Monaco Editor
+        if (
+          warning.code === "SOURCEMAP_ERROR" &&
+          warning.message.includes("monaco-editor")
+        ) {
+          return;
         }
-      }
+        warn(warning);
+      },
     },
-    
-    // Optimize minification
-    minify: 'esbuild',
-    
-    // Optimize chunk size warnings - Allow larger chunks for SPA feeling
+    minify: "esbuild",
     chunkSizeWarningLimit: 2000,
-    
-    // Enable sourcemap for debugging (disable in production if needed)
-    sourcemap: false,
   },
-  
-  // Dependency optimization for faster development and SPA performance
+
   optimizeDeps: {
     include: [
-      // Pre-bundle frequently used dependencies for faster startup
-      'react',
-      'react-dom',
-      'react-router-dom',
-      'clsx',
-      'framer-motion',
-      'axios',
-      'jwt-decode'
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "clsx",
+      "framer-motion",
+      "axios",
+      "jwt-decode",
     ],
-    exclude: [
-      // Only exclude truly heavy dependencies that benefit from lazy loading
-      'monaco-editor',
-      'echarts',
-      'pyodide'
-    ]
+    exclude: ["monaco-editor", "echarts", "pyodide"],
   },
-  
-  // Performance settings
+
   esbuild: {
-    // Tree shaking optimizations
     treeShaking: true,
-    // Remove unused code more aggressively
-    drop: ['console', 'debugger'],
+    drop: ["console", "debugger"],
   },
-  
-  // CSS optimizations
+
   css: {
     devSourcemap: false,
-    // Optimize CSS for better loading
     preprocessorOptions: {
       // Add any CSS optimizations here
-    }
-  }
+    },
+  },
+
+  // Monaco Editor spezifische Konfiguration
+  resolve: {
+    alias: {
+      // Verhindere Source Map Probleme für Monaco Editor
+      "monaco-editor": "monaco-editor/esm/vs/editor/editor.api",
+    },
+  },
+
+  // Source Map Konfiguration
+  define: {
+    // Deaktiviere Source Maps für Monaco Editor
+    "process.env.NODE_ENV": JSON.stringify(
+      process.env.NODE_ENV || "development"
+    ),
+  },
+
+  // Spezifische Regeln für Monaco Editor
+  assetsInclude: ["**/*.wasm"],
 });
