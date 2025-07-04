@@ -1,109 +1,112 @@
-import { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import React, { ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import clsx from "clsx";
+import { preloadOnHover } from "../../../util/performance";
 
-type SidebarLinkProps = {
+interface LinkSidebarProps {
   to: string;
   icon?: ReactNode;
-  children?: ReactNode;
+  children: ReactNode;
   className?: string;
-};
+}
 
-const SidebarLink: React.FC<SidebarLinkProps> = ({
+const LinkSidebar: React.FC<LinkSidebarProps> = ({
   to,
   icon,
   children,
   className = "",
 }) => {
-  // Prüfe, ob es sich um einen externen Link handelt
-  const isExternalLink = to.startsWith("http") || to.startsWith("https");
+  const location = useLocation();
+  const isActive = location.pathname === to;
 
-  // Standard-Styling für moderne Links
-  const baseClasses = `
-    flex items-center px-4 py-2 text-sm font-medium rounded-xl
-    transition-all duration-200 ease-in-out
-    hover:bg-[#ff863d]/5 hover:text-[#ff863d]
-    border border-transparent hover:border-[#ff863d]/20
-    backdrop-blur-sm hover:shadow-sm group
-    ${className}
-  `.trim();
+  // Determine what to preload based on route
+  const handleMouseEnter = () => {
+    if (to.includes('/user-stats') || to.includes('/statistics')) {
+      preloadOnHover('charts');
+    } else if (to.includes('/modules') || to.includes('/tasks')) {
+      preloadOnHover('monaco');
+    }
+  };
 
-  // Für externe Links verwenden wir einen normalen <a> Tag
-  if (isExternalLink) {
-    return (
-      <a
-        href={to}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${baseClasses} text-gray-700 hover:scale-[1.02]`}
-      >
-        {icon && (
-          <span className="mr-3 text-gray-500 group-hover:text-[#ff863d] transition-colors duration-200">
-            {icon}
-          </span>
-        )}
-        <span className="group-hover:translate-x-0.5 transition-transform duration-200">
-          {children}
-        </span>
-        {/* External link indicator */}
-        <svg
-          className="ml-2 w-3 h-3 text-gray-400 group-hover:text-[#ff863d] opacity-60 group-hover:opacity-100 transition-all duration-200"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-          />
-        </svg>
-      </a>
-    );
-  }
-
-  // Für interne Links verwenden wir NavLink
   return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `${baseClasses} ${
-          isActive
-            ? "text-[#ff863d] bg-[#ff863d]/10 border-[#ff863d]/30 shadow-sm font-semibold"
-            : "text-gray-700 hover:scale-[1.02]"
-        }`
-      }
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      {({ isActive }) => (
-        <>
-          {icon && (
-            <span
-              className={`mr-3 transition-all duration-200 ${
-                isActive
-                  ? "text-[#ff863d] scale-110"
-                  : "text-gray-500 group-hover:text-[#ff863d] group-hover:scale-110"
-              }`}
-            >
-              {icon}
-            </span>
-          )}
-          <span
-            className={`transition-all duration-200 ${
-              isActive ? "translate-x-0.5" : "group-hover:translate-x-0.5"
-            }`}
+      <Link
+        to={to}
+        onMouseEnter={handleMouseEnter}
+        className={clsx(
+          "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden",
+          {
+            // Active state - enhanced with subtle animations
+            "bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white shadow-lg shadow-[#ff863d]/25":
+              isActive,
+            // Inactive state - subtle hover effects
+            "text-gray-700 hover:text-[#ff863d] hover:bg-[#ff863d]/5 border border-transparent hover:border-[#ff863d]/20 backdrop-blur-sm hover:shadow-sm":
+              !isActive,
+          },
+          className
+        )}
+        aria-current={isActive ? "page" : undefined}
+      >
+        {/* Background gradient effect for hover */}
+        {!isActive && (
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-r from-[#ff863d]/0 via-[#ff863d]/5 to-[#ff863d]/0"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+
+        {/* Icon with enhanced animations */}
+        {icon && (
+          <motion.span
+            className={clsx("relative z-10", {
+              "text-white": isActive,
+              "text-gray-500 group-hover:text-[#ff863d]": !isActive,
+            })}
+            whileHover={{ scale: 1.1, rotate: isActive ? 0 : 5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            {children}
-          </span>
-          {/* Active indicator */}
-          {isActive && (
-            <div className="ml-auto">
-              <div className="w-1.5 h-1.5 bg-[#ff863d] rounded-full animate-pulse"></div>
-            </div>
-          )}
-        </>
-      )}
-    </NavLink>
+            {icon}
+          </motion.span>
+        )}
+
+        {/* Text content */}
+        <motion.span 
+          className="relative z-10"
+          whileHover={{ x: 2 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          {children}
+        </motion.span>
+
+        {/* Active indicator dot */}
+        {isActive && (
+          <motion.div 
+            className="absolute right-2 w-2 h-2 bg-white rounded-full shadow-sm"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        )}
+
+        {/* Ripple effect on click */}
+        <motion.div
+          className="absolute inset-0 bg-white/20 rounded-xl"
+          initial={{ scale: 0, opacity: 0 }}
+          whileTap={{ 
+            scale: 1,
+            opacity: [0, 0.3, 0],
+            transition: { duration: 0.3 }
+          }}
+        />
+      </Link>
+    </motion.div>
   );
 };
 
-export default SidebarLink;
+export default LinkSidebar;

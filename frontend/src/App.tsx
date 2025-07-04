@@ -1,56 +1,36 @@
-import React, { useState, Suspense } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
-// Lazy load all pages for optimal code splitting
-const Dashboard = React.lazy(() => import("./pages/dashboard"));
-const Modules = React.lazy(() => import("./pages/modules"));
-const ModuleDetail = React.lazy(() => import("./pages/module_detail"));
-const TaskDetails = React.lazy(() => import("./pages/task_detail.tsx"));
-const IndexFinalExam = React.lazy(() => import("./pages/final_exam/index_final_exam"));
-const IndexStatistics = React.lazy(() => import("./pages/statistics/index_statistics"));
-const LandingPage = React.lazy(() => import("./pages/landing_page"));
-const IndexUserSettings = React.lazy(() => import("./pages/user_settings/index_user_settings"));
-const LoginPopup = React.lazy(() => import("./pages/login"));
-const SubscriptionsPage = React.lazy(() => import("./pages/subscriptions"));
-const IndexAdminPanel = React.lazy(() => import("./pages/admin_panel/index_admin_panel"));
-const ForcePasswordChangePage = React.lazy(() => import("./pages/ForcePasswordChangePage"));
-const CertificationPaths = React.lazy(() => import("./pages/certification_paths"));
-const ContentDemo = React.lazy(() => import("./pages/ContentDemo"));
-
 // Utils
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+import { prefetchCommonResources } from "./util/performance";
+
 // Components
 import HeaderNavigation from "./components/layouts/header.tsx";
 import DSPBackground from "./components/layouts/DSPBackground.tsx";
-import LoadingSpinner from "./components/ui_elements/loading_spinner.tsx";
+import AnimatedRoutes from "./components/common/AnimatedRoutes.tsx";
+import LoginPopup from "./pages/login";
+
 //Assets
 import LogoDSP from "./assets/dsp_no_background.png";
 
 // Import the NavItem type
 import { NavItem } from "./components/layouts/header.tsx";
 // Import Auth Context
-import { AuthProvider, useAuth } from "./context/AuthContext.tsx";
-import { ModuleProvider } from "./context/ModuleContext";
-import { ExamProvider } from "./context/ExamContext";
-import ProtectedRoute from "./components/utils/ProtectedRoute.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
+import { ModuleProvider } from "./context/ModuleContext.tsx";
+import { ExamProvider } from "./context/ExamContext.tsx";
 import { Toaster } from "sonner";
 import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
-
-// Performance-optimized loading fallback component
-const PageLoadingFallback = () => (
-  <div className="flex items-center justify-center h-64">
-    <LoadingSpinner 
-      message="Seite wird geladen..." 
-      size="lg" 
-      variant="pulse" 
-      showBackground={false} 
-    />
-  </div>
-);
+import { useAuth } from "./context/AuthContext.tsx";
 
 // Verschiebe Navigationsdaten und die Hauptlogik in eine separate Komponente,
 // damit `useAuth` verwendet werden kann.
 const AppContent: React.FC = () => {
+  // Preload critical resources for better SPA performance
+  React.useEffect(() => {
+    prefetchCommonResources();
+  }, []);
   const { user, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
 
@@ -136,54 +116,12 @@ const AppContent: React.FC = () => {
       {/* Main Content */}
       <main className="flex-grow overflow-auto  ">
         <div className="mx-20 my-10 ">
-          <Suspense fallback={<PageLoadingFallback />}>
-            <Routes>
-              {/* Öffentliche Routen */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/subscriptions" element={<SubscriptionsPage />} />
-
-              {/* Geschützte Routen mit ProtectedRoute umschließen */}
-              <Route element={<ProtectedRoute />}>
-                {/* Neue Route für erzwungene Passwortänderung */}
-                <Route
-                  path="/force-password-change"
-                  element={<ForcePasswordChangePage />}
-                />
-                {/* NEU: Content Demo Route */}
-                <Route path="/content-demo" element={<ContentDemo />} />
-                {/* Bestehende Kind-Routen von ProtectedRoute */}
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/modules" element={<Modules />} />
-                <Route path="/modules/:moduleId" element={<ModuleDetail />} />
-                <Route
-                  path="/modules/:moduleId/tasks/:taskId"
-                  element={<TaskDetails />}
-                />
-                <Route path="/final-exam" element={<IndexFinalExam />} />
-                <Route
-                  path="/certification-paths"
-                  element={<CertificationPaths />}
-                />
-                <Route path="/user-stats" element={<IndexStatistics />} />
-                <Route path="/settings" element={<IndexUserSettings />} />
-
-                {/* Admin Panel Route - nur für Staff/Superuser */}
-                {isAdmin && <Route path="/admin" element={<IndexAdminPanel />} />}
-              </Route>
-
-              {/* Fallback oder 404 Route */}
-              {/* <Route path="*" element={<NotFoundPage />} /> */}
-            </Routes>
-          </Suspense>
+          <AnimatedRoutes isAdmin={isAdmin} />
         </div>
       </main>
 
       {/* Login Popup */}
-      {isLoginPopupOpen && (
-        <Suspense fallback={<PageLoadingFallback />}>
-          <LoginPopup onClose={closeLoginPopup} />
-        </Suspense>
-      )}
+      {isLoginPopupOpen && <LoginPopup onClose={closeLoginPopup} />}
     </div>
   );
 };
