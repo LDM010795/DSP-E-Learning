@@ -1,8 +1,11 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { IoCalendarOutline, IoTrophyOutline, IoTimeOutline } from "react-icons/io5";
 import VerticalBarChart from "../../components/charts/VerticalBarChart";
 import LazyLoadChartWrapper from "../../components/common/LazyLoadChartWrapper";
+import SubBackground from "../../components/layouts/SubBackground";
 
-// --- Platzhalterdaten (Beispiele) ---
+// Platzhalterdaten (Beispiele)
 const streakData = {
   current: 5,
   longest: 7,
@@ -38,66 +41,131 @@ const timeByTopicData = [
   { name: "Tableau", value: 3 },
 ];
 
-// --- Hilfskomponente ---
+// Hilfskomponente
 interface ChartCardProps {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>;
+  index: number;
 }
-const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children }) => (
-  <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-    <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-    {subtitle && <p className="text-sm text-gray-500 mb-4">{subtitle}</p>}
-    <div className="mt-4">{children}</div>
-  </div>
+
+const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, icon: Icon, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay: index * 0.2 }}
+    whileHover={{ y: -2 }}
+    className="group"
+  >
+    <SubBackground className="hover:bg-white/80 transition-all duration-200">
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="p-2 rounded-lg bg-[#ffe7d4]">
+          <Icon className="w-5 h-5 text-[#ff863d]" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+            {title}
+          </h3>
+          {subtitle && (
+            <p className="text-sm text-gray-600 leading-relaxed">{subtitle}</p>
+          )}
+        </div>
+      </div>
+      <div>{children}</div>
+    </SubBackground>
+  </motion.div>
 );
 
 const Progress: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Lernstreak" subtitle="Deine tägliche Lernaktivität">
-          <div className="mb-2 flex justify-between text-sm">
-            <span>Aktueller Streak: {streakData.current} Tage</span>
-            <span>Längster Streak: {streakData.longest} Tage</span>
-          </div>
-          {/* Calendar/Streak View Placeholder */}
-          <div className="flex flex-wrap gap-1">
-            {streakData.dates.map((date) => (
-              <span
-                key={date}
-                className="w-8 h-8 flex items-center justify-center text-xs border border-gray-300 rounded bg-green-100 text-green-800"
-              >
-                {date.split(".")[0]}
-              </span>
-            ))}
+        <ChartCard 
+          title="Lernstreak" 
+          subtitle="Deine tägliche Lernaktivität"
+          icon={IoCalendarOutline}
+          index={0}
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-3 bg-green-50 border border-green-200 rounded-xl">
+                <div className="text-2xl font-bold text-green-600">{streakData.current}</div>
+                <div className="text-sm text-green-700 font-medium">Aktuelle Tage</div>
+              </div>
+              <div className="text-center p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                <div className="text-2xl font-bold text-blue-600">{streakData.longest}</div>
+                <div className="text-sm text-blue-700 font-medium">Längster Streak</div>
+              </div>
+            </div>
+            
+            {/* Streak Calendar Visualization */}
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                Letzte 14 Tage
+              </h4>
+              <div className="grid grid-cols-7 gap-1">
+                {streakData.dates.map((date, index) => (
+                  <motion.div
+                    key={date}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.2, delay: 1 + index * 0.05 }}
+                    className="w-8 h-8 flex items-center justify-center text-xs font-medium rounded-lg border-2 border-green-200 bg-green-100 text-green-800 hover:bg-green-200 transition-colors duration-200"
+                  >
+                    {date.split(".")[0]}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </ChartCard>
+
         <ChartCard
           title="Zertifikatsfortschritt"
           subtitle="Dein Weg zu Zertifikaten"
+          icon={IoTrophyOutline}
+          index={1}
         >
           <div className="space-y-4">
-            {certificateProgressData.map((cert) => (
-              <div key={cert.name}>
-                <p className="font-semibold text-sm mb-1">{cert.name}</p>
-                <p className="text-xs text-gray-500 mb-1">
+            {certificateProgressData.map((cert, index) => (
+              <motion.div
+                key={cert.name}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+                className="group"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="font-semibold text-sm text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+                    {cert.name}
+                  </h4>
+                  <span className="text-xs font-bold text-gray-600">
+                    {cert.progress}%
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 mb-3">
                   {cert.completed} von {cert.total} Modulen abgeschlossen
                 </p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-dsp-orange h-2.5 rounded-full"
-                    style={{ width: `${cert.progress}%` }}
-                  ></div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                  <motion.div
+                    className="bg-gradient-to-r from-[#ff863d] to-[#fa8c45] h-2.5 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${cert.progress}%` }}
+                    transition={{ duration: 0.8, delay: 0.6 + index * 0.2, ease: "easeOut" }}
+                  />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </ChartCard>
       </div>
+
       <ChartCard
         title="Zeitaufwand nach Themen"
         subtitle="Wie viel Zeit du in verschiedene Themen investiert hast"
+        icon={IoTimeOutline}
+        index={2}
       >
         <LazyLoadChartWrapper
           component={VerticalBarChart}

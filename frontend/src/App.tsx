@@ -14,10 +14,12 @@ import SubscriptionsPage from "./pages/subscriptions";
 import IndexAdminPanel from "./pages/admin_panel/index_admin_panel";
 import ForcePasswordChangePage from "./pages/ForcePasswordChangePage";
 import CertificationPaths from "./pages/certification_paths";
+import ContentDemo from "./pages/ContentDemo";
 // Utils
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Components
 import HeaderNavigation from "./components/layouts/header.tsx";
+import DSPBackground from "./components/layouts/DSPBackground.tsx";
 //Assets
 import LogoDSP from "./assets/dsp_no_background.png";
 
@@ -29,7 +31,7 @@ import { ModuleProvider } from "./context/ModuleContext";
 import { ExamProvider } from "./context/ExamContext";
 import ProtectedRoute from "./components/utils/ProtectedRoute.tsx";
 import { Toaster } from "sonner";
-import { useMicrosoftAuth } from "./hooks/use_microsoft_auth"; // 🔥 NEU
+import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
 
 // Verschiebe Navigationsdaten und die Hauptlogik in eine separate Komponente,
 // damit `useAuth` verwendet werden kann.
@@ -37,7 +39,7 @@ const AppContent: React.FC = () => {
   const { user, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
 
-  // 🔥 Microsoft OAuth Hook mit Loading State
+  // Microsoft OAuth Hook mit Loading State
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
 
   const openLoginPopup = () => setLoginPopupOpen(true);
@@ -73,6 +75,8 @@ const AppContent: React.FC = () => {
           { title: "Deine Statistik", to: "/user-stats" },
           // Nur Admin-Benutzer sehen den Admin-Panel Link
           ...(isAdmin ? [{ title: "Back‑Office", to: "/admin" }] : []),
+          // 🔥 NEU: Content Demo für alle eingeloggten User
+          { title: "Content Demo", to: "/content-demo" },
         ]
       : []),
   ];
@@ -104,6 +108,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col">
+      {/* DSP Background - Global für alle Seiten */}
+      <DSPBackground />
       <Toaster position="bottom-right" richColors />
       {/* Header */}
       <HeaderNavigation
@@ -127,6 +133,8 @@ const AppContent: React.FC = () => {
                 path="/force-password-change"
                 element={<ForcePasswordChangePage />}
               />
+              {/* NEU: Content Demo Route */}
+              <Route path="/content-demo" element={<ContentDemo />} />
               {/* Bestehende Kind-Routen von ProtectedRoute */}
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/modules" element={<Modules />} />

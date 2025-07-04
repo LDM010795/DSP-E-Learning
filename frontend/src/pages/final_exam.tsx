@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../components/ui_elements/buttons/button_secondary";
+import LoadingSpinner from "../components/ui_elements/loading_spinner";
+import SubBackground from "../components/layouts/SubBackground";
 import {
   IoTimeOutline,
   IoCalendarOutline,
@@ -12,6 +15,11 @@ import {
   IoPlayOutline,
   IoHourglassOutline,
   IoCheckmarkCircleOutline,
+  IoSearchOutline,
+  IoDocumentTextOutline,
+  IoClipboardOutline,
+  IoTrophyOutline,
+  IoAlertCircleOutline,
 } from "react-icons/io5";
 import { useExams, Exam, ExamAttempt } from "../context/ExamContext";
 import PopupExamOverview from "../components/pop_ups/popup_exam_overview";
@@ -29,13 +37,14 @@ type UserExamStatus =
   | "submitted"
   | "graded";
 
-// NEU: Mapping für Tab-Beschriftungen
-const tabLabels: Record<TabState, string> = {
-  übersicht: "Übersicht",
-  verfügbar: "Verfügbar",
-  inBearbeitung: "In Bearbeitung", // Korrekte Beschriftung
-  abgeschlossen: "Abgeschlossen",
-};
+// Tab-Konfiguration mit Icons
+const tabConfig: Record<TabState, { label: string; icon: React.ElementType }> =
+  {
+    übersicht: { label: "Übersicht", icon: IoClipboardOutline },
+    verfügbar: { label: "Verfügbar", icon: IoPlayOutline },
+    inBearbeitung: { label: "In Bearbeitung", icon: IoHourglassOutline },
+    abgeschlossen: { label: "Abgeschlossen", icon: IoTrophyOutline },
+  };
 
 // Hilfsfunktion zur Formatierung des Datums
 const formatDate = (dateString: string | null): string => {
@@ -59,7 +68,7 @@ const truncateText = (
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 };
 
-// NEU: Definiert die Reihenfolge für die Sortierung nach Status
+// Definiert die Reihenfolge für die Sortierung nach Status
 const getStatusOrder = (status: UserExamStatus): number => {
   switch (status) {
     case "started":
@@ -73,7 +82,7 @@ const getStatusOrder = (status: UserExamStatus): number => {
     case "locked":
       return 5;
     default:
-      return 6; // Fallback
+      return 6;
   }
 };
 
@@ -110,39 +119,6 @@ function FinalExam() {
     errorAllExams,
   } = useExams();
 
-  // DEBUG: Log des ExamContext beim Mount und wenn sich availableExams ändert
-  useEffect(() => {
-    console.log("FinalExam Component: ExamContext Daten geladen:", {
-      availableExamsCount: availableExams.length,
-      activeExamsCount: activeExams.length,
-      completedExamsCount: completedExams.length,
-      loadingStatus: loadingUserExams,
-      errorStatus: errorUserExams,
-    });
-
-    // Detaillierte Ausgabe der verfügbaren Prüfungen
-    if (availableExams.length > 0) {
-      console.log("Verfügbare Prüfungen:", availableExams);
-      console.log("Erste Prüfung:", {
-        id: availableExams[0].id,
-        title: availableExams[0].exam_title,
-        description: availableExams[0].exam_description,
-        difficulty: availableExams[0].exam_difficulty,
-        duration: availableExams[0].exam_duration_week,
-        criteria: availableExams[0].criteria,
-      });
-    } else {
-      console.log("Keine verfügbaren Prüfungen vorhanden");
-    }
-  }, [
-    availableExams,
-    activeExams,
-    completedExams,
-    loadingUserExams,
-    errorUserExams,
-  ]);
-
-  // --- Breadcrumb Items ---
   const breadcrumbItems = [
     { label: "Dashboard", path: "/dashboard" },
     { label: "Abschlussprüfungen" },
@@ -163,44 +139,47 @@ function FinalExam() {
     }
   }, [activeTab]);
 
-  // Tab-Rendering-Funktion - jetzt mit Label-Mapping
+  // Moderne Tab-Rendering-Funktion
   const renderTabs = () => (
-    <div
-      ref={tabsRef}
-      className="relative flex space-x-1 border border-gray-300 p-1 rounded-lg bg-gray-100 mb-8 self-start"
-    >
-      <div
-        className="absolute inset-y-0 bg-dsp-orange rounded-md shadow-sm transition-all duration-300 ease-out pointer-events-none"
-        style={sliderStyle}
-      />
-      {(Object.keys(tabLabels) as TabState[]).map((tab) => (
-        <button
-          key={tab}
-          data-tab={tab}
-          onClick={() => setActiveTab(tab)}
-          className={`relative z-10 px-4 py-1.5 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer 
-            ${
-              activeTab === tab
-                ? "text-white"
-                : "text-gray-600 hover:text-gray-800"
-            }`}
-        >
-          {tabLabels[tab]} {/* Verwende das Label aus dem Mapping */}
-        </button>
-      ))}
+    <div className="flex items-center justify-center mb-8">
+      <SubBackground className="p-1">
+        <div ref={tabsRef} className="relative flex space-x-1">
+          <div
+            className="absolute inset-y-1 bg-[#ff863d] rounded-lg shadow-sm transition-all duration-200 ease-out pointer-events-none"
+            style={sliderStyle}
+          />
+          {(Object.keys(tabConfig) as TabState[]).map((tab) => {
+            const { label, icon: Icon } = tabConfig[tab];
+            return (
+              <motion.button
+                key={tab}
+                data-tab={tab}
+                onClick={() => setActiveTab(tab)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer flex items-center space-x-2 ${
+                  activeTab === tab
+                    ? "text-white"
+                    : "text-gray-600 hover:text-[#ff863d]"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{label}</span>
+              </motion.button>
+            );
+          })}
+        </div>
+      </SubBackground>
     </div>
   );
 
   // Funktion zum Starten einer Prüfung
   const handleStartExam = async (examId: number) => {
-    console.log(`Starting exam ${examId}`);
     try {
       const result = await startExam(examId);
-      console.log("Prüfung starten Ergebnis:", result);
       if (result) {
         setActiveTab("inBearbeitung");
         await refreshUserExams();
-        // ERFOLG-TOAST
         toast.custom((t) => (
           <DspNotification
             id={t}
@@ -212,7 +191,6 @@ function FinalExam() {
           />
         ));
       } else {
-        // FEHLER-TOAST (wenn result null/false ist)
         toast.custom((t) => (
           <DspNotification
             id={t}
@@ -223,10 +201,8 @@ function FinalExam() {
         ));
       }
     } catch (error) {
-      console.error("Fehler beim Starten der Prüfung:", error);
       const errorMsg =
         error instanceof Error ? error.message : "Unbekannter Fehler";
-      // FEHLER-TOAST (bei Exception)
       toast.custom((t) => (
         <DspNotification
           id={t}
@@ -241,9 +217,6 @@ function FinalExam() {
   // Funktion zum Abgeben einer Prüfung
   const handleSubmitExam = async () => {
     if (selectedAttemptId !== null) {
-      console.log(
-        `Submitting exam attempt ${selectedAttemptId} with ${uploadedFiles.length} files`
-      );
       try {
         const success = await submitExam(selectedAttemptId, uploadedFiles);
         if (success) {
@@ -256,7 +229,6 @@ function FinalExam() {
           setSelectedAttemptId(null);
           await refreshUserExams();
           setActiveTab("abgeschlossen");
-          // ERFOLG-TOAST
           toast.custom((t) => (
             <DspNotification
               id={t}
@@ -266,7 +238,6 @@ function FinalExam() {
             />
           ));
         } else {
-          // FEHLER-TOAST
           toast.custom((t) => (
             <DspNotification
               id={t}
@@ -277,10 +248,8 @@ function FinalExam() {
           ));
         }
       } catch (error) {
-        console.error("Fehler beim Abgeben der Prüfung:", error);
         const errorMsg =
           error instanceof Error ? error.message : "Unbekannter Fehler";
-        // FEHLER-TOAST (bei Exception)
         toast.custom((t) => (
           <DspNotification
             id={t}
@@ -293,22 +262,18 @@ function FinalExam() {
     }
   };
 
-  // Öffnen des Abgabe-Dialogs
   const openSubmissionDialog = (attemptId: number) => {
     setSelectedAttemptId(attemptId);
     setIsSubmitting(true);
   };
 
-  // Datei-Upload-Handler
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setUploadedFiles(Array.from(e.target.files));
     }
   };
 
-  // NEU: Handler für Popup
   const handleOpenPopup = (exam: Exam, attempt?: ExamAttempt) => {
-    console.log("Öffne Popup für:", { exam, attempt });
     setSelectedExamForPopup(exam);
     setSelectedAttemptForPopup(attempt || null);
     setIsPopupOpen(true);
@@ -320,37 +285,42 @@ function FinalExam() {
     setSelectedAttemptForPopup(null);
   };
 
-  // ================================
-  // NEU: Rendering für Übersichtstab
-  // ================================
+  // Rendering für Übersichtstab
   const renderOverviewTab = () => {
-    console.log("RENDER OVERVIEW TAB:", {
-      loadingAllExams,
-      errorAllExams,
-      allExamsCount: allExams.length,
-      availableExamsCount: availableExams.length,
-      activeExamsCount: activeExams.length,
-      completedExamsCount: completedExams.length,
-    });
-
     if (loadingAllExams || loadingUserExams) {
-      return <div className="text-center py-8">Lädt Prüfungsübersicht...</div>;
+      return (
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner
+            message="Lade Prüfungsübersicht..."
+            size="lg"
+            variant="pulse"
+            showBackground={false}
+          />
+        </div>
+      );
     }
 
     if (errorAllExams || errorUserExams) {
       return (
-        <div className="text-center py-8 text-red-600">
-          Fehler beim Laden der Prüfungsübersicht:{" "}
-          {errorAllExams || errorUserExams}
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoAlertCircleOutline className="text-6xl text-red-500 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-red-700 mb-2">
+            Fehler beim Laden der Prüfungsübersicht
+          </h3>
+          <p className="text-gray-600">{errorAllExams || errorUserExams}</p>
+        </SubBackground>
       );
     }
 
     if (allExams.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          Keine Prüfungen im System gefunden.
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoDocumentTextOutline className="text-6xl text-gray-400 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Keine Prüfungen gefunden
+          </h3>
+          <p className="text-gray-500">Keine Prüfungen im System gefunden.</p>
+        </SubBackground>
       );
     }
 
@@ -363,7 +333,7 @@ function FinalExam() {
       completedExams.map((attempt) => [attempt.exam.id, attempt])
     );
 
-    // 1. Prüfungen mit Status und Attempt anreichern
+    // Prüfungen mit Status und Attempt anreichern
     const examsWithStatus = allExams.map((exam) => {
       let userExamStatus: UserExamStatus = "locked";
       let attempt: ExamAttempt | undefined = undefined;
@@ -380,7 +350,7 @@ function FinalExam() {
       return { exam, status: userExamStatus, attempt };
     });
 
-    // NEU: Nach Suchbegriff filtern (Titel)
+    // Nach Suchbegriff filtern
     const filteredExams = examsWithStatus.filter(({ exam }) => {
       const lowerSearchTerm = searchTerm.toLowerCase();
       return (
@@ -399,9 +369,15 @@ function FinalExam() {
 
     if (sortedAndFilteredExams.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          Keine Prüfungen entsprechen den aktuellen Kriterien.
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoSearchOutline className="text-6xl text-gray-400 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Keine Prüfungen gefunden
+          </h3>
+          <p className="text-gray-500">
+            Keine Prüfungen entsprechen den aktuellen Kriterien.
+          </p>
+        </SubBackground>
       );
     }
 
@@ -414,151 +390,134 @@ function FinalExam() {
             exam.criteria?.reduce((sum, c) => sum + c.max_points, 0) ?? null;
 
           return (
-            <div
+            <motion.div
               key={exam.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              whileHover={{ y: -2 }}
               className={clsx(
-                "bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col transition-all duration-200",
+                "group overflow-hidden border transition-all duration-200",
                 {
-                  "hover:shadow-lg": !isLocked,
-                  "border-l-4 border-dsp-green": userExamStatus === "started",
-                  "border-l-4 border-dsp-blue":
+                  "border-l-4 border-l-green-500": userExamStatus === "started",
+                  "border-l-4 border-l-blue-500":
                     userExamStatus === "submitted" ||
                     userExamStatus === "graded",
                 }
               )}
             >
-              <div
-                className={clsx("p-5 flex-grow", {
-                  "opacity-40 grayscale": isLocked,
+              <SubBackground
+                className={clsx("h-full", {
+                  "opacity-60 grayscale": isLocked,
                 })}
               >
-                <div className="flex items-start justify-between mb-2">
-                  <h3
+                <div className="flex-grow">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3
+                      className={clsx(
+                        "text-lg font-semibold leading-tight mr-2",
+                        isLocked
+                          ? "text-gray-500"
+                          : "text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200"
+                      )}
+                    >
+                      {exam.exam_title || "Titel nicht verfügbar"}
+                    </h3>
+                    <div className="flex-shrink-0">
+                      {userExamStatus === "locked" && (
+                        <IoLockClosedOutline
+                          className="text-gray-400 w-5 h-5"
+                          title="Gesperrt"
+                        />
+                      )}
+                      {userExamStatus === "available" && (
+                        <IoPlayOutline
+                          className="text-green-500 w-5 h-5"
+                          title="Verfügbar"
+                        />
+                      )}
+                      {userExamStatus === "started" && (
+                        <IoHourglassOutline
+                          className="text-[#ff863d] w-5 h-5 animate-pulse"
+                          title="In Bearbeitung"
+                        />
+                      )}
+                      {userExamStatus === "submitted" && (
+                        <IoCheckmarkCircleOutline
+                          className="text-blue-500 w-5 h-5"
+                          title="Abgegeben"
+                        />
+                      )}
+                      {userExamStatus === "graded" && attempt && (
+                        <TagScore score={attempt.score} maxScore={maxScore} />
+                      )}
+                    </div>
+                  </div>
+
+                  <p
                     className={clsx(
-                      "text-base font-semibold text-gray-800 leading-tight mr-2",
-                      { "text-gray-500": isLocked }
+                      "text-sm mb-4 text-gray-600 leading-relaxed",
+                      { italic: isLocked }
                     )}
                   >
-                    {exam.exam_title || "Titel nicht verfügbar"}
-                  </h3>
-                  <div className="flex-shrink-0 mt-px">
-                    {userExamStatus === "locked" && (
-                      <IoLockClosedOutline
-                        className="text-gray-400"
-                        title="Gesperrt"
-                      />
-                    )}
-                    {userExamStatus === "available" && (
-                      <IoPlayOutline
-                        className="text-lime-500"
-                        title="Verfügbar"
-                      />
-                    )}
-                    {userExamStatus === "started" && (
-                      <IoHourglassOutline
-                        className="text-yellow-500 animate-pulse"
-                        title="In Bearbeitung"
-                      />
-                    )}
-                    {userExamStatus === "submitted" && (
-                      <IoCheckmarkCircleOutline
-                        className="text-blue-500"
-                        title="Abgegeben"
-                      />
-                    )}
-                    {userExamStatus === "graded" && attempt && (
-                      <TagScore score={attempt.score} maxScore={maxScore} />
-                    )}
+                    {isLocked
+                      ? "Voraussetzungen noch nicht erfüllt oder bereits anderer Versuch gestartet/beendet."
+                      : truncateText(exam.exam_description, 100)}
+                  </p>
+
+                  <div className="flex items-center text-sm text-gray-500 mb-4">
+                    <IoTimeOutline className="mr-2 w-4 h-4" />
+                    <span>
+                      {exam.exam_duration_week}{" "}
+                      {exam.exam_duration_week === 1 ? "Woche" : "Wochen"}
+                    </span>
                   </div>
-                </div>
 
-                <p
-                  className={clsx(
-                    "text-xs text-gray-500 mb-3 h-10 overflow-hidden",
-                    { italic: isLocked }
-                  )}
-                >
-                  {isLocked
-                    ? "Voraussetzungen noch nicht erfüllt oder bereits anderer Versuch gestartet/beendet."
-                    : truncateText(exam.exam_description, 80)}
-                </p>
-
-                <div className="flex items-center text-xs text-gray-500 mb-1">
-                  <IoTimeOutline className="mr-1.5" /> {exam.exam_duration_week}{" "}
-                  {exam.exam_duration_week === 1 ? "Woche" : "Wochen"}
-                </div>
-
-                {attempt && (
-                  <div className="mt-2 pt-2 border-t border-gray-100 text-xs space-y-1">
-                    {userExamStatus === "started" && attempt.due_date && (
-                      <div className="flex items-center text-red-600 font-medium">
-                        <IoFlagOutline className="mr-1.5" /> Fällig:{" "}
-                        {formatDate(attempt.due_date)}
-                      </div>
-                    )}
-                    {(userExamStatus === "submitted" ||
-                      userExamStatus === "graded") &&
-                      attempt.submitted_at && (
-                        <div className="flex items-center text-gray-600">
-                          <IoCheckmarkDoneOutline className="mr-1.5 text-green-600" />{" "}
-                          Abgegeben: {formatDate(attempt.submitted_at)}
+                  {attempt && (
+                    <div className="pt-3 border-t border-gray-200 text-sm space-y-2">
+                      {userExamStatus === "started" && attempt.due_date && (
+                        <div className="flex items-center text-red-600 font-medium">
+                          <IoFlagOutline className="mr-2 w-4 h-4" />
+                          <span>Fällig: {formatDate(attempt.due_date)}</span>
                         </div>
                       )}
-                  </div>
-                )}
-              </div>
+                      {(userExamStatus === "submitted" ||
+                        userExamStatus === "graded") &&
+                        attempt.submitted_at && (
+                          <div className="flex items-center text-gray-600">
+                            <IoCheckmarkDoneOutline className="mr-2 w-4 h-4 text-green-600" />
+                            <span>
+                              Abgegeben: {formatDate(attempt.submitted_at)}
+                            </span>
+                          </div>
+                        )}
+                    </div>
+                  )}
+                </div>
 
-              <div className="bg-gray-50 p-3 border-t border-gray-200">
-                {userExamStatus === "locked" && (
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-xs text-gray-500 italic mr-2">
-                      Zum Freischalten Module absolvieren
-                    </span>
-                    <ButtonSecondary
-                      title="Details anzeigen"
-                      classNameButton="sm:w-auto text-sm"
-                      onClick={() => handleOpenPopup(exam)}
-                    />
-                  </div>
-                )}
-                {userExamStatus === "available" && (
-                  <div className="flex justify-end w-full">
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  {userExamStatus === "locked" && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-500 italic">
+                        Zum Freischalten Module absolvieren
+                      </span>
+                      <ButtonSecondary
+                        title="Details"
+                        classNameButton="text-sm px-3 py-1"
+                        onClick={() => handleOpenPopup(exam)}
+                      />
+                    </div>
+                  )}
+                  {userExamStatus !== "locked" && (
                     <ButtonPrimary
                       title="Details anzeigen"
-                      classNameButton="w-full sm:w-auto text-sm"
-                      onClick={() => handleOpenPopup(exam)}
-                    />
-                  </div>
-                )}
-                {userExamStatus === "started" && attempt && (
-                  <div className="flex justify-end w-full">
-                    <ButtonPrimary
-                      title="Details anzeigen"
-                      classNameButton="w-full sm:w-auto text-sm"
+                      classNameButton="w-full text-sm"
                       onClick={() => handleOpenPopup(exam, attempt)}
                     />
-                  </div>
-                )}
-                {userExamStatus === "submitted" && attempt && (
-                  <div className="flex justify-end w-full">
-                    <ButtonPrimary
-                      title="Details anzeigen"
-                      classNameButton="w-full sm:w-auto text-sm"
-                      onClick={() => handleOpenPopup(exam, attempt)}
-                    />
-                  </div>
-                )}
-                {userExamStatus === "graded" && attempt && (
-                  <div className="flex justify-end w-full">
-                    <ButtonPrimary
-                      title="Details anzeigen"
-                      classNameButton="w-full sm:w-auto text-sm"
-                      onClick={() => handleOpenPopup(exam, attempt)}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+                  )}
+                </div>
+              </SubBackground>
+            </motion.div>
           );
         })}
       </div>
@@ -567,34 +526,46 @@ function FinalExam() {
 
   // Verfügbare Prüfungen rendern
   const renderAvailableExams = () => {
-    console.log("RENDER AVAILABLE EXAMS:", {
-      loadingUserExams,
-      errorUserExams,
-      availableExamsCount: availableExams.length,
-      availableExamsData: availableExams,
-    });
-
     if (loadingUserExams) {
-      return <div className="text-center py-8">Lädt Prüfungen...</div>;
+      return (
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner
+            message="Lade verfügbare Prüfungen..."
+            size="lg"
+            variant="spinner"
+            showBackground={false}
+          />
+        </div>
+      );
     }
 
     if (errorUserExams) {
       return (
-        <div className="text-center py-8 text-red-600">
-          Fehler beim Laden der Prüfungen: {errorUserExams}
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoAlertCircleOutline className="text-6xl text-red-500 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-red-700 mb-2">
+            Fehler beim Laden der Prüfungen
+          </h3>
+          <p className="text-gray-600">{errorUserExams}</p>
+        </SubBackground>
       );
     }
 
     if (availableExams.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          Derzeit sind keine Prüfungen verfügbar.
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoPlayOutline className="text-6xl text-gray-400 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Keine verfügbaren Prüfungen
+          </h3>
+          <p className="text-gray-500">
+            Derzeit sind keine Prüfungen verfügbar.
+          </p>
+        </SubBackground>
       );
     }
 
-    // NEU: Nach Suchbegriff filtern (Titel)
+    // Nach Suchbegriff filtern
     const filteredAvailableExams = availableExams.filter((exam) => {
       const lowerSearchTerm = searchTerm.toLowerCase();
       return (
@@ -605,72 +576,63 @@ function FinalExam() {
 
     if (filteredAvailableExams.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          Keine verfügbaren Prüfungen entsprechen den aktuellen Kriterien.
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoSearchOutline className="text-6xl text-gray-400 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Keine Prüfungen gefunden
+          </h3>
+          <p className="text-gray-500">
+            Keine verfügbaren Prüfungen entsprechen den aktuellen Kriterien.
+          </p>
+        </SubBackground>
       );
-    }
-
-    // Debug: Überprüfen der Datenstruktur der ersten Prüfung
-    if (availableExams.length > 0) {
-      console.log(
-        "First available exam data (JSON):",
-        JSON.stringify(availableExams[0], null, 2)
-      );
-      console.log("First available exam title:", availableExams[0].exam_title);
     }
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAvailableExams.map((exam) => {
-          console.log("Rendering exam item:", exam.id, {
-            title: exam.exam_title,
-            description: exam.exam_description,
-            difficulty: exam.exam_difficulty,
-            duration_weeks: exam.exam_duration_week,
-          });
-
-          if (!exam.exam_title) {
-            console.warn("ACHTUNG: Prüfung hat keinen Titel!", exam);
-          }
-
-          return (
-            <div
-              key={exam.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden border border-gray-200 flex flex-col"
-            >
-              <div className="p-5 flex-grow">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-base font-semibold text-gray-800 leading-tight mr-2">
+        {filteredAvailableExams.map((exam, index) => (
+          <motion.div
+            key={exam.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+            whileHover={{ y: -2 }}
+            className="group"
+          >
+            <SubBackground className="h-full hover:bg-white/70 transition-all duration-200">
+              <div className="flex-grow">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-semibold text-gray-800 leading-tight mr-2 group-hover:text-[#ff863d] transition-colors duration-200">
                     {exam.exam_title || "Titel nicht verfügbar"}
                   </h3>
-                  <div className="flex-shrink-0 mt-px">
+                  <div className="flex-shrink-0">
                     <IoPlayOutline
-                      className="text-lime-500"
+                      className="text-green-500 w-5 h-5"
                       title="Verfügbar"
                     />
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mb-3 h-10 overflow-hidden">
-                  {truncateText(exam.exam_description, 80)}
+                <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                  {truncateText(exam.exam_description, 100)}
                 </p>
-                <div className="flex items-center text-xs text-gray-500 mb-1">
-                  <IoTimeOutline className="mr-1.5" /> {exam.exam_duration_week}{" "}
-                  {exam.exam_duration_week === 1 ? "Woche" : "Wochen"}
+                <div className="flex items-center text-sm text-gray-500 mb-4">
+                  <IoTimeOutline className="mr-2 w-4 h-4" />
+                  <span>
+                    {exam.exam_duration_week}{" "}
+                    {exam.exam_duration_week === 1 ? "Woche" : "Wochen"}
+                  </span>
                 </div>
               </div>
-              <div className="bg-gray-50 p-3 border-t border-gray-200">
-                <div className="flex justify-end w-full">
-                  <ButtonPrimary
-                    title="Details anzeigen"
-                    onClick={() => handleOpenPopup(exam)}
-                    classNameButton="w-full sm:w-auto text-sm"
-                  />
-                </div>
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <ButtonPrimary
+                  title="Details anzeigen"
+                  onClick={() => handleOpenPopup(exam)}
+                  classNameButton="w-full text-sm"
+                />
               </div>
-            </div>
-          );
-        })}
+            </SubBackground>
+          </motion.div>
+        ))}
       </div>
     );
   };
@@ -678,73 +640,108 @@ function FinalExam() {
   // In Bearbeitung befindliche Prüfungen rendern
   const renderInProgressExams = () => {
     if (loadingUserExams) {
-      return <div className="text-center py-8">Lädt Prüfungen...</div>;
+      return (
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner
+            message="Lade laufende Prüfungen..."
+            size="lg"
+            variant="spinner"
+            showBackground={false}
+          />
+        </div>
+      );
     }
 
     if (errorUserExams) {
       return (
-        <div className="text-center py-8 text-red-600">
-          Fehler beim Laden der Prüfungen: {errorUserExams}
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoAlertCircleOutline className="text-6xl text-red-500 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-red-700 mb-2">
+            Fehler beim Laden der Prüfungen
+          </h3>
+          <p className="text-gray-600">{errorUserExams}</p>
+        </SubBackground>
       );
     }
 
     if (activeExams.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          Du hast derzeit keine Prüfungen in Bearbeitung.
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoHourglassOutline className="text-6xl text-gray-400 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Keine laufenden Prüfungen
+          </h3>
+          <p className="text-gray-500">
+            Du hast derzeit keine Prüfungen in Bearbeitung.
+          </p>
+        </SubBackground>
       );
     }
 
-    console.log("Aktive Prüfungen:", activeExams);
-
     return (
       <div className="space-y-6">
-        {activeExams.map((attempt) => (
-          <div
+        {activeExams.map((attempt, index) => (
+          <motion.div
             key={attempt.id}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-200"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+            whileHover={{ y: -2 }}
+            className="group"
           >
-            <div className="p-6">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
-                <div className="flex-grow mr-4">
-                  <div className="flex items-start justify-between">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                      {attempt.exam.exam_title}
-                    </h3>
-                    <div className="flex-shrink-0 mt-px">
-                      <IoHourglassOutline
-                        className="text-yellow-500 animate-pulse"
-                        title="In Bearbeitung"
-                      />
+            <SubBackground className="hover:bg-white/70 transition-all duration-200">
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1 mr-4">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-[#ff863d] transition-colors duration-200">
+                        {attempt.exam.exam_title}
+                      </h3>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {truncateText(attempt.exam.exam_description, 150)}
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <div className="flex items-center space-x-2 px-3 py-1 bg-[#ffe7d4] border border-[#ff863d]/20 rounded-full">
+                        <IoHourglassOutline
+                          className="text-[#ff863d] w-4 h-4 animate-pulse"
+                          title="In Bearbeitung"
+                        />
+                        <span className="text-sm font-medium text-[#ff863d]">
+                          In Bearbeitung
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    {truncateText(attempt.exam.exam_description)}
-                  </p>
-                </div>
-                <div className="mt-3 sm:mt-0 sm:ml-4 text-sm text-gray-500 flex-shrink-0">
-                  <div className="flex items-center mb-1">
-                    <IoCalendarOutline className="mr-2" /> Gestartet:{" "}
-                    {formatDate(attempt.started_at)}
-                  </div>
-                  <div className="flex items-center text-red-600 font-medium">
-                    <IoFlagOutline className="mr-2" /> Fällig:{" "}
-                    {formatDate(attempt.due_date)}
-                  </div>
-                </div>
-              </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <ButtonPrimary
-                  title="Details anzeigen & Abgeben"
-                  classNameButton="w-full sm:w-auto text-sm"
-                  onClick={() => handleOpenPopup(attempt.exam, attempt)}
-                />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center text-gray-600">
+                      <IoCalendarOutline className="mr-2 w-4 h-4" />
+                      <span>
+                        <span className="font-medium">Gestartet:</span>{" "}
+                        {formatDate(attempt.started_at)}
+                      </span>
+                    </div>
+                    <div className="flex items-center text-red-600 font-medium">
+                      <IoFlagOutline className="mr-2 w-4 h-4" />
+                      <span>
+                        <span className="font-medium">Fällig:</span>{" "}
+                        {formatDate(attempt.due_date)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-shrink-0">
+                  <ButtonPrimary
+                    title="Details anzeigen & Abgeben"
+                    classNameButton="w-full lg:w-auto text-sm whitespace-nowrap"
+                    onClick={() => handleOpenPopup(attempt.exam, attempt)}
+                  />
+                </div>
               </div>
-            </div>
-          </div>
+            </SubBackground>
+          </motion.div>
         ))}
       </div>
     );
@@ -752,80 +749,122 @@ function FinalExam() {
 
   // Abgeschlossene Prüfungen rendern
   const renderCompletedExams = () => {
-    console.log("Abgeschlossene Prüfungen:", completedExams);
-
     if (loadingUserExams) {
-      return <div className="text-center py-8">Lädt Prüfungen...</div>;
+      return (
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner
+            message="Lade abgeschlossene Prüfungen..."
+            size="lg"
+            variant="spinner"
+            showBackground={false}
+          />
+        </div>
+      );
     }
 
     if (errorUserExams) {
       return (
-        <div className="text-center py-8 text-red-600">
-          Fehler beim Laden der Prüfungen: {errorUserExams}
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoAlertCircleOutline className="text-6xl text-red-500 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-red-700 mb-2">
+            Fehler beim Laden der Prüfungen
+          </h3>
+          <p className="text-gray-600">{errorUserExams}</p>
+        </SubBackground>
       );
     }
 
     if (completedExams.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          Du hast noch keine Prüfungen abgeschlossen.
-        </div>
+        <SubBackground className="text-center py-12">
+          <IoTrophyOutline className="text-6xl text-gray-400 mb-4 mx-auto" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Noch keine abgeschlossenen Prüfungen
+          </h3>
+          <p className="text-gray-500">
+            Du hast noch keine Prüfungen abgeschlossen.
+          </p>
+        </SubBackground>
       );
     }
 
     return (
       <div className="space-y-4">
-        {completedExams.map((attempt) => {
+        {completedExams.map((attempt, index) => {
           const maxScore =
             attempt.exam?.criteria?.reduce((sum, c) => sum + c.max_points, 0) ??
             null;
+          const isGraded = attempt.status === "graded";
+
           return (
-            <div
+            <motion.div
               key={attempt.id}
-              className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              whileHover={{ y: -1 }}
+              className="group cursor-pointer"
+              onClick={() => handleOpenPopup(attempt.exam, attempt)}
             >
-              <div
-                onClick={() => handleOpenPopup(attempt.exam, attempt)}
-                className="cursor-pointer hover:bg-gray-50 transition-colors"
-              >
-                <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-start sm:justify-between">
-                  <div className="mb-3 sm:mb-0 flex-grow mr-4">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      {attempt.exam.exam_title}
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {truncateText(attempt.exam.exam_description)}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end flex-shrink-0 space-y-2">
-                    <div className="flex-shrink-0">
-                      {attempt.status === "graded" && (
-                        <TagScore score={attempt.score} maxScore={maxScore} />
-                      )}
-                      {attempt.status === "submitted" && (
-                        <IoCheckmarkCircleOutline
-                          className="text-blue-500"
-                          title="Abgegeben"
-                        />
-                      )}
+              <SubBackground className="hover:bg-white/70 transition-all duration-200">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 mr-4">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-[#ff863d] transition-colors duration-200">
+                          {attempt.exam.exam_title}
+                        </h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {truncateText(attempt.exam.exam_description, 150)}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0">
+                        {isGraded ? (
+                          <TagScore score={attempt.score} maxScore={maxScore} />
+                        ) : (
+                          <div className="flex items-center space-x-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-full">
+                            <IoCheckmarkCircleOutline
+                              className="text-blue-500 w-4 h-4"
+                              title="Abgegeben"
+                            />
+                            <span className="text-sm font-medium text-blue-700">
+                              Abgegeben
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
                     <div className="flex items-center text-sm text-gray-600">
-                      <IoCheckmarkDoneOutline className="mr-1 text-green-600" />
-                      {attempt.status === "graded"
-                        ? "Bewertet: " +
-                          (attempt.graded_at
-                            ? formatDate(attempt.graded_at)
-                            : "Unbekannt")
-                        : "Abgegeben: " +
-                          (attempt.submitted_at
-                            ? formatDate(attempt.submitted_at)
-                            : "Unbekannt")}
+                      <IoCheckmarkDoneOutline className="mr-2 w-4 h-4 text-green-600" />
+                      <span>
+                        {isGraded ? (
+                          <>
+                            <span className="font-medium">Bewertet:</span>{" "}
+                            {attempt.graded_at
+                              ? formatDate(attempt.graded_at)
+                              : "Unbekannt"}
+                          </>
+                        ) : (
+                          <>
+                            <span className="font-medium">Abgegeben:</span>{" "}
+                            {attempt.submitted_at
+                              ? formatDate(attempt.submitted_at)
+                              : "Unbekannt"}
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex-shrink-0 flex items-center">
+                    <div className="text-xs text-gray-500 font-medium px-3 py-1 bg-gray-100 rounded-full">
+                      Details anzeigen
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </SubBackground>
+            </motion.div>
           );
         })}
       </div>
@@ -833,102 +872,149 @@ function FinalExam() {
   };
 
   return (
-    <div className="p-6 min-h-screen">
-      <div>
-        <Breadcrumbs items={breadcrumbItems} className="mb-6" />
-        <h1 className="text-3xl font-bold text-gray-800">Abschlussprüfungen</h1>
-        <p className="text-base text-gray-600 mb-6">
-          Hier findest du alle verfügbaren Abschlussprüfungen und kannst deine
-          Prüfungsunterlagen hochladen.
-        </p>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="relative px-4 py-8">
+          <div className="max-w-[95vw] mx-auto">
+            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
-        <FilterHead
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          searchPlaceholder="Prüfungen durchsuchen..."
-          className="mb-6"
-        />
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+                Abschlussprüfungen
+              </h1>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Hier findest du alle verfügbaren Abschlussprüfungen und kannst
+                deine Prüfungsunterlagen hochladen.
+              </p>
+            </div>
 
-        {renderTabs()}
+            <SubBackground className="mb-8">
+              <FilterHead
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                searchPlaceholder="Prüfungen durchsuchen..."
+                className=""
+              />
+            </SubBackground>
 
-        <div className="mt-6">
+            {renderTabs()}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="px-4 pb-8">
+        <div className="max-w-[95vw] mx-auto">
           {activeTab === "übersicht" && renderOverviewTab()}
           {activeTab === "verfügbar" && renderAvailableExams()}
           {activeTab === "inBearbeitung" && renderInProgressExams()}
           {activeTab === "abgeschlossen" && renderCompletedExams()}
         </div>
+      </div>
 
-        {isSubmitting && (
-          <div className="fixed inset-0 bg-black/60 z-30 flex items-center justify-center p-4">
-            <div className="relative bg-white rounded-xl shadow-2xl p-8 w-full max-w-3xl z-50 max-h-[90vh] overflow-y-auto">
+      {/* Submission Modal */}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/60 z-30 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="relative w-full max-w-3xl z-50 max-h-[90vh] overflow-y-auto"
+          >
+            <SubBackground className="p-8">
               <button
                 onClick={() => setIsSubmitting(false)}
-                className="absolute top-4 right-4 p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+                className="absolute top-6 right-6 p-2 text-gray-500 hover:text-gray-800 hover:bg-white/60 rounded-full transition-all duration-200"
                 aria-label="Schließen"
               >
-                <IoCloseOutline size={24} />
+                <IoCloseOutline className="w-5 h-5" />
               </button>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Prüfung abgeben
-              </h2>
-              <div className="mb-6">
-                <label
-                  htmlFor="fileUpload"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Dateien hochladen
-                </label>
-                <input
-                  type="file"
-                  id="fileUpload"
-                  multiple
-                  onChange={handleFileUpload}
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                />
-                {uploadedFiles.length > 0 && (
-                  <div className="mt-2 text-sm text-gray-600">
-                    {uploadedFiles.length}{" "}
-                    {uploadedFiles.length === 1 ? "Datei" : "Dateien"}{" "}
-                    ausgewählt
-                  </div>
-                )}
+
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-3 rounded-xl bg-[#ffe7d4]">
+                  <IoDocumentTextOutline className="w-6 h-6 text-[#ff863d]" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Prüfung abgeben
+                </h2>
               </div>
-              <div>
-                <label
-                  htmlFor="submissionCommentPopup"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Kommentar
-                </label>
-                <textarea
-                  id="submissionCommentPopup"
-                  rows={4}
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                  value={submissionComment}
-                  onChange={(e) => setSubmissionComment(e.target.value)}
-                ></textarea>
+
+              <div className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="fileUpload"
+                    className="block text-sm font-semibold text-gray-700 mb-3"
+                  >
+                    Dateien hochladen
+                  </label>
+                  <input
+                    type="file"
+                    id="fileUpload"
+                    multiple
+                    onChange={handleFileUpload}
+                    className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d] transition-all duration-200"
+                  />
+                  {uploadedFiles.length > 0 && (
+                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center text-sm text-green-700">
+                        <IoCheckmarkCircleOutline className="w-4 h-4 mr-2" />
+                        <span className="font-medium">
+                          {uploadedFiles.length}{" "}
+                          {uploadedFiles.length === 1 ? "Datei" : "Dateien"}{" "}
+                          ausgewählt
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="submissionCommentPopup"
+                    className="block text-sm font-semibold text-gray-700 mb-3"
+                  >
+                    Kommentar (optional)
+                  </label>
+                  <textarea
+                    id="submissionCommentPopup"
+                    rows={4}
+                    className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d] transition-all duration-200 resize-none"
+                    placeholder="Zusätzliche Anmerkungen zu deiner Abgabe..."
+                    value={submissionComment}
+                    onChange={(e) => setSubmissionComment(e.target.value)}
+                  ></textarea>
+                </div>
               </div>
-              <div className="mt-6 flex justify-end space-x-3">
+
+              <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
                 <ButtonSecondary
                   title="Abbrechen"
                   onClick={() => setIsSubmitting(false)}
+                  classNameButton="w-full sm:w-auto"
                 />
-                <ButtonPrimary title="Absenden" onClick={handleSubmitExam} />
+                <ButtonPrimary
+                  title="Prüfung abgeben"
+                  onClick={handleSubmitExam}
+                  classNameButton="w-full sm:w-auto"
+                />
               </div>
-            </div>
-          </div>
-        )}
+            </SubBackground>
+          </motion.div>
+        </div>
+      )}
 
-        {isPopupOpen && selectedExamForPopup && (
-          <PopupExamOverview
-            exam={selectedExamForPopup}
-            attempt={selectedAttemptForPopup}
-            onClose={handleClosePopup}
-            onStartExam={handleStartExam}
-            onPrepareSubmission={openSubmissionDialog}
-          />
-        )}
-      </div>
+      {/* Exam Details Popup */}
+      {isPopupOpen && selectedExamForPopup && (
+        <PopupExamOverview
+          exam={selectedExamForPopup}
+          attempt={selectedAttemptForPopup}
+          onClose={handleClosePopup}
+          onStartExam={handleStartExam}
+          onPrepareSubmission={openSubmissionDialog}
+        />
+      )}
     </div>
   );
 }

@@ -24,15 +24,16 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
 }) => {
   const buttonVariants = {
     initial: { scale: 1 },
-    hover: { scale: 1.05 },
+    hover: { scale: 1.02 },
+    tap: { scale: 0.98 },
   };
 
   const iconVariants = {
-    initial: { x: 0 },
-    hover: { x: 6 },
+    initial: { x: 0, rotate: 0 },
+    hover: iconPosition === "right" ? { x: 4, rotate: 0 } : { x: -4, rotate: 0 },
   };
 
-  const iconPositionClass = iconPosition === "left" ? "flex-row-reverse" : "";
+  const isFlexReversed = iconPosition === "left";
 
   return (
     <motion.button
@@ -40,25 +41,52 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       disabled={disabled}
       onHoverStart={onHoverStart}
       onHoverEnd={onHoverEnd}
-      className={`flex items-center space-x-2 rounded-lg  py-2 px-4 border-2 border-dsp-orange p-2
-       hover:cursor-pointer focus:outline-none hover:font-bold
-        ${iconPositionClass} ${classNameButton} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+      className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3
+        bg-white/80 backdrop-blur-sm hover:bg-white/90
+        text-gray-700 hover:text-[#ff863d] font-semibold
+        border-2 border-[#ff863d]/40 hover:border-[#ff863d]/60
+        shadow-sm hover:shadow-lg hover:shadow-[#ff863d]/10
+        transition-all duration-200 ease-in-out
+        focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20 focus:ring-offset-2
+        ${disabled 
+          ? "opacity-50 cursor-not-allowed hover:scale-100 hover:text-gray-700 hover:bg-white/80" 
+          : "hover:cursor-pointer active:shadow-sm"
+        }
+        ${isFlexReversed ? "flex-row-reverse space-x-reverse" : ""}
+        ${classNameButton}`}
       variants={buttonVariants}
       initial="initial"
-      whileTap="tap"
+      whileHover={disabled ? "initial" : "hover"}
+      whileTap={disabled ? "initial" : "tap"}
+      whileFocus={{ 
+        boxShadow: "0 0 0 3px rgba(255, 134, 61, 0.1)" 
+      }}
     >
-      {title && <p className="text-sm md:text-base ">{title}</p>}
-      {icon && (
-        <motion.span
-          className={classNameIcon}
-          variants={iconVariants}
-          transition={{ type: "spring", stiffness: 500 }}
-        >
-          {icon}
-        </motion.span>
-      )}
+      {/* Background glow effect */}
+      <div className="absolute inset-0 bg-[#ff863d]/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      
+      {/* Content */}
+      <div className={`relative flex items-center space-x-3 ${isFlexReversed ? "flex-row-reverse space-x-reverse" : ""}`}>
+        {title && (
+          <span className="text-sm md:text-base font-bold tracking-wide">
+            {title}
+          </span>
+        )}
+        {icon && (
+          <motion.span
+            className={`${classNameIcon} flex-shrink-0 text-[#ff863d] group-hover:text-[#fa8c45]`}
+            variants={iconVariants}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            {icon}
+          </motion.span>
+        )}
+      </div>
+      
+      {/* Shine effect */}
+      <div className="absolute inset-0 rounded-xl overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#ff863d]/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+      </div>
     </motion.button>
   );
 };
