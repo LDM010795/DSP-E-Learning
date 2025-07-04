@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
   IoCheckmarkCircleOutline,
   IoListOutline,
@@ -9,8 +10,9 @@ import LearningTimeChart from "../../components/charts/LearningTimeChart";
 import ProgressOverTimeChart from "../../components/charts/ProgressOverTimeChart";
 import SkillDistributionChart from "../../components/charts/SkillDistributionChart";
 import LazyLoadChartWrapper from "../../components/common/LazyLoadChartWrapper";
+import SubBackground from "../../components/layouts/SubBackground";
 
-// --- Platzhalterdaten (Beispiele) ---
+// Platzhalterdaten (Beispiele)
 const overviewStats = {
   modulesCompleted: "5/8",
   tasksSolved: 48,
@@ -33,7 +35,7 @@ const progressOverTimeData = [
   { month: "Feb", Fortschritt: 20 },
   { month: "Mär", Fortschritt: 35 },
   { month: "Apr", Fortschritt: 75 },
-  { month: "Mai", Fortschritt: 60 } /* ... */,
+  { month: "Mai", Fortschritt: 60 },
 ];
 
 const moduleProgressData = [
@@ -46,40 +48,107 @@ const moduleProgressData = [
 ];
 
 const skillDistributionData = [
-  { name: "Python", value: 35, fill: "#FF8C00" },
-  { name: "Excel", value: 25, fill: "#1E90FF" },
-  { name: "SQL", value: 20, fill: "#32CD32" },
-  { name: "Power BI", value: 15, fill: "#FFD700" },
-  { name: "Tableau", value: 5, fill: "#FF6347" },
+  { name: "Python", value: 35, fill: "#ff863d" },
+  { name: "Excel", value: 25, fill: "#60a5fa" },
+  { name: "SQL", value: 20, fill: "#34d399" },
+  { name: "Power BI", value: 15, fill: "#fbbf24" },
+  { name: "Tableau", value: 5, fill: "#f87171" },
 ];
 
-// --- Hilfskomponenten ---
+// Hilfskomponenten
 interface StatCardProps {
   title: string;
   value: string | number;
   icon: React.ReactNode;
+  colorScheme: "orange" | "blue" | "purple" | "yellow";
+  index: number;
 }
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
-  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex items-center gap-4">
-    <div className="p-3 rounded-full bg-gray-100 text-gray-600">{icon}</div>
-    <div>
-      <p className="text-sm text-gray-500 font-medium">{title}</p>
-      <p className="text-2xl font-semibold text-gray-800">{value}</p>
-    </div>
-  </div>
-);
+
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon, colorScheme, index }) => {
+  const colorConfig = {
+    orange: { 
+      bg: "bg-[#ffe7d4]", 
+      text: "text-[#ff863d]",
+      border: "border-[#ff863d]/20"
+    },
+    blue: { 
+      bg: "bg-blue-50", 
+      text: "text-blue-600",
+      border: "border-blue-200"
+    },
+    purple: { 
+      bg: "bg-purple-50", 
+      text: "text-purple-600",
+      border: "border-purple-200"
+    },
+    yellow: { 
+      bg: "bg-yellow-50", 
+      text: "text-yellow-600",
+      border: "border-yellow-200"
+    },
+  };
+
+  const colors = colorConfig[colorScheme];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.1 }}
+      whileHover={{ y: -2 }}
+      className="group"
+    >
+      <SubBackground className="hover:bg-white/80 transition-all duration-200">
+        <div className="flex items-center gap-4">
+          <div className={`p-3 rounded-xl ${colors.bg} ${colors.border} border group-hover:scale-110 transition-transform duration-200`}>
+            <div className={`w-6 h-6 ${colors.text}`}>
+              {icon}
+            </div>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-gray-600 font-medium mb-1">{title}</p>
+            <p className="text-2xl font-bold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+              {value}
+            </p>
+          </div>
+        </div>
+      </SubBackground>
+    </motion.div>
+  );
+};
 
 interface ChartCardProps {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  index: number;
 }
-const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children }) => (
-  <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-    <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-    {subtitle && <p className="text-sm text-gray-500 mb-4">{subtitle}</p>}
-    <div className="mt-4">{children}</div>
-  </div>
+
+const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, index }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+    whileHover={{ y: -2 }}
+    className="group"
+  >
+    <SubBackground className="hover:bg-white/80 transition-all duration-200">
+      <div className="flex items-center space-x-3 mb-4">
+        <div className="p-2 rounded-lg bg-[#ffe7d4]">
+          <IoTimeOutline className="w-5 h-5 text-[#ff863d]" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+            {title}
+          </h3>
+          {subtitle && (
+            <p className="text-sm text-gray-600 leading-relaxed">{subtitle}</p>
+          )}
+        </div>
+      </div>
+      <div className="mt-4">{children}</div>
+    </SubBackground>
+  </motion.div>
 );
 
 const Overview: React.FC = () => {
@@ -90,29 +159,39 @@ const Overview: React.FC = () => {
         <StatCard
           title="Abgeschlossene Module"
           value={overviewStats.modulesCompleted}
-          icon={<IoCheckmarkCircleOutline className="text-green-600" />}
+          icon={<IoCheckmarkCircleOutline className="w-6 h-6" />}
+          colorScheme="orange"
+          index={0}
         />
         <StatCard
           title="Gelöste Aufgaben"
           value={overviewStats.tasksSolved}
-          icon={<IoListOutline className="text-blue-600" />}
+          icon={<IoListOutline className="w-6 h-6" />}
+          colorScheme="blue"
+          index={1}
         />
         <StatCard
           title="Gesamte Lernzeit"
           value={overviewStats.totalLearningTime}
-          icon={<IoTimeOutline className="text-purple-600" />}
+          icon={<IoTimeOutline className="w-6 h-6" />}
+          colorScheme="purple"
+          index={2}
         />
         <StatCard
           title="Errungenschaften"
           value={overviewStats.achievements}
-          icon={<IoRibbonOutline className="text-yellow-600" />}
+          icon={<IoRibbonOutline className="w-6 h-6" />}
+          colorScheme="yellow"
+          index={3}
         />
       </div>
+
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartCard
           title="Lernzeit pro Tag"
           subtitle="Deine Lernzeit in den letzten 7 Tagen"
+          index={0}
         >
           <LazyLoadChartWrapper
             component={LearningTimeChart}
@@ -120,9 +199,11 @@ const Overview: React.FC = () => {
             chartProps={{ data: learningTimeData }}
           />
         </ChartCard>
+
         <ChartCard
           title="Fortschritt über Zeit"
           subtitle="Dein Gesamtfortschritt über die Monate"
+          index={1}
         >
           <LazyLoadChartWrapper
             component={ProgressOverTimeChart}
@@ -130,27 +211,44 @@ const Overview: React.FC = () => {
             chartProps={{ data: progressOverTimeData }}
           />
         </ChartCard>
-        <ChartCard title="Modulabschluss" subtitle="Fortschritt in jedem Modul">
-          <div className="space-y-2 pr-4">
-            {moduleProgressData.map((item) => (
-              <div key={item.name}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span>{item.name}</span>
-                  <span>{item.value}%</span>
+
+        <ChartCard 
+          title="Modulabschluss" 
+          subtitle="Fortschritt in jedem Modul"
+          index={2}
+        >
+          <div className="space-y-4">
+            {moduleProgressData.map((item, idx) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.8 + idx * 0.1 }}
+                className="group"
+              >
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium text-gray-700 group-hover:text-[#ff863d] transition-colors duration-200">
+                    {item.name}
+                  </span>
+                  <span className="font-bold text-gray-800">{item.value}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-dsp-orange h-2 rounded-full"
-                    style={{ width: `${item.value}%` }}
-                  ></div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                  <motion.div
+                    className="bg-gradient-to-r from-[#ff863d] to-[#fa8c45] h-2.5 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${item.value}%` }}
+                    transition={{ duration: 0.8, delay: 0.8 + idx * 0.1, ease: "easeOut" }}
+                  />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </ChartCard>
+
         <ChartCard
           title="Fähigkeitsverteilung"
           subtitle="Deine Stärken nach Themen"
+          index={3}
         >
           <LazyLoadChartWrapper
             component={SkillDistributionChart}

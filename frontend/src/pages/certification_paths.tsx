@@ -10,8 +10,10 @@ import {
   AccordionItem,
 } from "../components/ui_elements/accordions/accordion";
 import CardBadge from "../components/cards/card_badge";
+import SubBackground from "../components/layouts/SubBackground";
 import clsx from "clsx";
 import { useCachedApi } from "../util/performance";
+import LoadingSpinner from "../components/ui_elements/loading_spinner";
 
 // --- NEUE INTERFACES basierend auf Backend Serializer ---
 
@@ -92,7 +94,7 @@ const ExamAccordionItem: React.FC<{
         "cursor-pointer",
         isCompleted
           ? "bg-green-50/60 border-green-200" // Kein Hover-Effekt für abgeschlossene
-          : "bg-white border-gray-200 hover:bg-dsp-orange_light"
+          : "bg-white/60 border-white/40 backdrop-blur-sm hover:bg-[#ffe7d4]/60"
       )}
       // KORREKTUR: Accessibility immer anwenden
       role="button"
@@ -150,7 +152,7 @@ const ExamAccordionItem: React.FC<{
           e.stopPropagation(); // Verhindert Klick auf Karte
           onOpenExamDetails(exam.id);
         }}
-        className="ml-auto flex-shrink-0 flex items-center text-sm font-medium text-orange-600 hover:text-orange-700 cursor-pointer"
+        className="ml-auto flex-shrink-0 flex items-center text-sm font-medium text-[#ff863d] hover:text-[#fa8c45] cursor-pointer"
         aria-label={`Details für ${exam.exam_title} anzeigen`}
       >
         Details <Icons.IoArrowForward className="ml-1 w-4 h-4" />
@@ -232,30 +234,43 @@ function CertificationPaths() {
 
   if (isLoading) {
     return (
-      <div className="p-6 min-h-screen flex flex-col items-center justify-center">
-        <Icons.IoRefreshOutline className="animate-spin h-12 w-12 text-dsp-orange mb-4" />
-        <p className="text-lg text-gray-600">Lade Daten...</p>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <LoadingSpinner
+          message="Lade Zertifikatspfade..."
+          size="lg"
+          variant="spinner"
+          showBackground={true}
+        />
       </div>
     );
   }
 
   if (combinedError) {
     return (
-      <div className="p-6 min-h-screen">
-        <Breadcrumbs items={breadcrumbItems} className="mb-6" />
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          Zertifikatspfade
-        </h1>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center">
-          <Icons.IoWarningOutline className="h-6 w-6 text-red-500 mr-3" />
-          <div>
-            <strong className="font-bold">Fehler beim Laden!</strong>
-            <span className="block sm:inline">
-              {" "}
-              {typeof combinedError === "string"
-                ? combinedError
-                : "Ein unbekannter Fehler ist aufgetreten."}
-            </span>
+      <div className="min-h-screen">
+        <div className="px-4 py-8">
+          <div className="max-w-[95vw] mx-auto">
+            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+
+            <div className="text-center mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+                Zertifikatspfade
+              </h1>
+            </div>
+
+            <SubBackground className="max-w-2xl mx-auto">
+              <div className="text-center">
+                <Icons.IoWarningOutline className="text-6xl text-red-500 mb-6 mx-auto" />
+                <h2 className="text-2xl font-bold text-red-700 mb-4">
+                  Fehler beim Laden!
+                </h2>
+                <p className="text-gray-600 leading-relaxed">
+                  {typeof combinedError === "string"
+                    ? combinedError
+                    : "Ein unbekannter Fehler ist aufgetreten."}
+                </p>
+              </div>
+            </SubBackground>
           </div>
         </div>
       </div>
@@ -263,131 +278,157 @@ function CertificationPaths() {
   }
 
   return (
-    <div className="p-6 min-h-screen">
-      <Breadcrumbs items={breadcrumbItems} className="mb-6" />
-      <h1 className="text-3xl font-bold text-gray-800">Zertifikatspfade</h1>
-      <p className="text-base text-gray-600 mb-8">
-        Entdecke unsere empfohlenen Lernpfade und die zugehörigen
-        Abschlussprüfungen.
-      </p>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="relative px-4 py-8">
+          <div className="max-w-[95vw] mx-auto">
+            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
-      {certificationPaths && certificationPaths.length > 0 ? (
-        <Accordion className="">
-          {certificationPaths.map((path) => {
-            const IconComponent = getIconComponent(path.icon);
-            // Sortiere Module und Prüfungen für die Anzeige innerhalb des Accordions
-            const sortedModules = (path.modules || [])
-              .slice() // Kopie erstellen, um Original nicht zu ändern
-              .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-            const sortedExams = (path.exams || [])
-              .slice()
-              .sort((a, b) => a.exam_title.localeCompare(b.exam_title)); // Sortiere Prüfungen nach Titel
-
-            // --- Fortschrittsberechnung ---
-            const totalExams = sortedExams.length;
-            const completedExamCount = sortedExams.filter((exam) =>
-              completedExamIds.has(exam.id)
-            ).length;
-            const isPathCompleted =
-              totalExams > 0 && completedExamCount === totalExams;
-
-            return (
-              <AccordionItem
-                key={path.id}
-                id={path.id.toString()} // ID muss ein String sein
-                title={
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center space-x-2">
-                      {isPathCompleted && (
-                        <Icons.IoCheckmarkCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      )}
-                      <span>{path.title}</span>
-                    </div>
-                    {/* Fortschrittsanzeige */}
-                    {totalExams > 0 && (
-                      <span
-                        className={clsx(
-                          "text-xs font-medium px-2 py-0.5 rounded-full",
-                          isPathCompleted
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-600"
-                        )}
-                      >
-                        {completedExamCount} / {totalExams} abgeschlossen
-                      </span>
-                    )}
-                  </div>
-                }
-                icon={IconComponent}
-                // Optional: Header-Hintergrund ändern, wenn abgeschlossen
-                headerClassName={
-                  isPathCompleted ? "bg-green-50 hover:bg-green-100" : ""
-                }
-              >
-                {/* Inhalt des Accordion Items */}
-                <p className="text-sm text-gray-600 mb-6">{path.description}</p>
-
-                {/* Benötigte Module */}
-                {sortedModules.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-base font-semibold text-gray-700 mb-3">
-                      Benötigte Module:
-                    </h4>
-                    <ul className="space-y-1 list-none pl-0">
-                      {sortedModules.map((module) => (
-                        <ModuleListItem key={module.id} module={module} />
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Abschlussprüfungen */}
-                {sortedExams.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-base font-semibold text-gray-700 mb-3">
-                      Abschlussprüfungen:
-                    </h4>
-                    <ul className="list-none p-0 m-0">
-                      {sortedExams.map((exam, index) => {
-                        // Finde die vollen Exam-Daten für die Beschreibung
-                        const fullExam = allExams.find((e) => e.id === exam.id);
-                        return (
-                          <ExamAccordionItem
-                            key={exam.id}
-                            exam={exam}
-                            fullExamData={fullExam} // Übergebe volle Daten
-                            onOpenExamDetails={handleOpenExamDetails}
-                            isCompleted={completedExamIds.has(exam.id)}
-                            index={index} // index wird jetzt für die Nummer verwendet
-                          />
-                        );
-                      })}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Fallback, wenn weder Module noch Prüfungen da sind */}
-                {sortedModules.length === 0 && sortedExams.length === 0 && (
-                  <p className="text-sm text-gray-500 italic">
-                    Für diesen Pfad sind noch keine Module oder Prüfungen
-                    definiert.
-                  </p>
-                )}
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      ) : (
-        <div className="text-center py-10 px-6 bg-gray-50 rounded-lg border border-gray-200">
-          <Icons.IoSchoolOutline className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">
-            Keine Zertifikatspfade gefunden
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Es sind derzeit keine Zertifikatspfade im System definiert.
-          </p>
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+                Zertifikatspfade
+              </h1>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Entdecke unsere empfohlenen Lernpfade und die zugehörigen
+                Abschlussprüfungen.
+              </p>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Main Content */}
+      <div className="px-4 pb-8">
+        <div className="max-w-[95vw] mx-auto">
+          {certificationPaths && certificationPaths.length > 0 ? (
+            <SubBackground>
+              <Accordion className="">
+                {certificationPaths.map((path) => {
+                  const IconComponent = getIconComponent(path.icon);
+                  // Sortiere Module und Prüfungen für die Anzeige innerhalb des Accordions
+                  const sortedModules = (path.modules || [])
+                    .slice() // Kopie erstellen, um Original nicht zu ändern
+                    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+                  const sortedExams = (path.exams || [])
+                    .slice()
+                    .sort((a, b) => a.exam_title.localeCompare(b.exam_title)); // Sortiere Prüfungen nach Titel
+
+                  // --- Fortschrittsberechnung ---
+                  const totalExams = sortedExams.length;
+                  const completedExamCount = sortedExams.filter((exam) =>
+                    completedExamIds.has(exam.id)
+                  ).length;
+                  const isPathCompleted =
+                    totalExams > 0 && completedExamCount === totalExams;
+
+                  return (
+                    <AccordionItem
+                      key={path.id}
+                      id={path.id.toString()} // ID muss ein String sein
+                      title={
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center space-x-2">
+                            {isPathCompleted && (
+                              <Icons.IoCheckmarkCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                            )}
+                            <span>{path.title}</span>
+                          </div>
+                          {/* Fortschrittsanzeige */}
+                          {totalExams > 0 && (
+                            <span
+                              className={clsx(
+                                "text-xs font-medium px-2 py-0.5 rounded-full",
+                                isPathCompleted
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-600"
+                              )}
+                            >
+                              {completedExamCount} / {totalExams} abgeschlossen
+                            </span>
+                          )}
+                        </div>
+                      }
+                      icon={IconComponent}
+                      // Optional: Header-Hintergrund ändern, wenn abgeschlossen
+                      headerClassName={
+                        isPathCompleted ? "bg-green-50 hover:bg-green-100" : ""
+                      }
+                    >
+                      {/* Inhalt des Accordion Items */}
+                      <p className="text-sm text-gray-600 mb-6">
+                        {path.description}
+                      </p>
+
+                      {/* Benötigte Module */}
+                      {sortedModules.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="text-base font-semibold text-gray-700 mb-3">
+                            Benötigte Module:
+                          </h4>
+                          <ul className="space-y-1 list-none pl-0">
+                            {sortedModules.map((module) => (
+                              <ModuleListItem key={module.id} module={module} />
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Abschlussprüfungen */}
+                      {sortedExams.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="text-base font-semibold text-gray-700 mb-3">
+                            Abschlussprüfungen:
+                          </h4>
+                          <ul className="list-none p-0 m-0">
+                            {sortedExams.map((exam, index) => {
+                              // Finde die vollen Exam-Daten für die Beschreibung
+                              const fullExam = allExams.find(
+                                (e) => e.id === exam.id
+                              );
+                              return (
+                                <ExamAccordionItem
+                                  key={exam.id}
+                                  exam={exam}
+                                  fullExamData={fullExam} // Übergebe volle Daten
+                                  onOpenExamDetails={handleOpenExamDetails}
+                                  isCompleted={completedExamIds.has(exam.id)}
+                                  index={index} // index wird jetzt für die Nummer verwendet
+                                />
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Fallback, wenn weder Module noch Prüfungen da sind */}
+                      {sortedModules.length === 0 &&
+                        sortedExams.length === 0 && (
+                          <p className="text-sm text-gray-500 italic">
+                            Für diesen Pfad sind noch keine Module oder
+                            Prüfungen definiert.
+                          </p>
+                        )}
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            </SubBackground>
+          ) : (
+            <SubBackground>
+              <div className="text-center py-10">
+                <Icons.IoSchoolOutline className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900">
+                  Keine Zertifikatspfade gefunden
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Es sind derzeit keine Zertifikatspfade im System definiert.
+                </p>
+              </div>
+            </SubBackground>
+          )}
+        </div>
+      </div>
 
       {/* Popup Rendering */}
       {selectedExamForPopup &&

@@ -8,10 +8,18 @@ import type { DifficultyLevel } from "../components/tags/tag_difficulty";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import { useModules, Module, Task } from "../context/ModuleContext";
 import ButtonFilterSimple from "../components/ui_elements/buttons/button_filter_simple";
-import { IoGridOutline, IoListOutline } from "react-icons/io5";
+import {
+  IoGridOutline,
+  IoListOutline,
+  IoLibraryOutline,
+  IoSearchOutline,
+  IoAlertCircleOutline,
+} from "react-icons/io5";
 import TableModules from "../components/tables/table_modules";
 import ButtonFilterCategory from "../components/ui_elements/buttons/button_filter_category";
+import SubBackground from "../components/layouts/SubBackground";
 import clsx from "clsx";
+import LoadingSpinner from "../components/ui_elements/loading_spinner";
 
 // NEU: Typ für den Modulstatus
 type ModuleStatus = "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
@@ -209,169 +217,273 @@ function Modules() {
 
   if (loading) {
     return (
-      <div className="p-6 flex justify-center items-center h-64">
-        <p className="text-lg text-gray-600">Lade Module...</p>
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <LoadingSpinner
+          message="Lade Module..."
+          size="lg"
+          variant="spinner"
+          showBackground={true}
+        />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6">
-        <Breadcrumbs items={breadcrumbItems} className="mb-6" />
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Modulübersicht
-        </h1>
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-          role="alert"
-        >
-          <strong className="font-bold">Fehler beim Laden!</strong>
-          <span className="block sm:inline"> {error.message}</span>
-          <button
-            onClick={fetchModules}
-            className="ml-4 mt-2 sm:mt-0 px-3 py-1 text-sm bg-red-200 text-red-800 rounded hover:bg-red-300"
-          >
-            Erneut versuchen
-          </button>
+      <div className="min-h-screen">
+        <div className="px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+
+            <div className="text-center mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+                Modulübersicht
+              </h1>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-md border border-white/20 p-8 max-w-2xl mx-auto">
+              <div className="text-center">
+                <IoAlertCircleOutline className="text-6xl text-red-500 mb-6 mx-auto" />
+                <h2 className="text-2xl font-bold text-red-700 mb-4">
+                  Fehler beim Laden!
+                </h2>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  {error.message}
+                </p>
+                <button
+                  onClick={fetchModules}
+                  className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                >
+                  Erneut versuchen
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <Breadcrumbs items={breadcrumbItems} className="mb-6" />
-      <h1 className="text-3xl font-bold text-gray-800">Modulübersicht</h1>
-      <p className="text-base text-gray-600 mb-6">
-        Entdecke unsere Lernmodule und filtere nach deinen Interessen.
-      </p>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="relative px-4 py-8">
+          <div className="max-w-[95vw] mx-auto">
+            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
-      <FilterHead
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        searchPlaceholder="Module durchsuchen..."
-        className="mb-8"
-      >
-        <ButtonFilterSimple
-          label="Status:"
-          options={["Nicht begonnen", "In Bearbeitung", "Abgeschlossen"]}
-          activeOptions={activeStatusFilters}
-          onOptionClick={handleStatusFilterChange}
-          onClearClick={() => setActiveStatusFilters([])}
-          activeClassName="bg-dsp-orange text-white border-dsp-orange"
-        />
-        <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
-        <ButtonFilterSimple
-          label="Schwierigkeit:"
-          options={["Einfach", "Mittel", "Schwer"]}
-          activeOptions={activeFilters}
-          onOptionClick={handleFilterChange}
-          onClearClick={() => setActiveFilters([])}
-          activeClassName="bg-dsp-orange text-white border-dsp-orange"
-        />
-        <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
-        {allCategories.length > 0 && (
-          <ButtonFilterCategory
-            allCategories={allCategories}
-            activeCategories={activeCategoryFilters}
-            onCategoryChange={handleCategoryFilterChange}
-            onClearClick={() => setActiveCategoryFilters([])}
-          />
-        )}
-      </FilterHead>
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+                Modulübersicht
+              </h1>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Entdecke unsere Lernmodule und filtere nach deinen Interessen.
+              </p>
 
-      <div className="flex justify-end mb-6">
-        <div className="inline-flex rounded-md shadow-sm bg-white border border-gray-300">
-          <button
-            onClick={() => setViewMode("standard")}
-            className={clsx(
-              "relative inline-flex items-center px-3 py-1.5 rounded-l-md border-r border-gray-300 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange",
-              "cursor-pointer",
-              viewMode === "standard"
-                ? "bg-dsp-orange text-white"
-                : "text-gray-500 bg-white hover:bg-dsp-orange_light"
-            )}
-            aria-label="Standardansicht"
-            title="Standardansicht"
-          >
-            <IoGridOutline className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => setViewMode("table")}
-            className={clsx(
-              "relative inline-flex items-center px-3 py-1.5 rounded-r-md text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-dsp-orange focus:border-dsp-orange",
-              "cursor-pointer",
-              viewMode === "table"
-                ? "bg-dsp-orange text-white"
-                : "text-gray-500 bg-white hover:bg-dsp-orange_light"
-            )}
-            aria-label="Tabellenansicht"
-            title="Tabellenansicht"
-          >
-            <IoListOutline className="h-4 w-4" />
-          </button>
+              {/* Stats indicator */}
+              <div className="mt-6 inline-flex items-center space-x-6 px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full border border-white/20 shadow-sm">
+                <div className="flex items-center space-x-2">
+                  <IoLibraryOutline className="text-[#ff863d] w-5 h-5" />
+                  <span className="text-sm font-medium text-gray-700">
+                    {modules.length} Module verfügbar
+                  </span>
+                </div>
+                <div className="w-1 h-4 bg-gray-300 rounded-full"></div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-gray-700">
+                    Alle aktuell
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-6">
-        {viewMode === "standard" ? (
-          <div
-            className={clsx(
-              "grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-            )}
-          >
-            {sortedAndFilteredModules.length > 0 ? (
-              sortedAndFilteredModules.map((module: Module) => {
-                const moduleTasks = module.tasks || [];
-                const totalTasksInModule = moduleTasks.length;
-                const completedTasksInModule = moduleTasks.filter(
-                  (task) => task.completed
-                ).length;
-                const progressPercent =
-                  totalTasksInModule > 0
-                    ? (completedTasksInModule / totalTasksInModule) * 100
-                    : 0;
-
-                const roundedProgressPercent = Math.round(progressPercent);
-                const difficultyTagElement = (
-                  <TagCalculatedDifficulty tasks={module.tasks} />
-                );
-
-                return (
-                  <Link
-                    key={module.id}
-                    to={`/modules/${module.id}`}
-                    className={clsx("block relative")}
-                  >
-                    <CardPreviewSmall
-                      title={module.title}
-                      youtubeId={getFirstYoutubeId(module)}
-                      progress={roundedProgressPercent}
-                      className="w-full h-full hover:bg-dsp-orange_light transition-all duration-300 ease-in-out border border-gray-300"
-                      classNameTitle="text-left text-2xl"
-                    />
-                    {module.tasks && module.tasks.length > 0 && (
-                      <div className="absolute top-4 right-4">
-                        {difficultyTagElement}
-                      </div>
-                    )}
-                  </Link>
-                );
-              })
-            ) : (
-              <p className="text-gray-600 md:col-span-2 xl:col-span-3">
-                Keine Module gefunden, die den Filterkriterien entsprechen.
-              </p>
+      {/* Main Content */}
+      <div className="px-4 pb-8">
+        <div className="max-w-[95vw] mx-auto">
+          {/* Module Count & Filter Status */}
+          <div className="flex items-center space-x-4 mb-6">
+            <span className="text-sm font-medium text-gray-600">
+              {sortedAndFilteredModules.length} von {modules.length} Modulen
+            </span>
+            {(activeFilters.length > 0 ||
+              activeStatusFilters.length > 0 ||
+              activeCategoryFilters.length > 0 ||
+              searchTerm) && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#ff863d]/10 text-[#ff863d] border border-[#ff863d]/20">
+                <IoSearchOutline className="w-3 h-3 mr-1" />
+                Gefiltert
+              </span>
             )}
           </div>
-        ) : sortedAndFilteredModules.length > 0 ? (
-          <TableModules modules={sortedAndFilteredModules} />
-        ) : (
-          <p className="text-gray-600 text-center py-8">
-            Keine Module gefunden, die den Filterkriterien entsprechen.
-          </p>
-        )}
+
+          {/* Combined Filter & Content Area */}
+          <SubBackground>
+            {/* Filter Section with View Mode Toggle */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+              <div className="flex-1">
+                <FilterHead
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  searchPlaceholder="Module durchsuchen..."
+                  className="mb-0"
+                >
+                  <ButtonFilterSimple
+                    label="Status:"
+                    options={[
+                      "Nicht begonnen",
+                      "In Bearbeitung",
+                      "Abgeschlossen",
+                    ]}
+                    activeOptions={activeStatusFilters}
+                    onOptionClick={handleStatusFilterChange}
+                    onClearClick={() => setActiveStatusFilters([])}
+                    activeClassName="bg-[#ff863d] text-white border-[#ff863d]"
+                  />
+                  <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
+                  <ButtonFilterSimple
+                    label="Schwierigkeit:"
+                    options={["Einfach", "Mittel", "Schwer"]}
+                    activeOptions={activeFilters}
+                    onOptionClick={handleFilterChange}
+                    onClearClick={() => setActiveFilters([])}
+                    activeClassName="bg-[#ff863d] text-white border-[#ff863d]"
+                  />
+                  <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
+                  {allCategories.length > 0 && (
+                    <ButtonFilterCategory
+                      allCategories={allCategories}
+                      activeCategories={activeCategoryFilters}
+                      onCategoryChange={handleCategoryFilterChange}
+                      onClearClick={() => setActiveCategoryFilters([])}
+                    />
+                  )}
+                </FilterHead>
+              </div>
+
+              {/* View Mode Toggle - rechts angeordnet */}
+              <div className="flex-shrink-0">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white/40 shadow-sm p-1">
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => setViewMode("standard")}
+                      className={clsx(
+                        "relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                        "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
+                        viewMode === "standard"
+                          ? "bg-[#ff863d] text-white shadow-sm"
+                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
+                      )}
+                      aria-label="Standardansicht"
+                      title="Standardansicht"
+                    >
+                      <IoGridOutline className="h-4 w-4 mr-2" />
+                      Grid
+                    </button>
+                    <button
+                      onClick={() => setViewMode("table")}
+                      className={clsx(
+                        "relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                        "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
+                        viewMode === "table"
+                          ? "bg-[#ff863d] text-white shadow-sm"
+                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
+                      )}
+                      aria-label="Tabellenansicht"
+                      title="Tabellenansicht"
+                    >
+                      <IoListOutline className="h-4 w-4 mr-2" />
+                      Tabelle
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            {viewMode === "standard" ? (
+              <div
+                className={clsx(
+                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                )}
+              >
+                {sortedAndFilteredModules.length > 0 ? (
+                  sortedAndFilteredModules.map((module: Module) => {
+                    const moduleTasks = module.tasks || [];
+                    const totalTasksInModule = moduleTasks.length;
+                    const completedTasksInModule = moduleTasks.filter(
+                      (task) => task.completed
+                    ).length;
+                    const progressPercent =
+                      totalTasksInModule > 0
+                        ? (completedTasksInModule / totalTasksInModule) * 100
+                        : 0;
+
+                    const roundedProgressPercent = Math.round(progressPercent);
+                    const difficultyTagElement = (
+                      <TagCalculatedDifficulty tasks={module.tasks} />
+                    );
+
+                    return (
+                      <Link
+                        key={module.id}
+                        to={`/modules/${module.id}`}
+                        className={clsx("block relative group")}
+                      >
+                        <div className="relative overflow-hidden rounded-xl border border-white/40 hover:border-[#ff863d]/30 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] bg-white/60 backdrop-blur-sm hover:bg-white/80">
+                          <CardPreviewSmall
+                            title={module.title}
+                            youtubeId={getFirstYoutubeId(module)}
+                            progress={roundedProgressPercent}
+                            className="w-full h-full border-0 bg-transparent hover:bg-transparent"
+                            classNameTitle="text-left text-xl group-hover:text-[#ff863d] transition-colors duration-200"
+                          />
+                          {module.tasks && module.tasks.length > 0 && (
+                            <div className="absolute top-4 right-4 z-10">
+                              {difficultyTagElement}
+                            </div>
+                          )}
+
+                          {/* Enhanced hover overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#ff863d]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+                        </div>
+                      </Link>
+                    );
+                  })
+                ) : (
+                  <div className="md:col-span-2 lg:col-span-3 xl:col-span-4 2xl:col-span-5 text-center py-12">
+                    <IoSearchOutline className="mx-auto text-6xl text-gray-400 mb-4" />
+                    <h3 className="text-xl font-bold text-gray-600 mb-2">
+                      Keine Module gefunden
+                    </h3>
+                    <p className="text-gray-500 max-w-md mx-auto">
+                      Keine Module entsprechen den aktuellen Filterkriterien.
+                      Versuche andere Filter oder entferne bestehende Filter.
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : sortedAndFilteredModules.length > 0 ? (
+              <div className="overflow-hidden rounded-xl border border-white/40">
+                <TableModules modules={sortedAndFilteredModules} />
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <IoSearchOutline className="mx-auto text-6xl text-gray-400 mb-4" />
+                <h3 className="text-xl font-bold text-gray-600 mb-2">
+                  Keine Module gefunden
+                </h3>
+                <p className="text-gray-500 max-w-md mx-auto">
+                  Keine Module entsprechen den aktuellen Filterkriterien.
+                  Versuche andere Filter oder entferne bestehende Filter.
+                </p>
+              </div>
+            )}
+          </SubBackground>
+        </div>
       </div>
     </div>
   );

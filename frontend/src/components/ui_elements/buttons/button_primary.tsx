@@ -20,38 +20,67 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
 }) => {
   const buttonVariants = {
     initial: { scale: 1 },
-    hover: { scale: 1.05 },
+    hover: { scale: 1.02 },
+    tap: { scale: 0.98 },
   };
 
   const iconVariants = {
-    initial: { x: 0 },
-    hover: { x: 6 },
+    initial: { x: 0, rotate: 0 },
+    hover: { x: 4, rotate: 0 },
   };
 
   return (
     <motion.button
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center justify-center space-x-2 rounded-lg  py-2 px-4 bg-dsp-orange p-2
-       hover:cursor-pointer focus:outline-none hover:font-bold
-        ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+      className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3
+        bg-gradient-to-r from-[#ff863d] to-[#fa8c45] 
+        hover:from-[#fa8c45] hover:to-[#ff863d]
+        text-white font-semibold
+        shadow-lg shadow-[#ff863d]/25 hover:shadow-xl hover:shadow-[#ff863d]/30
+        border border-[#ff863d]/20 hover:border-[#ff863d]/40
+        backdrop-blur-sm
+        transition-all duration-200 ease-in-out
+        focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20 focus:ring-offset-2
+        ${
+          disabled
+            ? "opacity-50 cursor-not-allowed hover:scale-100 hover:shadow-lg"
+            : "hover:cursor-pointer active:shadow-md"
+        }
         ${classNameButton}`}
       variants={buttonVariants}
       initial="initial"
-      whileHover="hover"
+      whileHover={disabled ? "initial" : "hover"}
+      whileTap={disabled ? "initial" : "tap"}
+      whileFocus={{
+        boxShadow: "0 0 0 3px rgba(255, 134, 61, 0.1)",
+      }}
     >
-      {title && (
-        <p className="text-sm md:text-base text-white font-bold">{title}</p>
-      )}
-      {icon && (
-        <motion.span
-          className={`${classNameIcon} text-white`}
-          variants={iconVariants}
-          transition={{ type: "spring", stiffness: 500 }}
-        >
-          {icon}
-        </motion.span>
-      )}
+      {/* Background glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] rounded-xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
+
+      {/* Content */}
+      <div className="relative flex items-center space-x-3">
+        {title && (
+          <span className="text-sm md:text-base font-bold tracking-wide">
+            {title}
+          </span>
+        )}
+        {icon && (
+          <motion.span
+            className={`${classNameIcon} text-white flex-shrink-0`}
+            variants={iconVariants}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            {icon}
+          </motion.span>
+        )}
+      </div>
+
+      {/* Shine effect */}
+      <div className="absolute inset-0 rounded-xl overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+      </div>
     </motion.button>
   );
 };
