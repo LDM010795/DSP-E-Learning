@@ -41,7 +41,7 @@ const AppContent: React.FC = () => {
   const closeLoginPopup = () => setLoginPopupOpen(false);
 
   // Überprüfen, ob der Benutzer Admin-Rechte hat (is_staff oder is_superuser)
-  const isAdmin = user && (user.is_staff || user.is_superuser);
+  const isAdmin: boolean = !!(user?.is_staff || user?.is_superuser);
 
   // Passe die Navigation basierend auf dem Login-Status an
   // Hauptnavigation (links/mitte) erwartet `NavLink[]` (immer mit `to`)
