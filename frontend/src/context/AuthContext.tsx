@@ -245,7 +245,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     // window.location.href = '/'; // Oder useNavigate verwenden
   }, []);
 
-  // 🔥 NEU: setAuthTokens für OAuth Login (Microsoft, Google, etc.)
+  // NEU: setAuthTokens für OAuth Login (Microsoft, Google, etc.)
   const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
     try {
       setIsLoading(true);

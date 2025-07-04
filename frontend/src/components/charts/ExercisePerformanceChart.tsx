@@ -1,82 +1,144 @@
-import React from "react";
-import {
-  ResponsiveContainer,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Bar,
-} from "recharts";
+/**
+ * Performance-Optimized Exercise Performance Chart
+ * 
+ * Key optimizations:
+ * - Lazy loading for ECharts library
+ * - Memoized chart options and data processing
+ * - Optimized rendering with Canvas renderer
+ * - Loading fallback component
+ */
 
-interface DataPoint {
-  name: string;
-  korrekt: number;
-  inkorrekt: number;
+import React, { memo, Suspense } from "react";
+import { useShallowMemo, useMemoizedComputation } from "../../util/performance";
+
+// Lazy load ECharts to reduce initial bundle size
+const ReactECharts = React.lazy(() => import("echarts-for-react"));
+
+// Performance fallback during loading
+const ChartLoadingFallback = memo(() => (
+  <div className="w-full h-64 flex items-center justify-center bg-gray-50 rounded-lg border">
+    <div className="text-center">
+      <div className="animate-pulse">
+        <div className="w-16 h-16 bg-orange-300 rounded-lg mx-auto mb-3"></div>
+        <div className="h-2 bg-orange-200 rounded w-20 mx-auto mb-1"></div>
+        <div className="h-2 bg-orange-200 rounded w-16 mx-auto"></div>
+      </div>
+      <p className="text-orange-600 text-sm mt-2">Performance Chart lädt...</p>
+    </div>
+  </div>
+));
+
+ChartLoadingFallback.displayName = "ExercisePerformanceChartLoadingFallback";
+
+interface ExercisePerformanceChartProps {
+  exerciseData: Array<{
+    exercise: string;
+    score: number;
+    maxScore: number;
+  }>;
+  width?: number;
+  height?: number;
 }
 
-interface Props {
-  data: DataPoint[];
-}
+const ExercisePerformanceChart = memo<ExercisePerformanceChartProps>(({ 
+  exerciseData, 
+  width = 400, 
+  height = 300 
+}) => {
+  // Memoize chart options to prevent unnecessary re-renders
+  const chartOptions = useMemoizedComputation(
+    () => {
+      const exercises = exerciseData.map(item => item.exercise);
+      const scores = exerciseData.map(item => item.score);
+      const maxScores = exerciseData.map(item => item.maxScore);
+      const percentages = exerciseData.map(item => 
+        item.maxScore > 0 ? Math.round((item.score / item.maxScore) * 100) : 0
+      );
 
-const ExercisePerformanceChart: React.FC<Props> = ({ data }) => {
-  return (
-    <ResponsiveContainer width="100%" height={250}>
-      <BarChart
-        data={data}
-        margin={{ top: 5, right: 20, left: -10, bottom: 20 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={12} />
-        <YAxis
-          domain={[0, 100]}
-          unit="%"
-          axisLine={false}
-          tickLine={false}
-          fontSize={12}
-        />
-        <Tooltip
-          cursor={{ fill: "rgba(0, 0, 0, 0.05)" }}
-          contentStyle={{
-            backgroundColor: "#fff",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            fontSize: "12px",
-          }}
-          formatter={(value: number, name: string) => [
-            `${value}%`,
-            name === "korrekt" ? "Korrekt" : "Inkorrekt",
-          ]}
-        />
-        <Legend
-          verticalAlign="bottom"
-          height={36}
-          iconType="circle"
-          iconSize={8}
-          formatter={(value) => (
-            <span className="text-xs text-gray-600">
-              {value === "korrekt" ? "Korrekt" : "Inkorrekt"}
-            </span>
-          )}
-        />
-        <Bar
-          dataKey="korrekt"
-          stackId="a"
-          fill="#4CAF50"
-          radius={[4, 4, 0, 0]}
-          barSize={35}
-        />
-        <Bar
-          dataKey="inkorrekt"
-          stackId="a"
-          fill="#F44336"
-          radius={[4, 4, 0, 0]}
-          barSize={35}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+      return {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          formatter: (params: any) => {
+            const dataIndex = params[0]?.dataIndex ?? 0;
+            const exercise = exercises[dataIndex];
+            const score = scores[dataIndex];
+            const maxScore = maxScores[dataIndex];
+            const percentage = percentages[dataIndex];
+            
+            return `
+              <div style="padding: 8px;">
+                <strong>${exercise}</strong><br/>
+                Score: ${score}/${maxScore}<br/>
+                Performance: ${percentage}%
+              </div>
+            `;
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: exercises,
+          axisLabel: {
+            rotate: 45,
+            fontSize: 11
+          }
+        },
+        yAxis: {
+          type: 'value',
+          max: 100,
+          axisLabel: {
+            formatter: '{value}%'
+          }
+        },
+        series: [
+          {
+            data: percentages,
+            type: 'bar',
+            itemStyle: {
+              color: '#ff863d',
+              borderRadius: [4, 4, 0, 0]
+            },
+            emphasis: {
+              itemStyle: {
+                color: '#ff7029'
+              }
+            }
+          }
+        ],
+        grid: {
+          left: '10%',
+          right: '10%',
+          bottom: '15%',
+          top: '10%'
+        }
+      };
+    },
+    [exerciseData]
   );
-};
+
+  // Memoize container style
+  const containerStyle = useShallowMemo(
+    () => ({
+      width: `${width}px`,
+      height: `${height}px`,
+    }),
+    [width, height]
+  );
+
+  return (
+    <div className="w-full">
+      <Suspense fallback={<ChartLoadingFallback />}>
+        <ReactECharts
+          option={chartOptions}
+          style={containerStyle}
+          opts={{ renderer: "canvas" }}
+          lazyUpdate={true}
+        />
+      </Suspense>
+    </div>
+  );
+});
+
+ExercisePerformanceChart.displayName = "ExercisePerformanceChart";
 
 export default ExercisePerformanceChart;

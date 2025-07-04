@@ -1,43 +1,40 @@
 import React, { useState } from "react";
 import "./App.css";
-// Pages
-import Dashboard from "./pages/dashboard";
-import Modules from "./pages/modules";
-import ModuleDetail from "./pages/module_detail";
-import TaskDetails from "./pages/task_detail.tsx";
-import IndexFinalExam from "./pages/final_exam/index_final_exam";
-import IndexStatistics from "./pages/statistics/index_statistics";
-import LandingPage from "./pages/landing_page";
-import IndexUserSettings from "./pages/user_settings/index_user_settings";
-import LoginPopup from "./pages/login";
-import SubscriptionsPage from "./pages/subscriptions";
-import IndexAdminPanel from "./pages/admin_panel/index_admin_panel";
-import ForcePasswordChangePage from "./pages/ForcePasswordChangePage";
-import CertificationPaths from "./pages/certification_paths";
+
 // Utils
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+import { prefetchCommonResources } from "./util/performance";
+
 // Components
 import HeaderNavigation from "./components/layouts/header.tsx";
+import DSPBackground from "./components/layouts/DSPBackground.tsx";
+import AnimatedRoutes from "./components/common/AnimatedRoutes.tsx";
+import LoginPopup from "./pages/login";
+
 //Assets
 import LogoDSP from "./assets/dsp_no_background.png";
 
 // Import the NavItem type
 import { NavItem } from "./components/layouts/header.tsx";
 // Import Auth Context
-import { AuthProvider, useAuth } from "./context/AuthContext.tsx";
-import { ModuleProvider } from "./context/ModuleContext";
-import { ExamProvider } from "./context/ExamContext";
-import ProtectedRoute from "./components/utils/ProtectedRoute.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
+import { ModuleProvider } from "./context/ModuleContext.tsx";
+import { ExamProvider } from "./context/ExamContext.tsx";
 import { Toaster } from "sonner";
-import { useMicrosoftAuth } from "./hooks/use_microsoft_auth"; // 🔥 NEU
+import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
+import { useAuth } from "./context/AuthContext.tsx";
 
 // Verschiebe Navigationsdaten und die Hauptlogik in eine separate Komponente,
 // damit `useAuth` verwendet werden kann.
 const AppContent: React.FC = () => {
+  // Preload critical resources for better SPA performance
+  React.useEffect(() => {
+    prefetchCommonResources();
+  }, []);
   const { user, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
 
-  // 🔥 Microsoft OAuth Hook mit Loading State
+  // Microsoft OAuth Hook mit Loading State
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
 
   const openLoginPopup = () => setLoginPopupOpen(true);
@@ -73,6 +70,8 @@ const AppContent: React.FC = () => {
           { title: "Deine Statistik", to: "/user-stats" },
           // Nur Admin-Benutzer sehen den Admin-Panel Link
           ...(isAdmin ? [{ title: "Back‑Office", to: "/admin" }] : []),
+          // 🔥 NEU: Content Demo für alle eingeloggten User
+          { title: "Content Demo", to: "/content-demo" },
         ]
       : []),
   ];
@@ -104,6 +103,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col">
+      {/* DSP Background - Global für alle Seiten */}
+      <DSPBackground />
       <Toaster position="bottom-right" richColors />
       {/* Header */}
       <HeaderNavigation
@@ -115,41 +116,7 @@ const AppContent: React.FC = () => {
       {/* Main Content */}
       <main className="flex-grow overflow-auto  ">
         <div className="mx-20 my-10 ">
-          <Routes>
-            {/* Öffentliche Routen */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/subscriptions" element={<SubscriptionsPage />} />
-
-            {/* Geschützte Routen mit ProtectedRoute umschließen */}
-            <Route element={<ProtectedRoute />}>
-              {/* Neue Route für erzwungene Passwortänderung */}
-              <Route
-                path="/force-password-change"
-                element={<ForcePasswordChangePage />}
-              />
-              {/* Bestehende Kind-Routen von ProtectedRoute */}
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/modules" element={<Modules />} />
-              <Route path="/modules/:moduleId" element={<ModuleDetail />} />
-              <Route
-                path="/modules/:moduleId/tasks/:taskId"
-                element={<TaskDetails />}
-              />
-              <Route path="/final-exam" element={<IndexFinalExam />} />
-              <Route
-                path="/certification-paths"
-                element={<CertificationPaths />}
-              />
-              <Route path="/user-stats" element={<IndexStatistics />} />
-              <Route path="/settings" element={<IndexUserSettings />} />
-
-              {/* Admin Panel Route - nur für Staff/Superuser */}
-              {isAdmin && <Route path="/admin" element={<IndexAdminPanel />} />}
-            </Route>
-
-            {/* Fallback oder 404 Route */}
-            {/* <Route path="*" element={<NotFoundPage />} /> */}
-          </Routes>
+          <AnimatedRoutes isAdmin={isAdmin} />
         </div>
       </main>
 
