@@ -1,3 +1,27 @@
+/**
+ * Authentication Context for E-Learning DSP Application
+ * 
+ * This module provides a comprehensive authentication system using JWT tokens
+ * with performance optimizations and Microsoft OAuth integration support.
+ * 
+ * Features:
+ * - JWT-based authentication with access/refresh tokens
+ * - Performance-optimized with caching and memoization
+ * - Microsoft OAuth integration support
+ * - Automatic token refresh handling
+ * - Secure localStorage management
+ * - Loading state management
+ * 
+ * Architecture:
+ * - Context API for global state management
+ * - Custom hooks for component integration
+ * - Performance utilities for optimal rendering
+ * - Comprehensive error handling
+ * 
+ * @author DSP Development Team
+ * @version 1.0.0
+ */
+
 import React, {
   createContext,
   useState,
@@ -15,91 +39,149 @@ import {
   AdvancedCache,
 } from "../util/performance";
 
+/**
+ * JWT token pair structure for authentication
+ */
 interface AuthTokens {
+  /** JWT access token for API requests */
   access: string;
+  /** JWT refresh token for token renewal */
   refresh: string;
 }
 
-// Typ für die Daten, die vom /api/token/ Endpunkt kommen
+/**
+ * API response structure from login endpoint
+ * Extends AuthTokens with additional authentication flags
+ */
 interface LoginApiResponse extends AuthTokens {
-  require_password_change?: boolean; // Optionales Flag
-}
-
-interface DecodedToken extends JwtPayload {
-  user_id: number;
-  username: string;
-  is_staff?: boolean;
-  is_superuser?: boolean;
-  // Füge hier andere erwartete Felder aus deinem JWT Payload hinzu (z.B. username, email)
-}
-
-// Typ für die Rückgabe der login Funktion im Context
-interface LoginResult {
-  success: boolean;
+  /** Flag indicating if user must change password on next login */
   require_password_change?: boolean;
+}
+
+/**
+ * Decoded JWT token payload structure
+ * Contains user information and permissions
+ */
+interface DecodedToken extends JwtPayload {
+  /** Unique user identifier */
+  user_id: number;
+  /** Username for display and identification */
+  username: string;
+  /** Staff permission flag for admin access */
+  is_staff?: boolean;
+  /** Superuser permission flag for full admin access */
+  is_superuser?: boolean;
+}
+
+/**
+ * Login function return type
+ * Provides success status and additional authentication information
+ */
+interface LoginResult {
+  /** Whether login was successful */
+  success: boolean;
+  /** Flag indicating if password change is required */
+  require_password_change?: boolean;
+  /** Error message if login failed */
   error?: string;
 }
 
+/**
+ * Authentication context type definition
+ * Defines all authentication-related state and methods
+ */
 interface AuthContextType {
+  /** Current JWT tokens (null if not authenticated) */
   tokens: AuthTokens | null;
+  /** Decoded user information (null if not authenticated) */
   user: DecodedToken | null;
+  /** Boolean flag indicating authentication status */
   isAuthenticated: boolean;
-  login: (credentials: {
-    username: string;
-    password: string;
-  }) => Promise<LoginResult>;
+  /** Login function for username/password authentication */
+  login: (credentials: { username: string; password: string }) => Promise<LoginResult>;
+  /** Logout function to clear authentication state */
   logout: () => void;
-  setAuthTokens: (tokens: AuthTokens) => void; // 🔥 NEU für OAuth Login
+  /** Function to set tokens from OAuth providers (Microsoft, etc.) */
+  setAuthTokens: (tokens: AuthTokens) => void;
+  /** Loading state for authentication operations */
   isLoading: boolean;
 }
 
+/**
+ * React context for authentication state
+ * Provides authentication data throughout the component tree
+ */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Performance optimization: Cache for token validation to reduce localStorage access
+/**
+ * Performance optimization: Advanced cache for token validation
+ * Reduces localStorage access and JWT decoding operations
+ */
 const tokenCache = new AdvancedCache<DecodedToken>({
   storage: "memory",
   ttl: 60000, // 1 minute cache for token validation
   maxSize: 1,
 });
 
+/**
+ * Authentication Provider Component
+ * 
+ * Provides authentication context to the entire application tree.
+ * Handles token management, user state, and authentication operations.
+ * 
+ * Performance Features:
+ * - Memoized state initialization to prevent multiple localStorage reads
+ * - Token caching to reduce JWT decoding overhead
+ * - Stable callbacks to prevent unnecessary re-renders
+ * - Shallow memoization of context value
+ * 
+ * @param children - React components that need access to authentication
+ * @returns JSX.Element containing the authentication provider
+ */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Performance optimization: Memoized token initialization to prevent multiple localStorage reads
+  /**
+   * JWT tokens state with memoized initialization
+   * Reads from localStorage only once during component initialization
+   */
   const [tokens, setTokens] = useState<AuthTokens | null>(() => {
     const storedTokens = localStorage.getItem("authTokens");
     return storedTokens ? JSON.parse(storedTokens) : null;
   });
 
-  // Performance optimization: Memoized user initialization with caching
+  /**
+   * User state with memoized initialization and caching
+   * Decodes JWT token and validates expiration
+   */
   const [user, setUser] = useState<DecodedToken | null>(() => {
     const storedTokens = localStorage.getItem("authTokens");
     if (storedTokens) {
       try {
         const tokenData = JSON.parse(storedTokens);
 
-        // Check cache first to avoid repeated JWT decoding
+        // Performance optimization: Check cache first to avoid repeated JWT decoding
         const cachedUser = tokenCache.get("current_user");
         if (cachedUser) {
           return cachedUser;
         }
 
         const decoded = jwtDecode<DecodedToken>(tokenData.access);
-        // Optional: Überprüfe hier die Gültigkeit des Tokens (exp)
+        // Validate token expiration
         const currentTime = Date.now() / 1000;
         if (decoded.exp && decoded.exp > currentTime) {
           // Cache the decoded token for performance
           tokenCache.set("current_user", decoded);
           return decoded;
         } else {
-          // Token abgelaufen, entferne es
+          // Token expired, remove it
           localStorage.removeItem("authTokens");
           tokenCache.clear();
           return null;
         }
       } catch (error) {
         console.error("Error decoding token on initial load:", error);
-        localStorage.removeItem("authTokens"); // Entferne ungültige Tokens
+        localStorage.removeItem("authTokens");
         tokenCache.clear();
         return null;
       }
@@ -107,11 +189,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return null;
   });
 
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Startet als true, bis Initialisierung abgeschlossen
+  /**
+   * Loading state for authentication operations
+   * Starts as true until initialization is complete
+   */
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  /**
+   * Effect to handle token changes and user state updates
+   * Validates tokens and manages automatic logout on expiration
+   */
   useEffect(() => {
-    // Dieser Effekt initialisiert nur den User-State basierend auf den Tokens.
-    // Das Laden des Zustands aus localStorage geschieht bereits in useState.
     if (tokens) {
       try {
         const decoded = jwtDecode<DecodedToken>(tokens.access);
@@ -119,15 +207,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         if (decoded.exp && decoded.exp > currentTime) {
           setUser(decoded);
         } else {
-          console.log(
-            "Access token expired on load, attempting refresh or logout needed."
-          );
-          // Token entfernen und User null setzen
+          console.log("Access token expired on load, attempting refresh or logout needed.");
+          // Remove expired token and reset state
           localStorage.removeItem("authTokens");
           setTokens(null);
           setUser(null);
-
-          // Zur Landingpage weiterleiten
+          // Redirect to landing page
           window.location.href = "/";
         }
       } catch (error) {
@@ -135,8 +220,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         localStorage.removeItem("authTokens");
         setTokens(null);
         setUser(null);
-
-        // Auch hier zur Landingpage weiterleiten
+        // Redirect to landing page on error
         window.location.href = "/";
       }
     } else {
@@ -145,7 +229,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoading(false);
   }, [tokens]);
 
-  // Performance optimization: Stable callback for login function to prevent unnecessary re-renders
+  /**
+   * Login function for username/password authentication
+   * 
+   * Handles standard login flow with JWT token retrieval and storage.
+   * Includes comprehensive error handling and loading state management.
+   * 
+   * @param credentials - User login credentials
+   * @param credentials.username - Username for authentication
+   * @param credentials.password - Password for authentication
+   * @returns Promise resolving to login result with success status
+   */
   const login = useStableCallback(
     async (credentials: {
       username: string;
@@ -175,7 +269,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           console.log("User logged in, tokens stored.");
           return {
             success: true,
-            require_password_change: data.require_password_change ?? false, // Default auf false setzen
+            require_password_change: data.require_password_change ?? false,
           };
         } else {
           return {
@@ -185,8 +279,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         }
       } catch (err: unknown) {
         console.error("Error during login API call:", err);
-        let errorMessage =
-          "Login fehlgeschlagen. Bitte versuchen Sie es später erneut.";
+        let errorMessage = "Login fehlgeschlagen. Bitte versuchen Sie es später erneut.";
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
             errorMessage = "Ungültige Anmeldedaten.";
@@ -207,7 +300,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     []
   );
 
-  // Performance optimization: Stable callback for logout function
+  /**
+   * Logout function to clear authentication state
+   * 
+   * Handles both backend logout (token blacklisting) and local cleanup.
+   * Clears OAuth session state and redirects appropriately.
+   * 
+   * Features:
+   * - Backend token blacklisting
+   * - Local storage cleanup
+   * - OAuth session state clearing
+   * - Performance cache clearing
+   */
   const logout = useStableCallback(async () => {
     setIsLoading(true);
     console.log("Logging out...");
@@ -216,36 +320,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     if (refreshToken) {
       try {
-        // Sende das Refresh-Token an den Logout-Endpunkt
+        // Send refresh token to logout endpoint for blacklisting
         await api.post("/users/logout/", { refresh_token: refreshToken });
         console.log("Logout successful on backend.");
       } catch (error) {
-        // Fehler beim Backend-Logout ignorieren oder loggen, aber trotzdem lokal ausloggen
-        console.error(
-          "Backend logout failed, proceeding with local logout:",
-          error
-        );
+        // Ignore backend logout errors but proceed with local logout
+        console.error("Backend logout failed, proceeding with local logout:", error);
       }
     }
 
     // Performance optimization: Clear cache on logout
     tokenCache.clear();
 
-    // Lokale Daten immer entfernen
+    // Always remove local data
     localStorage.removeItem("authTokens");
 
-    // 🔥 NEU: OAuth Session State clearen für erneuten Login
+    // Clear OAuth session state for fresh login
     sessionStorage.removeItem("ms_oauth_processed");
     console.log("🧹 OAuth Session State beim Logout zurückgesetzt");
 
     setTokens(null);
     setUser(null);
     setIsLoading(false);
-    // Optional: Navigiere zur Startseite
-    // window.location.href = '/'; // Oder useNavigate verwenden
   }, []);
 
-  // NEU: setAuthTokens für OAuth Login (Microsoft, Google, etc.)
+  /**
+   * Function to set authentication tokens from OAuth providers
+   * 
+   * Used for Microsoft OAuth integration and other external authentication
+   * providers. Handles token storage and user state initialization.
+   * 
+   * @param newTokens - JWT token pair from OAuth provider
+   */
   const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
     try {
       setIsLoading(true);
@@ -255,7 +361,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       tokenCache.set("current_user", decoded);
 
       localStorage.setItem("authTokens", JSON.stringify(newTokens));
-      setTokens(newTokens); // ← Das löst useEffect aus und aktualisiert User
+      setTokens(newTokens); // Triggers useEffect to update user state
       setUser(decoded);
 
       console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
@@ -264,7 +370,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
     } catch (error) {
       console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
-      // Cleanup bei Fehler
+      // Cleanup on error
       localStorage.removeItem("authTokens");
       setTokens(null);
       setUser(null);
@@ -273,9 +379,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
-  // Die Token-Refresh-Logik ist jetzt im Axios-Interceptor in api.ts
-
-  // Performance optimization: Memoize context value to prevent unnecessary re-renders
+  /**
+   * Performance optimization: Memoized context value
+   * Prevents unnecessary re-renders of consuming components
+   */
   const contextData = useShallowMemo(
     () => ({
       tokens,
@@ -283,10 +390,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       isAuthenticated: !!tokens,
       login,
       logout,
-      setAuthTokens, // 🔥 NEU hinzufügen
+      setAuthTokens,
       isLoading,
     }),
-    [tokens, user, login, logout, setAuthTokens, isLoading] // setAuthTokens hinzufügen
+    [tokens, user, login, logout, setAuthTokens, isLoading]
   );
 
   return (
@@ -294,6 +401,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
+/**
+ * Custom hook to access authentication context
+ * 
+ * Provides type-safe access to authentication state and methods.
+ * Must be used within an AuthProvider component tree.
+ * 
+ * @throws Error if used outside of AuthProvider
+ * @returns AuthContextType containing all authentication data and methods
+ * 
+ * @example
+ * ```tsx
+ * const { user, isAuthenticated, login, logout } = useAuth();
+ * 
+ * if (isAuthenticated) {
+ *   return <div>Welcome, {user?.username}!</div>;
+ * }
+ * 
+ * return <LoginForm onLogin={login} />;
+ * ```
+ */
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {

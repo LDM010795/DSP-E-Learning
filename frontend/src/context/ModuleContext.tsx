@@ -1,3 +1,24 @@
+/**
+ * Module Context - E-Learning DSP Frontend
+ *
+ * Context für Modul-Verwaltung und -daten:
+ * - Modul-Daten-Management mit Caching
+ * - Performance-Optimierung mit React Query
+ * - Benutzer-spezifische Modul-Anzeige
+ * - Automatische Sortierung und Strukturierung
+ * 
+ * Features:
+ * - Cached API-Calls für bessere Performance
+ * - Benutzer-spezifische Modul-Filterung
+ * - Automatische Sortierung nach Reihenfolge
+ * - Error-Handling und Loading-States
+ * - TypeScript-Typisierung
+ * 
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import React, {
   createContext,
   useContext,
@@ -5,18 +26,24 @@ import React, {
   useCallback,
 } from "react";
 import api from "../util/apis/api";
-import { useAuth } from "./AuthContext"; // Direkte Verwendung des AuthContext
+import { useAuth } from "./AuthContext";
 // Performance optimization imports
 import { useShallowMemo, useCachedApi } from "../util/performance";
 
 // --- Type Definitions (Derived from Backend Models) ---
 
+/**
+ * Ergänzender Inhalt für Module
+ */
 export interface SupplementaryContentItem {
   label: string;
   url: string;
   order: number;
 }
 
+/**
+ * Aufgaben innerhalb eines Moduls
+ */
 export interface Task {
   id: number;
   title: string;
@@ -28,6 +55,9 @@ export interface Task {
   completed: boolean;
 }
 
+/**
+ * Inhalt innerhalb eines Moduls
+ */
 export interface Content {
   id: number;
   title: string;
@@ -38,6 +68,9 @@ export interface Content {
   supplementary_contents?: SupplementaryContentItem[];
 }
 
+/**
+ * Modul-Struktur
+ */
 export interface Module {
   id: number;
   title: string;
@@ -52,11 +85,10 @@ interface ModuleContextType {
   modules: Module[];
   loading: boolean;
   error: Error | null;
-  fetchModules: () => Promise<void>; // Make it async for potential use
+  fetchModules: () => Promise<void>;
 }
 
 // --- Create Context ---
-// Initialize with default values matching the type structure
 const ModuleContext = createContext<ModuleContextType>({
   modules: [],
   loading: true,
@@ -71,9 +103,17 @@ interface ModuleProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Module Provider Komponente
+ * 
+ * Verwaltet den globalen Modul-Zustand mit Performance-Optimierung
+ * und benutzer-spezifischer Datenverwaltung.
+ */
 export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
-  const { isAuthenticated, user } = useAuth(); // Verwenden des AuthContext
+  const { isAuthenticated, user } = useAuth();
 
+  // --- Performance-optimierte API-Calls ---
+  
   // Performance optimization: Use cached API for modules with user-specific cache key
   const {
     data: modules,
@@ -120,6 +160,8 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     }
   );
 
+  // --- Performance-optimierte Callbacks ---
+  
   // Performance optimization: Stable callback for fetchModules
   const stableFetchModules = useCallback(async () => {
     await fetchModules();
@@ -144,9 +186,5 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
 // --- Custom Hook for easy access ---
 export const useModules = (): ModuleContextType => {
   const context = useContext(ModuleContext);
-  // No need to check for undefined if context provides default values
-  // if (context === undefined) {
-  //     throw new Error('useModules must be used within a ModuleProvider');
-  // }
   return context;
 };

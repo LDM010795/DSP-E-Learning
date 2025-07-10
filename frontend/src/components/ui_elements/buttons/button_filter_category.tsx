@@ -55,9 +55,9 @@ const ButtonFilterCategory: React.FC<ButtonFilterCategoryProps> = ({
     };
   }, [dropdownRef, triggerRef]);
 
-  const sortedCategories = [...allCategories].sort((a, b) =>
-    a.localeCompare(b)
-  );
+  const sortedCategories = [...allCategories]
+    .filter((cat): cat is string => typeof cat === "string" && cat.trim() !== "")
+    .sort((a, b) => a.localeCompare(b));
 
   const handleCheckboxChange = (category: string, isChecked: boolean) => {
     onCategoryChange(category, isChecked);

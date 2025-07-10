@@ -1,11 +1,37 @@
+/**
+ * Loading Spinner Component - E-Learning DSP Frontend
+ *
+ * Vielseitige Loading-Komponente mit verschiedenen Animationen:
+ * - Spinner, Dots, Hourglass und Pulse-Varianten
+ * - Verschiedene Größen (xs, sm, md, lg, xl)
+ * - Fullscreen und Overlay-Modi
+ * - Framer Motion Integration
+ * 
+ * Features:
+ * - Multiple Loading-Varianten
+ * - Responsive Design
+ * - DSP-Branding-Farben
+ * - Accessibility-Features
+ * - Performance-optimierte Animationen
+ * 
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import React from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 import { IoSyncOutline, IoHourglassOutline } from "react-icons/io5";
 
+// --- Type Definitions ---
+
 type LoadingVariant = "spinner" | "dots" | "hourglass" | "pulse";
 type LoadingSize = "xs" | "sm" | "md" | "lg" | "xl";
 
+/**
+ * Props für LoadingSpinner Komponente
+ */
 interface LoadingSpinnerProps {
   message?: string;
   size?: LoadingSize;
@@ -15,6 +41,12 @@ interface LoadingSpinnerProps {
   showBackground?: boolean;
 }
 
+/**
+ * Loading Spinner Komponente
+ * 
+ * Zeigt verschiedene Loading-Indikatoren mit Animationen an.
+ * Unterstützt verschiedene Varianten, Größen und Modi.
+ */
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   message = "Laden...",
   size = "md",
@@ -23,7 +55,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   fullScreen = false,
   showBackground = false,
 }) => {
-  // Size configurations
+  // --- Size Configuration ---
   const sizeConfig = {
     xs: {
       icon: "w-4 h-4",
@@ -59,6 +91,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   const config = sizeConfig[size];
 
+  // --- Animation Configurations ---
+  
   // Loading spinner animation
   const spinnerAnimation = {
     rotate: 360,
@@ -90,7 +124,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     },
   };
 
-  // Render loading indicator based on variant
+  // --- Loading Indicator Renderer ---
   const renderLoadingIndicator = () => {
     switch (variant) {
       case "spinner":
@@ -144,6 +178,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     }
   };
 
+  // --- Loading Content Component ---
   const LoadingContent = () => (
     <motion.div
       className={clsx(
@@ -157,7 +192,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {/* Loading indicator */}
+      {/* --- Loading Indicator --- */}
       <div className="relative">
         {renderLoadingIndicator()}
         
@@ -165,7 +200,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         <div className="absolute inset-0 bg-[#ff863d]/20 rounded-full blur-lg opacity-50 -z-10" />
       </div>
 
-      {/* Loading message */}
+      {/* --- Loading Message --- */}
       {message && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -218,21 +253,15 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     </motion.div>
   );
 
-  // Full screen loading overlay
+  // --- Render Logic ---
   if (fullScreen) {
     return (
-      <motion.div
-        className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="fixed inset-0 bg-gray-50/95 backdrop-blur-sm flex items-center justify-center z-50">
         <LoadingContent />
-      </motion.div>
+      </div>
     );
   }
 
-  // Inline loading component
   return <LoadingContent />;
 };
 

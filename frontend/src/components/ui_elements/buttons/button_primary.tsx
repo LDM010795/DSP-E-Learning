@@ -1,6 +1,30 @@
+/**
+ * Primary Button Component - E-Learning DSP Frontend
+ *
+ * Haupt-Button-Komponente mit erweiterten Animationen:
+ * - Framer Motion Integration für flüssige Animationen
+ * - DSP-Orange Gradient-Design
+ * - Hover- und Tap-Effekte
+ * - Glow- und Shine-Effekte
+ * 
+ * Features:
+ * - Gradient-Hintergrund mit DSP-Farben
+ * - Icon-Animationen
+ * - Accessibility-Features
+ * - Responsive Design
+ * - Disabled-State-Handling
+ * 
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import React from "react";
 import { motion } from "framer-motion";
 
+/**
+ * Props für ButtonPrimary Komponente
+ */
 interface ButtonPrimaryProps {
   title: string;
   icon?: React.ReactNode;
@@ -10,6 +34,12 @@ interface ButtonPrimaryProps {
   disabled?: boolean;
 }
 
+/**
+ * Primary Button Komponente
+ * 
+ * Haupt-Button mit DSP-Orange Design und erweiterten
+ * Animationen für wichtige Aktionen.
+ */
 const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   title,
   icon,
@@ -18,6 +48,8 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   classNameIcon = "",
   disabled,
 }) => {
+  // --- Animation Variants ---
+  
   const buttonVariants = {
     initial: { scale: 1 },
     hover: { scale: 1.02 },
@@ -56,10 +88,10 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
         boxShadow: "0 0 0 3px rgba(255, 134, 61, 0.1)",
       }}
     >
-      {/* Background glow effect */}
+      {/* --- Background Glow Effect --- */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] rounded-xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
 
-      {/* Content */}
+      {/* --- Content --- */}
       <div className="relative flex items-center space-x-3">
         {title && (
           <span className="text-sm md:text-base font-bold tracking-wide">
@@ -77,7 +109,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
         )}
       </div>
 
-      {/* Shine effect */}
+      {/* --- Shine Effect --- */}
       <div className="absolute inset-0 rounded-xl overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
       </div>

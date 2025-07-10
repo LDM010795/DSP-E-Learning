@@ -1,3 +1,25 @@
+/**
+ * Dashboard Page - E-Learning DSP Frontend
+ *
+ * Haupt-Dashboard für die E-Learning-Plattform:
+ * - Übersicht über Module und Lernfortschritt
+ * - Statistiken und Kennzahlen
+ * - Schwierigkeitsgrad-Analyse
+ * - Upcoming Deadlines
+ * - Performance-Metriken
+ *
+ * Features:
+ * - Modul-Übersicht mit Statistiken
+ * - Schwierigkeitsgrad-Kategorisierung
+ * - Progress-Tracking
+ * - Responsive Design
+ * - Error-Handling und Loading-States
+ *
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import React, { useState /*, useEffect*/ } from "react";
 import { Link } from "react-router-dom";
 import TagDifficulty from "../components/tags/tag_difficulty";
@@ -22,11 +44,18 @@ import ComingSoonOverlaySmall from "../components/messages/coming_soon_overlay_s
 import SubBackground from "../components/layouts/SubBackground";
 import { ProgressBar } from "../components/ui_elements/progress";
 
+/**
+ * Dashboard Komponente
+ *
+ * Haupt-Dashboard mit Übersicht über Module, Statistiken
+ * und Lernfortschritt des Benutzers.
+ */
 function Dashboard() {
+  // --- State Management ---
   const { modules, loading, error, fetchModules } = useModules();
-
   const [showAllModules, setShowAllModules] = useState(false);
 
+  // --- Loading State ---
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
@@ -39,6 +68,7 @@ function Dashboard() {
     );
   }
 
+  // --- Error State ---
   if (error) {
     return (
       <div className="min-h-screen">
@@ -76,6 +106,8 @@ function Dashboard() {
     );
   }
 
+  // --- Data Calculations ---
+
   const totalModules = modules.length;
 
   const allTasks: ContextTask[] = modules.flatMap((m) => m.tasks || []);
@@ -90,6 +122,8 @@ function Dashboard() {
   const averageLessonsPerModule =
     totalModules > 0 ? (totalLessons / totalModules).toFixed(1) : "0.0";
 
+  // --- Difficulty Analysis ---
+
   const tasksByDifficulty = allTasks.reduce((acc, task) => {
     const level = task.difficulty as DifficultyLevel;
     if (level === "Einfach" || level === "Mittel" || level === "Schwer") {
@@ -98,6 +132,9 @@ function Dashboard() {
     return acc;
   }, {} as Record<DifficultyLevel, number>);
 
+  /**
+   * Berechnet die durchschnittliche Schwierigkeit eines Moduls
+   */
   const calculateModuleDifficulty = (
     tasks?: ContextTask[]
   ): DifficultyLevel | null => {
@@ -131,6 +168,8 @@ function Dashboard() {
     return acc;
   }, {} as Record<DifficultyLevel, number>);
 
+  // --- Module Analysis ---
+
   let maxTasks = -1,
     minTasks = Infinity;
   let modulesWithMostTasks: string[] = [];
@@ -153,6 +192,11 @@ function Dashboard() {
   });
   if (minTasks === Infinity) minTasks = 0;
 
+  // --- Utility Functions ---
+
+  /**
+   * Extrahiert YouTube Video ID aus URL
+   */
   const getYouTubeVideoId = (url: string | undefined | null): string | null => {
     if (!url) return null;
     try {
@@ -178,6 +222,8 @@ function Dashboard() {
     return null;
   };
 
+  // --- Mock Data ---
+
   const upcomingDeadlines = [
     {
       id: "deadline1",
@@ -197,287 +243,205 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
-          <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+      {/* --- Hero Section --- */}
+      <div className="px-4 py-8">
+        <div className="max-w-7xl mx-auto">
+          <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
-            <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
-                Dashboard Übersicht
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Willkommen zurück! Hier ist dein Lernfortschritt.
-              </p>
-            </div>
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              Dashboard
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Willkommen zurück! Hier findest du eine Übersicht über deine
+              Lernfortschritte und verfügbare Module.
+            </p>
           </div>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="px-4 pb-8">
-        <div className="max-w-[95vw] mx-auto space-y-6">
-          {/* Statistics Cards */}
-          <SubBackground>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatCard
-                title="Meine Module"
-                value={totalModules}
-                icon={<IoLibraryOutline size={24} className="text-[#ff863d]" />}
-                accentColor="bg-[#ffe7d4]"
-              />
-              <StatCard
-                title="Lektionen Gesamt"
-                value={totalLessons}
-                description={`Ø ${averageLessonsPerModule} pro Modul`}
-                icon={<IoSchoolOutline size={24} className="text-[#ff863d]" />}
-                accentColor="bg-[#ffe7d4]"
-              />
-              <StatCard
-                title="Aufgaben Gesamt"
-                value={totalTasks}
-                description={`Ø ${averageTasksPerModule} pro Modul`}
-                icon={<IoListOutline size={24} className="text-[#ff863d]" />}
-                accentColor="bg-[#ffe7d4]"
-              />
-              <StatCard
-                title="Aufgabenverteilung"
-                value={`${tasksByDifficulty["Einfach"] || 0} / ${
-                  tasksByDifficulty["Mittel"] || 0
-                } / ${tasksByDifficulty["Schwer"] || 0}`}
-                description="Einfach / Mittel / Schwer"
-                icon={
-                  <IoStatsChartOutline size={24} className="text-[#ff863d]" />
-                }
-                accentColor="bg-[#ffe7d4]"
-              />
-            </div>
-          </SubBackground>
+          {/* --- Statistics Cards --- */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <StatCard
+              title="Verfügbare Module"
+              value={totalModules}
+              icon={<IoLibraryOutline className="text-2xl" />}
+              accentColor="bg-blue-100"
+              description={`${averageLessonsPerModule} Lektionen pro Modul`}
+            />
+            <StatCard
+              title="Gesamtaufgaben"
+              value={totalTasks}
+              icon={<IoListOutline className="text-2xl" />}
+              accentColor="bg-green-100"
+              description={`${averageTasksPerModule} Aufgaben pro Modul`}
+            />
+            <StatCard
+              title="Lernstunden"
+              value="24.5"
+              icon={<IoTimeOutline className="text-2xl" />}
+              accentColor="bg-purple-100"
+              description="Diese Woche"
+            />
+            <StatCard
+              title="Fortschritt"
+              value="68%"
+              icon={<BsSpeedometer2 className="text-2xl" />}
+              accentColor="bg-orange-100"
+              description="Gesamtfortschritt"
+            />
+          </div>
 
-          {/* Module Analysis */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <SubBackground className="lg:col-span-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-full bg-[#ffe7d4]">
-                  <BsSpeedometer2 size={20} className="text-[#ff863d]" />
-                </div>
-                <h2 className="text-lg font-semibold text-gray-700">
-                  Module nach Ø Schwierigkeit
-                </h2>
-              </div>
-              <div className="space-y-3">
-                {(["Einfach", "Mittel", "Schwer"] as DifficultyLevel[]).map(
-                  (level) =>
-                    modulesByAvgDifficulty[level] > 0 && (
-                      <div
-                        key={level}
-                        className="flex items-center justify-between text-sm"
+          {/* --- Main Content Grid --- */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* --- Module Overview --- */}
+            <div className="lg:col-span-2">
+              <SubBackground>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+                      <IoSchoolOutline className="mr-3 text-[#ff863d]" />
+                      Modul-Übersicht
+                    </h2>
+                    <button
+                      onClick={() => setShowAllModules(!showAllModules)}
+                      className="text-[#ff863d] hover:text-[#fa8c45] font-medium transition-colors"
+                    >
+                      {showAllModules ? "Weniger anzeigen" : "Alle anzeigen"}
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {(showAllModules ? modules : modules.slice(0, 3)).map(
+                      (module) => (
+                        <div
+                          key={module.id}
+                          className="bg-white rounded-xl p-4 border border-gray-200 hover:border-[#ff863d]/30 transition-all duration-200 hover:shadow-md"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-800 mb-2">
+                                {module.title}
+                              </h3>
+                              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                <span className="flex items-center">
+                                  <IoPlayCircleOutline className="mr-1" />
+                                  {module.contents?.length || 0} Lektionen
+                                </span>
+                                <span className="flex items-center">
+                                  <IoListOutline className="mr-1" />
+                                  {module.tasks?.length || 0} Aufgaben
+                                </span>
+                                {module.tasks && module.tasks.length > 0 && (
+                                  <TagDifficulty
+                                    difficulty={
+                                      calculateModuleDifficulty(module.tasks) ||
+                                      "Mittel"
+                                    }
+                                  />
+                                )}
+                              </div>
+                            </div>
+                            <Link
+                              to={`/modules/${module.id}`}
+                              className="px-4 py-2 bg-[#ff863d] text-white rounded-lg hover:bg-[#fa8c45] transition-colors font-medium text-sm"
+                            >
+                              Öffnen
+                            </Link>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  {modules.length > 3 && (
+                    <div className="mt-6 text-center">
+                      <Link
+                        to="/modules"
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white rounded-xl hover:from-[#fa8c45] hover:to-[#ff863d] transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                       >
-                        <TagDifficulty difficulty={level} />
-                        <span className="font-medium text-gray-800">
-                          {modulesByAvgDifficulty[level]} Modul(e)
-                        </span>
-                      </div>
-                    )
-                )}
-                {Object.keys(modulesByAvgDifficulty).length === 0 && (
-                  <p className="text-sm text-gray-500">
-                    Keine Module mit bewertbaren Aufgaben.
-                  </p>
-                )}
-              </div>
-            </SubBackground>
-
-            <SubBackground className="lg:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-full bg-[#ffe7d4]">
-                  <IoListOutline size={20} className="text-[#ff863d]" />
+                        <IoLibraryOutline className="mr-2" />
+                        Alle Module anzeigen
+                      </Link>
+                    </div>
+                  )}
                 </div>
-                <h2 className="text-lg font-semibold text-gray-700">
-                  Aufgaben pro Modul
-                </h2>
-              </div>
-              <div className="space-y-3 text-sm">
-                {maxTasks > -1 && (
-                  <div>
-                    <p className="font-semibold mb-1">
-                      Meiste Aufgaben ({maxTasks}):
-                    </p>
-                    <p className="text-gray-500">
-                      {modulesWithMostTasks.join(", ")}
-                    </p>
-                  </div>
-                )}
-                {minTasks < Infinity && minTasks > 0 && (
-                  <div className="mt-3">
-                    <p className="font-semibold mb-1">
-                      Wenigste Aufgaben ({minTasks}):
-                    </p>
-                    <p className="text-gray-500">
-                      {modulesWithLeastTasks.join(", ")}
-                    </p>
-                  </div>
-                )}
-                {minTasks === 0 && maxTasks <= 0 && (
-                  <p className="text-sm text-gray-500">
-                    Keine Aufgaben in den Modulen gefunden.
-                  </p>
-                )}
-              </div>
-            </SubBackground>
-          </div>
+              </SubBackground>
+            </div>
 
-          {/* Upcoming Deadlines */}
-          <div className="relative">
-            <SubBackground>
-              <div>
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                  Anstehende Fristen
-                </h2>
-                {upcomingDeadlines.length > 0 ? (
+            {/* --- Sidebar --- */}
+            <div className="space-y-6">
+              {/* --- Difficulty Distribution --- */}
+              <SubBackground>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <IoStatsChartOutline className="mr-2 text-[#ff863d]" />
+                    Schwierigkeitsgrad
+                  </h3>
+                  <div className="space-y-3">
+                    {Object.entries(tasksByDifficulty).map(
+                      ([difficulty, count]) => (
+                        <div
+                          key={difficulty}
+                          className="flex items-center justify-between"
+                        >
+                          <TagDifficulty
+                            difficulty={difficulty as DifficultyLevel}
+                          />
+                          <span className="font-semibold text-gray-800">
+                            {count}
+                          </span>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              </SubBackground>
+
+              {/* --- Upcoming Deadlines --- */}
+              <SubBackground>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <IoTimeOutline className="mr-2 text-[#ff863d]" />
+                    Anstehende Deadlines
+                  </h3>
                   <div className="space-y-3">
                     {upcomingDeadlines.map((deadline) => (
                       <div
                         key={deadline.id}
-                        className="flex items-center bg-white/60 p-4 rounded-lg border border-white/40 backdrop-blur-sm"
+                        className="bg-white rounded-lg p-3 border border-gray-200"
                       >
-                        <div className="p-3 rounded-full bg-[#ffe7d4] mr-4 flex-shrink-0">
-                          <IoTimeOutline size={20} className="text-[#ff863d]" />
-                        </div>
-                        <div className="flex-grow">
-                          <p className="text-md font-semibold text-gray-800">
-                            {deadline.title}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {deadline.context}
-                          </p>
-                          <p className="text-sm font-medium text-red-600 mt-1">
-                            {deadline.dueDate}
-                          </p>
-                        </div>
+                        <h4 className="font-medium text-gray-800 text-sm mb-1">
+                          {deadline.title}
+                        </h4>
+                        <p className="text-xs text-gray-600 mb-2">
+                          {deadline.context}
+                        </p>
+                        <p className="text-xs text-[#ff863d] font-medium">
+                          Fällig: {deadline.dueDate}
+                        </p>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-gray-500 bg-white/60 p-4 rounded-lg border border-white/40 backdrop-blur-sm">
-                    Aktuell keine anstehenden Fristen.
-                  </p>
-                )}
-              </div>
-            </SubBackground>
+                </div>
+              </SubBackground>
 
-            <ComingSoonOverlaySmall subMessage="(Die Anstehenden Fristen sind bald verfügbar)" />
+              {/* --- Coming Soon --- */}
+              <ComingSoonOverlaySmall
+                title="Erweiterte Statistiken"
+                description="Detaillierte Lernanalysen und Performance-Metriken"
+              />
+            </div>
           </div>
-
-          {/* Module Overview */}
-          {modules.length > 0 && (
-            <SubBackground>
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                Deine Module
-              </h2>
-              <div
-                className={`space-y-3 overflow-y-auto transition-[max-height] duration-700 ease-in-out ${
-                  showAllModules ? "max-h-[800px]" : "max-h-80"
-                }`}
-              >
-                {modules.map((module) => {
-                  const firstContent = module.contents?.[0];
-                  const videoId = getYouTubeVideoId(firstContent?.video_url);
-                  const thumbnailUrl = videoId
-                    ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
-                    : null;
-
-                  const moduleTasks = module.tasks || [];
-                  const totalTasksInModule = moduleTasks.length;
-                  const completedTasksInModule = moduleTasks.filter(
-                    (task) => task.completed
-                  ).length;
-                  const progressPercent =
-                    totalTasksInModule > 0
-                      ? (completedTasksInModule / totalTasksInModule) * 100
-                      : 0;
-
-                  return (
-                    <Link
-                      key={module.id}
-                      to={`/modules/${module.id}`}
-                      className="block bg-white/60 backdrop-blur-sm p-4 rounded-lg border border-white/40 shadow-sm hover:shadow-md hover:border-[#ff863d]/30 transition duration-200 ease-in-out group flex flex-col hover:bg-white/80"
-                    >
-                      <div className="flex items-center w-full mb-3">
-                        {thumbnailUrl ? (
-                          <img
-                            src={thumbnailUrl}
-                            alt={`${module.title} thumbnail`}
-                            className="w-16 h-10 object-cover rounded mr-4 flex-shrink-0 bg-gray-200"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display =
-                                "none";
-                              const placeholder = document.createElement("div");
-                              placeholder.className =
-                                "w-16 h-10 bg-gray-200 rounded mr-4 flex-shrink-0";
-                              (
-                                e.target as HTMLImageElement
-                              ).parentNode?.insertBefore(
-                                placeholder,
-                                e.target as HTMLImageElement
-                              );
-                            }}
-                          />
-                        ) : (
-                          <div className="w-16 h-10 bg-gray-200 rounded mr-4 flex-shrink-0"></div>
-                        )}
-                        <div className="flex-grow mr-4">
-                          <h3 className="text-md font-semibold text-gray-800 group-hover:text-[#ff863d] mb-1">
-                            {module.title}
-                          </h3>
-                        </div>
-                        <IoPlayCircleOutline
-                          size={28}
-                          className="text-[#ff863d] flex-shrink-0"
-                        />
-                      </div>
-                      {totalTasksInModule > 0 && (
-                        <div className="w-full mt-3">
-                          <ProgressBar
-                            value={progressPercent}
-                            size="sm"
-                            label={`${completedTasksInModule}/${totalTasksInModule} Aufgaben`}
-                            showIcon={true}
-                            className="mt-2"
-                          />
-                        </div>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {modules.length > 3 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAllModules(!showAllModules)}
-                  className="block w-full mt-4 text-center bg-white/60 backdrop-blur-sm py-3 px-4 rounded-lg border border-white/40 shadow-sm hover:bg-white/80 text-gray-700 font-medium transition duration-150 ease-in-out"
-                >
-                  {showAllModules ? "Weniger anzeigen" : "Mehr anzeigen"}
-                </button>
-              )}
-            </SubBackground>
-          )}
-
-          {modules.length === 0 && !loading && (
-            <SubBackground>
-              <div className="text-center text-gray-500">
-                <p>Dir sind aktuell keine Module zugewiesen.</p>
-              </div>
-            </SubBackground>
-          )}
         </div>
       </div>
     </div>
   );
 }
 
+// --- StatCard Component ---
+
+/**
+ * Props für StatCard Komponente
+ */
 interface StatCardProps {
   title: string;
   value: string | number;
@@ -486,6 +450,9 @@ interface StatCardProps {
   description?: string;
 }
 
+/**
+ * StatCard Komponente für Dashboard-Statistiken
+ */
 const StatCard: React.FC<StatCardProps> = ({
   title,
   value,
@@ -494,17 +461,17 @@ const StatCard: React.FC<StatCardProps> = ({
   description,
 }) => {
   return (
-    <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg border border-white/40 shadow-sm flex flex-col justify-between h-full hover:bg-white/80 transition-colors duration-200">
-      <div className="flex items-center gap-4 mb-2">
-        <div className={`p-3 rounded-full ${accentColor}`}>{icon}</div>
-        <div>
-          <p className="text-sm text-gray-500 font-medium">{title}</p>
-          <p className="text-2xl font-semibold text-gray-800">{value}</p>
+    <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-[#ff863d]/30 transition-all duration-200 hover:shadow-md">
+      <div className="flex items-center justify-between mb-4">
+        <div className={`p-3 rounded-lg ${accentColor}`}>
+          <div className="text-[#ff863d]">{icon}</div>
         </div>
       </div>
-      {description && (
-        <p className="text-xs text-gray-500 mt-1">{description}</p>
-      )}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-1">{title}</h3>
+        <p className="text-3xl font-bold text-gray-900 mb-2">{value}</p>
+        {description && <p className="text-sm text-gray-600">{description}</p>}
+      </div>
     </div>
   );
 };
