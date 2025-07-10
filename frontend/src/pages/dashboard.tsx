@@ -396,9 +396,9 @@ function Dashboard() {
                 </div>
               </SubBackground>
 
-              {/* --- Upcoming Deadlines --- */}
+              {/* --- Upcoming Deadlines with Coming Soon Overlay --- */}
               <SubBackground>
-                <div className="p-6">
+                <div className="p-6 relative">
                   <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                     <IoTimeOutline className="mr-2 text-[#ff863d]" />
                     Anstehende Deadlines
@@ -421,14 +421,16 @@ function Dashboard() {
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Coming Soon Overlay positioned over the deadlines */}
+                  <div className="absolute inset-0 bg-white/95 rounded-xl flex items-center justify-center">
+                    <ComingSoonOverlaySmall
+                      title="Erweiterte Statistiken"
+                      description="Detaillierte Lernanalysen und Performance-Metriken"
+                    />
+                  </div>
                 </div>
               </SubBackground>
-
-              {/* --- Coming Soon --- */}
-              <ComingSoonOverlaySmall
-                title="Erweiterte Statistiken"
-                description="Detaillierte Lernanalysen und Performance-Metriken"
-              />
             </div>
           </div>
         </div>

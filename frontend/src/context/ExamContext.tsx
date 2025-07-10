@@ -259,9 +259,9 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
 
     try {
       const [availableResponse, activeResponse, completedResponse] = await Promise.all([
-        api.get("/exams/available/"),
-        api.get("/exams/active/"),
-        api.get("/exams/completed/"),
+        api.get("/exams/my-exams/available/"),
+        api.get("/exams/my-exams/active/"),
+        api.get("/exams/my-exams/completed/"),
       ]);
 
       setAvailableExams(availableResponse.data);
@@ -283,7 +283,7 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
     setErrorAllExams(null);
 
     try {
-      const response = await api.get("/exams/");
+      const response = await api.get("/exams/all/");
       setAllExams(response.data);
     } catch (error) {
       console.error("Fehler beim Laden aller Prüfungen:", error);
@@ -303,7 +303,7 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
     setErrorTeacherData(null);
 
     try {
-      const response = await api.get("/exams/teacher-submissions/");
+      const response = await api.get("/exams/teacher/submissions/");
       setTeacherSubmissions(response.data);
     } catch (error) {
       console.error("Fehler beim Laden der Lehrer-Daten:", error);
@@ -365,7 +365,7 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
     feedback: string
   ): Promise<boolean> => {
     try {
-      await api.post(`/exams/attempts/${attemptId}/grade/`, {
+      await api.post(`/exams/teacher/submissions/${attemptId}/grade/`, {
         criterion_scores: scores,
         feedback,
       });
