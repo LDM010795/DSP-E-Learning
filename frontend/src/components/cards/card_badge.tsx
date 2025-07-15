@@ -3,17 +3,18 @@ import clsx from "clsx";
 
 interface CardBadgeProps {
   text: string;
-  colorScheme?: "orange" | "blue" | "green" | "gray" | "red"; // Beispiel-Farbschemata
+  colorScheme?: "dsp-orange" | "dsp-light" | "blue" | "green" | "gray" | "red";
   className?: string;
 }
 
 const CardBadge: React.FC<CardBadgeProps> = ({
   text,
-  colorScheme = "gray", // Standardfarbe
+  colorScheme = "gray",
   className = "",
 }) => {
   const colorClasses = {
-    orange: "bg-orange-100 text-orange-800",
+    "dsp-orange": "bg-[#FF6D25] text-white",
+    "dsp-light": "bg-[#FEDAC7] text-[#FF6D25]",
     blue: "bg-blue-100 text-blue-800",
     green: "bg-green-100 text-green-800",
     gray: "bg-gray-100 text-gray-800",
@@ -23,7 +24,7 @@ const CardBadge: React.FC<CardBadgeProps> = ({
   return (
     <span
       className={clsx(
-        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm",
         colorClasses[colorScheme],
         className
       )}
