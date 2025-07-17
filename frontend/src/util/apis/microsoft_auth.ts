@@ -11,6 +11,10 @@ const MICROSOFT_API_URL =
   import.meta.env.VITE_MICROSOFT_API_URL ||
   "http://127.0.0.1:8000/api/microsoft";
 
+// Tool-Slug für Microsoft Authentication (aus Environment-Variable)
+const MICROSOFT_TOOL_SLUG =
+  import.meta.env.VITE_MICROSOFT_TOOL_SLUG || "e-learning";
+
 // Separate Axios-Instanz für Microsoft Auth (keine JWT-Interceptors nötig)
 const microsoftApi = axios.create({
   baseURL: MICROSOFT_API_URL,
@@ -98,7 +102,7 @@ export interface MicrosoftErrorResponse {
  * 1. Startet Microsoft Organization Login Flow
  */
 export const startMicrosoftLogin = (): void => {
-  const loginUrl = `${MICROSOFT_API_URL}/auth/login/e-learning/`;
+  const loginUrl = `${MICROSOFT_API_URL}/auth/login/${MICROSOFT_TOOL_SLUG}/`;
   // Direkte Navigation statt AJAX-Aufruf, um CORS-Redirect-Probleme zu umgehen
   window.location.href = loginUrl;
 };
@@ -111,7 +115,7 @@ export const authenticateWithMicrosoft = async (
 ): Promise<MicrosoftAuthResponse> => {
   try {
     const response = await microsoftApi.post<MicrosoftAuthResponse>(
-      "/auth/callback/e-learning/",
+      `/auth/callback/${MICROSOFT_TOOL_SLUG}/`,
       callbackData
     );
     return response.data;
