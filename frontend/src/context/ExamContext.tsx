@@ -25,7 +25,6 @@ import React, {
   useState,
   useEffect,
   ReactNode,
-  useCallback,
 } from "react";
 import api from "../util/apis/api";
 import { useAuth } from "./AuthContext";

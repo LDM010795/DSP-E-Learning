@@ -42,7 +42,6 @@ import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import ComingSoonOverlaySmall from "../components/messages/coming_soon_overlay_small";
 import SubBackground from "../components/layouts/SubBackground";
-import { ProgressBar } from "../components/ui_elements/progress";
 
 /**
  * Dashboard Komponente
@@ -160,13 +159,14 @@ function Dashboard() {
     return "Schwer";
   };
 
-  const modulesByAvgDifficulty = modules.reduce((acc, module) => {
-    const avgDifficulty = calculateModuleDifficulty(module.tasks);
-    if (avgDifficulty) {
-      acc[avgDifficulty] = (acc[avgDifficulty] || 0) + 1;
-    }
-    return acc;
-  }, {} as Record<DifficultyLevel, number>);
+  // Berechnung der Module nach durchschnittlicher Schwierigkeit (für zukünftige Verwendung)
+  // const modulesByAvgDifficulty = modules.reduce((acc, module) => {
+  //   const avgDifficulty = calculateModuleDifficulty(module.tasks);
+  //   if (avgDifficulty) {
+  //     acc[avgDifficulty] = (acc[avgDifficulty] || 0) + 1;
+  //   }
+  //   return acc;
+  // }, {} as Record<DifficultyLevel, number>);
 
   // --- Module Analysis ---
 
@@ -195,32 +195,32 @@ function Dashboard() {
   // --- Utility Functions ---
 
   /**
-   * Extrahiert YouTube Video ID aus URL
+   * Extrahiert YouTube Video ID aus URL (für zukünftige Verwendung)
    */
-  const getYouTubeVideoId = (url: string | undefined | null): string | null => {
-    if (!url) return null;
-    try {
-      const urlObj = new URL(url);
-      if (
-        urlObj.hostname.includes("youtube.com") ||
-        urlObj.hostname.includes("youtu.be")
-      ) {
-        if (urlObj.pathname.includes("/embed/")) {
-          return urlObj.pathname.split("/embed/")[1].split(/[?&]/)[0];
-        }
-        if (urlObj.searchParams.has("v")) {
-          return urlObj.searchParams.get("v");
-        }
-      }
-      if (urlObj.hostname === "youtu.be") {
-        return urlObj.pathname.substring(1).split(/[?&]/)[0];
-      }
-    } catch (e) {
-      console.error("Error parsing video URL:", e);
-      return null;
-    }
-    return null;
-  };
+  // const getYouTubeVideoId = (url: string | undefined | null): string | null => {
+  //   if (!url) return null;
+  //   try {
+  //     const urlObj = new URL(url);
+  //     if (
+  //       urlObj.hostname.includes("youtube.com") ||
+  //       urlObj.hostname.includes("youtu.be")
+  //     ) {
+  //       if (urlObj.pathname.includes("/embed/")) {
+  //         return urlObj.pathname.split("/embed/")[1].split(/[?&]/)[0];
+  //       }
+  //       if (urlObj.searchParams.has("v")) {
+  //         return urlObj.searchParams.get("v");
+  //       }
+  //     }
+  //     if (urlObj.hostname === "youtu.be") {
+  //       return urlObj.pathname.substring(1).split(/[?&]/)[0];
+  //     }
+  //   } catch (e) {
+  //     console.error("Error parsing video URL:", e);
+  //     return null;
+  //   }
+  //   return null;
+  // };
 
   // --- Mock Data ---
 
@@ -421,12 +421,12 @@ function Dashboard() {
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Coming Soon Overlay positioned over the deadlines */}
                   <div className="absolute inset-0 bg-white/95 rounded-xl flex items-center justify-center">
                     <ComingSoonOverlaySmall
-                      title="Erweiterte Statistiken"
-                      description="Detaillierte Lernanalysen und Performance-Metriken"
+                      message="Erweiterte Statistiken"
+                      subMessage="Detaillierte Lernanalysen und Performance-Metriken"
                     />
                   </div>
                 </div>

@@ -10,7 +10,7 @@ import { useRef, useCallback, useState, useEffect } from "react";
 /**
  * Cache configuration options
  */
-interface CacheOptions {
+export interface CacheOptions {
   ttl?: number; // Time to live in milliseconds
   maxSize?: number; // Maximum cache size
   storage?: "memory" | "session" | "local";
@@ -23,7 +23,7 @@ interface CacheOptions {
 /**
  * Cache entry structure
  */
-interface CacheEntry<T> {
+export interface CacheEntry<T> {
   value: T;
   timestamp: number;
   accessCount: number;

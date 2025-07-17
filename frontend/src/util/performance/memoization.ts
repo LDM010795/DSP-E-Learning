@@ -8,6 +8,17 @@
 import { useRef, useMemo, useCallback, useState, useEffect } from "react";
 
 /**
+ * Memoization configuration options
+ */
+export interface MemoizationOptions {
+  ttl?: number; // Time to live in milliseconds
+  maxCacheSize?: number; // Maximum cache size for LRU cache
+  equalityFn?: (a: unknown[], b: unknown[]) => boolean; // Custom equality function
+  onCacheHit?: (key: string) => void; // Callback for cache hits
+  onCacheMiss?: (key: string) => void; // Callback for cache misses
+}
+
+/**
  * LRU (Least Recently Used) Cache implementation
  * Perfect for caching API responses or expensive computations
  */
