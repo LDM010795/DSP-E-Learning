@@ -33,6 +33,7 @@ export interface MicrosoftLoginResponse {
 export interface MicrosoftCallbackRequest {
   code: string;
   state: string;
+  tool_slug?: string;
 }
 
 export interface MicrosoftAuthResponse {

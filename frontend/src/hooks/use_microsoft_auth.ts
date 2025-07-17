@@ -27,7 +27,6 @@ import {
   authenticateWithMicrosoft,
   extractCallbackFromUrl,
   cleanupUrlAfterAuth,
-  MicrosoftAuthResponse,
 } from "../util/apis/microsoft_auth";
 
 /**
@@ -59,7 +58,6 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
   // --- React StrictMode Protection ---
   // Verhindert doppelte OAuth-Callback-Verarbeitung
   const callbackProcessedRef = useRef(false);
-  const isProcessingRef = useRef(false);
 
   /**
    * Startet den Microsoft Login-Flow

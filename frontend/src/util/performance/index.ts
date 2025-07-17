@@ -351,8 +351,8 @@ export const prefetchCommonResources = (): void => {
         );
 
         // Optional: Report metrics to analytics service
-        if (window.gtag) {
-          window.gtag("event", "resource_prefetch", {
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "resource_prefetch", {
             successful_loads: successful,
             failed_loads: failed,
             total_resources: results.length,
