@@ -1,6 +1,30 @@
+/**
+ * Primary Button Component - E-Learning DSP Frontend
+ *
+ * Haupt-Button-Komponente mit erweiterten Animationen:
+ * - Framer Motion Integration für flüssige Animationen
+ * - DSP-Orange Gradient-Design
+ * - Hover- und Tap-Effekte
+ * - Glow- und Shine-Effekte
+ * 
+ * Features:
+ * - Gradient-Hintergrund mit DSP-Farben
+ * - Icon-Animationen
+ * - Accessibility-Features
+ * - Responsive Design
+ * - Disabled-State-Handling
+ * 
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import React from "react";
 import { motion } from "framer-motion";
 
+/**
+ * Props für ButtonPrimary Komponente
+ */
 interface ButtonPrimaryProps {
   title: string;
   icon?: React.ReactNode;
@@ -10,6 +34,12 @@ interface ButtonPrimaryProps {
   disabled?: boolean;
 }
 
+/**
+ * Primary Button Komponente
+ * 
+ * Haupt-Button mit DSP-Orange Design und erweiterten
+ * Animationen für wichtige Aktionen.
+ */
 const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   title,
   icon,
@@ -18,6 +48,8 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   classNameIcon = "",
   disabled,
 }) => {
+  // --- Animation Variants ---
+  
   const buttonVariants = {
     initial: { scale: 1 },
     hover: { scale: 1.02 },
@@ -34,14 +66,14 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3
-        bg-gradient-to-r from-[#ff863d] to-[#fa8c45] 
-        hover:from-[#fa8c45] hover:to-[#ff863d]
+        bg-gradient-to-r from-[#FF6D25] to-[#FFB697] 
+        hover:from-[#FFB697] hover:to-[#FF6D25]
         text-white font-semibold
-        shadow-lg shadow-[#ff863d]/25 hover:shadow-xl hover:shadow-[#ff863d]/30
-        border border-[#ff863d]/20 hover:border-[#ff863d]/40
+        shadow-lg shadow-[#FF6D25]/25 hover:shadow-xl hover:shadow-[#FF6D25]/30
+        border border-[#FF6D25]/20 hover:border-[#FF6D25]/40
         backdrop-blur-sm
         transition-all duration-200 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20 focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-[#FF6D25]/20 focus:ring-offset-2
         ${
           disabled
             ? "opacity-50 cursor-not-allowed hover:scale-100 hover:shadow-lg"
@@ -53,13 +85,13 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
       whileHover={disabled ? "initial" : "hover"}
       whileTap={disabled ? "initial" : "tap"}
       whileFocus={{
-        boxShadow: "0 0 0 3px rgba(255, 134, 61, 0.1)",
+        boxShadow: "0 0 0 3px rgba(255, 109, 37, 0.1)",
       }}
     >
-      {/* Background glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] rounded-xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
+      {/* --- Background Glow Effect --- */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#FF6D25] to-[#FFB697] rounded-xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
 
-      {/* Content */}
+      {/* --- Content --- */}
       <div className="relative flex items-center space-x-3">
         {title && (
           <span className="text-sm md:text-base font-bold tracking-wide">
@@ -77,7 +109,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
         )}
       </div>
 
-      {/* Shine effect */}
+      {/* --- Shine Effect --- */}
       <div className="absolute inset-0 rounded-xl overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
       </div>

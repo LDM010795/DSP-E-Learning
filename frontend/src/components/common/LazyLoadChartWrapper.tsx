@@ -1,3 +1,23 @@
+/**
+ * Lazy Load Chart Wrapper Component - E-Learning DSP Frontend
+ *
+ * Performance-optimierte Chart-Loading-Komponente:
+ * - Intersection Observer für Lazy Loading
+ * - Generische Typisierung für verschiedene Chart-Komponenten
+ * - Konfigurierbare Platzhalter und Schwellenwerte
+ *
+ * Features:
+ * - Lazy Loading für bessere Performance
+ * - Generische TypeScript-Typisierung
+ * - Intersection Observer API
+ * - Konfigurierbare Observer-Optionen
+ * - Automatisches Cleanup
+ *
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import {
   useState,
   useRef,
@@ -6,29 +26,40 @@ import {
   CSSProperties,
 } from "react";
 
-// Machen die Props generisch für die Chart-Props
+/**
+ * Props für LazyLoadChartWrapper Komponente
+ */
 interface LazyLoadChartWrapperProps<TProps> {
-  component: ComponentType<TProps>; // Typisiert die Komponente mit ihren Props
-  minHeight: number; // Mindesthöhe des Platzhalters in Pixeln
-  observerOptions?: IntersectionObserverInit; // Optionale Observer-Konfiguration
+  /** Chart-Komponente die gelazy-loaded werden soll */
+  component: ComponentType<TProps>;
+  /** Mindesthöhe des Platzhalters in Pixeln */
+  minHeight: number;
+  /** Optionale Observer-Konfiguration */
+  observerOptions?: IntersectionObserverInit;
+  /** Zusätzliche Styles für den Platzhalter */
   placeholderStyle?: CSSProperties;
-  chartProps: TProps; // Explizite Prop für die Chart-Argumente
-  // [key: string]: any; // Entfernt
+  /** Props die an die Chart-Komponente weitergegeben werden */
+  chartProps: TProps;
 }
 
-// Definieren die Komponente als generische Funktion
+/**
+ * Lazy Load Chart Wrapper Komponente
+ *
+ * Lädt Chart-Komponenten erst wenn sie im Viewport sichtbar werden.
+ * Verbessert die Performance durch verzögertes Laden von Charts.
+ */
 const LazyLoadChartWrapper = <TProps extends object>({
-  // Füge Constraint hinzu
   component: ChartComponent,
   minHeight,
-  observerOptions = { threshold: 0 }, // Geändert von 0.1 zu 0
+  observerOptions = { threshold: 0 },
   placeholderStyle = {},
-  chartProps, // Entpacke die chartProps
-}: // ...rest // Entfernt
-LazyLoadChartWrapperProps<TProps>) => {
+  chartProps,
+}: LazyLoadChartWrapperProps<TProps>) => {
+  // --- State Management ---
   const [isVisible, setIsVisible] = useState(false);
   const placeholderRef = useRef<HTMLDivElement>(null);
 
+  // --- Intersection Observer Setup ---
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -40,12 +71,13 @@ LazyLoadChartWrapperProps<TProps>) => {
       });
     }, observerOptions);
 
+    // --- Element beobachten ---
     const currentRef = placeholderRef.current;
     if (currentRef) {
       observer.observe(currentRef);
     }
 
-    // Aufräumfunktion
+    // --- Cleanup ---
     return () => {
       if (currentRef) {
         observer.unobserve(currentRef);
@@ -64,6 +96,7 @@ LazyLoadChartWrapperProps<TProps>) => {
         ...placeholderStyle,
       }}
     >
+      {/* --- Conditional Rendering --- */}
       {
         isVisible ? (
           <ChartComponent {...chartProps} />

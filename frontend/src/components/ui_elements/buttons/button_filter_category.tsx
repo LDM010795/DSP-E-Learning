@@ -25,9 +25,9 @@ const ButtonFilterCategory: React.FC<ButtonFilterCategoryProps> = ({
   itemClassName = "flex items-center px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-100 cursor-pointer",
   labelClassName = "px-3 py-2 text-xs font-semibold text-gray-500",
   separatorClassName = "border-t border-gray-200 mx-1 my-1",
-  checkboxClassName = "h-3 w-3 rounded border-gray-300 text-dsp-orange focus:ring-dsp-orange cursor-pointer",
+  checkboxClassName = "h-3 w-3 rounded border-gray-300 text-[#FF6D25] focus:ring-[#FF6D25] cursor-pointer",
   checkboxLabelClassName = "ml-2 select-none",
-  clearButtonClassName = "w-full text-left px-3 py-1.5 text-xs text-dsp-orange hover:bg-gray-100 hover:underline cursor-pointer",
+  clearButtonClassName = "w-full text-left px-3 py-1.5 text-xs text-[#FF6D25] hover:bg-gray-100 hover:underline cursor-pointer",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -55,9 +55,9 @@ const ButtonFilterCategory: React.FC<ButtonFilterCategoryProps> = ({
     };
   }, [dropdownRef, triggerRef]);
 
-  const sortedCategories = [...allCategories].sort((a, b) =>
-    a.localeCompare(b)
-  );
+  const sortedCategories = [...allCategories]
+    .filter((cat): cat is string => typeof cat === "string" && cat.trim() !== "")
+    .sort((a, b) => a.localeCompare(b));
 
   const handleCheckboxChange = (category: string, isChecked: boolean) => {
     onCategoryChange(category, isChecked);
@@ -76,9 +76,9 @@ const ButtonFilterCategory: React.FC<ButtonFilterCategoryProps> = ({
         className={clsx(
           "inline-flex items-center justify-center px-3 py-1 text-xs rounded-full border transition-colors cursor-pointer",
           {
-            "bg-white text-gray-600 border-gray-300 hover:bg-dsp-orange_light hover:border-gray-400":
+            "bg-white text-gray-600 border-gray-300 hover:bg-[#FEDAC7] hover:border-[#FF6D25]":
               !hasActiveFilters,
-            "bg-dsp-orange text-white border-dsp-orange": hasActiveFilters,
+            "bg-[#FF6D25] text-white border-[#FF6D25]": hasActiveFilters,
           }
         )}
         aria-haspopup="true"

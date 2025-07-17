@@ -96,20 +96,11 @@ export interface MicrosoftErrorResponse {
 /**
  * 1. Startet Microsoft Organization Login Flow
  */
-export const startMicrosoftLogin =
-  async (): Promise<MicrosoftLoginResponse> => {
-    try {
-      const response = await microsoftApi.get<MicrosoftLoginResponse>(
-        "/auth/login/"
-      );
-      return response.data;
-    } catch (error: unknown) {
-      const axiosError = error as { response?: { data?: { error?: string } } };
-      throw new Error(
-        axiosError.response?.data?.error || "Failed to start Microsoft login"
-      );
-    }
-  };
+export const startMicrosoftLogin = (): void => {
+  const loginUrl = `${MICROSOFT_API_URL}/auth/login/e-learning/`;
+  // Direkte Navigation statt AJAX-Aufruf, um CORS-Redirect-Probleme zu umgehen
+  window.location.href = loginUrl;
+};
 
 /**
  * 2. GENERISCHE API: Sendet OAuth Code und State für Authentication
@@ -119,7 +110,7 @@ export const authenticateWithMicrosoft = async (
 ): Promise<MicrosoftAuthResponse> => {
   try {
     const response = await microsoftApi.post<MicrosoftAuthResponse>(
-      "/auth/callback/",
+      "/auth/callback/e-learning/",
       callbackData
     );
     return response.data;

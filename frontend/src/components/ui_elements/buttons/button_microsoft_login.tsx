@@ -20,7 +20,8 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
   onError,
   onSuccess,
 }) => {
-  const { isLoading, error, loginWithMicrosoft, clearError } = useMicrosoftAuth();
+  const { isLoading, error, loginWithMicrosoft, clearError } =
+    useMicrosoftAuth();
 
   const handleMicrosoftLogin = async (): Promise<void> => {
     try {
@@ -28,7 +29,8 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
       await loginWithMicrosoft();
       onSuccess?.();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Microsoft login failed";
+      const errorMessage =
+        err instanceof Error ? err.message : "Microsoft login failed";
       onError?.(errorMessage);
     }
   };
@@ -48,7 +50,7 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
       className={`
         flex items-center justify-center gap-3 w-full px-4 py-3 
         bg-white border border-gray-300 rounded-lg shadow-sm
-        hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+        hover:bg-gray-50 hover:border-[#FF6D25] focus:outline-none focus:ring-2 focus:ring-[#FF6D25] focus:ring-offset-2
         disabled:opacity-50 disabled:cursor-not-allowed
         transition-colors duration-200
         text-gray-700 font-medium
@@ -70,13 +72,11 @@ const MicrosoftLoginButton: React.FC<MicrosoftLoginButtonProps> = ({
       </svg>
 
       {/* Button Text */}
-      <span>
-        {isLoading ? "Anmeldung läuft..." : "Mit Microsoft anmelden"}
-      </span>
+      <span>{isLoading ? "Anmeldung läuft..." : "Mit Microsoft anmelden"}</span>
 
       {/* Loading Spinner */}
       {isLoading && (
-        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-blue-600"></div>
+        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-[#FF6D25]"></div>
       )}
     </button>
   );

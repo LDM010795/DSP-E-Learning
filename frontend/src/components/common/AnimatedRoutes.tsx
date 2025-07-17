@@ -1,9 +1,30 @@
+/**
+ * Animated Routes Component - E-Learning DSP Frontend
+ *
+ * Routing-Komponente mit Animationen und geschützten Routen:
+ * - Framer Motion Integration für flüssige Übergänge
+ * - Geschützte Routen mit Authentifizierung
+ * - Admin-Panel-Zugriff für Staff-Benutzer
+ * - Page-Transition-Animationen
+ * 
+ * Features:
+ * - AnimatePresence für Exit-Animationen
+ * - ProtectedRoute für Authentifizierung
+ * - Rollenbasierte Navigation
+ * - Lazy Loading für bessere Performance
+ * - TypeScript-Typisierung
+ * 
+ * Author: DSP Development Team
+ * Created: 10.07.2025
+ * Version: 1.0.0
+ */
+
 import React from "react";
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
 import PageTransition from "./PageTransition";
 
-// Pages - Import all pages
+// --- Page Imports ---
 import Dashboard from "../../pages/dashboard";
 import Modules from "../../pages/modules";
 import ModuleDetail from "../../pages/module_detail";
@@ -18,20 +39,29 @@ import ForcePasswordChangePage from "../../pages/ForcePasswordChangePage";
 import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
 
-// Components
+// --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
 
+/**
+ * Props für AnimatedRoutes Komponente
+ */
 interface AnimatedRoutesProps {
   isAdmin: boolean;
 }
 
+/**
+ * Animated Routes Komponente
+ * 
+ * Verwaltet das Routing der Anwendung mit Animationen
+ * und geschützten Routen basierend auf Authentifizierung.
+ */
 const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
-        {/* Öffentliche Routen */}
+        {/* --- Öffentliche Routen --- */}
         <Route 
           path="/" 
           element={
@@ -49,9 +79,9 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           } 
         />
 
-        {/* Geschützte Routen mit ProtectedRoute umschließen */}
+        {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>
-          {/* Neue Route für erzwungene Passwortänderung */}
+          {/* Erzwungene Passwortänderung */}
           <Route
             path="/force-password-change"
             element={
@@ -60,6 +90,7 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+          
           {/* Content Demo Route */}
           <Route 
             path="/content-demo" 
@@ -69,7 +100,8 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             } 
           />
-          {/* Bestehende Kind-Routen von ProtectedRoute */}
+          
+          {/* Dashboard */}
           <Route 
             path="/dashboard" 
             element={
@@ -78,6 +110,8 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             } 
           />
+          
+          {/* Module und Lerninhalte */}
           <Route 
             path="/modules" 
             element={
@@ -102,6 +136,8 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+          
+          {/* Prüfungen und Zertifikate */}
           <Route 
             path="/final-exam" 
             element={
@@ -118,6 +154,8 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+          
+          {/* Benutzereinstellungen und Statistiken */}
           <Route 
             path="/user-stats" 
             element={
@@ -135,7 +173,7 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             } 
           />
 
-          {/* Admin Panel Route - nur für Staff/Superuser */}
+          {/* --- Admin Panel Route (nur für Staff/Superuser) --- */}
           {isAdmin && (
             <Route 
               path="/admin" 
@@ -148,7 +186,7 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           )}
         </Route>
 
-        {/* Fallback oder 404 Route */}
+        {/* --- Fallback Route --- */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
     </AnimatePresence>
