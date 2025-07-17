@@ -101,15 +101,9 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         return;
       }
 
-      // --- Tool-Slug bestimmen ---
-      const toolSlug = sessionStorage.getItem(`oauth_state_${state}_tool`);
-      if (!toolSlug) {
-        // Fallback für E-Learning-Projekt
-        console.warn(
-          "Could not determine tool slug from state. Assuming 'e-learning'."
-        );
-      }
-      const effectiveToolSlug = "e-learning"; // Annahme für dieses Projekt
+      // --- Tool-Slug aus Environment-Variable verwenden ---
+      const effectiveToolSlug =
+        import.meta.env.VITE_MICROSOFT_TOOL_SLUG || "e-learning";
 
       console.log(
         `🚀 Starte Microsoft Authentication für Tool: ${effectiveToolSlug}...`
