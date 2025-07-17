@@ -6,14 +6,14 @@
  * - Automatische Callback-Verarbeitung
  * - Session-Management und Cleanup
  * - Error-Handling und Loading-States
- * 
+ *
  * Features:
  * - Generische Microsoft OAuth2-Integration
  * - React StrictMode-kompatibel
  * - Automatische URL-Cleanup
  * - Navigation nach erfolgreicher Authentifizierung
  * - Session-State-Management
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -45,7 +45,7 @@ interface UseMicrosoftAuthReturn {
 
 /**
  * Microsoft Authentication Hook
- * 
+ *
  * Verwaltet den kompletten Microsoft OAuth2-Flow für
  * Organisations-Authentifizierung.
  */
