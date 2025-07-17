@@ -84,14 +84,22 @@ export const api = {
   get<T>(endpoint: string, options?: RequestOptions): Promise<T> {
     return request<T>(endpoint, { ...options, method: "GET" });
   },
-  post<T>(endpoint: string, data: Record<string, unknown>, options?: RequestOptions): Promise<T> {
+  post<T>(
+    endpoint: string,
+    data: Record<string, unknown>,
+    options?: RequestOptions
+  ): Promise<T> {
     return request<T>(endpoint, {
       ...options,
       method: "POST",
       body: JSON.stringify(data),
     });
   },
-  put<T>(endpoint: string, data: Record<string, unknown>, options?: RequestOptions): Promise<T> {
+  put<T>(
+    endpoint: string,
+    data: Record<string, unknown>,
+    options?: RequestOptions
+  ): Promise<T> {
     return request<T>(endpoint, {
       ...options,
       method: "PUT",
