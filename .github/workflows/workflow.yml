@@ -20,6 +20,7 @@ jobs:
           npm install
       - name: run prettier
         run: |
+          cd frontend
           prettier . --write
 
       - name: push to pull request
