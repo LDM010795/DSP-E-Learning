@@ -1,6 +1,6 @@
 /**
  * Performance-Optimized Gauge Chart Component
- * 
+ *
  * Converted from direct ECharts import to lazy loading for better performance
  */
 
@@ -32,65 +32,63 @@ interface ChartGaugeProps {
   height?: number;
 }
 
-const ChartGauge = memo<ChartGaugeProps>(({ 
-  progressValue, 
-  width = 300, 
-  height = 300 
-}) => {
-  // Memoize chart options to prevent unnecessary re-renders
-  const option = useMemoizedComputation(
-    () => ({
-      series: [
-        {
-          type: "gauge",
-          startAngle: 180,
-          endAngle: 0,
-          pointer: { show: false },
-          progress: {
-            show: true,
-            width: 10,
-            roundCap: true,
-            itemStyle: { color: "#ff863d" },
-          },
-          axisLine: {
-            lineStyle: {
+const ChartGauge = memo<ChartGaugeProps>(
+  ({ progressValue, width = 300, height = 300 }) => {
+    // Memoize chart options to prevent unnecessary re-renders
+    const option = useMemoizedComputation(
+      () => ({
+        series: [
+          {
+            type: "gauge",
+            startAngle: 180,
+            endAngle: 0,
+            pointer: { show: false },
+            progress: {
+              show: true,
               width: 10,
-              color: [[1, "#ffe7d4"]],
+              roundCap: true,
+              itemStyle: { color: "#ff863d" },
             },
+            axisLine: {
+              lineStyle: {
+                width: 10,
+                color: [[1, "#ffe7d4"]],
+              },
+            },
+            splitLine: { show: false },
+            axisTick: { show: false },
+            axisLabel: { show: false },
+            detail: { show: false },
+            data: [{ value: progressValue }],
           },
-          splitLine: { show: false },
-          axisTick: { show: false },
-          axisLabel: { show: false },
-          detail: { show: false },
-          data: [{ value: progressValue }],
-        },
-      ],
-    }),
-    [progressValue]
-  );
+        ],
+      }),
+      [progressValue],
+    );
 
-  // Memoize container style
-  const containerStyle = useShallowMemo(
-    () => ({
-      width: `${width}px`,
-      height: `${height}px`,
-    }),
-    [width, height]
-  );
+    // Memoize container style
+    const containerStyle = useShallowMemo(
+      () => ({
+        width: `${width}px`,
+        height: `${height}px`,
+      }),
+      [width, height],
+    );
 
-  return (
-    <div className="mx-auto" style={{ width: `${width}px` }}>
-      <Suspense fallback={<ChartLoadingFallback />}>
-        <ReactECharts
-          option={option}
-          style={containerStyle}
-          opts={{ renderer: "canvas" }}
-          lazyUpdate={true}
-        />
-      </Suspense>
-    </div>
-  );
-});
+    return (
+      <div className="mx-auto" style={{ width: `${width}px` }}>
+        <Suspense fallback={<ChartLoadingFallback />}>
+          <ReactECharts
+            option={option}
+            style={containerStyle}
+            opts={{ renderer: "canvas" }}
+            lazyUpdate={true}
+          />
+        </Suspense>
+      </div>
+    );
+  },
+);
 
 ChartGauge.displayName = "ChartGauge";
 

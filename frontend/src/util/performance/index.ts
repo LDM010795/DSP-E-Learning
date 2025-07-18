@@ -209,7 +209,7 @@ export const preloadCriticalResources = (): Promise<
     import("monaco-editor").catch((error) => {
       console.warn("Monaco Editor preload failed:", error);
       return null; // Return null to indicate failure without breaking Promise.allSettled
-    })
+    }),
   );
 
   // Preload ECharts for statistics and analytics pages
@@ -218,7 +218,7 @@ export const preloadCriticalResources = (): Promise<
     import("echarts-for-react").catch((error) => {
       console.warn("ECharts preload failed:", error);
       return null;
-    })
+    }),
   );
 
   // Return settled promises to handle both successes and failures
@@ -271,7 +271,7 @@ export const preloadCriticalResources = (): Promise<
  * @see {@link preloadCriticalResources} for bulk preloading
  */
 export const preloadOnHover = (
-  resourceType: "monaco" | "charts"
+  resourceType: "monaco" | "charts",
 ): Promise<any> => {
   switch (resourceType) {
     case "monaco":
@@ -340,14 +340,14 @@ export const prefetchCommonResources = (): void => {
       .then((results) => {
         // Log prefetching results for monitoring and debugging
         const successful = results.filter(
-          (result) => result.status === "fulfilled"
+          (result) => result.status === "fulfilled",
         ).length;
         const failed = results.filter(
-          (result) => result.status === "rejected"
+          (result) => result.status === "rejected",
         ).length;
 
         console.log(
-          `Resource prefetching completed: ${successful} successful, ${failed} failed`
+          `Resource prefetching completed: ${successful} successful, ${failed} failed`,
         );
 
         // Optional: Report metrics to analytics service

@@ -88,19 +88,19 @@ function TaskDetails() {
 
   const previousTask = useMemo(
     () => (currentTaskIndex > 0 ? tasks[currentTaskIndex - 1] : undefined),
-    [tasks, currentTaskIndex]
+    [tasks, currentTaskIndex],
   );
   const nextTask = useMemo(
     () =>
       currentTaskIndex < tasks.length - 1
         ? tasks[currentTaskIndex + 1]
         : undefined,
-    [tasks, currentTaskIndex]
+    [tasks, currentTaskIndex],
   );
   const isFirstTask = useMemo(() => currentTaskIndex === 0, [currentTaskIndex]);
   const isLastTask = useMemo(
     () => currentTaskIndex === tasks.length - 1,
-    [tasks, currentTaskIndex]
+    [tasks, currentTaskIndex],
   );
 
   const handleTaskSuccess = useCallback(() => {

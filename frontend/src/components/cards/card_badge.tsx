@@ -26,7 +26,7 @@ const CardBadge: React.FC<CardBadgeProps> = ({
       className={clsx(
         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm",
         colorClasses[colorScheme],
-        className
+        className,
       )}
     >
       {text}

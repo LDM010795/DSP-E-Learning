@@ -1,6 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { IoCalendarOutline, IoTrophyOutline, IoTimeOutline } from "react-icons/io5";
+import {
+  IoCalendarOutline,
+  IoTrophyOutline,
+  IoTimeOutline,
+} from "react-icons/io5";
 import VerticalBarChart from "../../components/charts/VerticalBarChart";
 import LazyLoadChartWrapper from "../../components/common/LazyLoadChartWrapper";
 import SubBackground from "../../components/layouts/SubBackground";
@@ -50,7 +54,13 @@ interface ChartCardProps {
   index: number;
 }
 
-const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, icon: Icon, index }) => (
+const ChartCard: React.FC<ChartCardProps> = ({
+  title,
+  subtitle,
+  children,
+  icon: Icon,
+  index,
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -81,8 +91,8 @@ const Progress: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard 
-          title="Lernstreak" 
+        <ChartCard
+          title="Lernstreak"
           subtitle="Deine tägliche Lernaktivität"
           icon={IoCalendarOutline}
           index={0}
@@ -90,15 +100,23 @@ const Progress: React.FC = () => {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-3 bg-green-50 border border-green-200 rounded-xl">
-                <div className="text-2xl font-bold text-green-600">{streakData.current}</div>
-                <div className="text-sm text-green-700 font-medium">Aktuelle Tage</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {streakData.current}
+                </div>
+                <div className="text-sm text-green-700 font-medium">
+                  Aktuelle Tage
+                </div>
               </div>
               <div className="text-center p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                <div className="text-2xl font-bold text-blue-600">{streakData.longest}</div>
-                <div className="text-sm text-blue-700 font-medium">Längster Streak</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {streakData.longest}
+                </div>
+                <div className="text-sm text-blue-700 font-medium">
+                  Längster Streak
+                </div>
               </div>
             </div>
-            
+
             {/* Streak Calendar Visualization */}
             <div className="p-4 bg-gray-50 rounded-xl">
               <h4 className="text-sm font-semibold text-gray-700 mb-3">
@@ -152,7 +170,11 @@ const Progress: React.FC = () => {
                     className="bg-gradient-to-r from-[#ff863d] to-[#fa8c45] h-2.5 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${cert.progress}%` }}
-                    transition={{ duration: 0.8, delay: 0.6 + index * 0.2, ease: "easeOut" }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.6 + index * 0.2,
+                      ease: "easeOut",
+                    }}
                   />
                 </div>
               </motion.div>

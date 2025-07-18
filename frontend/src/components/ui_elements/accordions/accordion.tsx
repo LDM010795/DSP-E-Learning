@@ -10,7 +10,7 @@ interface AccordionContextType {
 }
 
 const AccordionContext = createContext<AccordionContextType | undefined>(
-  undefined
+  undefined,
 );
 
 // --- Accordion Wrapper Komponente ---
@@ -55,7 +55,7 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
   const context = useContext(AccordionContext);
   if (!context) {
     throw new Error(
-      "AccordionItem muss innerhalb eines Accordion verwendet werden"
+      "AccordionItem muss innerhalb eines Accordion verwendet werden",
     );
   }
   const { openItemId, setOpenItemId } = context;
@@ -77,7 +77,7 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
           isOpen
             ? "bg-gradient-to-r from-dsp-orange/15 to-transparent hover:bg-dsp-orange/20"
             : "bg-white hover:bg-dsp-orange_light",
-          headerClassName
+          headerClassName,
         )}
         aria-expanded={isOpen}
         aria-controls={`accordion-content-${id}`}
@@ -118,7 +118,7 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
             <div
               className={clsx(
                 "p-4 border-t border-gray-200 bg-white",
-                contentClassName
+                contentClassName,
               )}
             >
               {children}

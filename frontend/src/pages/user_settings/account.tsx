@@ -23,7 +23,7 @@ const Account: React.FC = () => {
   // Mock API function - replace with actual API call
   const changePassword = async (
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<boolean> => {
     // Simulate API call with parameter validation
     console.log("Changing password for validation:", {
@@ -58,7 +58,7 @@ const Account: React.FC = () => {
 
     if (passwordData.new_password.length < 8) {
       setErrorPassword(
-        "Das neue Passwort muss mindestens 8 Zeichen lang sein."
+        "Das neue Passwort muss mindestens 8 Zeichen lang sein.",
       );
       return;
     }
@@ -70,7 +70,7 @@ const Account: React.FC = () => {
     try {
       const success = await changePassword(
         passwordData.current_password,
-        passwordData.new_password
+        passwordData.new_password,
       );
       if (success) {
         setSuccessPassword(true);
@@ -182,7 +182,7 @@ const Account: React.FC = () => {
                   onChange={(e) =>
                     handlePasswordInputChange(
                       "current_password",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                   placeholder="••••••••"
@@ -221,7 +221,7 @@ const Account: React.FC = () => {
                   onChange={(e) =>
                     handlePasswordInputChange(
                       "confirm_password",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                   placeholder="••••••••"

@@ -148,7 +148,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           <motion.div
             className={clsx(
               "rounded-full bg-gradient-to-r from-[#FF6D25] to-[#FFB697]",
-              config.icon
+              config.icon,
             )}
             animate={pulseAnimation}
           />
@@ -189,7 +189,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         config.container,
         showBackground &&
           "bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-white/20",
-        className
+        className,
       )}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}

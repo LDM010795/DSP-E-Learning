@@ -15,12 +15,12 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
 
   // Filtere Links basierend auf Auth-Status
   const filteredLinks = links.filter(
-    (link) => !link.requiresAuth || (link.requiresAuth && isAuthenticated)
+    (link) => !link.requiresAuth || (link.requiresAuth && isAuthenticated),
   );
 
   const filteredRightContent = rightContent.filter(
     (item) =>
-      !("requiresAuth" in item) || (item.requiresAuth && isAuthenticated)
+      !("requiresAuth" in item) || (item.requiresAuth && isAuthenticated),
   );
 
   const renderNavLinks = (navLinks: NavLink[], showTitle = true) =>
@@ -59,7 +59,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
         className={clsx(
           "sticky top-0 z-40 w-full bg-white/95 border-b border-[#ff863d]/10 shadow-sm",
           "transition-all duration-200",
-          className
+          className,
         )}
       >
         <div className="max-w-[95vw] mx-auto px-4 sm:px-6">

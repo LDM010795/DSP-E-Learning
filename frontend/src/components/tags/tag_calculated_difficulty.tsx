@@ -22,7 +22,7 @@ const TagCalculatedDifficulty: React.FC<TagCalculatedDifficultyProps> = ({
 }) => {
   // Funktion zur Berechnung (intern) - verwendet jetzt Task mit number ID (aber ID wird ignoriert)
   const calculateAverageDifficulty = (
-    localTasks: Task[]
+    localTasks: Task[],
   ): DifficultyLevel | null => {
     if (!localTasks || localTasks.length === 0) {
       return null;
@@ -37,7 +37,7 @@ const TagCalculatedDifficulty: React.FC<TagCalculatedDifficultyProps> = ({
 
     const totalDifficultyScore = localTasks.reduce(
       (sum, task) => sum + (difficultyMap[task.difficulty] || 0), // Greift auf task.difficulty zu
-      0
+      0,
     );
 
     const averageScore = totalDifficultyScore / localTasks.length;

@@ -74,7 +74,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
         "cursor-pointer",
         config.borderHover,
         config.hoverBg,
-        className
+        className,
       )}
       onClick={onClick}
       whileHover={{ y: -1, scale: 1.01 }}
@@ -88,7 +88,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
           className={clsx(
             "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center",
             "shadow-sm border border-white/20",
-            config.iconBgColor
+            config.iconBgColor,
           )}
           whileHover={{ rotate: 5 }}
           transition={{ duration: 0.2 }}
@@ -100,33 +100,29 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
         <div className="flex-grow min-w-0">
           {/* Header with title and difficulty */}
           <div className="flex items-start justify-between mb-2">
-            <h3 className={clsx(
-              "font-semibold text-gray-900 text-sm leading-tight",
-              "group-hover:text-[#ff863d] transition-colors duration-200",
-              "line-clamp-1 flex-1 pr-2"
-            )}>
+            <h3
+              className={clsx(
+                "font-semibold text-gray-900 text-sm leading-tight",
+                "group-hover:text-[#ff863d] transition-colors duration-200",
+                "line-clamp-1 flex-1 pr-2",
+              )}
+            >
               {title}
             </h3>
-            
-            <div className="flex-shrink-0">
-              {difficultyTag}
-            </div>
+
+            <div className="flex-shrink-0">{difficultyTag}</div>
           </div>
 
           {/* Professional Progress Section */}
           <div className="space-y-2">
             {/* Progress info */}
             <div className="flex items-center justify-between">
-              <span className={clsx(
-                "text-xs font-medium",
-                config.statusColor
-              )}>
+              <span className={clsx("text-xs font-medium", config.statusColor)}>
                 {status}
               </span>
-              <span className={clsx(
-                "text-xs font-semibold",
-                config.statusColor
-              )}>
+              <span
+                className={clsx("text-xs font-semibold", config.statusColor)}
+              >
                 {progress}%
               </span>
             </div>
@@ -137,20 +133,20 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
                 <motion.div
                   className={clsx(
                     "h-1.5 rounded-full transition-all duration-300",
-                    config.progressColor
+                    config.progressColor,
                   )}
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 />
               </div>
-              
+
               {/* Progress glow effect */}
               {progress > 0 && (
-                <div 
+                <div
                   className={clsx(
                     "absolute top-0 left-0 h-1.5 rounded-full opacity-40 blur-sm",
-                    config.progressColor
+                    config.progressColor,
                   )}
                   style={{ width: `${Math.min(progress, 100)}%` }}
                 />
@@ -162,7 +158,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
 
       {/* Subtle hover glow */}
       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#ff863d]/3 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-      
+
       {/* Professional border highlight on hover */}
       <div className="absolute inset-0 rounded-xl border border-transparent group-hover:border-[#ff863d]/20 transition-colors duration-200 pointer-events-none" />
     </motion.div>
