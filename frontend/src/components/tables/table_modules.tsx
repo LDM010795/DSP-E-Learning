@@ -267,7 +267,7 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="text-sm text-gray-600">
-                    {module.category}
+                    {module.category?.name || 'Keine Kategorie'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
