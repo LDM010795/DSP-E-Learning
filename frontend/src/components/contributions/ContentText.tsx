@@ -14,8 +14,8 @@ const ContentText: React.FC<ContentTextProps> = ({ content }) => {
         // Entferne die == Markierungen und füge subtiles Code-Styling hinzu
         const highlightedText = part.slice(2, -2);
         return (
-          <code 
-            key={index} 
+          <code
+            key={index}
             className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono border border-gray-200"
           >
             {highlightedText}

@@ -183,7 +183,7 @@ import { useCachedApi } from "../performance/caching";
 const { data: modules, isLoading } = useCachedApi(
   `modules-${userId}`,
   () => api.fetchModules(),
-  { ttl: 300000 } // 5 Minuten Cache
+  { ttl: 300000 }, // 5 Minuten Cache
 );
 ```
 
@@ -198,7 +198,7 @@ import { createVendorLazy } from "../performance/lazyLoad";
 
 const LazyMonacoEditor = createVendorLazy(
   () => import("@monaco-editor/react"),
-  { minHeight: 400 }
+  { minHeight: 400 },
 );
 ```
 
@@ -302,15 +302,12 @@ setInterval(() => {
 ### Häufige Probleme
 
 1. **Cache nicht invalidiert**
-
    - Lösung: Explicit `cache.clear()` bei kritischen Updates
 
 2. **Lazy Loading funktioniert nicht**
-
    - Lösung: Intersection Observer Polyfill für ältere Browser
 
 3. **Memory Leaks bei Debouncing**
-
    - Lösung: `.cancel()` in useEffect cleanup
 
 4. **Bundle Size wächst trotz Lazy Loading**

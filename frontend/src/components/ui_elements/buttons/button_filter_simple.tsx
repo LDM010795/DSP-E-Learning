@@ -32,7 +32,9 @@ const ButtonFilterSimple = <T extends string>({
           onClick={() => onOptionClick(option)}
           className={clsx(
             buttonClassName,
-            activeOptions.includes(option) ? activeClassName : inactiveClassName
+            activeOptions.includes(option)
+              ? activeClassName
+              : inactiveClassName,
           )}
         >
           {option}

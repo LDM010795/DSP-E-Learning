@@ -56,7 +56,7 @@ const ForcePasswordChangePage: React.FC = () => {
 
       if (result.message) {
         setSuccess(
-          result.message + " Sie werden zum Dashboard weitergeleitet..."
+          result.message + " Sie werden zum Dashboard weitergeleitet...",
         );
         // ERFOLG-TOAST
         toast.custom((t) => (

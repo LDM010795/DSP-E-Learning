@@ -29,7 +29,7 @@ const formatDate = (dateString: string | null): string => {
 // Hilfsfunktion zur Begrenzung der Textlänge
 const truncateText = (
   text: string | undefined,
-  maxLength: number = 111
+  maxLength: number = 111,
 ): string => {
   if (!text) return "Keine Beschreibung verfügbar";
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;

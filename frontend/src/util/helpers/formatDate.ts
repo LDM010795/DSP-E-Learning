@@ -6,7 +6,7 @@
  */
 export const formatDate = (
   dateString: string | Date | null | undefined,
-  options?: Intl.DateTimeFormatOptions
+  options?: Intl.DateTimeFormatOptions,
 ): string => {
   if (!dateString) return "N/A";
 

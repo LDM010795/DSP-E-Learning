@@ -1,6 +1,6 @@
 /**
  * Performance-Optimized Lazy Monaco Editor
- * 
+ *
  * Key optimizations:
  * - Lazy loading with React.lazy to reduce initial bundle size
  * - Dynamic monaco import only when component is needed
@@ -9,21 +9,28 @@
  * - Optional preloading for better UX
  */
 
-import React, { memo, Suspense, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
+import React, {
+  memo,
+  Suspense,
+  useRef,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { useShallowMemo } from "../../../util/performance";
 
 // Lazy load Monaco Editor to reduce initial bundle size (~2MB reduction)
 const MonacoEditorComponent = React.lazy(async () => {
   // Dynamic import reduces initial bundle by ~2MB
   const monaco = await import("monaco-editor");
-  
+
   return {
-    default: ({ 
-      initialValue, 
-      onChange, 
+    default: ({
+      initialValue,
+      onChange,
       className,
       containerRef,
-      editorInstanceRef 
+      editorInstanceRef,
     }: any) => {
       useEffect(() => {
         // Define custom theme once
@@ -60,15 +67,14 @@ const MonacoEditorComponent = React.lazy(async () => {
               roundedSelection: true,
               folding: true,
               renderWhitespace: "all",
-            }
+            },
           );
 
-          const subscription = editorInstanceRef.current.onDidChangeModelContent(
-            () => {
+          const subscription =
+            editorInstanceRef.current.onDidChangeModelContent(() => {
               const currentCode = editorInstanceRef.current?.getValue() || "";
               onChange(currentCode);
-            }
-          );
+            });
 
           return () => {
             subscription.dispose();
@@ -88,7 +94,7 @@ const MonacoEditorComponent = React.lazy(async () => {
           ref={containerRef}
         />
       );
-    }
+    },
   };
 });
 
@@ -102,7 +108,9 @@ const MonacoLoadingFallback = memo(() => (
         <div className="h-3 bg-orange-200 rounded w-24 mx-auto"></div>
       </div>
       <p className="text-orange-600 text-sm font-medium">Code Editor lädt...</p>
-      <p className="text-orange-500 text-xs mt-1">Erstmaliges Laden kann etwas dauern</p>
+      <p className="text-orange-500 text-xs mt-1">
+        Erstmaliges Laden kann etwas dauern
+      </p>
     </div>
   </div>
 ));
@@ -122,45 +130,51 @@ interface LazyMonacoEditorProps {
 }
 
 // Main lazy Monaco editor component
-const LazyMonacoEditor = memo(forwardRef<LazyMonacoEditorHandle, LazyMonacoEditorProps>(
-  ({ initialValue = "", onChange, className = "", preload = false }, ref) => {
-    const editorContainerRef = useRef<HTMLDivElement>(null);
-    const editorInstanceRef = useRef<any>(null);
+const LazyMonacoEditor = memo(
+  forwardRef<LazyMonacoEditorHandle, LazyMonacoEditorProps>(
+    ({ initialValue = "", onChange, className = "", preload = false }, ref) => {
+      const editorContainerRef = useRef<HTMLDivElement>(null);
+      const editorInstanceRef = useRef<any>(null);
 
-    // Preload Monaco if requested (for better UX on pages where it's likely to be used)
-    useEffect(() => {
-      if (preload) {
-        // Preload Monaco in the background without rendering
-        import("monaco-editor").catch(console.warn);
-      }
-    }, [preload]);
+      // Preload Monaco if requested (for better UX on pages where it's likely to be used)
+      useEffect(() => {
+        if (preload) {
+          // Preload Monaco in the background without rendering
+          import("monaco-editor").catch(console.warn);
+        }
+      }, [preload]);
 
-    // Expose setValue method via ref
-    useImperativeHandle(ref, () => ({
-      setValue: (newValue: string) => {
-        editorInstanceRef.current?.setValue(newValue);
-      },
-    }), []);
+      // Expose setValue method via ref
+      useImperativeHandle(
+        ref,
+        () => ({
+          setValue: (newValue: string) => {
+            editorInstanceRef.current?.setValue(newValue);
+          },
+        }),
+        [],
+      );
 
-    // Memoize props to prevent unnecessary re-renders
-    const memoizedProps = useShallowMemo(
-      () => ({
-        initialValue,
-        onChange,
-        className,
-        containerRef: editorContainerRef,
-        editorInstanceRef,
-      }),
-      [initialValue, onChange, className]
-    );
+      // Memoize props to prevent unnecessary re-renders
+      const memoizedProps = useShallowMemo(
+        () => ({
+          initialValue,
+          onChange,
+          className,
+          containerRef: editorContainerRef,
+          editorInstanceRef,
+        }),
+        [initialValue, onChange, className],
+      );
 
-    return (
-      <Suspense fallback={<MonacoLoadingFallback />}>
-        <MonacoEditorComponent {...memoizedProps} />
-      </Suspense>
-    );
-  }
-));
+      return (
+        <Suspense fallback={<MonacoLoadingFallback />}>
+          <MonacoEditorComponent {...memoizedProps} />
+        </Suspense>
+      );
+    },
+  ),
+);
 
 LazyMonacoEditor.displayName = "LazyMonacoEditor";
 

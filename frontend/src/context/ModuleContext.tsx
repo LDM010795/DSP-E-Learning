@@ -133,7 +133,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     async () => {
       if (!isAuthenticated) {
         console.log(
-          "ModuleContext: Nicht authentifiziert, setze Module zurück"
+          "ModuleContext: Nicht authentifiziert, setze Module zurück",
         );
         return [];
       }
@@ -143,7 +143,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       console.log(
         "ModuleContext: API-Antwort erhalten",
         response.data.length,
-        "Module"
+        "Module",
       );
 
       // Performance optimization: Memoized sorting to avoid repeated calculations
@@ -151,7 +151,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         .map((module) => ({
           ...module,
           contents: [...(module.contents || [])].sort(
-            (a, b) => a.order - b.order
+            (a, b) => a.order - b.order,
           ),
           tasks: [...(module.tasks || [])].sort((a, b) => a.order - b.order),
         }))
@@ -165,7 +165,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     {
       ttl: 300000, // 5 Minuten Cache
       enabled: true, // Immer aktiviert
-    }
+    },
   );
 
   // --- Performance-optimierte Callbacks ---
@@ -183,7 +183,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       error,
       fetchModules: stableFetchModules,
     }),
-    [modules, loading, error, stableFetchModules]
+    [modules, loading, error, stableFetchModules],
   );
 
   return (

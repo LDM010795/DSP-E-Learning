@@ -6,14 +6,14 @@
  * - Konfigurierbare Trigger-Optionen
  * - Performance-optimierte Sichtbarkeitserkennung
  * - Einmalige oder wiederholte Animationen
- * 
+ *
  * Features:
  * - Intersection Observer für bessere Performance
  * - Konfigurierbare Schwellenwerte
  * - Einmalige oder wiederholte Trigger
  * - TypeScript-Typisierung
  * - Automatisches Cleanup
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -32,18 +32,18 @@ interface UseScrollAnimationOptions extends IntersectionObserverInit {
 
 /**
  * Scroll Animation Hook
- * 
+ *
  * Verwaltet Scroll-basierte Animationen mit Intersection Observer.
  * Gibt ein Ref und den Sichtbarkeitsstatus zurück.
- * 
+ *
  * @param options - Konfigurationsoptionen für die Animation
  * @returns [elementRef, isVisible] - Ref für das Element und Sichtbarkeitsstatus
  */
 function useScrollAnimation<T extends Element>(
-  options: UseScrollAnimationOptions = { 
-    threshold: 0.1, 
-    triggerOnce: true 
-  }
+  options: UseScrollAnimationOptions = {
+    threshold: 0.1,
+    triggerOnce: true,
+  },
 ): [RefObject<T | null>, boolean] {
   // --- State Management ---
   const [isVisible, setIsVisible] = useState(false);

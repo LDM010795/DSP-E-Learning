@@ -61,7 +61,7 @@ const StatusBadge: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     <span
       className={clsx(
         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
-        isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800",
       )}
     >
       {isActive ? (
@@ -123,7 +123,7 @@ const TableUserList: React.FC<TableUserListProps> = ({
   const handleSort = (column: SortableUserColumn) => {
     if (sortColumn === column) {
       setSortDirection((prev) =>
-        prev === "asc" ? "desc" : prev === "desc" ? "none" : "asc"
+        prev === "asc" ? "desc" : prev === "desc" ? "none" : "asc",
       );
       if (sortDirection === "desc") {
         // Reset auf Default, wenn 'none' erreicht wird
@@ -141,7 +141,7 @@ const TableUserList: React.FC<TableUserListProps> = ({
       // Wenn keine Sortierung, Default (oder Original?) - hier Default: neueste zuerst
       return [...(users ?? [])].sort(
         (a, b) =>
-          new Date(b.date_joined).getTime() - new Date(a.date_joined).getTime()
+          new Date(b.date_joined).getTime() - new Date(a.date_joined).getTime(),
       );
     }
     return [...users].sort((a, b) => {

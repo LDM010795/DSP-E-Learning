@@ -76,7 +76,7 @@ export const createUser = async (userData: User): Promise<User> => {
  */
 export const updateUser = async (
   userId: number,
-  userData: Partial<User>
+  userData: Partial<User>,
 ): Promise<User> => {
   const response = await api.put(`${BASE_URL}/${userId}/`, userData);
   return response.data;
@@ -117,7 +117,7 @@ export const getAdminUsers = async (): Promise<User[]> => {
  */
 export const setUserStaffStatus = async (
   userId: number,
-  isStaff: boolean
+  isStaff: boolean,
 ): Promise<User> => {
   const response = await api.post(`${BASE_URL}/${userId}/set_staff_status/`, {
     is_staff: isStaff,
@@ -133,7 +133,7 @@ export const setUserStaffStatus = async (
  */
 export const setUserActiveStatus = async (
   userId: number,
-  isActive: boolean
+  isActive: boolean,
 ): Promise<User> => {
   const response = await api.post(`${BASE_URL}/${userId}/set_active_status/`, {
     is_active: isActive,
@@ -155,7 +155,7 @@ interface InitialPasswordSetData {
  * @returns Promise mit der Erfolgs- oder Fehlermeldung
  */
 export const setInitialPassword = async (
-  passwordData: InitialPasswordSetData
+  passwordData: InitialPasswordSetData,
 ): Promise<{ message?: string; error?: string }> => {
   // api-Instanz sollte den Auth-Token automatisch mitsenden
   const response = await api.post(`/users/set-initial-password/`, passwordData);

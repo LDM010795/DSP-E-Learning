@@ -30,7 +30,8 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
 
   const iconVariants = {
     initial: { x: 0, rotate: 0 },
-    hover: iconPosition === "right" ? { x: 4, rotate: 0 } : { x: -4, rotate: 0 },
+    hover:
+      iconPosition === "right" ? { x: 4, rotate: 0 } : { x: -4, rotate: 0 },
   };
 
   const isFlexReversed = iconPosition === "left";
@@ -48,9 +49,10 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
         shadow-sm hover:shadow-lg hover:shadow-[#FF6D25]/10
         transition-all duration-200 ease-in-out
         focus:outline-none focus:ring-2 focus:ring-[#FF6D25]/20 focus:ring-offset-2
-        ${disabled 
-          ? "opacity-50 cursor-not-allowed hover:scale-100 hover:text-gray-700 hover:bg-white/80" 
-          : "hover:cursor-pointer active:shadow-sm"
+        ${
+          disabled
+            ? "opacity-50 cursor-not-allowed hover:scale-100 hover:text-gray-700 hover:bg-white/80"
+            : "hover:cursor-pointer active:shadow-sm"
         }
         ${isFlexReversed ? "flex-row-reverse space-x-reverse" : ""}
         ${classNameButton}`}
@@ -58,15 +60,17 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       initial="initial"
       whileHover={disabled ? "initial" : "hover"}
       whileTap={disabled ? "initial" : "tap"}
-      whileFocus={{ 
-        boxShadow: "0 0 0 3px rgba(255, 109, 37, 0.1)" 
+      whileFocus={{
+        boxShadow: "0 0 0 3px rgba(255, 109, 37, 0.1)",
       }}
     >
       {/* Background glow effect */}
       <div className="absolute inset-0 bg-[#FF6D25]/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      
+
       {/* Content */}
-      <div className={`relative flex items-center space-x-3 ${isFlexReversed ? "flex-row-reverse space-x-reverse" : ""}`}>
+      <div
+        className={`relative flex items-center space-x-3 ${isFlexReversed ? "flex-row-reverse space-x-reverse" : ""}`}
+      >
         {title && (
           <span className="text-sm md:text-base font-bold tracking-wide">
             {title}
@@ -82,7 +86,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
           </motion.span>
         )}
       </div>
-      
+
       {/* Shine effect */}
       <div className="absolute inset-0 rounded-xl overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#FF6D25]/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>

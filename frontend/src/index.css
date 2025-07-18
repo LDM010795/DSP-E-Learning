@@ -18,9 +18,9 @@ h6 {
 }
 
 @theme {
-  --color-dsp-orange: #FF6D25;
-  --color-dsp-orange_medium: #FFB697;
-  --color-dsp-orange_light: #FEDAC7;
+  --color-dsp-orange: #ff6d25;
+  --color-dsp-orange_medium: #ffb697;
+  --color-dsp-orange_light: #fedac7;
 }
 
 /* Chrome, Safari und Edge */

@@ -31,7 +31,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // --- Response Interceptor ---
@@ -44,7 +44,7 @@ let failedQueue: {
 
 const processQueue = (
   error: AxiosError | null,
-  token: string | null = null
+  token: string | null = null,
 ) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -125,7 +125,7 @@ api.interceptors.response.use(
 
     // Für alle anderen Fehler, leite sie einfach weiter
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

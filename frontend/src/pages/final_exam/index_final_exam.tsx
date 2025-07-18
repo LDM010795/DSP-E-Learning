@@ -32,12 +32,12 @@ const IndexFinalExam: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionComment, setSubmissionComment] = useState("");
   const [selectedAttemptId, setSelectedAttemptId] = useState<number | null>(
-    null
+    null,
   );
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedExamForPopup, setSelectedExamForPopup] = useState<Exam | null>(
-    null
+    null,
   );
   const [selectedAttemptForPopup, setSelectedAttemptForPopup] =
     useState<ExamAttempt | null>(null);
@@ -101,7 +101,7 @@ const IndexFinalExam: React.FC = () => {
     if (!container) return;
 
     const activeButton = container.querySelector<HTMLButtonElement>(
-      `[data-tab="${activeTab}"]`
+      `[data-tab="${activeTab}"]`,
     );
     if (activeButton) {
       setSliderStyle({
@@ -114,10 +114,7 @@ const IndexFinalExam: React.FC = () => {
   // Tab-Rendering-Funktion - jetzt mit glasigen Design
   const renderTabs = () => (
     <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white/40 shadow-sm p-2 mb-6">
-      <div
-        ref={tabsRef}
-        className="relative flex space-x-1"
-      >
+      <div ref={tabsRef} className="relative flex space-x-1">
         <div
           className="absolute inset-y-0 bg-[#ff863d] rounded-lg shadow-sm transition-all duration-300 ease-out pointer-events-none"
           style={sliderStyle}
@@ -131,7 +128,7 @@ const IndexFinalExam: React.FC = () => {
               "relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer",
               activeTab === tab
                 ? "text-white"
-                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
+                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
             )}
           >
             {tabLabels[tab]} {/* Verwende das Label aus dem Mapping */}
@@ -192,7 +189,7 @@ const IndexFinalExam: React.FC = () => {
   const handleSubmitExam = async () => {
     if (selectedAttemptId !== null) {
       console.log(
-        `Submitting exam attempt ${selectedAttemptId} with ${uploadedFiles.length} files`
+        `Submitting exam attempt ${selectedAttemptId} with ${uploadedFiles.length} files`,
       );
       try {
         const success = await submitExam(selectedAttemptId, uploadedFiles);
@@ -277,13 +274,14 @@ const IndexFinalExam: React.FC = () => {
         <div className="relative px-4 py-8">
           <div className="max-w-[95vw] mx-auto">
             <Breadcrumbs items={breadcrumbItems} className="mb-6" />
-            
+
             <div className="text-center mb-8">
               <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
                 Abschlussprüfungen
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Hier findest du alle verfügbaren Abschlussprüfungen und kannst deine Prüfungsunterlagen hochladen.
+                Hier findest du alle verfügbaren Abschlussprüfungen und kannst
+                deine Prüfungsunterlagen hochladen.
               </p>
             </div>
           </div>
@@ -383,8 +381,7 @@ const IndexFinalExam: React.FC = () => {
               {uploadedFiles.length > 0 && (
                 <div className="mt-2 text-sm text-gray-600">
                   {uploadedFiles.length}{" "}
-                  {uploadedFiles.length === 1 ? "Datei" : "Dateien"}{" "}
-                  ausgewählt
+                  {uploadedFiles.length === 1 ? "Datei" : "Dateien"} ausgewählt
                 </div>
               )}
             </div>

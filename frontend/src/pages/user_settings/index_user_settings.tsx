@@ -34,7 +34,7 @@ const IndexUserSettings: React.FC = () => {
     if (!container) return;
 
     const activeButton = container.querySelector<HTMLButtonElement>(
-      `[data-tab="${activeTab}"]`
+      `[data-tab="${activeTab}"]`,
     );
     if (activeButton) {
       setSliderStyle({
@@ -60,7 +60,7 @@ const IndexUserSettings: React.FC = () => {
               "relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer",
               activeTab === tab
                 ? "text-white"
-                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
+                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
             )}
           >
             {tabLabels[tab]}

@@ -1,6 +1,6 @@
 /**
  * Performance-Optimized Exercise Performance Chart
- * 
+ *
  * Key optimizations:
  * - Lazy loading for ECharts library
  * - Memoized chart options and data processing
@@ -40,32 +40,28 @@ interface ExercisePerformanceChartProps {
   height?: number;
 }
 
-const ExercisePerformanceChart = memo<ExercisePerformanceChartProps>(({ 
-  exerciseData, 
-  width = 400, 
-  height = 300 
-}) => {
-  // Memoize chart options to prevent unnecessary re-renders
-  const chartOptions = useMemoizedComputation(
-    () => {
-      const exercises = exerciseData.map(item => item.exercise);
-      const scores = exerciseData.map(item => item.score);
-      const maxScores = exerciseData.map(item => item.maxScore);
-      const percentages = exerciseData.map(item => 
-        item.maxScore > 0 ? Math.round((item.score / item.maxScore) * 100) : 0
+const ExercisePerformanceChart = memo<ExercisePerformanceChartProps>(
+  ({ exerciseData, width = 400, height = 300 }) => {
+    // Memoize chart options to prevent unnecessary re-renders
+    const chartOptions = useMemoizedComputation(() => {
+      const exercises = exerciseData.map((item) => item.exercise);
+      const scores = exerciseData.map((item) => item.score);
+      const maxScores = exerciseData.map((item) => item.maxScore);
+      const percentages = exerciseData.map((item) =>
+        item.maxScore > 0 ? Math.round((item.score / item.maxScore) * 100) : 0,
       );
 
       return {
         tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'shadow' },
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
           formatter: (params: any) => {
             const dataIndex = params[0]?.dataIndex ?? 0;
             const exercise = exercises[dataIndex];
             const score = scores[dataIndex];
             const maxScore = maxScores[dataIndex];
             const percentage = percentages[dataIndex];
-            
+
             return `
               <div style="padding: 8px;">
                 <strong>${exercise}</strong><br/>
@@ -73,71 +69,70 @@ const ExercisePerformanceChart = memo<ExercisePerformanceChartProps>(({
                 Performance: ${percentage}%
               </div>
             `;
-          }
+          },
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           data: exercises,
           axisLabel: {
             rotate: 45,
-            fontSize: 11
-          }
+            fontSize: 11,
+          },
         },
         yAxis: {
-          type: 'value',
+          type: "value",
           max: 100,
           axisLabel: {
-            formatter: '{value}%'
-          }
+            formatter: "{value}%",
+          },
         },
         series: [
           {
             data: percentages,
-            type: 'bar',
+            type: "bar",
             itemStyle: {
-              color: '#ff863d',
-              borderRadius: [4, 4, 0, 0]
+              color: "#ff863d",
+              borderRadius: [4, 4, 0, 0],
             },
             emphasis: {
               itemStyle: {
-                color: '#ff7029'
-              }
-            }
-          }
+                color: "#ff7029",
+              },
+            },
+          },
         ],
         grid: {
-          left: '10%',
-          right: '10%',
-          bottom: '15%',
-          top: '10%'
-        }
+          left: "10%",
+          right: "10%",
+          bottom: "15%",
+          top: "10%",
+        },
       };
-    },
-    [exerciseData]
-  );
+    }, [exerciseData]);
 
-  // Memoize container style
-  const containerStyle = useShallowMemo(
-    () => ({
-      width: `${width}px`,
-      height: `${height}px`,
-    }),
-    [width, height]
-  );
+    // Memoize container style
+    const containerStyle = useShallowMemo(
+      () => ({
+        width: `${width}px`,
+        height: `${height}px`,
+      }),
+      [width, height],
+    );
 
-  return (
-    <div className="w-full">
-      <Suspense fallback={<ChartLoadingFallback />}>
-        <ReactECharts
-          option={chartOptions}
-          style={containerStyle}
-          opts={{ renderer: "canvas" }}
-          lazyUpdate={true}
-        />
-      </Suspense>
-    </div>
-  );
-});
+    return (
+      <div className="w-full">
+        <Suspense fallback={<ChartLoadingFallback />}>
+          <ReactECharts
+            option={chartOptions}
+            style={containerStyle}
+            opts={{ renderer: "canvas" }}
+            lazyUpdate={true}
+          />
+        </Suspense>
+      </div>
+    );
+  },
+);
 
 ExercisePerformanceChart.displayName = "ExercisePerformanceChart";
 

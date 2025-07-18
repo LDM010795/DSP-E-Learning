@@ -78,7 +78,7 @@ const DspNotification: React.FC<DspNotificationProps> = ({
     <div
       className={clsx(
         "pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 border-l-4",
-        styles.border
+        styles.border,
       )}
     >
       <div className="p-4">
@@ -102,7 +102,7 @@ const DspNotification: React.FC<DspNotificationProps> = ({
               className={clsx(
                 "inline-flex rounded-md bg-white text-gray-400 focus:outline-none focus:ring-2 focus:ring-dsp-orange focus:ring-offset-2",
                 styles.hoverBg,
-                styles.hoverText
+                styles.hoverText,
               )}
               onClick={() => toast.dismiss(id)}
             >

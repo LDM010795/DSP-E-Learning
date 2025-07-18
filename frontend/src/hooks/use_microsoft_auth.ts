@@ -106,7 +106,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         import.meta.env.VITE_MICROSOFT_TOOL_SLUG || "e-learning";
 
       console.log(
-        `🚀 Starte Microsoft Authentication für Tool: ${effectiveToolSlug}...`
+        `🚀 Starte Microsoft Authentication für Tool: ${effectiveToolSlug}...`,
       );
 
       // --- Microsoft-Authentifizierung durchführen ---
@@ -118,7 +118,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
 
       if (!authResponse.success) {
         throw new Error(
-          authResponse.message || "Microsoft authentication failed"
+          authResponse.message || "Microsoft authentication failed",
         );
       }
 

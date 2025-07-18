@@ -37,7 +37,7 @@ function Modules() {
   >([]);
   // NEU: State für Kategorie-Filter
   const [activeCategoryFilters, setActiveCategoryFilters] = useState<string[]>(
-    []
+    [],
   );
   // NEU: State für den Ansichtsmodus - Default bleibt "standard"
   const [viewMode, setViewMode] = useState<ViewMode>("standard");
@@ -51,7 +51,7 @@ function Modules() {
   useEffect(() => {
     console.log(
       "Modules-Komponente: Aktualisierte Module erhalten",
-      modules.length
+      modules.length,
     );
   }, [modules]);
 
@@ -151,7 +151,7 @@ function Modules() {
   const sortedAndFilteredModules = [...modules]
     .filter((module: Module) => {
       const calculateDifficultyForFilter = (
-        tasksForFilter?: Task[]
+        tasksForFilter?: Task[],
       ): DifficultyLevel | null => {
         if (!tasksForFilter || tasksForFilter.length === 0) return null;
         const difficultyMap: Record<string, number> = {
@@ -161,7 +161,7 @@ function Modules() {
         };
         const totalDifficultyScore = tasksForFilter.reduce(
           (sum, task) => sum + (difficultyMap[task.difficulty] || 0),
-          0
+          0,
         );
         const averageScore = totalDifficultyScore / tasksForFilter.length;
         if (averageScore < 1.7) return "Einfach";
@@ -375,7 +375,7 @@ function Modules() {
                         "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
                         viewMode === "standard"
                           ? "bg-[#ff863d] text-white shadow-sm"
-                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
+                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
                       )}
                       aria-label="Standardansicht"
                       title="Standardansicht"
@@ -390,7 +390,7 @@ function Modules() {
                         "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
                         viewMode === "table"
                           ? "bg-[#ff863d] text-white shadow-sm"
-                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
+                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
                       )}
                       aria-label="Tabellenansicht"
                       title="Tabellenansicht"
@@ -407,7 +407,7 @@ function Modules() {
             {viewMode === "standard" ? (
               <div
                 className={clsx(
-                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
                 )}
               >
                 {sortedAndFilteredModules.length > 0 ? (
@@ -415,7 +415,7 @@ function Modules() {
                     const moduleTasks = module.tasks || [];
                     const totalTasksInModule = moduleTasks.length;
                     const completedTasksInModule = moduleTasks.filter(
-                      (task) => task.completed
+                      (task) => task.completed,
                     ).length;
                     const progressPercent =
                       totalTasksInModule > 0

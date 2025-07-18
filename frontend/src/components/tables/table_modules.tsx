@@ -67,7 +67,7 @@ const calculateDifficultyForSort = (module: Module): string | null => {
   };
   const totalDifficultyScore = tasks.reduce(
     (sum, task) => sum + (difficultyMap[task.difficulty] || 0),
-    0
+    0,
   );
   const averageScore = totalDifficultyScore / tasks.length;
   if (averageScore < 1.7) return "Einfach";
@@ -122,18 +122,18 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
         sortColumn === "status"
           ? getModuleStatusOrder(getModuleStatus(a))
           : sortColumn === "difficulty"
-          ? getDifficultyOrder(calculateDifficultyForSort(a))
-          : sortColumn === "progress"
-          ? calculateProgress(a)
-          : a[sortColumn as keyof Module] ?? ""; // Handle potential undefined/null
+            ? getDifficultyOrder(calculateDifficultyForSort(a))
+            : sortColumn === "progress"
+              ? calculateProgress(a)
+              : (a[sortColumn as keyof Module] ?? ""); // Handle potential undefined/null
       const valB =
         sortColumn === "status"
           ? getModuleStatusOrder(getModuleStatus(b))
           : sortColumn === "difficulty"
-          ? getDifficultyOrder(calculateDifficultyForSort(b))
-          : sortColumn === "progress"
-          ? calculateProgress(b)
-          : b[sortColumn as keyof Module] ?? "";
+            ? getDifficultyOrder(calculateDifficultyForSort(b))
+            : sortColumn === "progress"
+              ? calculateProgress(b)
+              : (b[sortColumn as keyof Module] ?? "");
 
       if (typeof valA === "number" && typeof valB === "number") {
         compareResult = valA - valB;

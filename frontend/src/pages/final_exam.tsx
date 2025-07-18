@@ -62,7 +62,7 @@ const formatDate = (dateString: string | null): string => {
 // Hilfsfunktion zur Begrenzung der Textlänge
 const truncateText = (
   text: string | undefined,
-  maxLength: number = 111
+  maxLength: number = 111,
 ): string => {
   if (!text) return "Keine Beschreibung verfügbar";
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -93,12 +93,12 @@ function FinalExam() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionComment, setSubmissionComment] = useState("");
   const [selectedAttemptId, setSelectedAttemptId] = useState<number | null>(
-    null
+    null,
   );
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedExamForPopup, setSelectedExamForPopup] = useState<Exam | null>(
-    null
+    null,
   );
   const [selectedAttemptForPopup, setSelectedAttemptForPopup] =
     useState<ExamAttempt | null>(null);
@@ -129,7 +129,7 @@ function FinalExam() {
     if (!container) return;
 
     const activeButton = container.querySelector<HTMLButtonElement>(
-      `[data-tab="${activeTab}"]`
+      `[data-tab="${activeTab}"]`,
     );
     if (activeButton) {
       setSliderStyle({
@@ -327,10 +327,10 @@ function FinalExam() {
     // Erstelle Lookups für schnellen Status-Check
     const availableExamIds = new Set(availableExams.map((exam) => exam.id));
     const activeAttemptsMap = new Map(
-      activeExams.map((attempt) => [attempt.exam.id, attempt])
+      activeExams.map((attempt) => [attempt.exam.id, attempt]),
     );
     const completedAttemptsMap = new Map(
-      completedExams.map((attempt) => [attempt.exam.id, attempt])
+      completedExams.map((attempt) => [attempt.exam.id, attempt]),
     );
 
     // Prüfungen mit Status und Attempt anreichern
@@ -403,7 +403,7 @@ function FinalExam() {
                   "border-l-4 border-l-blue-500":
                     userExamStatus === "submitted" ||
                     userExamStatus === "graded",
-                }
+                },
               )}
             >
               <SubBackground
@@ -418,7 +418,7 @@ function FinalExam() {
                         "text-lg font-semibold leading-tight mr-2",
                         isLocked
                           ? "text-gray-500"
-                          : "text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200"
+                          : "text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200",
                       )}
                     >
                       {exam.exam_title || "Titel nicht verfügbar"}
@@ -457,7 +457,7 @@ function FinalExam() {
                   <p
                     className={clsx(
                       "text-sm mb-4 text-gray-600 leading-relaxed",
-                      { italic: isLocked }
+                      { italic: isLocked },
                     )}
                   >
                     {isLocked

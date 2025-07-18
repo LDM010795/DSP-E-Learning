@@ -17,7 +17,7 @@ const CodeEditorBasic = forwardRef<CodeEditorBasicHandle, CodeEditorBasicProps>(
   ({ initialValue = "", onChange, className }, ref) => {
     const editorContainerRef = useRef<HTMLDivElement>(null);
     const editorInstance = useRef<monaco.editor.IStandaloneCodeEditor | null>(
-      null
+      null,
     );
 
     // useImperativeHandle verwenden, um setValue verfügbar zu machen
@@ -61,14 +61,14 @@ const CodeEditorBasic = forwardRef<CodeEditorBasicHandle, CodeEditorBasicProps>(
             roundedSelection: true,
             folding: true,
             renderWhitespace: "all",
-          }
+          },
         );
 
         const subscription = editorInstance.current.onDidChangeModelContent(
           () => {
             const currentCode = editorInstance.current?.getValue() || "";
             onChange(currentCode);
-          }
+          },
         );
 
         return () => {
@@ -89,7 +89,7 @@ const CodeEditorBasic = forwardRef<CodeEditorBasicHandle, CodeEditorBasicProps>(
         ref={editorContainerRef}
       ></div>
     );
-  }
+  },
 );
 
 export default CodeEditorBasic;

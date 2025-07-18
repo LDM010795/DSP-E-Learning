@@ -7,7 +7,7 @@
  * - Context Provider Setup
  * - Performance-Optimierung mit Prefetching
  * - Responsive Design
- * 
+ *
  * Features:
  * - React Router für Navigation
  * - Microsoft OAuth Integration
@@ -15,7 +15,7 @@
  * - Loading-States
  * - Toast-Benachrichtigungen
  * - Lazy Loading und Performance-Optimierung
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -38,7 +38,11 @@ import LoginPopup from "./pages/login";
 import LogoDSP from "./assets/dsp_no_background.png";
 
 // --- Types and Navigation ---
-import { NavItem, publicNavLinks, privateNavLinks } from "./components/layouts/header.types";
+import {
+  NavItem,
+  publicNavLinks,
+  privateNavLinks,
+} from "./components/layouts/header.types";
 
 // --- Context Providers ---
 import { AuthProvider } from "./context/AuthContext.tsx";
@@ -54,7 +58,7 @@ import { useAuth } from "./context/AuthContext.tsx";
 
 /**
  * AppContent Komponente
- * 
+ *
  * Hauptinhalt der Anwendung mit Navigation, Routing und
  * Authentifizierungslogik.
  */
@@ -63,7 +67,7 @@ const AppContent: React.FC = () => {
   React.useEffect(() => {
     prefetchCommonResources();
   }, []);
-  
+
   // --- State Management ---
   const { user, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
@@ -115,7 +119,7 @@ const AppContent: React.FC = () => {
       {/* --- Background and Notifications --- */}
       <DSPBackground />
       <Toaster position="bottom-right" richColors />
-      
+
       {/* --- Header Navigation --- */}
       <HeaderNavigation
         logo={<img src={LogoDSP} alt="Logo" className="h-12" />}
@@ -139,7 +143,7 @@ const AppContent: React.FC = () => {
 
 /**
  * App Komponente
- * 
+ *
  * Root-Komponente mit Context Provider Setup für
  * Authentifizierung, Module und Prüfungen.
  */

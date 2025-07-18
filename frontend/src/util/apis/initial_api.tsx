@@ -44,7 +44,7 @@ interface RequestOptions extends RequestInit {
  */
 async function request<T>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> {
   const token = localStorage.getItem("authToken");
   const headers: HeadersInit = {
@@ -87,7 +87,7 @@ export const api = {
   post<T>(
     endpoint: string,
     data: Record<string, unknown>,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<T> {
     return request<T>(endpoint, {
       ...options,
@@ -98,7 +98,7 @@ export const api = {
   put<T>(
     endpoint: string,
     data: Record<string, unknown>,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<T> {
     return request<T>(endpoint, {
       ...options,

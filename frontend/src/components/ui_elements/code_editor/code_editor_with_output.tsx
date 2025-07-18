@@ -68,7 +68,7 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
       console.log(
         "Code changed for syntax checking:",
         debouncedCode.length,
-        "characters"
+        "characters",
       );
     }
   }, [debouncedCode, initialCode]);
@@ -95,7 +95,7 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
     try {
       const response: AxiosResponse<ExecutionResponse> = await api.post(
         "/modules/execute/",
-        payload
+        payload,
       );
       const { stdout, stderr, execution_error, test_results } = response.data;
 
@@ -120,7 +120,7 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
             <span className="flex items-center text-green-600">
               <FaCheckCircle className="mr-2" />
               Alle {test_results.runs} Tests erfolgreich bestanden!
-            </span>
+            </span>,
           );
 
           if (onSuccess) {
@@ -133,7 +133,7 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
               <FaTimesCircle className="mr-2" />
               Tests fehlgeschlagen ({errorCount} Fehler, {failureCount}{" "}
               Fehlschläge in {test_results.runs} Läufen).
-            </span>
+            </span>,
           );
           if (errorCount > 0) {
             testDetails += "\n\n--- Test Fehler ---";
@@ -169,7 +169,7 @@ const CodeEditorWithOutput: React.FC<CodeEditorWithOutputProps> = ({
       setTestSummary(
         <span className="flex items-center text-red-600">
           <FaTimesCircle className="mr-2" /> Fehler bei der Code-Ausführung.
-        </span>
+        </span>,
       );
       setIsOutputVisible(true);
     } finally {

@@ -64,27 +64,33 @@ interface StatCardProps {
   index: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, colorScheme, index }) => {
+const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  icon,
+  colorScheme,
+  index,
+}) => {
   const colorConfig = {
-    orange: { 
-      bg: "bg-[#ffe7d4]", 
+    orange: {
+      bg: "bg-[#ffe7d4]",
       text: "text-[#ff863d]",
-      border: "border-[#ff863d]/20"
+      border: "border-[#ff863d]/20",
     },
-    blue: { 
-      bg: "bg-blue-50", 
+    blue: {
+      bg: "bg-blue-50",
       text: "text-blue-600",
-      border: "border-blue-200"
+      border: "border-blue-200",
     },
-    purple: { 
-      bg: "bg-purple-50", 
+    purple: {
+      bg: "bg-purple-50",
       text: "text-purple-600",
-      border: "border-purple-200"
+      border: "border-purple-200",
     },
-    yellow: { 
-      bg: "bg-yellow-50", 
+    yellow: {
+      bg: "bg-yellow-50",
       text: "text-yellow-600",
-      border: "border-yellow-200"
+      border: "border-yellow-200",
     },
   };
 
@@ -100,10 +106,10 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, colorScheme, in
     >
       <SubBackground className="hover:bg-white/80 transition-all duration-200">
         <div className="flex items-center gap-4">
-          <div className={`p-3 rounded-xl ${colors.bg} ${colors.border} border group-hover:scale-110 transition-transform duration-200`}>
-            <div className={`w-6 h-6 ${colors.text}`}>
-              {icon}
-            </div>
+          <div
+            className={`p-3 rounded-xl ${colors.bg} ${colors.border} border group-hover:scale-110 transition-transform duration-200`}
+          >
+            <div className={`w-6 h-6 ${colors.text}`}>{icon}</div>
           </div>
           <div className="flex-1">
             <p className="text-sm text-gray-600 font-medium mb-1">{title}</p>
@@ -124,7 +130,12 @@ interface ChartCardProps {
   index: number;
 }
 
-const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, index }) => (
+const ChartCard: React.FC<ChartCardProps> = ({
+  title,
+  subtitle,
+  children,
+  index,
+}) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -212,8 +223,8 @@ const Overview: React.FC = () => {
           />
         </ChartCard>
 
-        <ChartCard 
-          title="Modulabschluss" 
+        <ChartCard
+          title="Modulabschluss"
           subtitle="Fortschritt in jedem Modul"
           index={2}
         >
@@ -237,7 +248,11 @@ const Overview: React.FC = () => {
                     className="bg-gradient-to-r from-[#ff863d] to-[#fa8c45] h-2.5 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${item.value}%` }}
-                    transition={{ duration: 0.8, delay: 0.8 + idx * 0.1, ease: "easeOut" }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.8 + idx * 0.1,
+                      ease: "easeOut",
+                    }}
                   />
                 </div>
               </motion.div>

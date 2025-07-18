@@ -310,7 +310,7 @@ const apiCache = new AdvancedCache({
 export function useCachedApi<T>(
   cacheKey: string,
   apiCall: () => Promise<T>,
-  options: UseCachedApiOptions = {}
+  options: UseCachedApiOptions = {},
 ): UseCachedApiResult<T> {
   const {
     enabled = true,
@@ -371,7 +371,7 @@ export function useCachedApi<T>(
         setIsLoading(false);
       }
     },
-    [apiCall, cacheKey, enabled, onSuccess, onError, retryAttempts, retryDelay]
+    [apiCall, cacheKey, enabled, onSuccess, onError, retryAttempts, retryDelay],
   );
 
   const refresh = useCallback(() => fetchData(true), [fetchData]);
@@ -399,7 +399,7 @@ export function useCachedComputation<T>(
   cacheKey: string,
   computation: () => T,
   dependencies: unknown[],
-  options: CacheOptions = {}
+  options: CacheOptions = {},
 ): T {
   const cache = useRef(new AdvancedCache<T>(options));
   const depsRef = useRef<unknown[]>([]);
@@ -409,7 +409,7 @@ export function useCachedComputation<T>(
 
   // Check if dependencies have changed
   const depsChanged = dependencies.some(
-    (dep, index) => dep !== depsRef.current[index]
+    (dep, index) => dep !== depsRef.current[index],
   );
 
   if (depsChanged) {
@@ -440,7 +440,7 @@ export function useCachedComputation<T>(
  */
 export function createMemoizedFunction<TArgs extends unknown[], TReturn>(
   fn: (...args: TArgs) => TReturn | Promise<TReturn>,
-  options: CacheOptions = {}
+  options: CacheOptions = {},
 ): (...args: TArgs) => TReturn | Promise<TReturn> {
   const cache = new AdvancedCache<TReturn>(options);
 

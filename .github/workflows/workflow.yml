@@ -1,0 +1,28 @@
+name: run prettier
+on:
+  push
+
+jobs:
+  format-code:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Set up git for the current pull request/branch that is being changed. Needed to push back onto the pull request later.
+      - name: checkout project
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      # TODO: add caching for npm packages
+      - name: setup node
+        run: |
+          cd frontend
+          npm install
+      - name: run prettier
+        run: |
+          cd frontend
+          npm run format
+
+      - name: push to pull request
+        uses: stefanzweifel/git-auto-commit-action@v6
+

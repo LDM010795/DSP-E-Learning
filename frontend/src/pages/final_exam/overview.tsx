@@ -50,7 +50,7 @@ const formatDate = (dateString: string | null): string => {
 // Hilfsfunktion zur Begrenzung der Textlänge
 const truncateText = (
   text: string | undefined,
-  maxLength: number = 111
+  maxLength: number = 111,
 ): string => {
   if (!text) return "Keine Beschreibung verfügbar";
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -119,10 +119,10 @@ const Overview: React.FC<OverviewProps> = ({
   // Erstelle Lookups für schnellen Status-Check
   const availableExamIds = new Set(availableExams.map((exam) => exam.id));
   const activeAttemptsMap = new Map(
-    activeExams.map((attempt) => [attempt.exam.id, attempt])
+    activeExams.map((attempt) => [attempt.exam.id, attempt]),
   );
   const completedAttemptsMap = new Map(
-    completedExams.map((attempt) => [attempt.exam.id, attempt])
+    completedExams.map((attempt) => [attempt.exam.id, attempt]),
   );
 
   // 1. Prüfungen mit Status und Attempt anreichern
@@ -185,7 +185,7 @@ const Overview: React.FC<OverviewProps> = ({
                 "border-l-4 border-dsp-green": userExamStatus === "started",
                 "border-l-4 border-dsp-blue":
                   userExamStatus === "submitted" || userExamStatus === "graded",
-              }
+              },
             )}
           >
             <div
@@ -197,7 +197,7 @@ const Overview: React.FC<OverviewProps> = ({
                 <h3
                   className={clsx(
                     "text-base font-semibold text-gray-800 leading-tight mr-2",
-                    { "text-gray-500": isLocked }
+                    { "text-gray-500": isLocked },
                   )}
                 >
                   {exam.exam_title || "Titel nicht verfügbar"}
@@ -236,7 +236,7 @@ const Overview: React.FC<OverviewProps> = ({
               <p
                 className={clsx(
                   "text-xs text-gray-500 mb-3 h-10 overflow-hidden",
-                  { italic: isLocked }
+                  { italic: isLocked },
                 )}
               >
                 {isLocked

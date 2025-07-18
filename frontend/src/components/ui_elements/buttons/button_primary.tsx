@@ -6,14 +6,14 @@
  * - DSP-Orange Gradient-Design
  * - Hover- und Tap-Effekte
  * - Glow- und Shine-Effekte
- * 
+ *
  * Features:
  * - Gradient-Hintergrund mit DSP-Farben
  * - Icon-Animationen
  * - Accessibility-Features
  * - Responsive Design
  * - Disabled-State-Handling
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -36,7 +36,7 @@ interface ButtonPrimaryProps {
 
 /**
  * Primary Button Komponente
- * 
+ *
  * Haupt-Button mit DSP-Orange Design und erweiterten
  * Animationen für wichtige Aktionen.
  */
@@ -49,7 +49,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   disabled,
 }) => {
   // --- Animation Variants ---
-  
+
   const buttonVariants = {
     initial: { scale: 1 },
     hover: { scale: 1.02 },
