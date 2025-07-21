@@ -73,7 +73,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
       if (field !== "is_staff") {
         const error = validateField(
           field,
-          debouncedFormData[field as keyof typeof debouncedFormData] as string
+          debouncedFormData[field as keyof typeof debouncedFormData] as string,
         );
         if (error) {
           errors[field] = error;
@@ -85,7 +85,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
   }, [debouncedFormData]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
@@ -241,7 +241,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
                   "ml-2 p-1 rounded-md text-xs inline-flex items-center transition-colors",
                   copied
                     ? "bg-green-100 text-green-700"
-                    : "bg-blue-100 hover:bg-blue-200 text-blue-700"
+                    : "bg-blue-100 hover:bg-blue-200 text-blue-700",
                 )}
                 title="Passwort kopieren"
               >

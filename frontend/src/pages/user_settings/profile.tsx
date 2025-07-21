@@ -3,7 +3,11 @@ import { motion } from "framer-motion";
 import ButtonPrimary from "../../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../../components/ui_elements/buttons/button_secondary";
 import SubBackground from "../../components/layouts/SubBackground";
-import { IoPersonCircleOutline, IoSaveOutline, IoCameraOutline } from "react-icons/io5";
+import {
+  IoPersonCircleOutline,
+  IoSaveOutline,
+  IoCameraOutline,
+} from "react-icons/io5";
 import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
 
@@ -123,7 +127,7 @@ const Profile: React.FC = () => {
 
         <div className="space-y-6">
           {/* Avatar Section */}
-          <motion.div 
+          <motion.div
             className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -138,8 +142,8 @@ const Profile: React.FC = () => {
               </div>
             </div>
             <div>
-              <ButtonSecondary 
-                title="Profilbild ändern" 
+              <ButtonSecondary
+                title="Profilbild ändern"
                 onClick={() => {}}
                 icon={<IoCameraOutline className="w-4 h-4" />}
                 iconPosition="left"
@@ -219,7 +223,7 @@ const Profile: React.FC = () => {
           </motion.div>
 
           {/* Action Buttons */}
-          <motion.div 
+          <motion.div
             className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

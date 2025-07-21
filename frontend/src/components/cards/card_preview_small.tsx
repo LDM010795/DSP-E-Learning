@@ -1,6 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { IoPlayCircleOutline, IoCheckmarkCircleOutline, IoTimeOutline } from "react-icons/io5";
+import {
+  IoPlayCircleOutline,
+  IoCheckmarkCircleOutline,
+  IoTimeOutline,
+} from "react-icons/io5";
 import clsx from "clsx";
 
 // ✨ Props Interface
@@ -45,18 +49,18 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
 
   // Determine module status based on progress
   const getModuleStatus = () => {
-    if (progress >= 100) return 'completed';
-    if (progress > 0) return 'in-progress';
-    return 'not-started';
+    if (progress >= 100) return "completed";
+    if (progress > 0) return "in-progress";
+    return "not-started";
   };
 
   const status = getModuleStatus();
 
   const getStatusIcon = () => {
     switch (status) {
-      case 'completed':
+      case "completed":
         return <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />;
-      case 'in-progress':
+      case "in-progress":
         return <IoTimeOutline className="w-5 h-5 text-[#ff863d]" />;
       default:
         return <IoPlayCircleOutline className="w-5 h-5 text-gray-500" />;
@@ -65,12 +69,12 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
 
   const getProgressBarColor = () => {
     switch (status) {
-      case 'completed':
-        return 'bg-green-500';
-      case 'in-progress':
-        return 'bg-[#ff863d]';
+      case "completed":
+        return "bg-green-500";
+      case "in-progress":
+        return "bg-[#ff863d]";
       default:
-        return 'bg-gray-400';
+        return "bg-gray-400";
     }
   };
 
@@ -85,7 +89,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
         "shadow-sm hover:shadow-md",
         "transition-all duration-200 ease-in-out",
         "hover:scale-[1.02] hover:-translate-y-1",
-        className
+        className,
       )}
       onClick={onClick}
       whileHover={{ y: -2 }}
@@ -93,21 +97,23 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
     >
       {/* Professional Image Container */}
       {displayImage && (
-        <div className={clsx(
-          "relative w-full aspect-video overflow-hidden",
-          "bg-gradient-to-br from-gray-100 to-gray-200",
-          classNameImage
-        )}>
+        <div
+          className={clsx(
+            "relative w-full aspect-video overflow-hidden",
+            "bg-gradient-to-br from-gray-100 to-gray-200",
+            classNameImage,
+          )}
+        >
           <img
             src={displayImage}
             alt={title}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
-          
+
           {/* Professional overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-          
+
           {/* Video play indicator */}
           {youtubeId && (
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -127,51 +133,57 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
       )}
 
       {/* Professional Content Area */}
-      <div className={clsx(
-        "p-4",
-        classNameContentWrapper
-      )}>
+      <div className={clsx("p-4", classNameContentWrapper)}>
         {/* Title Section */}
         <div className="mb-3">
-          <h3 className={clsx(
-            "font-semibold text-gray-900 text-base leading-tight",
-            "group-hover:text-[#ff863d] transition-colors duration-200",
-            "line-clamp-2",
-            classNameTitle
-          )}>
+          <h3
+            className={clsx(
+              "font-semibold text-gray-900 text-base leading-tight",
+              "group-hover:text-[#ff863d] transition-colors duration-200",
+              "line-clamp-2",
+              classNameTitle,
+            )}
+          >
             {title}
           </h3>
-          
+
           {description && (
-            <p className={clsx(
-              "text-sm text-gray-600 mt-2 line-clamp-2",
-              classNameDescription
-            )}>
+            <p
+              className={clsx(
+                "text-sm text-gray-600 mt-2 line-clamp-2",
+                classNameDescription,
+              )}
+            >
               {description}
             </p>
           )}
         </div>
 
         {/* Professional Progress Section */}
-        <div className={clsx(
-          "space-y-2",
-          classNameProgressWrapper
-        )}>
+        <div className={clsx("space-y-2", classNameProgressWrapper)}>
           {/* Progress header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               {getStatusIcon()}
               <span className="text-xs font-medium text-gray-700">
-                {status === 'completed' ? 'Abgeschlossen' : 
-                 status === 'in-progress' ? 'In Bearbeitung' : 'Nicht begonnen'}
+                {status === "completed"
+                  ? "Abgeschlossen"
+                  : status === "in-progress"
+                    ? "In Bearbeitung"
+                    : "Nicht begonnen"}
               </span>
             </div>
-            <span className={clsx(
-              "text-xs font-semibold",
-              status === 'completed' ? 'text-green-600' :
-              status === 'in-progress' ? 'text-[#ff863d]' : 'text-gray-500',
-              classNameProgressText
-            )}>
+            <span
+              className={clsx(
+                "text-xs font-semibold",
+                status === "completed"
+                  ? "text-green-600"
+                  : status === "in-progress"
+                    ? "text-[#ff863d]"
+                    : "text-gray-500",
+                classNameProgressText,
+              )}
+            >
               {progress}%
             </span>
           </div>
@@ -183,20 +195,20 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
                 className={clsx(
                   "h-2 rounded-full transition-all duration-300",
                   getProgressBarColor(),
-                  classNameProgressBar
+                  classNameProgressBar,
                 )}
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
               />
             </div>
-            
+
             {/* Progress glow effect */}
             {progress > 0 && (
-              <div 
+              <div
                 className={clsx(
                   "absolute top-0 left-0 h-2 rounded-full opacity-50 blur-sm",
-                  getProgressBarColor()
+                  getProgressBarColor(),
                 )}
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />

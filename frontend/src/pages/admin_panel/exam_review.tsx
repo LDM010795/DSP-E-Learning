@@ -143,16 +143,19 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
 
   const initialScores = useMemo(
     () =>
-      attempt.exam.criteria.reduce((acc, criterion) => {
-        const existingScore = attempt.criterion_scores?.find(
-          (s) => s.criterion.id === criterion.id
-        );
-        acc[criterion.id] = existingScore
-          ? parseFloat(existingScore.achieved_points.toString())
-          : "";
-        return acc;
-      }, {} as Record<number, number | string>),
-    [attempt.exam.criteria, attempt.criterion_scores]
+      attempt.exam.criteria.reduce(
+        (acc, criterion) => {
+          const existingScore = attempt.criterion_scores?.find(
+            (s) => s.criterion.id === criterion.id,
+          );
+          acc[criterion.id] = existingScore
+            ? parseFloat(existingScore.achieved_points.toString())
+            : "";
+          return acc;
+        },
+        {} as Record<number, number | string>,
+      ),
+    [attempt.exam.criteria, attempt.criterion_scores],
   );
 
   const [scores, setScores] =
@@ -169,11 +172,14 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
 
   const maxScores = useMemo(
     () =>
-      attempt.exam.criteria.reduce((acc, criterion) => {
-        acc[criterion.id] = criterion.max_points;
-        return acc;
-      }, {} as Record<number, number>),
-    [attempt.exam.criteria]
+      attempt.exam.criteria.reduce(
+        (acc, criterion) => {
+          acc[criterion.id] = criterion.max_points;
+          return acc;
+        },
+        {} as Record<number, number>,
+      ),
+    [attempt.exam.criteria],
   );
 
   const handleScoreChange = (criterionId: number, value: string) => {
@@ -215,13 +221,13 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
       })
       .filter(
         (item): item is { criterion_id: number; achieved_points: number } =>
-          item !== null
+          item !== null,
       );
 
     const allCriteriaIds = attempt.exam.criteria.map((c) => c.id);
     const scoredCriteriaIds = formattedScores.map((s) => s.criterion_id);
     const missingCriteria = allCriteriaIds.filter(
-      (id) => !scoredCriteriaIds.includes(id)
+      (id) => !scoredCriteriaIds.includes(id),
     );
 
     if (missingCriteria.length > 0) {
@@ -231,7 +237,7 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
           type="warning"
           title="Unvollständige Bewertung"
           message={`Bitte bewerten Sie alle Kriterien. Fehlend: ${missingCriteria.join(
-            ", "
+            ", ",
           )}`}
         />
       ));
@@ -285,9 +291,9 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
     () =>
       attempt.exam.criteria.reduce(
         (sum, criterion) => sum + criterion.max_points,
-        0
+        0,
       ),
-    [attempt.exam.criteria]
+    [attempt.exam.criteria],
   );
 
   const numericScores = useMemo(
@@ -296,12 +302,12 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
         const num = parseFloat(score.toString());
         return isNaN(num) ? 0 : num;
       }),
-    [scores]
+    [scores],
   );
 
   const totalScore = useMemo(
     () => numericScores.reduce((sum, numScore) => sum + numScore, 0),
-    [numericScores]
+    [numericScores],
   );
 
   const totalPercentage =
@@ -320,7 +326,7 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
       } catch (err: unknown) {
         if (err instanceof Error) {
           console.error(
-            `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+            `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
           );
         } else {
           console.error("An unknown error occurred while entering fullscreen");
@@ -333,7 +339,7 @@ const ExamReviewDetail: React.FC<ExamReviewDetailProps> = ({
         } catch (err: unknown) {
           if (err instanceof Error) {
             console.error(
-              `Error attempting to exit full-screen mode: ${err.message} (${err.name})`
+              `Error attempting to exit full-screen mode: ${err.message} (${err.name})`,
             );
           } else {
             console.error("An unknown error occurred while exiting fullscreen");
@@ -604,10 +610,10 @@ const AdminPanelExamReviewSection: React.FC = () => {
     refreshTeacherData,
   } = useExams();
   const [selectedAttempt, setSelectedAttempt] = useState<ExamAttempt | null>(
-    null
+    null,
   );
   const [activeStatusFilter, setActiveStatusFilter] = useState<StatusLabel[]>(
-    []
+    [],
   );
   const [examSearchTerm, setExamSearchTerm] = useState("");
 
@@ -641,7 +647,7 @@ const AdminPanelExamReviewSection: React.FC = () => {
         total_max_points: attempt.exam.criteria?.reduce(
           // Verwende den importierten Typ Criterion
           (sum: number, c: Criterion) => sum + (c.max_points || 0),
-          0
+          0,
         ),
       },
     }));
@@ -649,7 +655,7 @@ const AdminPanelExamReviewSection: React.FC = () => {
 
   const handleSelectAttempt = (attemptId: number) => {
     const attempt = examsWithTotalPoints.find(
-      (a: ExamAttempt) => a.id === attemptId
+      (a: ExamAttempt) => a.id === attemptId,
     );
     setSelectedAttempt(attempt || null);
   };
@@ -660,7 +666,7 @@ const AdminPanelExamReviewSection: React.FC = () => {
 
   const handleStatusFilterChange = (label: StatusLabel) => {
     setActiveStatusFilter((prev) =>
-      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label],
     );
   };
 
@@ -679,8 +685,8 @@ const AdminPanelExamReviewSection: React.FC = () => {
             attempt.status === "submitted"
               ? "Eingereicht"
               : attempt.status === "graded"
-              ? "Bewertet"
-              : null;
+                ? "Bewertet"
+                : null;
           return (
             attemptStatusLabel !== null &&
             activeStatusFilter.includes(attemptStatusLabel)

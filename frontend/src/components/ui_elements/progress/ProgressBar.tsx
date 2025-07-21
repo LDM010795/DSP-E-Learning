@@ -1,7 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { IoCheckmarkCircleOutline, IoHourglassOutline, IoPlayCircleOutline } from "react-icons/io5";
+import {
+  IoCheckmarkCircleOutline,
+  IoHourglassOutline,
+  IoPlayCircleOutline,
+} from "react-icons/io5";
 
 type ProgressVariant = "default" | "success" | "warning" | "error";
 type ProgressSize = "sm" | "md" | "lg";
@@ -34,12 +38,12 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   glowEffect = true,
 }) => {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
-  
+
   // Determine status based on percentage
   const getStatus = () => {
-    if (percentage >= 100) return 'completed';
-    if (percentage > 0) return 'in-progress';
-    return 'not-started';
+    if (percentage >= 100) return "completed";
+    if (percentage > 0) return "in-progress";
+    return "not-started";
   };
 
   const status = getStatus();
@@ -96,14 +100,20 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   const getStatusIcon = () => {
     const iconClasses = clsx(sizes.icon, config.text);
-    
+
     switch (status) {
-      case 'completed':
-        return <IoCheckmarkCircleOutline className={clsx(iconClasses, "text-green-600")} />;
-      case 'in-progress':
+      case "completed":
+        return (
+          <IoCheckmarkCircleOutline
+            className={clsx(iconClasses, "text-green-600")}
+          />
+        );
+      case "in-progress":
         return <IoHourglassOutline className={iconClasses} />;
       default:
-        return <IoPlayCircleOutline className={clsx(iconClasses, "text-gray-500")} />;
+        return (
+          <IoPlayCircleOutline className={clsx(iconClasses, "text-gray-500")} />
+        );
     }
   };
 
@@ -116,22 +126,26 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             {showIcon && getStatusIcon()}
-            <span className={clsx(
-              "font-medium",
-              sizes.text,
-              status === 'completed' ? 'text-green-600' :
-              status === 'in-progress' ? config.text : 'text-gray-500'
-            )}>
-              {status === 'completed' ? 'Abgeschlossen' : 
-               status === 'in-progress' ? 'In Bearbeitung' : 'Nicht begonnen'}
+            <span
+              className={clsx(
+                "font-medium",
+                sizes.text,
+                status === "completed"
+                  ? "text-green-600"
+                  : status === "in-progress"
+                    ? config.text
+                    : "text-gray-500",
+              )}
+            >
+              {status === "completed"
+                ? "Abgeschlossen"
+                : status === "in-progress"
+                  ? "In Bearbeitung"
+                  : "Nicht begonnen"}
             </span>
           </div>
           {showLabel && (
-            <span className={clsx(
-              "font-semibold",
-              sizes.text,
-              config.text
-            )}>
+            <span className={clsx("font-semibold", sizes.text, config.text)}>
               {displayLabel}
             </span>
           )}
@@ -141,18 +155,20 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       {/* Progress Track & Bar Container */}
       <div className="relative">
         {/* Track */}
-        <div className={clsx(
-          "w-full rounded-full overflow-hidden",
-          sizes.height,
-          config.track
-        )}>
+        <div
+          className={clsx(
+            "w-full rounded-full overflow-hidden",
+            sizes.height,
+            config.track,
+          )}
+        >
           {/* Progress Bar */}
           <motion.div
             className={clsx(
               "rounded-full transition-all duration-300 relative overflow-hidden",
               sizes.height,
               config.bg,
-              striped && "bg-stripe"
+              striped && "bg-stripe",
             )}
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
@@ -187,12 +203,12 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
         {/* Glow effect */}
         {glowEffect && percentage > 0 && (
-          <div 
+          <div
             className={clsx(
               "absolute top-0 left-0 rounded-full opacity-50 blur-sm transition-all duration-300",
               sizes.height,
               config.bg,
-              config.glow
+              config.glow,
             )}
             style={{ width: `${percentage}%` }}
           />
@@ -200,7 +216,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
 
       {/* Progress indicator for completed state */}
-      {status === 'completed' && (
+      {status === "completed" && (
         <motion.div
           className="flex items-center justify-center mt-2"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -209,7 +225,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         >
           <div className="flex items-center space-x-2 text-green-600">
             <IoCheckmarkCircleOutline className="w-4 h-4" />
-            <span className="text-xs font-medium">Vollständig abgeschlossen</span>
+            <span className="text-xs font-medium">
+              Vollständig abgeschlossen
+            </span>
           </div>
         </motion.div>
       )}
@@ -217,4 +235,4 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   );
 };
 
-export default ProgressBar; 
+export default ProgressBar;

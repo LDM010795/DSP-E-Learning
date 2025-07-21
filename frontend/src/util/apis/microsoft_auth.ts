@@ -111,19 +111,19 @@ export const startMicrosoftLogin = (): void => {
  * 2. GENERISCHE API: Sendet OAuth Code und State für Authentication
  */
 export const authenticateWithMicrosoft = async (
-  callbackData: MicrosoftCallbackRequest
+  callbackData: MicrosoftCallbackRequest,
 ): Promise<MicrosoftAuthResponse> => {
   try {
     const response = await microsoftApi.post<MicrosoftAuthResponse>(
       `/auth/callback/${MICROSOFT_TOOL_SLUG}/`,
-      callbackData
+      callbackData,
     );
     return response.data;
   } catch (error: unknown) {
     const axiosError = error as { response?: { data?: { error?: string } } };
     throw new Error(
       axiosError.response?.data?.error ||
-        "Failed to authenticate with Microsoft"
+        "Failed to authenticate with Microsoft",
     );
   }
 };
@@ -132,7 +132,7 @@ export const authenticateWithMicrosoft = async (
  * 3. Prüft Organization User Status
  */
 export const checkMicrosoftUserStatus = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<MicrosoftUserStatusResponse> => {
   try {
     const response = await microsoftApi.get<MicrosoftUserStatusResponse>(
@@ -141,13 +141,13 @@ export const checkMicrosoftUserStatus = async (
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
     return response.data;
   } catch (error: unknown) {
     const axiosError = error as { response?: { data?: { error?: string } } };
     throw new Error(
-      axiosError.response?.data?.error || "Failed to check user status"
+      axiosError.response?.data?.error || "Failed to check user status",
     );
   }
 };

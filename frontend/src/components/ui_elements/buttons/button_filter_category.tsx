@@ -56,7 +56,9 @@ const ButtonFilterCategory: React.FC<ButtonFilterCategoryProps> = ({
   }, [dropdownRef, triggerRef]);
 
   const sortedCategories = [...allCategories]
-    .filter((cat): cat is string => typeof cat === "string" && cat.trim() !== "")
+    .filter(
+      (cat): cat is string => typeof cat === "string" && cat.trim() !== "",
+    )
     .sort((a, b) => a.localeCompare(b));
 
   const handleCheckboxChange = (category: string, isChecked: boolean) => {
@@ -79,7 +81,7 @@ const ButtonFilterCategory: React.FC<ButtonFilterCategoryProps> = ({
             "bg-white text-gray-600 border-gray-300 hover:bg-[#FEDAC7] hover:border-[#FF6D25]":
               !hasActiveFilters,
             "bg-[#FF6D25] text-white border-[#FF6D25]": hasActiveFilters,
-          }
+          },
         )}
         aria-haspopup="true"
         aria-expanded={isOpen}

@@ -49,7 +49,7 @@ const UserList: React.FC = () => {
     {
       ttl: 120000, // 2 Minuten Cache
       enabled: !!user?.is_superuser,
-    }
+    },
   );
 
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +58,7 @@ const UserList: React.FC = () => {
   useEffect(() => {
     if (apiError) {
       setError(
-        "Benutzerdaten konnten nicht geladen werden. Bitte versuche es später erneut."
+        "Benutzerdaten konnten nicht geladen werden. Bitte versuche es später erneut.",
       );
     } else {
       setError(null);
@@ -133,7 +133,7 @@ const UserList: React.FC = () => {
       activeUsers: users?.filter((u) => u.is_active).length || 0,
       inactiveUsers: users?.filter((u) => !u.is_active).length || 0,
     }),
-    [users]
+    [users],
   );
 
   // Gefilterte Benutzerliste
@@ -148,7 +148,7 @@ const UserList: React.FC = () => {
           (user.last_name && user.last_name.toLowerCase().includes(term))
         );
       }),
-    [users, userSearchTerm]
+    [users, userSearchTerm],
   );
 
   // Nur für Superuser zugänglich

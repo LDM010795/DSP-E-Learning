@@ -7,7 +7,7 @@
 
 export function throttle<T extends (...args: any[]) => unknown>(
   func: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
 

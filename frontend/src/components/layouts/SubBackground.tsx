@@ -52,7 +52,7 @@ const SubBackground = ({
         "transition-all duration-300",
         "hover:bg-white/60",
         "hover:border-white/60",
-        className
+        className,
       )}
     >
       {children}

@@ -116,26 +116,29 @@ function Dashboard() {
 
   const totalLessons = modules.reduce(
     (sum, m) => sum + (m.contents?.length || 0),
-    0
+    0,
   );
   const averageLessonsPerModule =
     totalModules > 0 ? (totalLessons / totalModules).toFixed(1) : "0.0";
 
   // --- Difficulty Analysis ---
 
-  const tasksByDifficulty = allTasks.reduce((acc, task) => {
-    const level = task.difficulty as DifficultyLevel;
-    if (level === "Einfach" || level === "Mittel" || level === "Schwer") {
-      acc[level] = (acc[level] || 0) + 1;
-    }
-    return acc;
-  }, {} as Record<DifficultyLevel, number>);
+  const tasksByDifficulty = allTasks.reduce(
+    (acc, task) => {
+      const level = task.difficulty as DifficultyLevel;
+      if (level === "Einfach" || level === "Mittel" || level === "Schwer") {
+        acc[level] = (acc[level] || 0) + 1;
+      }
+      return acc;
+    },
+    {} as Record<DifficultyLevel, number>,
+  );
 
   /**
    * Berechnet die durchschnittliche Schwierigkeit eines Moduls
    */
   const calculateModuleDifficulty = (
-    tasks?: ContextTask[]
+    tasks?: ContextTask[],
   ): DifficultyLevel | null => {
     if (!tasks || tasks.length === 0) return null;
     const difficultyMap: Record<string, number> = {
@@ -144,13 +147,13 @@ function Dashboard() {
       Schwer: 3,
     };
     const validTasks = tasks.filter(
-      (task) => difficultyMap[task.difficulty] !== undefined
+      (task) => difficultyMap[task.difficulty] !== undefined,
     );
     if (validTasks.length === 0) return null;
 
     const totalDifficultyScore = validTasks.reduce(
       (sum, task) => sum + difficultyMap[task.difficulty],
-      0
+      0,
     );
     const averageScore = totalDifficultyScore / validTasks.length;
 
@@ -348,7 +351,7 @@ function Dashboard() {
                             </Link>
                           </div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
 
@@ -390,7 +393,7 @@ function Dashboard() {
                             {count}
                           </span>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

@@ -6,14 +6,14 @@
  * - Lehrer- und Schüler-Funktionalitäten
  * - Prüfungsdurchführung (Start, Submit, Bewertung)
  * - Performance-Optimierung mit Caching
- * 
+ *
  * Features:
  * - Vollständige Prüfungsverwaltung
  * - Lehrer- und Schüler-Rollen
  * - Automatische Datenaktualisierung
  * - Error-Handling und Loading-States
  * - TypeScript-Typisierung
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -159,7 +159,7 @@ interface ExamContextType {
   gradeExam: (
     attemptId: number,
     scores: { criterion_id: number; achieved_points: number }[],
-    feedback: string
+    feedback: string,
   ) => Promise<boolean>;
 }
 
@@ -206,7 +206,7 @@ export const useExams = () => {
   const context = useContext(ExamContext);
   if (!context) {
     throw new Error(
-      "useExams muss innerhalb eines ExamProviders verwendet werden"
+      "useExams muss innerhalb eines ExamProviders verwendet werden",
     );
   }
   return context;
@@ -219,7 +219,7 @@ interface ExamProviderProps {
 
 /**
  * Exam Provider Komponente
- * 
+ *
  * Verwaltet den globalen Prüfungszustand und stellt
  * Funktionen für Prüfungsverwaltung bereit.
  */
@@ -227,7 +227,7 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
 
   // --- State Management ---
-  
+
   // User-bezogene Daten
   const [availableExams, setAvailableExams] = useState<Exam[]>([]);
   const [activeExams, setActiveExams] = useState<ExamAttempt[]>([]);
@@ -241,7 +241,9 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
   const [errorAllExams, setErrorAllExams] = useState<string | null>(null);
 
   // Teacher-bezogene Daten
-  const [teacherSubmissions, setTeacherSubmissions] = useState<ExamAttempt[]>([]);
+  const [teacherSubmissions, setTeacherSubmissions] = useState<ExamAttempt[]>(
+    [],
+  );
   const [loadingTeacherData, setLoadingTeacherData] = useState<boolean>(false);
   const [errorTeacherData, setErrorTeacherData] = useState<string | null>(null);
 
@@ -257,11 +259,12 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
     setErrorUserExams(null);
 
     try {
-      const [availableResponse, activeResponse, completedResponse] = await Promise.all([
-        api.get("/exams/my-exams/available/"),
-        api.get("/exams/my-exams/active/"),
-        api.get("/exams/my-exams/completed/"),
-      ]);
+      const [availableResponse, activeResponse, completedResponse] =
+        await Promise.all([
+          api.get("/exams/my-exams/available/"),
+          api.get("/exams/my-exams/active/"),
+          api.get("/exams/my-exams/completed/"),
+        ]);
 
       setAvailableExams(availableResponse.data);
       setActiveExams(activeResponse.data);
@@ -331,7 +334,7 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
    */
   const submitExam = async (
     attemptId: number,
-    attachments?: File[]
+    attachments?: File[],
   ): Promise<boolean> => {
     try {
       const formData = new FormData();
@@ -361,7 +364,7 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
   const gradeExam = async (
     attemptId: number,
     scores: { criterion_id: number; achieved_points: number }[],
-    feedback: string
+    feedback: string,
   ): Promise<boolean> => {
     try {
       await api.post(`/exams/teacher/submissions/${attemptId}/grade/`, {
@@ -411,8 +414,6 @@ export const ExamProvider: React.FC<ExamProviderProps> = ({ children }) => {
   };
 
   return (
-    <ExamContext.Provider value={contextValue}>
-      {children}
-    </ExamContext.Provider>
+    <ExamContext.Provider value={contextValue}>{children}</ExamContext.Provider>
   );
 };
