@@ -22,10 +22,10 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
 
   // Determine what to preload based on route
   const handleMouseEnter = () => {
-    if (to.includes('/user-stats') || to.includes('/statistics')) {
-      preloadOnHover('charts');
-    } else if (to.includes('/modules') || to.includes('/tasks')) {
-      preloadOnHover('monaco');
+    if (to.includes("/user-stats") || to.includes("/statistics")) {
+      preloadOnHover("charts");
+    } else if (to.includes("/modules") || to.includes("/tasks")) {
+      preloadOnHover("monaco");
     }
   };
 
@@ -48,13 +48,13 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
             "text-gray-700 hover:text-[#ff863d] hover:bg-[#ff863d]/5 border border-transparent hover:border-[#ff863d]/20":
               !isActive,
           },
-          className
+          className,
         )}
         aria-current={isActive ? "page" : undefined}
       >
         {/* Active indicator dot */}
         {isActive && (
-          <motion.div 
+          <motion.div
             className="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm"
             animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -63,7 +63,7 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
 
         {/* Background gradient effect for hover */}
         {!isActive && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-gradient-to-r from-[#ff863d]/0 via-[#ff863d]/5 to-[#ff863d]/0"
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
@@ -86,7 +86,7 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         )}
 
         {/* Text content */}
-        <motion.span 
+        <motion.span
           className="relative z-10"
           whileHover={{ x: 2 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -98,10 +98,10 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         <motion.div
           className="absolute inset-0 bg-white/20 rounded-xl"
           initial={{ scale: 0, opacity: 0 }}
-          whileTap={{ 
+          whileTap={{
             scale: 1,
             opacity: [0, 0.3, 0],
-            transition: { duration: 0.3 }
+            transition: { duration: 0.3 },
           }}
         />
       </Link>

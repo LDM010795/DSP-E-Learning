@@ -94,7 +94,7 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
             ]
           : [],
       }),
-      [progressValue, primaryColor, backgroundColor, showLabels]
+      [progressValue, primaryColor, backgroundColor, showLabels],
     );
 
     // Performance optimization: Memoize container styles
@@ -103,7 +103,7 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
         width: `${width}px`,
         height: `${height}px`,
       }),
-      [width, height]
+      [width, height],
     );
 
     return (
@@ -118,7 +118,7 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
         </Suspense>
       </div>
     );
-  }
+  },
 );
 
 // Performance optimization: Set display name for React DevTools

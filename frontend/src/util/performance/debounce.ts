@@ -21,7 +21,7 @@ interface DebouncedFunction<T extends (...args: unknown[]) => unknown> {
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number,
-  immediate = false
+  immediate = false,
 ): DebouncedFunction<T> {
   let timeoutId: number | undefined;
   let lastArgs: Parameters<T> | undefined;
@@ -114,7 +114,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ): T {
   const debouncedCallback = useRef<DebouncedFunction<T> | null>(null);
 

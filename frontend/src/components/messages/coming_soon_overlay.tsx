@@ -55,7 +55,7 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({
 
   const initialDifference = useMemo(
     () => +targetDate - +new Date(),
-    [targetDate]
+    [targetDate],
   );
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
@@ -193,13 +193,13 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({
                       {interval === "days"
                         ? "Tage"
                         : interval === "hours"
-                        ? "Stunden"
-                        : interval === "minutes"
-                        ? "Minuten"
-                        : "Sekunden"}
+                          ? "Stunden"
+                          : interval === "minutes"
+                            ? "Minuten"
+                            : "Sekunden"}
                     </span>
                   </div>
-                )
+                ),
               )}
             </div>
           </div>

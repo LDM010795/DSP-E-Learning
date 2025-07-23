@@ -6,14 +6,14 @@
  * - Geschützte Routen mit Authentifizierung
  * - Admin-Panel-Zugriff für Staff-Benutzer
  * - Page-Transition-Animationen
- * 
+ *
  * Features:
  * - AnimatePresence für Exit-Animationen
  * - ProtectedRoute für Authentifizierung
  * - Rollenbasierte Navigation
  * - Lazy Loading für bessere Performance
  * - TypeScript-Typisierung
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -53,7 +53,7 @@ interface AnimatedRoutesProps {
 
 /**
  * Animated Routes Komponente
- * 
+ *
  * Verwaltet das Routing der Anwendung mit Animationen
  * und geschützten Routen basierend auf Authentifizierung.
  */
@@ -64,21 +64,21 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         {/* --- Öffentliche Routen --- */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <PageTransition>
               <LandingPage />
             </PageTransition>
-          } 
+          }
         />
-        <Route 
-          path="/subscriptions" 
+        <Route
+          path="/subscriptions"
           element={
             <PageTransition>
               <SubscriptionsPage />
             </PageTransition>
-          } 
+          }
         />
 
         {/* --- Geschützte Routen --- */}
@@ -92,45 +92,44 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
-          
+
           {/* Content Demo Route */}
-          <Route 
-            path="/content-demo" 
+          <Route
+            path="/content-demo"
             element={
               <PageTransition>
                 <ContentDemo />
               </PageTransition>
-            } 
+            }
           />
 
 
-          
           {/* Dashboard */}
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <PageTransition>
                 <Dashboard />
               </PageTransition>
-            } 
+            }
           />
-          
+
           {/* Module und Lerninhalte */}
-          <Route 
-            path="/modules" 
+          <Route
+            path="/modules"
             element={
               <PageTransition>
                 <Modules />
               </PageTransition>
-            } 
+            }
           />
-          <Route 
-            path="/modules/:moduleId" 
+          <Route
+            path="/modules/:moduleId"
             element={
               <PageTransition>
                 <ModuleDetail />
               </PageTransition>
-            } 
+            }
           />
           <Route
             path="/modules/:moduleId/tasks/:taskId"
@@ -140,15 +139,15 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
-          
+
           {/* Prüfungen und Zertifikate */}
-          <Route 
-            path="/final-exam" 
+          <Route
+            path="/final-exam"
             element={
               <PageTransition>
                 <IndexFinalExam />
               </PageTransition>
-            } 
+            }
           />
           <Route
             path="/certification-paths"
@@ -158,34 +157,34 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
-          
+
           {/* Benutzereinstellungen und Statistiken */}
-          <Route 
-            path="/user-stats" 
+          <Route
+            path="/user-stats"
             element={
               <PageTransition>
                 <IndexStatistics />
               </PageTransition>
-            } 
+            }
           />
-          <Route 
-            path="/settings" 
+          <Route
+            path="/settings"
             element={
               <PageTransition>
                 <IndexUserSettings />
               </PageTransition>
-            } 
+            }
           />
 
           {/* --- Admin Panel Route (nur für Staff/Superuser) --- */}
           {isAdmin && (
-            <Route 
-              path="/admin" 
+            <Route
+              path="/admin"
               element={
                 <PageTransition>
                   <IndexAdminPanel />
                 </PageTransition>
-              } 
+              }
             />
           )}
         </Route>
@@ -197,4 +196,4 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
   );
 };
 
-export default AnimatedRoutes; 
+export default AnimatedRoutes;

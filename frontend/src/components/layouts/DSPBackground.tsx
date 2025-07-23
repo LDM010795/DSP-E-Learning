@@ -5,7 +5,8 @@ const DSPBackground: React.FC = () => {
     <div
       className="fixed inset-0 -z-10"
       style={{
-        background: "linear-gradient(135deg, #f8fafc 0%, #ffffff 25%, #ffe7d4 50%, #ffffff 75%, #f1f5f9 100%)",
+        background:
+          "linear-gradient(135deg, #f8fafc 0%, #ffffff 25%, #ffe7d4 50%, #ffffff 75%, #f1f5f9 100%)",
       }}
     >
       {/* Enhanced Background Pattern */}
@@ -34,7 +35,7 @@ const DSPBackground: React.FC = () => {
               <circle cx="0" cy="80" r="0.5" fill="#ffe7d4" opacity="0.15" />
               <circle cx="80" cy="80" r="0.5" fill="#ffe7d4" opacity="0.15" />
             </pattern>
-            
+
             {/* Elegant Wave Lines */}
             <pattern
               id="elegant-waves"
@@ -66,7 +67,7 @@ const DSPBackground: React.FC = () => {
                 opacity="0.08"
               />
             </pattern>
-            
+
             {/* Premium Gradient Overlay */}
             <linearGradient
               id="premium-gradient"
@@ -98,12 +99,7 @@ const DSPBackground: React.FC = () => {
             </linearGradient>
 
             {/* Radial Accent */}
-            <radialGradient
-              id="radial-accent"
-              cx="50%"
-              cy="50%"
-              r="50%"
-            >
+            <radialGradient id="radial-accent" cx="50%" cy="50%" r="50%">
               <stop
                 offset="0%"
                 style={{ stopColor: "#ff863d", stopOpacity: 0.03 }}
@@ -118,12 +114,24 @@ const DSPBackground: React.FC = () => {
               />
             </radialGradient>
           </defs>
-          
+
           <rect width="100%" height="100%" fill="url(#premium-gradient)" />
           <rect width="100%" height="100%" fill="url(#modern-grid)" />
           <rect width="100%" height="100%" fill="url(#elegant-waves)" />
-          <ellipse cx="25%" cy="25%" rx="300" ry="200" fill="url(#radial-accent)" />
-          <ellipse cx="75%" cy="75%" rx="250" ry="180" fill="url(#radial-accent)" />
+          <ellipse
+            cx="25%"
+            cy="25%"
+            rx="300"
+            ry="200"
+            fill="url(#radial-accent)"
+          />
+          <ellipse
+            cx="75%"
+            cy="75%"
+            rx="250"
+            ry="180"
+            fill="url(#radial-accent)"
+          />
         </svg>
       </div>
 
@@ -140,12 +148,12 @@ const DSPBackground: React.FC = () => {
       </div>
 
       {/* Subtle Texture Overlay */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.015]"
         style={{
           backgroundImage: `radial-gradient(circle at 25% 25%, #ff863d 1px, transparent 1px),
                            radial-gradient(circle at 75% 75%, #fa8c45 1px, transparent 1px)`,
-          backgroundSize: '50px 50px, 80px 80px',
+          backgroundSize: "50px 50px, 80px 80px",
         }}
       />
     </div>
