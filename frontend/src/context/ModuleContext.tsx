@@ -41,6 +41,19 @@ export interface SupplementaryContentItem {
   order: number;
 }
 
+export interface MultipleChoiceConfig {
+  options: {answer: string}[];
+  correct_answer: number;  // 0-based index
+  explanation?: string;
+}
+
+export interface ProgrammingConfig {
+  test_file_path?: string;
+  has_automated_tests?: boolean;
+}
+
+export type TaskConfig = MultipleChoiceConfig | ProgrammingConfig | null;
+
 /**
  * Aufgaben innerhalb eines Moduls
  */
@@ -52,6 +65,8 @@ export interface Task {
   hint?: string | null;
   order: number;
   test_file_path?: string; // Possibly needed for editor linking
+  task_type: string;
+  task_config?: TaskConfig;  
   completed: boolean;
 }
 
