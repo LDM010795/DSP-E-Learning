@@ -39,8 +39,6 @@ import ForcePasswordChangePage from "../../pages/ForcePasswordChangePage";
 import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
 
-
-
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
 
@@ -102,7 +100,6 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
-
 
           {/* Dashboard */}
           <Route
