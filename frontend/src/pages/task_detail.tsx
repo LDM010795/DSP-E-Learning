@@ -23,6 +23,20 @@ import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
 import { useModules, Module, Task } from "../context/ModuleContext";
 import TaskSuccessModal from "../components/messages/TaskSuccessModal";
+import type {
+  MultipleChoiceConfig,
+  TaskConfig
+} from "../context/ModuleContext";
+import MultipleChoice, { MultipleChoiceOption } from "../components/ui_elements/MultipleChoice/multiple_choice.tsx";
+
+
+// --- Type Guard ---
+function isMultipleChoiceConfig(
+  config: TaskConfig | undefined
+): config is MultipleChoiceConfig {
+  return !!config && "options" in config && "correct_answer" in config;
+}
+
 
 function TaskDetails() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -34,6 +48,8 @@ function TaskDetails() {
   const [isHintVisible, setIsHintVisible] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | undefined>();
+  const [showResult, setShowResult] = useState(false);
 
   const {
     module,
@@ -103,6 +119,14 @@ function TaskDetails() {
     [tasks, currentTaskIndex],
   );
 
+  const handleSelectOption = (id: string) => {
+    if (!showResult) setSelectedOption(id);
+  };
+
+  const handleSubmit = () => {
+    setShowResult(true);
+  };
+
   const handleTaskSuccess = useCallback(() => {
     setIsSuccessModalOpen(true);
   }, []);
@@ -133,6 +157,25 @@ function TaskDetails() {
     navigate(`/modules/${moduleId}/tasks/${previousTask.id}`);
     setTimeout(() => setIsPageLoading(false), 50);
   }, [previousTask, moduleId, navigate, isPageLoading]);
+
+  const multipleChoiceConfig = isMultipleChoiceConfig(currentTask?.task_config)
+      ? currentTask?.task_config
+      : undefined;
+
+  const multipleChoiceQuestion = multipleChoiceConfig?.explanation ?? currentTask?.title;
+  const multipleChoiceOptions: MultipleChoiceOption[] = multipleChoiceConfig?.options
+      ? multipleChoiceConfig.options.map((opt, idx) => ({
+        id: idx.toString(),
+        answer: opt.answer,
+      }))
+      : [];
+
+
+
+  const correctOptionId = multipleChoiceConfig?.correct_answer !== undefined
+      ? multipleChoiceConfig.correct_answer.toString()
+      : undefined;
+
 
   if (loading) {
     return (
@@ -429,9 +472,48 @@ function TaskDetails() {
                           onSuccess={handleTaskSuccess}
                         />
                       ) : currentTask.task_type === 'multiple_choice' ? (
-                        <div>
+                          <div className="max-w-xl mx-auto">
+                            <MultipleChoice
+                                question={multipleChoiceQuestion ?? ""}
+                                options={multipleChoiceOptions}
+                                selectedId={selectedOption}
+                                onSelect={handleSelectOption}
+                                disabled={showResult || currentTask.completed}
+                            />
 
-                        </div>
+                            {/* Show Submit Button if not completed */}
+                            {!showResult && !currentTask.completed && (
+                                <ButtonPrimary
+                                    title="Antwort einreichen"
+                                    onClick={handleSubmit}
+                                    disabled={selectedOption === undefined}
+                                    classNameButton="mt-4 w-full"
+                                />
+                            )}
+
+                            {/* Show Result/Feedback after submission */}
+                            {showResult && (
+                                <div className="mt-4">
+                                  {selectedOption === correctOptionId ? (
+                                      <div className="text-green-600 font-semibold flex items-center space-x-2">
+                                        <IoCheckmarkCircleOutline className="w-5 h-5" />
+                                        <span>Richtig! {multipleChoiceConfig?.explanation && <span className="text-gray-700 ml-2">{multipleChoiceConfig.explanation}</span>}</span>
+                                      </div>
+                                  ) : (
+                                      <div className="text-red-600 font-semibold flex items-center space-x-2">
+                                        <IoAlertCircleOutline className="w-5 h-5" />
+                                        <span>Leider falsch. {multipleChoiceConfig?.explanation && <span className="text-gray-700 ml-2">{multipleChoiceConfig.explanation}</span>}</span>
+                                      </div>
+                                  )}
+                                </div>
+                                )}
+                                {currentTask.completed && !showResult && (
+                                    <div className="mt-4 text-green-700 flex items-center space-x-2">
+                              <IoCheckmarkCircleOutline className="w-5 h-5" />
+                              <span>Diese Aufgabe wurde bereits abgeschlossen.</span>
+                                    </div>
+                              )}
+                            </div>
                       ) : (
                         <div className="flex items-center justify-center min-h-[400px]">
                           <div className="text-center">
