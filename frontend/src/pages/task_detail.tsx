@@ -31,6 +31,9 @@ import MultipleChoice, { MultipleChoiceOption } from "../components/ui_elements/
 
 
 // --- Type Guard ---
+// Checks if the provided config object is of type MultipleChoiceConfig.
+// This function is used to distinguish between different possible task configurations
+// (such as MultipleChoiceConfig vs ProgrammingConfig) at runtime.
 function isMultipleChoiceConfig(
   config: TaskConfig | undefined
 ): config is MultipleChoiceConfig {
@@ -119,13 +122,50 @@ function TaskDetails() {
     [tasks, currentTaskIndex],
   );
 
+
+  // State variable to hold and display an error message for wrong answers in multiple choice tasks
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Add this to your state
+
   const handleSelectOption = (id: string) => {
-    if (!showResult) setSelectedOption(id);
+    if (!showResult) {
+      setSelectedOption(id);
+      setErrorMessage(null); // Clear any previous error when a new option is selected
+      }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Only proceed if an option is selected and the config exists
+    if (!selectedOption || !correctOptionId) return;
     setShowResult(true);
+
+    if (selectedOption === correctOptionId) {
+      // Correct answer selected
+      try {
+        // Example API call (replace with real API when available)
+        await fetch('/api/save-progress', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            taskId: currentTask?.id,
+            userAnswer: selectedOption,
+            result: 'correct'
+          })
+        });
+        // Optionally: Show success modal or message here
+        // setIsSuccessModalOpen(true);
+        } catch (error) {
+        // Handle API error (for now, you can log or show a message)
+        console.error('Failed to save progress:', error);
+      }
+    } else {
+      // Incorrect answer: let user try again
+      setErrorMessage("Leider falsch. Bitte versuche es erneut."); // Show feedback
+      setShowResult(false); // Optionally, you may allow another attempt immediately
+      }
   };
+
 
   const handleTaskSuccess = useCallback(() => {
     setIsSuccessModalOpen(true);
@@ -158,23 +198,48 @@ function TaskDetails() {
     setTimeout(() => setIsPageLoading(false), 50);
   }, [previousTask, moduleId, navigate, isPageLoading]);
 
-  const multipleChoiceConfig = isMultipleChoiceConfig(currentTask?.task_config)
-      ? currentTask?.task_config
-      : undefined;
+  // Memorized extraction of multiple choice configuration from the current task
+  // Returns undefined for non-multiple choice tasks
+  const multipleChoiceConfig = useMemo(
+      () =>
+          isMultipleChoiceConfig(currentTask?.task_config)
+              ? currentTask?.task_config
+              : undefined,
+      [currentTask]
+  );
 
-  const multipleChoiceQuestion = multipleChoiceConfig?.explanation ?? currentTask?.title;
-  const multipleChoiceOptions: MultipleChoiceOption[] = multipleChoiceConfig?.options
-      ? multipleChoiceConfig.options.map((opt, idx) => ({
-        id: idx.toString(),
-        answer: opt.answer,
-      }))
-      : [];
+  // Memoized calculation of the question text (uses explanation or falls back to title)
+  // If the explanation is present in the config, it is used as the question text
+  // Only recalculates if 'multipleChoiceConfig' changes.
+  const multipleChoiceQuestion = useMemo(
+      () => multipleChoiceConfig?.explanation ?? currentTask?.title,
+      [multipleChoiceConfig, currentTask]
+  );
+
+  // Memoized mapping of options for the MultipleChoice component
+  // Returns undefined if 'correct_answer' is not specified.
+  // Only recalculates if 'multipleChoiceConfig' changes.
+  const multipleChoiceOptions: MultipleChoiceOption[] = useMemo(
+      () =>
+          multipleChoiceConfig?.options
+              ? multipleChoiceConfig.options.map((option, index) => ({
+                id: index.toString(),
+                answer: option.answer,
+              }))
+              : [],
+      [multipleChoiceConfig]
+  );
 
 
 
-  const correctOptionId = multipleChoiceConfig?.correct_answer !== undefined
-      ? multipleChoiceConfig.correct_answer.toString()
-      : undefined;
+  // Memoized calculation of the correct option's ID as a string
+  const correctOptionId = useMemo(
+      () =>
+          multipleChoiceConfig?.correct_answer !== undefined
+              ? multipleChoiceConfig.correct_answer.toString()
+              : undefined,
+      [multipleChoiceConfig]
+  );
 
 
   if (loading) {
@@ -483,13 +548,23 @@ function TaskDetails() {
 
                             {/* Show Submit Button if not completed */}
                             {!showResult && !currentTask.completed && (
-                                <ButtonPrimary
+                                <>
+                                  <ButtonPrimary
                                     title="Antwort einreichen"
                                     onClick={handleSubmit}
                                     disabled={selectedOption === undefined}
                                     classNameButton="mt-4 w-full"
                                 />
+                                  {errorMessage && (
+                                      <div className="text-red-600 mt-2 font-semibold flex items-center space-x-2">
+                                        <IoAlertCircleOutline className="w-5 h-5" />
+                                        <span>{errorMessage}</span>
+                                      </div>
+                                  )}
+                                </>
+
                             )}
+
 
                             {/* Show Result/Feedback after submission */}
                             {showResult && (
