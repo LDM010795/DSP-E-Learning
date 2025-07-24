@@ -42,9 +42,8 @@ export interface SupplementaryContentItem {
 }
 
 export interface MultipleChoiceConfig {
-
-  options: {answer: string}[];
-  correct_answer: number;  // 0-based index
+  options: { answer: string }[];
+  correct_answer: number; // 0-based index
   explanation?: string;
 }
 
@@ -68,7 +67,7 @@ export interface Task {
   order: number;
   test_file_path?: string; // Possibly needed for editor linking
   task_type: TaskType;
-  task_config?: TaskConfig;  
+  task_config?: TaskConfig;
   completed: boolean;
 }
 
