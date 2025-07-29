@@ -73,7 +73,7 @@ const getTotalMaxPoints = (criteria: Criterion[] | undefined): number => {
   if (!criteria || criteria.length === 0) return 0;
   return criteria.reduce(
     (sum, criterion) => sum + (criterion.max_points || 0),
-    0
+    0,
   );
 };
 
@@ -154,7 +154,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
               </div>
               <span
                 className={`px-2 py-0.5 rounded text-xs font-medium border ${getDifficultyColor(
-                  exam.exam_difficulty
+                  exam.exam_difficulty,
                 )} border-current`}
               >
                 {getDifficultyLabel(exam.exam_difficulty)}
@@ -209,7 +209,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
                   exam.requirements
                     .sort(
                       (a: ExamRequirement, b: ExamRequirement) =>
-                        a.order - b.order
+                        a.order - b.order,
                     )
                     .map((req: ExamRequirement) => (
                       <li
@@ -244,7 +244,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
                   exam.modules.map((mod) => {
                     // Finde das passende Modul im User-Context
                     const userModuleData = userModules.find(
-                      (um) => um.id === mod.id
+                      (um) => um.id === mod.id,
                     );
                     let isModuleCompleted = false;
                     if (userModuleData) {
@@ -255,7 +255,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
                       } else {
                         // Prüfe, ob ALLE Tasks im Modul abgeschlossen sind
                         isModuleCompleted = tasks.every(
-                          (task) => task.completed
+                          (task) => task.completed,
                         );
                       }
                     }
@@ -268,7 +268,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
                           // KORREKTUR: Klassen für dsp-orange und line-through (konditional)
                           className={clsx(
                             "text-dsp-orange hover:text-dsp-orange hover:underline",
-                            isModuleCompleted && "line-through" // Durchstreichen wenn abgeschlossen
+                            isModuleCompleted && "line-through", // Durchstreichen wenn abgeschlossen
                           )}
                         >
                           {mod.title}

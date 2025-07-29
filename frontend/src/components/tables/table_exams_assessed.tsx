@@ -95,7 +95,7 @@ const TableExamsAssessed: React.FC<TableExamsAssessedProps> = ({
   const handleSort = (column: SortableColumn) => {
     if (sortColumn === column) {
       setSortDirection((prev) =>
-        prev === "asc" ? "desc" : prev === "desc" ? "none" : "asc"
+        prev === "asc" ? "desc" : prev === "desc" ? "none" : "asc",
       );
     } else {
       setSortColumn(column);
@@ -260,7 +260,7 @@ const TableExamsAssessed: React.FC<TableExamsAssessedProps> = ({
               const maxScore =
                 attempt.exam?.criteria?.reduce(
                   (sum, c) => sum + c.max_points,
-                  0
+                  0,
                 ) ?? 0;
               const percentage =
                 maxScore > 0 && score >= 0
@@ -302,7 +302,7 @@ const TableExamsAssessed: React.FC<TableExamsAssessedProps> = ({
                       <span
                         className={clsx(
                           "text-sm font-medium mr-2",
-                          score >= 0 ? "text-gray-900" : "text-gray-400"
+                          score >= 0 ? "text-gray-900" : "text-gray-400",
                         )}
                       >
                         {score >= 0
@@ -314,7 +314,7 @@ const TableExamsAssessed: React.FC<TableExamsAssessedProps> = ({
                           <div
                             className={clsx(
                               "h-2 rounded-full",
-                              percentage >= 50 ? "bg-green-500" : "bg-red-500"
+                              percentage >= 50 ? "bg-green-500" : "bg-red-500",
                             )}
                             style={{ width: `${percentage}%` }}
                           ></div>

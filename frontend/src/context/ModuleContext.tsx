@@ -6,14 +6,14 @@
  * - Performance-Optimierung mit React Query
  * - Benutzer-spezifische Modul-Anzeige
  * - Automatische Sortierung und Strukturierung
- * 
+ *
  * Features:
  * - Cached API-Calls für bessere Performance
  * - Benutzer-spezifische Modul-Filterung
  * - Automatische Sortierung nach Reihenfolge
  * - Error-Handling und Loading-States
  * - TypeScript-Typisierung
- * 
+ *
  * Author: DSP Development Team
  * Created: 10.07.2025
  * Version: 1.0.0
@@ -41,6 +41,20 @@ export interface SupplementaryContentItem {
   order: number;
 }
 
+export interface MultipleChoiceConfig {
+  options: { answer: string }[];
+  correct_answer: number; // 0-based index
+  explanation?: string;
+}
+
+export interface ProgrammingConfig {
+  test_file_path?: string;
+  has_automated_tests?: boolean;
+}
+
+export type TaskConfig = MultipleChoiceConfig | ProgrammingConfig | null;
+export type TaskType = "multiple_choice" | "programming";
+
 /**
  * Aufgaben innerhalb eines Moduls
  */
@@ -52,6 +66,8 @@ export interface Task {
   hint?: string | null;
   order: number;
   test_file_path?: string; // Possibly needed for editor linking
+  task_type: TaskType;
+  task_config?: TaskConfig;
   completed: boolean;
 }
 
@@ -69,12 +85,20 @@ export interface Content {
 }
 
 /**
+ * Kategorie-Struktur
+ */
+export interface ModuleCategory {
+  id: number;
+  name: string;
+}
+
+/**
  * Modul-Struktur
  */
 export interface Module {
   id: number;
   title: string;
-  category: string;
+  category: ModuleCategory;
   is_public: boolean;
   contents?: Content[];
   tasks?: Task[];
@@ -105,7 +129,7 @@ interface ModuleProviderProps {
 
 /**
  * Module Provider Komponente
- * 
+ *
  * Verwaltet den globalen Modul-Zustand mit Performance-Optimierung
  * und benutzer-spezifischer Datenverwaltung.
  */
@@ -113,7 +137,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
 
   // --- Performance-optimierte API-Calls ---
-  
+
   // Performance optimization: Use cached API for modules with user-specific cache key
   const {
     data: modules,
@@ -125,7 +149,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     async () => {
       if (!isAuthenticated) {
         console.log(
-          "ModuleContext: Nicht authentifiziert, setze Module zurück"
+          "ModuleContext: Nicht authentifiziert, setze Module zurück",
         );
         return [];
       }
@@ -135,7 +159,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       console.log(
         "ModuleContext: API-Antwort erhalten",
         response.data.length,
-        "Module"
+        "Module",
       );
 
       // Performance optimization: Memoized sorting to avoid repeated calculations
@@ -143,7 +167,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         .map((module) => ({
           ...module,
           contents: [...(module.contents || [])].sort(
-            (a, b) => a.order - b.order
+            (a, b) => a.order - b.order,
           ),
           tasks: [...(module.tasks || [])].sort((a, b) => a.order - b.order),
         }))
@@ -157,11 +181,11 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     {
       ttl: 300000, // 5 Minuten Cache
       enabled: true, // Immer aktiviert
-    }
+    },
   );
 
   // --- Performance-optimierte Callbacks ---
-  
+
   // Performance optimization: Stable callback for fetchModules
   const stableFetchModules = useCallback(async () => {
     await fetchModules();
@@ -175,7 +199,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       error,
       fetchModules: stableFetchModules,
     }),
-    [modules, loading, error, stableFetchModules]
+    [modules, loading, error, stableFetchModules],
   );
 
   return (

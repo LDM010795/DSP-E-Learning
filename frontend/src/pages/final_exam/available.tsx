@@ -14,7 +14,7 @@ interface AvailableProps {
 // Hilfsfunktion zur Begrenzung der Textlänge
 const truncateText = (
   text: string | undefined,
-  maxLength: number = 111
+  maxLength: number = 111,
 ): string => {
   if (!text) return "Keine Beschreibung verfügbar";
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -75,7 +75,7 @@ const Available: React.FC<AvailableProps> = ({
   if (availableExams.length > 0) {
     console.log(
       "First available exam data (JSON):",
-      JSON.stringify(availableExams[0], null, 2)
+      JSON.stringify(availableExams[0], null, 2),
     );
     console.log("First available exam title:", availableExams[0].exam_title);
   }

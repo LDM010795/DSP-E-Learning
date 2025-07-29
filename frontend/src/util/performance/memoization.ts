@@ -82,7 +82,7 @@ class LRUCache<K, V> {
 export function memoize<TArgs extends unknown[], TReturn>(
   fn: (...args: TArgs) => TReturn,
   maxCacheSize = 100,
-  keyGenerator?: (...args: TArgs) => string
+  keyGenerator?: (...args: TArgs) => string,
 ): (...args: TArgs) => TReturn {
   const cache = new LRUCache<string, TReturn>(maxCacheSize);
 
@@ -111,7 +111,7 @@ export function memoize<TArgs extends unknown[], TReturn>(
  */
 export function shallowEqual(
   obj1: Record<string, unknown>,
-  obj2: Record<string, unknown>
+  obj2: Record<string, unknown>,
 ): boolean {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
@@ -145,7 +145,7 @@ export function useMemoizedComputation<T>(
   computation: () => T,
   deps: unknown[],
   equalityFn: (a: unknown[], b: unknown[]) => boolean = (a, b) =>
-    a.length === b.length && a.every((val, i) => val === b[i])
+    a.length === b.length && a.every((val, i) => val === b[i]),
 ): T {
   const depsRef = useRef<unknown[]>(deps);
   const resultRef = useRef<T | undefined>(undefined);
@@ -178,7 +178,7 @@ export function useMemoizedComputation<T>(
  */
 export function useShallowMemo<T extends Record<string, unknown>>(
   factory: () => T,
-  deps: unknown[]
+  deps: unknown[],
 ): T {
   const prevResult = useRef<T | undefined>(undefined);
 
@@ -209,7 +209,7 @@ export function useStableCallback<TArgs extends unknown[], TReturn>(
   callback: (...args: TArgs) => TReturn,
   deps: unknown[],
   equalityFn: (a: unknown[], b: unknown[]) => boolean = (a, b) =>
-    a.length === b.length && a.every((val, i) => val === b[i])
+    a.length === b.length && a.every((val, i) => val === b[i]),
 ): (...args: TArgs) => TReturn {
   const depsRef = useRef<unknown[]>(deps);
   const callbackRef = useRef(callback);
@@ -224,7 +224,7 @@ export function useStableCallback<TArgs extends unknown[], TReturn>(
     (...args: TArgs) => {
       return callbackRef.current(...args);
     },
-    [callbackRef]
+    [callbackRef],
   );
 }
 
@@ -263,7 +263,7 @@ export function useApiMemo<T>(
   apiCall: () => Promise<T>,
   cacheKey: string,
   deps: unknown[],
-  options: ApiMemoOptions = {}
+  options: ApiMemoOptions = {},
 ): ApiMemoResult<T> {
   const { ttl = 300000, maxRetries = 3, onError } = options;
 
