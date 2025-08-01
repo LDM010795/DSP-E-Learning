@@ -80,14 +80,13 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           }
         />
         <Route
-            path="/register"
-            element={
+          path="/register"
+          element={
             <PageTransition>
-                <ExternalRegister />
+              <ExternalRegister />
             </PageTransition>
-        }
+          }
         />
-
 
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>
