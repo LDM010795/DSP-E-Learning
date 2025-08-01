@@ -32,6 +32,7 @@ interface ButtonPrimaryProps {
   classNameButton?: string;
   classNameIcon?: string;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 /**
@@ -47,6 +48,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   classNameButton = "",
   classNameIcon = "",
   disabled,
+  type = "button",
 }) => {
   // --- Animation Variants ---
 
@@ -63,6 +65,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
 
   return (
     <motion.button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3

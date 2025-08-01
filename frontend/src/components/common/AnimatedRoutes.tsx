@@ -38,6 +38,7 @@ import IndexAdminPanel from "../../pages/admin_panel/index_admin_panel";
 import ForcePasswordChangePage from "../../pages/ForcePasswordChangePage";
 import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
+import ExternalRegister from "../../pages/ExternalRegister";
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -78,6 +79,15 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             </PageTransition>
           }
         />
+        <Route
+            path="/register"
+            element={
+            <PageTransition>
+                <ExternalRegister />
+            </PageTransition>
+        }
+        />
+
 
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>
