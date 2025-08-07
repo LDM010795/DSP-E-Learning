@@ -42,8 +42,8 @@ export interface SupplementaryContentItem {
 }
 
 export interface MultipleChoiceConfig {
-  options: {answer: string}[];
-  correct_answer: number;  // 0-based index
+  options: { answer: string }[];
+  correct_answer: number; // 0-based index
   explanation?: string;
 }
 
@@ -66,12 +66,12 @@ export interface Task {
   order: number;
   test_file_path?: string; // Possibly needed for editor linking
   task_type: string;
-  task_config?: TaskConfig;  
+  task_config?: TaskConfig;
   completed: boolean;
 }
 
 /**
- * Inhalt innerhalb eines Moduls
+ * Inhalt innerhalb eines Kapitels
  */
 export interface Content {
   id: number;
@@ -81,6 +81,19 @@ export interface Content {
   order: number;
   supplementary_title?: string | null;
   supplementary_contents?: SupplementaryContentItem[];
+}
+
+/**
+ * Kapitel innerhalb eines Moduls
+ */
+export interface Chapter {
+  id: number;
+  title: string;
+  description: string;
+  order: number;
+  is_active: boolean;
+  contents: Content[];
+  tasks: Task[];
 }
 
 /**
@@ -99,8 +112,9 @@ export interface Module {
   title: string;
   category: ModuleCategory;
   is_public: boolean;
-  contents?: Content[];
-  tasks?: Task[];
+  chapters?: Chapter[]; // Neue Chapter-Struktur
+  contents?: Content[]; // Fallback für alte Struktur
+  tasks?: Task[]; // Fallback für alte Struktur
 }
 
 // --- Context Type Definition ---
@@ -148,7 +162,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     async () => {
       if (!isAuthenticated) {
         console.log(
-          "ModuleContext: Nicht authentifiziert, setze Module zurück",
+          "ModuleContext: Nicht authentifiziert, setze Module zurück"
         );
         return [];
       }
@@ -158,15 +172,30 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       console.log(
         "ModuleContext: API-Antwort erhalten",
         response.data.length,
-        "Module",
+        "Module"
       );
 
       // Performance optimization: Memoized sorting to avoid repeated calculations
       const sortedModules = response.data
         .map((module) => ({
           ...module,
+          // Neue Chapter-Struktur verarbeiten
+          chapters: module.chapters
+            ? [...module.chapters]
+                .sort((a, b) => a.order - b.order)
+                .map((chapter) => ({
+                  ...chapter,
+                  contents: [...(chapter.contents || [])].sort(
+                    (a, b) => a.order - b.order
+                  ),
+                  tasks: [...(chapter.tasks || [])].sort(
+                    (a, b) => a.order - b.order
+                  ),
+                }))
+            : undefined,
+          // Fallback für alte Struktur
           contents: [...(module.contents || [])].sort(
-            (a, b) => a.order - b.order,
+            (a, b) => a.order - b.order
           ),
           tasks: [...(module.tasks || [])].sort((a, b) => a.order - b.order),
         }))
@@ -180,7 +209,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     {
       ttl: 300000, // 5 Minuten Cache
       enabled: true, // Immer aktiviert
-    },
+    }
   );
 
   // --- Performance-optimierte Callbacks ---
@@ -198,7 +227,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       error,
       fetchModules: stableFetchModules,
     }),
-    [modules, loading, error, stableFetchModules],
+    [modules, loading, error, stableFetchModules]
   );
 
   return (

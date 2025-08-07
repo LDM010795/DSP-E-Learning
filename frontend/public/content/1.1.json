@@ -1,0 +1,314 @@
+{
+  "content": [
+    {
+      "type": "title",
+      "text": "Installation und erste Schritte mit der MySQL Workbench"
+    },
+    {
+      "type": "image",
+      "src": "ABB1.1.png",
+      "alt": "Bild: ABB1.1.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: https://dri.es/files/images/blog/mysql.jpg"
+      ]
+    },
+    {
+      "type": "table_of_contents",
+      "text": "Einführung Auswahl geeigneter Datenbanksoftware MySQL - eines der beliebtesten Datenbanksysteme MySQL Download und Installation Die Benutzeroberfläche der MySQL Workbench"
+    },
+    {
+      "type": "learning_objectives",
+      "text": "Dieses Kapitel bietet Dir einen Überblick über verschiedene auf SQL basierende Datenbankmanagementsysteme (DBMS), sowohl kommerzielle als auch Open-Source-Alternativen. Nach dem Lesen dieses Kapitels hast Du die Vorteile von MySQL kennengelernt und Du weißt, wie Du MySQL auf Deinem lokalen Computer installieren kannst. Nachdem Du dieses Kapitel durchgearbeitet hast, kennst Du die verschiedenen Benutzeroberflächen von MySQL. Du kannst die Benutzeroberfläche der MySQL Workbench starten und bist in der Lage, Deinen ersten SQL-Befehl zu schreiben und auszuführen."
+    },
+    {
+      "type": "title2",
+      "text": "Einführung"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Wenn wir SQL in der Praxis anwenden wollen, ist es notwendig, ein Datenbankmanagementsystem (DBMS) zu diesem Zweck zu installieren. Wie bereits beschrieben, ist diese Software unerlässlich für die Erstellung der Datenbank und ist auch für das Datenmanagement verantwortlich. Ohne ein DBMS ist es daher nicht möglich, eine Datenbank zu nutzen.",
+        "Es gibt zahlreiche Datenbankmanagementsysteme, die SQL unterstützen. Das bedeutet, dass es viele verschiedene Optionen für diesen Zweck gibt, was die Auswahl umfangreich macht. Daher ist der erste Schritt, einen Überblick über die verschiedenen Möglichkeiten zu erhalten und dann eine geeignete Option auszuwählen. Dieses Kapitel wird dann zeigen, wie die Installation dieser Software durchgeführt wird. Abschließend wird eine kurze Einführung in die grafische Benutzeroberfläche gegeben, die die Erstellung von Datenbanken ohne SQL-Kenntnisse ermöglicht."
+      ]
+    },
+    {
+      "type": "title2",
+      "text": "Auswahl geeigneter Datenbanksoftware"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "In der Einleitung zu diesem Kapitel wurde bereits erwähnt, dass es viele Datenbankmanagementsysteme gibt, die SQL als ihre Datenbanksprache verwenden. Hier werden wir nun einige Optionen vorstellen. Aus diesen Angeboten werden wir geeignete Software für den Einsatz in diesem Kurs auswählen./n",
+        "Einer der Marktführer im Bereich Datenbankanwendungen ist das Unternehmen Oracle. Das zugehörige Produkt heißt Oracle Database. Die erste Version wurde bereits 1979 veröffentlicht - die erste kommerzielle SQL-Anwendung überhaupt. Oracle DB ist bekannt dafür, nicht nur das relationale Datenbankmodell, sondern auch mehrere Alternativen zu unterstützen. Besonders bei der Arbeit mit großen Datensätzen bietet diese Software eine hervorragende Effizienz. Oracle DB ist jedoch nicht für unseren Kurs geeignet. Dies liegt daran, dass es sich um proprietäre Software handelt und die Lizenzkosten sehr hoch sind. Daher wird Oracle DB hauptsächlich in kommerziellen Umgebungen verwendet./n",
+        "Eine weitere Option ist IBM DB2. Dies ist ebenfalls ein System, das seit vielen Jahren auf dem Markt ist, mit der ersten Version, die 1993 veröffentlicht wurde. Das DBMS ist für verschiedene Betriebssysteme verfügbar und wird in vielen Unternehmen eingesetzt. Darüber hinaus bietet IBM andere Datenbankmanagementsysteme wie Informix an. Diese sind jedoch auch kommerzielle Software, und es fallen erhebliche Lizenzgebühren an./n",
+        "Auch der Microsoft SQL Server ist sehr beliebt. Dieses Datenbankmanagementsystem ist proprietär und für den Einsatz in kommerziellen Umgebungen konzipiert. Diese Software gehört zu den am häufigsten verwendeten SQL-Datenbanksystemen./n",
+        "Dies sind nur einige Beispiele für kommerzielle Datenbanksysteme, die für unternehmensweite Anwendungen gut geeignet sind. Es gibt jedoch auch Open-Source-Alternativen. Diese sind dafür bekannt, kostenlos zu sein, was sie für den privaten Gebrauch, für gemeinnützige Organisationen und hervorragend für Bildungszwecke geeignet macht. Sie sind jedoch nicht auf diese Anwendungsfälle beschränkt. Eine zunehmende Anzahl von kommerziell orientierten Unternehmen entscheidet sich für den Einsatz von Open-Source-Datenbanken für ihr Datenmanagement. Dies stellt oft eine besonders kostengünstige Lösung dar. Um zusätzliche Ausgaben für die Durchführung der Aufgaben in diesem Kurs zu vermeiden, ist es ratsam, ein Open-Source-Datenbanksystem einzusetzen./n",
+        "Das weltweit am häufigsten verwendete Datenbanksystem ist MySQL. Es handelt sich um Open-Source-Software, die frei genutzt werden kann. Es gibt jedoch auch lizenzierte Enterprise-Versionen. Die weite Verbreitung und die Tatsache, dass die Software frei verfügbar ist, sind zwei wesentliche Vorteile für die Projekte in diesem Kurs. Daher beabsichtigen wir, MySQL für die Umsetzung zu verwenden./n",
+        "Aus Gründen der Vollständigkeit wollen wir auch einige andere Open-Source-Datenbanksysteme vorstellen. Zum Beispiel wird MariaDB immer beliebter. Hierbei handelt es sich um eine Abspaltung von MySQL. Als das amerikanische Softwareunternehmen Oracle MySQL übernahm, erstellte der ursprüngliche Entwickler, Michael Widenius, seine eigene Version, die auf MySQL basiert. Darüber hinaus gibt es einige andere Optionen für Open-Source-Datenbanken, die weniger häufig verwendet werden, wie MonetDB oder PostgreSQL."
+      ]
+    },
+    {
+      "type": "title2",
+      "text": "MySQL - eines der beliebtesten Datenbanksysteme"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Die Entwicklung von MySQL begann im Jahr 1994. Zu diesem Zeitpunkt hatten sich relationale Datenbanken und SQL bereits als äußerst beliebte Methode zur Verwaltung von Daten in Unternehmen und Organisationen etabliert. Hierbei handelte es sich jedoch fast ausschließlich um kommerzielle Software./n",
+        "Deshalb beschlossen die schwedischen Entwickler Michael Widenius, David Axmark und Allan Larson, eine Open-Source-Version zu erstellen. Sie nannten sie MySQL, wobei \"My\" der Name von Michael Widenius' Tochter ist und \"SQL\" die bekannte Datenbanksprache repräsentiert. Im Jahr 1995 gründeten die Entwickler das Unternehmen MySQL AB, um diese Software zu vertreiben, und die erste Version von MySQL wurde später im selben Jahr veröffentlicht./n",
+        "Der durchschlagende Erfolg von MySQL ist eng mit der Verbreitung des Internets verbunden. Da die Anzahl dynamischer Websites gegen Ende der 1990er Jahre signifikant zunahm, wurde geeignete Datenbanksoftware benötigt, um sie zu betreiben. Zu dieser Zeit wurden dafür hauptsächlich proprietäre Programme verwendet. Ein sehr beachteter Artikel im Computer-Magazin c't im Jahr 1998 zeigte jedoch auf, dass Open-Source-Software eine ebenso praktikable Alternative sein konnte und die Kosten für den Betrieb einer Website erheblich reduzierte. Dies führte zur Entstehung des Begriffs LAMP, der für das Linux-Betriebssystem, den Apache-Webserver, das MySQL-Datenbanksystem und die PHP-Programmiersprache steht. Dies sind vier Open-Source-Technologien, die jedoch die einfache und effiziente Erstellung dynamischer Websites ermöglichen. Millionen von Internetangeboten verlassen sich nun auf LAMP und damit auf MySQL. Dies führte dazu, dass MySQL zum am weitesten verbreiteten Datenbanksystem wurde. Selbst viele weltweit renommierte Internetplattformen mit multimillionenschweren Umsätzen nutzen diese Open-Source-Lösung. Zu den bekannten Websites, die MySQL nutzen, gehören Facebook, YouTube, Twitter und Flickr./n",
+        "Dieser Erfolg weckte das Interesse großer Konzerne an dem schwedischen Unternehmen. Im Jahr 2008 erwarb der US-amerikanische Softwarehersteller Sun Microsystems MySQL AB für etwa eine Milliarde Dollar. Sun Microsystems wurde später wiederum von Oracle übernommen. Viele der ursprünglichen MySQL-Entwickler waren jedoch gegen diesen Schritt. Unter der Führung von Michael Widenius spaltete sich ein bedeutender Teil der Programmierer von Oracle ab und schuf MariaDB als neues Open-Source-Datenbanksystem."
+      ]
+    },
+    {
+      "type": "title2",
+      "text": "MySQL Download und Installation"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Bevor wir mit der Arbeit an Datenbanken beginnen können, ist es notwendig, das Datenbankmanagementsystem (DBMS) auf unserem Computer herunterzuladen und zu installieren. Das DBMS wird dann die SQL-Befehle verarbeiten, die wir später erlernen werden, und die entsprechenden Aktionen ausführen./n",
+        "Um MySQL herunterzuladen, musst Du den folgenden Link öffnen: https://dev.mysql.com/downloads/workbench/ Auf dieser Seite kannst Du aus verschiedenen Optionen zum Herunterladen von MySQL wählen. MySQL ist für zahlreiche Betriebssysteme verfügbar. Dies bedeutet, dass Du die Aufgaben in diesem Kurs auch auf Computern mit Linux oder macOS abschließen kannst./n",
+        "Dazu musst Du eine geeignete Option auswählen. Da jedoch die meisten Kursteilnehmer wahrscheinlich Windows verwenden, wird der Download- und Installationsprozess für dieses Betriebssystem etwas genauer beschrieben. Um zu beginnen, solltest Du das Betriebssystem \"Windows\" aus der Dropdown-Liste oben auf der Seite auswählen. Das folgende Bild zeigt diese Download-Seite./n"
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.2.png",
+      "alt": "Bild: ABB1.2.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Hier stehen verschiedene Download-Optionen zur Verfügung. Im Allgemeinen macht es Sinn, die erste Schaltfläche auszuwählen. In diesem Fall wird ein Installer heruntergeladen, der eigenständig alle weiteren Dateien herunterlädt./n",
+        "Nun wird eine Seite angezeigt, die den Besucher auffordert, sich mit einem Oracle-Konto anzumelden oder eines zu erstellen. Kursteilnehmer, die daran interessiert sind, können hier kostenlos ein Benutzerkonto erstellen. Dies ist jedoch nicht notwendig. Weiter unten auf der Seite gibt es auch eine Option zum Herunterladen der Software ohne Anmeldung - wie im folgenden Bild gezeigt."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.3.png",
+      "alt": "Bild: ABB1.3.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Nachdem der Installer heruntergeladen wurde, muss er nur noch ausgeführt werden. Dabei werden mehrere Aufforderungen zum Konfigurieren der gewünschten Einstellungen angezeigt. Für die Aufgaben in diesem Kurs sind jedoch keine spezifischen Auswahlmöglichkeiten erforderlich. Daher ist es am einfachsten, konsequent die Standardeinstellungen zu akzeptieren./n",
+        "Es wird nur zur Vorsicht geraten, wenn der Benutzer aufgefordert wird, ein Passwort auszuwählen. Das entsprechende Fenster wird im folgenden Bild gezeigt. Es ist wichtig, sich dieses Passwort gut zu merken, da es später benötigt wird, um auf die Datenbank zuzugreifen."
+      ]
+    },
+    {
+      "type": "important",
+      "text": "Das ausgewählte Passwort sollte nicht vergessen werden"
+    },
+    {
+      "type": "image",
+      "src": "ABB1.4.png",
+      "alt": "Bild: ABB1.4.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "title2",
+      "text": "Die Benutzeroberfläche der MySQL Workbench"
+    },
+    {
+      "type": "image",
+      "src": "ABB1.5.png",
+      "alt": "Bild: ABB1.5.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Bei der Arbeit mit MySQL gibt es im Wesentlichen drei Optionen oder Benutzeroberflächen: den MySQL-Befehlszeilenclient, die MySQL-Shell und die MySQL Workbench. Diese verschiedenen Oberflächen können jeweils über das Windows-Startmenü (wie im obigen Screenshot zu sehen) aufgerufen werden. Diese Tools unterscheiden sich erheblich in ihrer Verwendung und ihren Funktionen./n",
+        "Beispielsweise enthält MySQL Optionen, die einem Befehlszeileninterpreter ähneln, in dem jeder SQL-Befehl manuell eingegeben und durch Drücken der Eingabetaste ausgeführt werden muss. Eine dieser Schnittstellen ist unter dem Namen MySQL-Befehlszeilenclient (Command Line Client) verfügbar./n",
+        "Eine weitere Option ist die MySQL-Shell, die wir hier kurz skizzieren werden, obwohl wir sie später nicht verwenden werden, genau wie den Befehlszeilenclient. Auf den ersten Blick ähnelt die MySQL-Shell dem Befehlszeilenclient, und tatsächlich gibt es einige Ähnlichkeiten. Die MySQL-Shell bietet jedoch zusätzliche Funktionen./n",
+        "Dieses Tool ist hauptsächlich für Programmierer gedacht, die SQL in einem Computerprogramm verwenden und auf diese Weise automatisch Datenbankabfragen ausführen. Die MySQL-Shell bietet verschiedene Modi, die das Ausführen von Programmcode in Programmiersprachen wie Python oder JavaScript ermöglichen. Gleichzeitig bietet die Shell Zugriff auf die Datenbank, was es einfach macht, entsprechende Programme mit Datenbankverbindung auszuprobieren. Aus diesem Grund ist die MySQL-Shell ein beliebtes Entwicklungstool./n",
+        "Jedoch wird aus dieser kurzen Erklärung deutlich, warum die MySQL-Shell nicht das geeignete Werkzeug für diesen Kurs ist. Da dieser Kurs ausschließlich reines SQL ohne Bezug zu einer Programmiersprache vermittelt, sind diese zusätzlichen Funktionen nicht erforderlich./n",
+        "Eine weitere Option ist die Verwendung der MySQL Workbench. Dies ist eine grafische Benutzeroberfläche, in der Du SQL-Befehle direkt eingeben kannst. Sie ermöglicht es Dir jedoch auch, Datenbanken und die darin enthaltenen Tabellen ohne SQL-Kenntnisse zu erstellen. Durch Klicken mit der entsprechenden Maustaste generiert die Software automatisch die entsprechenden SQL-Befehle und führt sie aus./n",
+        "Das Ziel dieses Kurses ist jedoch genau die Vermittlung der Verwendung von SQL. Daher ist es nicht förderlich für dieses Ziel, Datenbanken automatisch zu generieren. In diesem Kurs verwenden wir die MySQL Workbench, jedoch immer auf eine Weise, bei der wir die Befehle direkt eingeben./n",
+        "Wenn wir die Workbench-Software über das Windows-Startmenü starten, sehen wir zunächst diese Ansicht."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.6.png",
+      "alt": "Bild: ABB1.6.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Um SQL innerhalb der Workbench zu verwenden, klicken wir auf \"File\" in der Menüleiste und wählen dann \"New Query Tab\" aus. Alternativ ist es nützlich, sich die Tastenkombination für diese Aufgabe zu merken: Strg + T. Dadurch wird das Fenster angezeigt, das im folgenden Bild wiedergegeben wird."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.7.png",
+      "alt": "Bild: ABB1.7.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Bevor wir uns darauf einlassen, die Befehle einzugeben, ist es notwendig, eine Verbindung zur Datenbank herzustellen. Dazu wählen wir \"Database\" in der Menüleiste und dann \"Connect to Database\" aus - oder wir verwenden die Tastenkombination Strg + U. In dem anschließend geöffneten Fenster bestätigen wir einfach die bereitgestellten Einstellungen. Im nächsten Fenster müssen wir erneut unser Passwort eingeben - wie im folgenden Bild gezeigt wird. Es ist wichtig zu beachten, dass wir diese Verbindung jedes Mal neu herstellen müssen, wenn wir das Programm erneut öffnen."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.8.png",
+      "alt": "Bild: ABB1.8.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Im großen Feld in der Mitte der Benutzeroberfläche ist es nun möglich, SQL-Befehle einzugeben. Allerdings haben wir hier Unterstützung zur Verfügung. Verschiedene SQL-Befehle sind auf der rechten Seite aufgelistet. Wenn wir uns nicht genau daran erinnern, wie sie verwendet werden, können wir hier nachschlagen. Dies wollen wir anhand eines Beispiels verdeutlichen. Angenommen, wir möchten einen Befehl verwenden, um die vorhandenen Datenbanken aufzulisten. Wenn wir uns nicht ganz daran erinnern, wie er strukturiert ist, können wir auf der rechten Seite nachschauen. Im oberen Bereich gibt es ein Dropdown-Menü - wie im folgenden Bild zu sehen."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.9.png",
+      "alt": "Bild: ABB1.9.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Die Befehle sind hier in mehrere Gruppen unterteilt. Die Bedeutungen der entsprechenden Begriffe werden später im Kurs erklärt. Für unser erstes Beispiel wählen wir den Begriff \"DB Mgmt\", was für Datenbankverwaltung steht und Befehle zur Verwaltung der Datenbank enthält. Wenn wir hier ein wenig nach unten scrollen, stoßen wir auf den Eintrag \"SHOW DATABASES Syntax\". Der Begriff \"Syntax\" bezieht sich auf die Regeln für die Konstruktion von Befehlen. Wenn wir diesen Begriff doppelklicken, erscheinen die Informationen, die im folgenden Bild dargestellt sind."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB1.10.png",
+      "alt": "Bild: ABB1.10.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Hier sehen wir, dass der Befehl ==SHOW DATABASES== lautet. Danach gibt es optionale Ergänzungen in spitzen Klammern. Aber im Moment müssen wir uns darüber keine Gedanken machen. Stattdessen kopieren wir den Befehl, schließen das Hilfefenster und fügen ihn in das Fenster in der Mitte ein. Dann ist es nur noch notwendig, ein Semikolon einzufügen./n",
+        "Es gibt verschiedene Möglichkeiten, den Befehl auszuführen. Zunächst kannst Du auf die Blitzsymbole über dem Eingabefenster klicken. Das erste von ihnen führt alle im Fenster vorhandenen Befehle aus. In der Workbench ist es nicht nur möglich, Befehle einzeln auszuführen; Du kannst auch mehrere Befehle nacheinander in das Fenster einfügen. Durch Klicken auf das entsprechende Symbol werden sie zusammen ausgeführt. Alternativ kannst Du auch einen bestimmten Bereich markieren. In diesem Fall wird nur der markierte Bereich ausgeführt./n",
+        "Der zweite Blitz ist mit einem Cursor-Symbol verziert. Dadurch wird nur ein einzelner Befehl ausgeführt - derjenige, an dessen Stelle sich der Cursor gerade befindet. Dies ist ideal, um Befehle nacheinander abzuarbeiten, daher wird diese Schaltfläche häufig verwendet./n",
+        "Beide Schaltflächen haben alternative Methoden zur Ausführung. Zum Beispiel kannst Du die Menüleiste verwenden - über das Menü \"Query\" und dann \"Execute (All or Selection)\" oder \"Execute Current Statement\". Da es oft notwendig ist, SQL-Befehle auszuführen, ist es ratsam, sich sofort die entsprechenden Tastenkombinationen zu merken. Dies beschleunigt die Arbeit mit SQL erheblich. Diese Tastenkombinationen sind Strg + Umschalt + Eingabetaste für das Ausführen aller Befehle und Strg + Eingabetaste für den aktuellen Befehl./n",
+        "Nach der Ausführung unseres SQL-Befehls mithilfe einer dieser Methoden erscheint eine Liste aller Datenbanken, die in MySQL als Beispiele vorinstalliert sind. Dies wird im folgenden Bild gezeigt. Ganz unten gibt es auch eine kurze Notiz zu den Abfrageergebnissen. Dies ist besonders wichtig, wenn es eine fehlerhafte Eingabe gibt. Mit der entsprechenden Nachricht lässt sich nachvollziehen, welcher Fehler aufgetreten ist."
+      ]
+    },
+    {
+      "type": "important",
+      "text": "Strg + Umschalt + Eingabetaste entspricht der Ausführung aller Befehle Strg + Eingabetaste entspricht der Ausführung des aktuellen Befehls"
+    },
+    {
+      "type": "image",
+      "src": "ABB 1.11.png",
+      "alt": "Bild: ABB 1.11.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: Screenshot from my local screen"
+      ]
+    },
+    {
+      "type": "sources",
+      "text": "Wikipedia, MySQL Workbench: https://en.wikipedia.org/wiki/MySQL_Workbench Wikipedia, My SQL: https://en.wikipedia.org/wiki/MySQL simplilearn, MySQL Workbench Installation: A Step-by-Step Guide: https://www.simplilearn.com/tutorials/mysql-tutorial/mysql-workbench-installation#:~:text=How%20to%20Install%20MySQL%20Workbench%3F%201%201.%20Open,7%207.%20Click%20on%20Next.%20...%20Weitere%20Elemente"
+    },
+    {
+      "type": "title2",
+      "text": "Resources"
+    },
+    {
+      "type": "title3",
+      "text": "Specialized Literature (Books, Professional Magazines, etc.):"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Rick Sliva, MySQL Crash Course: A Hands-on Introduction to Database Development, No Starch Press (May 2023), https://www.amazon.de/MySQL-Crash-Course-Hands-Introduction/dp/1718503008/ref=asc_df_1718503008?tag=bingshoppin0b-21&linkCode=df0&hvadid=80470689902067&hvnetw=o&hvqmt=e&hvbmt=be&hvdev=c&hvlocint=&hvlocphy=&hvtargid=pla-4584070164301777&psc=1.",
+        "MySQL Crash Course is a fast-paced, no-nonsense introduction to relational database development. It’s filled with practical examples and expert advice that will have you up and running quickly."
+      ]
+    },
+    {
+      "type": "title3",
+      "text": "Blogs/Vlogs/Podcasts etc…"
+    },
+    {
+      "type": "list",
+      "items": [
+        "GeeksforGeeks, MySQL – Introduction, https://www.geeksforgeeks.org/mysql-introdution/",
+        "tutorialspoint, MySQL – Introduction, https://www.tutorialspoint.com/mysql/mysql-introduction.htm"
+      ]
+    },
+    {
+      "type": "title3",
+      "text": "Materials to Support the Practical Work"
+    },
+    {
+      "type": "list",
+      "items": [
+        "MYSQL.COM, MySQL Workbench Manual, https://dev.mysql.com/doc/workbench/en/wb-intro.html, this source contains the MySQL Workbench user guide.",
+        "The general MySQL Installer download is available at https://dev.mysql.com/downloads/windows/installer/. The MySQL Installer application can install, upgrade, and manage most MySQL products, including MySQL Workbench."
+      ]
+    },
+    {
+      "type": "title3",
+      "text": "(Explainer) Videos/Tutorials, Free Webinars, or Freely Available Webinar Recordings:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "How To Install MySQL (Server and Workbench), Web Dev Simplified, https://www.youtube.com/watch?v=u96rVINbAUI, this video is walking you through the process of downloading, installing, and setting up MySQL (Server and Workbench) on your computer.",
+        "How to Install MySQL on Windows, Database Star, https://www.youtube.com/watch?v=2om3byn2lxs, a more extensive video on the installation of MySQL Workbench on Windows."
+      ]
+    }
+  ]
+}

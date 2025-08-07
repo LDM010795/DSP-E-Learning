@@ -25,7 +25,7 @@ const LearningContentVideoLayout: React.FC<LearningContentVideoLayoutProps> = ({
   tasks,
 }) => {
   const calculateAverageDifficulty = (
-    localTasks?: Task[],
+    localTasks?: Task[]
   ): DifficultyLevel | null => {
     if (!localTasks || localTasks.length === 0) {
       return null;
@@ -65,7 +65,7 @@ const LearningContentVideoLayout: React.FC<LearningContentVideoLayoutProps> = ({
   const moduleTasks = tasks || [];
   const totalTasksInModule = moduleTasks.length;
   const completedTasksInModule = moduleTasks.filter(
-    (task) => task.completed,
+    (task) => task.completed
   ).length;
   const progressPercent =
     totalTasksInModule > 0

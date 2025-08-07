@@ -1,29 +1,27 @@
 import React from "react";
+import { ContentTipProps } from "./types";
 
-interface ContentTipProps {
-  content: string;
-}
-
-const ContentTip: React.FC<ContentTipProps> = ({ content }) => {
+const ContentTip: React.FC<ContentTipProps> = ({ text }) => {
   return (
-    <div className="bg-green-50 border-l-4 border-green-400 p-6 mb-6 rounded-r-lg">
-      <div className="flex items-start">
+    <div className="bg-green-50 border-l-4 border-green-400 p-4 my-4">
+      <div className="flex">
         <div className="flex-shrink-0">
           <svg
-            className="w-5 h-5 text-green-600 mt-0.5"
-            fill="currentColor"
+            className="h-5 w-5 text-green-400"
             viewBox="0 0 20 20"
+            fill="currentColor"
           >
             <path
               fillRule="evenodd"
-              d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
               clipRule="evenodd"
             />
           </svg>
         </div>
         <div className="ml-3">
-          <h4 className="text-sm font-semibold text-green-800 mb-1">Tipp:</h4>
-          <p className="text-sm text-green-700 leading-relaxed">{content}</p>
+          <p className="text-sm text-green-700">
+            <strong>Tipp:</strong> {text}
+          </p>
         </div>
       </div>
     </div>

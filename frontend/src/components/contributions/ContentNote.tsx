@@ -1,24 +1,15 @@
 import React from "react";
+import { ContentNoteProps } from "./types";
 
-interface ContentNoteProps {
-  content: string;
-  className?: string;
-}
-
-const ContentNote: React.FC<ContentNoteProps> = ({
-  content,
-  className = "",
-}) => {
+const ContentNote: React.FC<ContentNoteProps> = ({ text }) => {
   return (
-    <div
-      className={`bg-gray-50 border-l-4 border-gray-400 p-6 my-6 rounded-r-lg ${className}`}
-    >
-      <div className="flex items-start">
+    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 my-4">
+      <div className="flex">
         <div className="flex-shrink-0">
           <svg
-            className="w-5 h-5 text-gray-600 mt-0.5"
-            fill="currentColor"
+            className="h-5 w-5 text-blue-400"
             viewBox="0 0 20 20"
+            fill="currentColor"
           >
             <path
               fillRule="evenodd"
@@ -28,9 +19,8 @@ const ContentNote: React.FC<ContentNoteProps> = ({
           </svg>
         </div>
         <div className="ml-3">
-          <h4 className="text-sm font-semibold text-gray-800 mb-1">Exkurs:</h4>
-          <p className="text-sm text-gray-700 leading-relaxed italic">
-            {content}
+          <p className="text-sm text-blue-700">
+            <strong>Hinweis:</strong> {text}
           </p>
         </div>
       </div>

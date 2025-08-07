@@ -1,50 +1,24 @@
 import React from "react";
+import { ContentSourcesProps } from "./types";
 
-interface Source {
-  title: string;
-  url?: string;
-}
+const ContentSources: React.FC<ContentSourcesProps> = ({ text }) => {
+  // Parse sources from text (assuming they are separated by newlines or semicolons)
+  const parseSources = (sourceText: string): string[] => {
+    return sourceText
+      .split(/[\n;]/)
+      .map((source) => source.trim())
+      .filter((source) => source.length > 0);
+  };
 
-interface ContentSourcesProps {
-  sources: Source[];
-}
+  const sources = parseSources(text);
 
-const ContentSources: React.FC<ContentSourcesProps> = ({ sources }) => {
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-      <div className="flex items-center mb-4">
-        <svg
-          className="w-5 h-5 text-gray-600 mr-2"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <h3 className="text-lg font-semibold text-gray-900">Quellen</h3>
-      </div>
-
-      <ul className="space-y-3">
+    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 my-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-3">Quellen</h3>
+      <ul className="list-disc list-inside space-y-2 text-gray-700">
         {sources.map((source, index) => (
-          <li key={index} className="flex items-start">
-            <div className="w-2 h-2 bg-gray-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-            <div>
-              {source.url ? (
-                <a
-                  href={source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline transition-colors duration-200"
-                >
-                  {source.title}
-                </a>
-              ) : (
-                <span className="text-gray-700">{source.title}</span>
-              )}
-            </div>
+          <li key={index} className="leading-relaxed">
+            {source}
           </li>
         ))}
       </ul>

@@ -39,7 +39,8 @@
     "styled-components": "^6.1.16",
     "swiper": "^11.2.6",
     "tailwindcss": "^4.0.14",
-    "twin.macro": "^3.4.1"
+    "twin.macro": "^3.4.1",
+    "zod": "^4.0.13"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

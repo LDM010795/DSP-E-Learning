@@ -28,6 +28,7 @@ import PageTransition from "./PageTransition";
 import Dashboard from "../../pages/dashboard";
 import Modules from "../../pages/modules";
 import ModuleDetail from "../../pages/module_detail";
+import ChapterDetail from "../../pages/chapter_detail";
 import TaskDetails from "../../pages/task_detail";
 import IndexFinalExam from "../../pages/final_exam/index_final_exam";
 import IndexStatistics from "../../pages/statistics/index_statistics";
@@ -125,6 +126,14 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             element={
               <PageTransition>
                 <ModuleDetail />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/modules/:moduleId/chapters/:chapterId"
+            element={
+              <PageTransition>
+                <ChapterDetail />
               </PageTransition>
             }
           />
