@@ -422,16 +422,14 @@ function TaskDetails() {
                   {/* Task Content Area - basierend auf task_type */}
                   <div className="lg:col-span-2">
                     <SubBackground>
-                      {currentTask.task_type === 'programming' ? (
+                      {currentTask.task_type === "programming" ? (
                         <CodeEditorWithOutput
                           taskId={currentTask.id}
                           className="rounded-xl overflow-hidden"
                           onSuccess={handleTaskSuccess}
                         />
-                      ) : currentTask.task_type === 'multiple_choice' ? (
-                        <div>
-
-                        </div>
+                      ) : currentTask.task_type === "multiple_choice" ? (
+                        <div></div>
                       ) : (
                         <div className="flex items-center justify-center min-h-[400px]">
                           <div className="text-center">
@@ -440,10 +438,13 @@ function TaskDetails() {
                               Task-Typ nicht unterstützt
                             </h2>
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                              Der Task-Typ "{currentTask.task_type}" wird noch nicht unterstützt.
+                              Der Task-Typ "{currentTask.task_type}" wird noch
+                              nicht unterstützt.
                             </p>
                             <div className="flex items-center justify-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                              <span className="text-sm font-medium text-gray-600">Task-Type:</span>
+                              <span className="text-sm font-medium text-gray-600">
+                                Task-Type:
+                              </span>
                               <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                                 {currentTask.task_type}
                               </span>

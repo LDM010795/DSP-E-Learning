@@ -39,7 +39,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
         "cursor-pointer",
         "hover:border-[#ff863d]/30",
         "hover:bg-[#ffe7d4]",
-        className
+        className,
       )}
       onClick={onClick}
       whileHover={{ y: -1, scale: 1.01 }}
@@ -53,7 +53,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
           className={clsx(
             "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center",
             "shadow-sm border border-white/20",
-            "bg-[#ff863d]"
+            "bg-[#ff863d]",
           )}
           whileHover={{ rotate: 5 }}
           transition={{ duration: 0.2 }}

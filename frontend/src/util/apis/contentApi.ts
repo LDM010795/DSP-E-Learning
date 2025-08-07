@@ -16,7 +16,7 @@ const ChapterSchema = z.object({
       author: z.string().optional(),
       date: z.string().optional(),
       tags: z.array(z.string()).optional(),
-    })
+    }),
   ),
 });
 
@@ -26,7 +26,7 @@ export type ContentData = z.infer<typeof ChapterSchema>;
  * Lädt Content-Daten für ein bestimmtes Kapitel
  */
 export async function loadContentChapter(
-  chapter: "1.1" | "1.2"
+  chapter: "1.1" | "1.2",
 ): Promise<
   { success: true; data: ContentData } | { success: false; error: string }
 > {
