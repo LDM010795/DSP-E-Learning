@@ -22,8 +22,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   videoUrl,
   className,
   onLoadedData,
-  onCanPlay,
-  onLoadStart,
   onError,
 }) => {
   console.log(`🔍 DEBUG: YouTubePlayer - videoUrl: ${videoUrl}`);

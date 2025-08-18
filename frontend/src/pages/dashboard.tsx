@@ -21,7 +21,7 @@
  */
 
 import React, { useState /*, useEffect*/ } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TagDifficulty from "../components/tags/tag_difficulty";
 import type { DifficultyLevel } from "../components/tags/tag_difficulty";
 import {
@@ -37,7 +37,7 @@ import {
   IoTimeOutline,
   IoAlertCircleOutline,
 } from "react-icons/io5";
-import { BsSpeedometer2 } from "react-icons/bs";
+// import { BsSpeedometer2 } from "react-icons/bs";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import ComingSoonOverlaySmall from "../components/messages/coming_soon_overlay_small";
@@ -53,7 +53,7 @@ function Dashboard() {
   // --- State Management ---
   const { modules, loading, error, fetchModules } = useModules();
   const [showAllModules, setShowAllModules] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // --- Loading State ---
   if (loading) {
@@ -117,7 +117,7 @@ function Dashboard() {
 
   const totalLessons = modules.reduce(
     (sum, m) => sum + (m.contents?.length || 0),
-    0,
+    0
   );
   const averageLessonsPerModule =
     totalModules > 0 ? (totalLessons / totalModules).toFixed(1) : "0.0";
@@ -132,14 +132,14 @@ function Dashboard() {
       }
       return acc;
     },
-    {} as Record<DifficultyLevel, number>,
+    {} as Record<DifficultyLevel, number>
   );
 
   /**
    * Berechnet die durchschnittliche Schwierigkeit eines Moduls
    */
   const calculateModuleDifficulty = (
-    tasks?: ContextTask[],
+    tasks?: ContextTask[]
   ): DifficultyLevel | null => {
     if (!tasks || tasks.length === 0) return null;
     const difficultyMap: Record<string, number> = {
@@ -148,13 +148,13 @@ function Dashboard() {
       Schwer: 3,
     };
     const validTasks = tasks.filter(
-      (task) => difficultyMap[task.difficulty] !== undefined,
+      (task) => difficultyMap[task.difficulty] !== undefined
     );
     if (validTasks.length === 0) return null;
 
     const totalDifficultyScore = validTasks.reduce(
       (sum, task) => sum + difficultyMap[task.difficulty],
-      0,
+      0
     );
     const averageScore = totalDifficultyScore / validTasks.length;
 
@@ -340,7 +340,7 @@ function Dashboard() {
                             </Link>
                           </div>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
 
@@ -382,7 +382,7 @@ function Dashboard() {
                             {count}
                           </span>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 </div>

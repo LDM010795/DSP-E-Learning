@@ -23,17 +23,17 @@ const ContentSources: React.FC<ContentSourcesProps> = ({ text, items }) => {
     const urlRegex = /(https?:\/\/[^\s,;]+)/;
     const urlMatch = source.match(urlRegex);
 
-    if (urlMatch) {
+    if (urlMatch && urlMatch.index !== undefined) {
       const url = urlMatch[0];
       const beforeUrl = source.substring(0, urlMatch.index).trim();
       const afterUrl = source.substring(urlMatch.index + url.length).trim();
 
       // Bereinige Titel (entferne Trennzeichen am Ende)
-      let title = beforeUrl.replace(/[,:;\-]\s*$/, "").trim();
+      let title = beforeUrl.replace(/[,:;-]\s*$/, "").trim();
 
       // Wenn kein Titel vor der URL, versuche nach der URL zu schauen
       if (!title && afterUrl) {
-        title = afterUrl.replace(/^[,:;\-]\s*/, "").trim();
+        title = afterUrl.replace(/^[,:;-]\s*/, "").trim();
       }
 
       // Fallback: Wenn immer noch kein Titel, verwende Domain als Titel

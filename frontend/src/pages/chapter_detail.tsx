@@ -1,31 +1,17 @@
-import React, { useState, useMemo } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import TagDifficulty from "../components/tags/tag_difficulty";
-import type { DifficultyLevel } from "../components/tags/tag_difficulty";
 import {
-  IoCheckmarkCircleOutline,
   IoPlayCircleOutline,
-  IoArrowBackOutline,
-  IoBookOutline,
-  IoTimeOutline,
   IoAlertCircleOutline,
-  IoListOutline,
   IoVideocamOutline,
-  IoCheckmarkCircle,
   IoPlayOutline,
 } from "react-icons/io5";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LearningContentVideoLayout from "../components/layouts/learning_content_video";
 import SubBackground from "../components/layouts/SubBackground";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
-import {
-  useModules,
-  Module,
-  Task,
-  Content,
-  Chapter,
-} from "../context/ModuleContext";
+import { useModules, Module, Content, Chapter } from "../context/ModuleContext";
 
 function ChapterDetail() {
   const { modules, loading, error } = useModules();
@@ -58,14 +44,14 @@ function ChapterDetail() {
     navigate(`/modules/${moduleId}`);
   };
 
-  // Calculate chapter progress
-  const chapterProgress = useMemo(() => {
-    if (!chapter || chapter.tasks.length === 0) return 0;
-    const completedTasks = chapter.tasks.filter(
-      (task) => task.completed,
-    ).length;
-    return Math.round((completedTasks / chapter.tasks.length) * 100);
-  }, [chapter]);
+  // Calculate chapter progress (commented out as not used)
+  // const chapterProgress = useMemo(() => {
+  //   if (!chapter || chapter.tasks.length === 0) return 0;
+  //   const completedTasks = chapter.tasks.filter(
+  //     (task) => task.completed
+  //   ).length;
+  //   return Math.round((completedTasks / chapter.tasks.length) * 100);
+  // }, [chapter]);
 
   if (loading) {
     return (
@@ -173,7 +159,7 @@ function ChapterDetail() {
                     description={selectedVideo.description}
                     supplementaryContent={selectedVideo.supplementary_contents}
                     currentLessonIndex={chapter.contents.findIndex(
-                      (c) => c.id === selectedVideo.id,
+                      (c) => c.id === selectedVideo.id
                     )}
                     totalLessons={chapter.contents.length}
                     contentId={selectedVideo.id}
