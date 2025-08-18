@@ -274,7 +274,7 @@ function ModuleDetail() {
                         shadow-sm hover:shadow-md
                         transition-all duration-200 ease-in-out
                         focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:ring-offset-1
-                        hover:cursor-pointer active:scale-[0.98]" 
+                        hover:cursor-pointer active:scale-[0.98]"
                     >
                       {/* Subtle accent bar */}
                       <div className="w-1 h-4 bg-orange-400/70 rounded-full group-hover:bg-orange-500 transition-colors duration-200"></div>
@@ -303,7 +303,7 @@ function ModuleDetail() {
                           className="bg-white rounded-lg border border-gray-200 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
                           onClick={() =>
                             navigate(
-                              `/modules/${moduleId}/chapters/${chapter.id}`
+                              `/modules/${moduleId}/chapters/${chapter.id}`,
                             )
                           }
                         >
