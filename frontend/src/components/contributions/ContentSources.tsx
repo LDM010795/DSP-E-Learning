@@ -1,52 +1,87 @@
 import React from "react";
+import { ContentSourcesProps } from "./types";
+import { processLinksInText } from "./linkUtils";
 
-interface Source {
-  title: string;
-  url?: string;
-}
+const ContentSources: React.FC<ContentSourcesProps> = ({ text, items }) => {
+  // Parse sources from text (legacy format - falls back to old behavior)
+  const parseSources = (sourceText: string): string[] => {
+    return sourceText
+      .split(/[\n;]/)
+      .map((source) => source.trim())
+      .filter((source) => source.length > 0);
+  };
 
-interface ContentSourcesProps {
-  sources: Source[];
-}
+  // Funktion zum Rendern einer einzelnen Quelle mit Link-Erkennung
+  const renderSource = (source: string, index: number) => {
+    // Erkenne verschiedene Formate:
+    // 1. "Titel, URL"
+    // 2. "Titel: URL"
+    // 3. "Titel - URL"
+    // 4. "Titel URL" (URL am Ende)
+    // 5. Nur URL (dann URL als Titel verwenden)
 
-const ContentSources: React.FC<ContentSourcesProps> = ({ sources }) => {
+    const urlRegex = /(https?:\/\/[^\s,;]+)/;
+    const urlMatch = source.match(urlRegex);
+
+    if (urlMatch) {
+      const url = urlMatch[0];
+      const beforeUrl = source.substring(0, urlMatch.index).trim();
+      const afterUrl = source.substring(urlMatch.index + url.length).trim();
+
+      // Bereinige Titel (entferne Trennzeichen am Ende)
+      let title = beforeUrl.replace(/[,:;\-]\s*$/, "").trim();
+
+      // Wenn kein Titel vor der URL, versuche nach der URL zu schauen
+      if (!title && afterUrl) {
+        title = afterUrl.replace(/^[,:;\-]\s*/, "").trim();
+      }
+
+      // Fallback: Wenn immer noch kein Titel, verwende Domain als Titel
+      if (!title) {
+        try {
+          const urlObj = new URL(url);
+          title = urlObj.hostname;
+        } catch {
+          title = "Externe Quelle";
+        }
+      }
+
+      return (
+        <li key={index} className="leading-relaxed break-words">
+          <span className="font-medium text-gray-900 mr-2">{title}:</span>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline hover:no-underline transition-colors duration-200 text-sm break-words"
+            title={url}
+          >
+            {url.length > 50 ? `${url.substring(0, 47)}...` : url}
+          </a>
+        </li>
+      );
+    }
+
+    // Kein Link gefunden - normaler Text mit automatischer Link-Erkennung
+    return (
+      <li key={index} className="leading-relaxed break-words">
+        {processLinksInText(source)}
+      </li>
+    );
+  };
+
+  // Bestimme die Quellen: Verwende items falls vorhanden, sonst parse text
+  const sources = items || (text ? parseSources(text) : []);
+
+  if (sources.length === 0) {
+    return null; // Keine Quellen vorhanden
+  }
+
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-      <div className="flex items-center mb-4">
-        <svg
-          className="w-5 h-5 text-gray-600 mr-2"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <h3 className="text-lg font-semibold text-gray-900">Quellen</h3>
-      </div>
-
-      <ul className="space-y-3">
-        {sources.map((source, index) => (
-          <li key={index} className="flex items-start">
-            <div className="w-2 h-2 bg-gray-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-            <div>
-              {source.url ? (
-                <a
-                  href={source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline transition-colors duration-200"
-                >
-                  {source.title}
-                </a>
-              ) : (
-                <span className="text-gray-700">{source.title}</span>
-              )}
-            </div>
-          </li>
-        ))}
+    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 my-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-3">Quellen</h3>
+      <ul className="list-disc pl-5 space-y-2 text-gray-700">
+        {sources.map((source, index) => renderSource(source, index))}
       </ul>
     </div>
   );

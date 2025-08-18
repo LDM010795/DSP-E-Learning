@@ -15,13 +15,21 @@ import {
   IoTimeOutline,
   IoAlertCircleOutline,
   IoListOutline,
+  IoVideocamOutline,
+  IoPlayOutline,
 } from "react-icons/io5";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LearningContentVideoLayout from "../components/layouts/learning_content_video";
 import ButtonSwipe from "../components/ui_elements/buttons/button_swipe";
 import SubBackground from "../components/layouts/SubBackground";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
-import { useModules, Module, Task, Content } from "../context/ModuleContext";
+import {
+  useModules,
+  Module,
+  Task,
+  Content,
+  Chapter,
+} from "../context/ModuleContext";
 
 function ModuleDetail() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -36,6 +44,7 @@ function ModuleDetail() {
     return modules.find((mod) => mod.id === numericModuleId);
   }, [modules, moduleId]);
 
+  const chapters: Chapter[] = useMemo(() => module?.chapters || [], [module]);
   const tasks: Task[] = useMemo(() => module?.tasks || [], [module]);
   const contents: Content[] = useMemo(() => module?.contents || [], [module]);
 
@@ -49,10 +58,19 @@ function ModuleDetail() {
 
   // Calculate module progress
   const moduleProgress = useMemo(() => {
-    if (tasks.length === 0) return 0;
-    const completedTasks = tasks.filter((task) => task.completed).length;
-    return Math.round((completedTasks / tasks.length) * 100);
-  }, [tasks]);
+    if (chapters.length > 0) {
+      // Neue Chapter-Struktur: Alle Tasks aus allen Chapters sammeln
+      const allTasks = chapters.flatMap((chapter) => chapter.tasks);
+      if (allTasks.length === 0) return 0;
+      const completedTasks = allTasks.filter((task) => task.completed).length;
+      return Math.round((completedTasks / allTasks.length) * 100);
+    } else {
+      // Fallback für alte Struktur
+      if (tasks.length === 0) return 0;
+      const completedTasks = tasks.filter((task) => task.completed).length;
+      return Math.round((completedTasks / tasks.length) * 100);
+    }
+  }, [chapters, tasks]);
 
   if (loading) {
     return (
@@ -75,12 +93,12 @@ function ModuleDetail() {
     ];
     return (
       <div className="min-h-screen">
-        <div className="px-4 py-8">
+        <div className="px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
             <Breadcrumbs items={errorBreadcrumbs} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Fehler beim Laden
               </h1>
             </div>
@@ -121,7 +139,7 @@ function ModuleDetail() {
             <Breadcrumbs items={notFoundBreadcrumbs} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Modul nicht gefunden
               </h1>
             </div>
@@ -164,7 +182,7 @@ function ModuleDetail() {
       <div className="relative overflow-hidden">
         <div className="relative px-4 py-8">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
             <SubBackground className="mb-8">
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -174,7 +192,7 @@ function ModuleDetail() {
                       <IoBookOutline className="w-6 h-6 text-[#ff863d]" />
                     </div>
                     <div>
-                      <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent">
+                      <h1 className="text-3xl md:text-4xl font-bold text-gray-700">
                         {module.title}
                       </h1>
                       <p className="text-lg text-gray-600 mt-1">
@@ -188,13 +206,20 @@ function ModuleDetail() {
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
                       <IoListOutline className="w-4 h-4 text-[#ff863d]" />
                       <span className="font-medium text-gray-700">
-                        {tasks.length} Aufgaben
+                        {chapters.length > 0
+                          ? chapters.flatMap((chapter) => chapter.tasks).length
+                          : tasks.length}{" "}
+                        Aufgaben
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
                       <IoTimeOutline className="w-4 h-4 text-[#ff863d]" />
                       <span className="font-medium text-gray-700">
-                        {totalLessons} Lektionen
+                        {chapters.length > 0
+                          ? chapters.flatMap((chapter) => chapter.contents)
+                              .length
+                          : totalLessons}{" "}
+                        Lektionen
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
@@ -214,29 +239,14 @@ function ModuleDetail() {
                   </div>
                 </div>
 
-                {/* Navigation Controls */}
-                <div className="flex gap-3 flex-shrink-0">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <ButtonSwipe
-                      onClick={handlePrev}
-                      icon={<TbTriangleInvertedFilled />}
-                      classNameIcon="rotate-90"
-                    />
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <ButtonSwipe
-                      onClick={handleNext}
-                      icon={<TbTriangleInvertedFilled />}
-                      classNameIcon="rotate-270"
-                    />
-                  </motion.div>
-                </div>
+                {/* Chapter Navigation */}
+                {chapters.length > 0 && (
+                  <div className="flex gap-3 flex-shrink-0">
+                    <div className="text-sm text-gray-600">
+                      {chapters.length} Kapitel verfügbar
+                    </div>
+                  </div>
+                )}
               </div>
             </SubBackground>
           </div>
@@ -250,7 +260,82 @@ function ModuleDetail() {
             {/* Content Area */}
             <div className="lg:col-span-2">
               <SubBackground>
-                {contents.length > 0 ? (
+                {/* Lernbeiträge CTA */}
+                {module.articles && module.articles.length > 0 && (
+                  <div className="mb-6 flex items-center justify-between">
+                    <div className="text-sm text-gray-600">
+                      {module.articles.length} Lernbeitr
+                      {module.articles.length === 1 ? "ag" : "äge"} verfügbar
+                    </div>
+                    <button
+                      onClick={() => navigate(`/modules/${module.id}/articles`)}
+                      className="px-4 py-2 rounded-lg bg-white/70 backdrop-blur-sm border border-white/60 text-gray-700 hover:bg-white"
+                    >
+                      Lernbeiträge anzeigen
+                    </button>
+                  </div>
+                )}
+                {chapters.length > 0 ? (
+                  // Neue Chapter-Struktur
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <IoListOutline className="h-5 w-5 text-[#ff863d]" />
+                      Kapitel ({chapters.length})
+                    </h2>
+                    <div className="space-y-3">
+                      {chapters.map((chapter, index) => (
+                        <motion.div
+                          key={chapter.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
+                          className="bg-white rounded-lg border border-gray-200 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
+                          onClick={() =>
+                            navigate(
+                              `/modules/${moduleId}/chapters/${chapter.id}`,
+                            )
+                          }
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="flex-shrink-0 w-12 h-12 bg-[#ff863d] rounded-lg flex items-center justify-center">
+                              <IoBookOutline className="h-6 w-6 text-white" />
+                            </div>
+                            <div className="flex-grow">
+                              <h3 className="font-semibold text-gray-900 mb-1">
+                                Kapitel {chapter.order}: {chapter.title}
+                              </h3>
+                              {chapter.description && (
+                                <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                                  {chapter.description}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-4 text-xs text-gray-500">
+                                <div className="flex items-center gap-1">
+                                  <IoVideocamOutline className="h-3 w-3" />
+                                  <span>
+                                    {chapter.contents.length} Video
+                                    {chapter.contents.length !== 1 ? "s" : ""}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <IoCheckmarkCircleOutline className="h-3 w-3" />
+                                  <span>
+                                    {chapter.tasks.length} Aufgabe
+                                    {chapter.tasks.length !== 1 ? "n" : ""}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex-shrink-0 text-gray-400">
+                              <IoPlayOutline className="h-4 w-4" />
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                ) : contents.length > 0 ? (
+                  // Fallback für alte Struktur
                   <Swiper
                     spaceBetween={20}
                     slidesPerView={1}
@@ -267,10 +352,10 @@ function ModuleDetail() {
                           videoUrl={contentItem.video_url || ""}
                           currentLessonIndex={index}
                           totalLessons={totalLessons}
-                          tasks={tasks}
                           supplementaryContent={
                             contentItem.supplementary_contents
                           }
+                          contentId={contentItem.id}
                         />
                       </SwiperSlide>
                     ))}
@@ -298,13 +383,23 @@ function ModuleDetail() {
                       <IoListOutline className="w-5 h-5 text-[#ff863d]" />
                     </div>
                     <h2 className="text-xl font-semibold text-gray-800">
-                      Aufgaben ({tasks.length})
+                      Aufgaben (
+                      {chapters.length > 0
+                        ? chapters.flatMap((chapter) => chapter.tasks).length
+                        : tasks.length}
+                      )
                     </h2>
                   </div>
 
-                  {tasks.length > 0 ? (
+                  {(chapters.length > 0
+                    ? chapters.flatMap((chapter) => chapter.tasks)
+                    : tasks
+                  ).length > 0 ? (
                     <div className="space-y-3">
-                      {tasks.map((task: Task, index: number) => (
+                      {(chapters.length > 0
+                        ? chapters.flatMap((chapter) => chapter.tasks)
+                        : tasks
+                      ).map((task: Task, index: number) => (
                         <motion.div
                           key={task.id}
                           initial={{ opacity: 0, y: 20 }}

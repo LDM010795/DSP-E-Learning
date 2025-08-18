@@ -1,0 +1,447 @@
+{
+  "content": [
+    {
+      "type": "title",
+      "text": "1.2 Datenbank erstellen und Tabellen anlegen"
+    },
+    {
+      "type": "image",
+      "src": "ABB2.1.png",
+      "alt": "Bild: ABB2.1.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Source: https://live.staticflickr.com/8747/16909119337_a8d89772dd_b.jpg"
+      ]
+    },
+    {
+      "type": "table_of_contents",
+      "text": "Einführung Anlegen der Datenbank Erstellen einer Tabelle: Anlegen von Spalten mit unterschiedlichen Datentypen Primärschlüssel und zusätzliche Einschränkungen und Attribute Nachträgliche Änderungen an der Tabelle vornehmen Löschen einer Tabelle oder einer Datenbank Zusammenfassung"
+    },
+    {
+      "type": "learning_objectives",
+      "text": "Nach dem Lesen dieses Kapitels verstehst Du den grundlegenden Prozess zum Anlegen einer Datenbank und ihre Rolle als Grundlage für das Datenmanagement. Durch die Bearbeitung dieses Kapitels erlernst Du, Tabellen zu entwerfen, Spalten mit verschiedenen Datentypen zu erstellen und das Datenbankschema so zu strukturieren, dass Daten effizient gespeichert und organisiert werden können. In diesem Kapitel erkundest Du das Konzept der Primärschlüssel und wie Du die Datenintegrität durch Einschränkungen und Attribute gewährleisten kannst, um Datenkorrektheit und Eindeutigkeit sicherzustellen. Nach dem Durcharbeiten dieses Kapitels beherrschst Du die Befehle zur Modifikation von bestehenden Tabellen, insbesondere das Hinzufügen, Ändern oder Löschen von Spalten, um sich ändernde Anforderungen an die Datenstruktur umzusetzen, während die Datenintegrität erhalten bleibt. In diesem Kapitel erfährst Du, wie Du Tabellen oder ganze Datenbanken sicher entfernen kannst, wenn sie nicht mehr benötigt werden, um zu gewährleisten, dass Du Deine Datenbankumgebung effizient verwaltest."
+    },
+    {
+      "type": "title2",
+      "text": "Einführung"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Wenn wir eine Datenbank nutzen möchten, können wir nicht sofort damit beginnen, Werte einzugeben. Zunächst ist es erforderlich, eine Datenbank und Tabellen zu erstellen. Außerdem ist es später möglich, diese Strukturen zu ändern oder sogar Tabellen oder Datenbanken zu löschen. Dieses Kapitel behandelt diese Aufgaben.",
+        "Für diesen Bereich ist der Begriff \"Data Definition Language\" von großer Bedeutung. Seine Abkürzung, DDL, wird ebenfalls weit verbreitet verwendet. Dieser Begriff umfasst alle Befehle, die die Strukturen für die Datenverarbeitung erstellen. DDL stellt eines der wesentlichen Teilgebiete von SQL dar."
+      ]
+    },
+    {
+      "type": "title2",
+      "text": "Anlegen der Datenbank"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Der erste Schritt bei der Arbeit mit einer Datenbank besteht immer darin, sie zu erstellen. Sie dient als grundlegende Einheit für das Datenmanagement. Eine einzelne Datenbank kann groß sein und Dutzende oder sogar Hunderte von Tabellen enthalten. Beispielsweise ist es üblich, bei der Gestaltung einer dynamischen Website nur eine Datenbank dafür zu verwenden. Diese Datenbank umfasst alle Inhalte der Website - von Text bis hin zu eingefügten Fotos und Videos. In vielen Unternehmen wird ebenfalls nur eine einzige Datenbank verwendet, um alle Daten zu verwalten. Darin kannst Du einzelne Tabellen für Produkte, Mitarbeiter, Kunden und viele andere Arten von Informationen erstellen. Dies ist sehr praktisch, da es Dir ermöglicht, verschiedene Tabellen miteinander zu verknüpfen. Beispielsweise ermöglicht es die Bearbeitung von Bestellungen, die auf Daten aus sowohl Kunden- als auch Produkttabellen zugreifen.",
+        "Alternativ ist es möglich, mehrere Datenbanken für verschiedene Teilbereiche einzurichten. Dies kann die Übersichtlichkeit erhöhen. In diesem Fall sind jedoch keine Querverweise zwischen einzelnen Einträgen möglich. Daher sollte dieser Ansatz nur gewählt werden, wenn die Tabellen vollständig voneinander unabhängig sind. Bevor Du die Datenbank erstellst, ist es entscheidend, sorgfältig zu überlegen, welche Daten sie später aufnehmen soll.",
+        "Um neue Elemente (oder Objekte) in SQL zu erstellen, wird der Befehl ==CREATE== verwendet. Danach kommt der Typ des Elements, das wir erstellen möchten. Um eine neue Datenbank zu erstellen, verwenden wir den Befehl ==CREATE DATABASE== - genau wie in den Beispielen im vorherigen Kapitel. Danach geben wir einen Namen ein, den wir frei wählen können. Es ist ratsam, einen Namen zu verwenden, der den Inhalt genau widerspiegelt. Da wir jedoch unsere erste Datenbank zu Testzwecken erstellen und noch nicht wissen, welche Daten wir darin speichern möchten, spielt dieser Name vorerst keine bedeutende Rolle. Entsprechend geben wir nun den folgenden Befehl in das Eingabefenster ein und führen ihn aus:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "CREATE DATABASE testDB2;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Anschließend sehen wir im unteren Ausgabefenster einen grünen Kreis mit einem Häkchen und die Informationen darüber, wie viele Zeilen durch diesen Befehl betroffen waren und wie viel Zeit für die Verarbeitung benötigt wurde. Dies deutet darauf hin, dass die Ausführung erfolgreich war. Trotzdem sollten wir überprüfen, ob die Datenbank tatsächlich korrekt erstellt wurde. Dazu verwenden wir den bereits bekannten Befehl ==SHOW DATABASES==. Als Ergebnis erscheint die neue Datenbank - wie im folgenden Bild gezeigt."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB2.2.png",
+      "alt": "Bild: ABB2.2.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": ["Source: Screenshot from my local screen"]
+    },
+    {
+      "type": "title2",
+      "text": "Erstellen einer Tabelle: Anlegen von Spalten mit unterschiedlichen Datentypen"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Es wurde bereits mehrmals erwähnt, dass relationale Datenbanken auf Tabellen basieren. Tabellen ermöglichen es uns, Daten zu organisieren und zu strukturieren. Im Folgenden werden wir lernen, wie man Tabellen mithilfe von SQL-Befehlen erstellt.",
+        "Eine Tabelle muss immer innerhalb einer Datenbank erstellt werden. Wir könnten tatsächlich eine der Datenbanken verwenden, die wir bereits in diesem Kurs erstellt haben. Mit dem Wissen aus dem vorherigen Abschnitt ist es jedoch auch möglich, eine neue Datenbank für diese Aufgabe zu erstellen. Da wir im folgenden Beispiel eine Mitgliederliste für einen Verein erstellen möchten, macht dies Sinn. Auf diese Weise erfüllen wir die Anforderung, dass der Name der Datenbank dem Inhalt entsprechen sollte. Daher werden wir sie clubDB nennen. In den folgenden Schritten werden wir verschiedene Daten speichern, die für den Sportverein relevant sind.",
+        "Im nächsten Schritt ist es erforderlich, zu dieser Datenbank zu wechseln. Alle weiteren Befehle, die wir eingeben, beziehen sich auf diese Datenbank. Hierfür verwenden wir den Befehl ==USE==, gefolgt vom Namen der Datenbank. Wenn wir die gerade erstellte Datenbank clubDB verwenden möchten, ist der folgende Befehl erforderlich:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "USE clubDB;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Es ist wichtig zu beachten, dass wir diesen Befehl jedes Mal erneut eingeben müssen, wenn wir die Workbench verlassen. Nur so können wir weiterhin mit der Datenbank arbeiten.",
+        "Um eine Datenbanktabelle zu erstellen, verwenden wir wieder den Befehl ==CREATE==, diesmal jedoch mit dem Zusatz ==TABLE==. Danach müssen wir einen geeigneten Namen für die Tabelle angeben. Für das Beispiel der Mitgliederliste ist der folgende Befehl geeignet:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "CREATE TABLE members"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Der Befehl ist jedoch damit noch nicht abgeschlossen. Beim Erstellen einer Tabelle müssen wir deren Struktur angeben, die durch ihre Spalten bestimmt wird. Dazu müssen wir zunächst der Spalte einen Namen geben und dann den Datentyp angeben, der den Werten entspricht, die wir hier einfügen möchten. Dieses Verfahren wird anhand einiger Beispiele veranschaulicht.",
+        "Zunächst müssen wir entscheiden, welche Daten der Mitglieder wir erfassen möchten. Um das Beispiel kurz und übersichtlich zu halten, beschränken wir uns auf die Mitgliedsidentifikationsnummer, den Vornamen, den Nachnamen, die Telefonnummer und das Alter. Während ein echter Sportverein wahrscheinlich zusätzliche Informationen benötigen würde, sind die bereitgestellten Werte für unser Beispiel ausreichend.",
+        "Beginnen wir mit der Identifikationsnummer. Eine Möglichkeit besteht darin, sie entsprechend als „Mitgliedsidentifikationsnummer“ zu benennen. Dieser Name ist jedoch recht lang. Außerdem ist es bei der Arbeit mit Datenbanken üblich, „ID“ als Bezeichnung für die Identifikation einzelner Einträge zu verwenden. Da jede Mitglieds-ID eindeutig ist und nur einmal vergeben wird, können Mitglieder - und folglich die Einträge in unserer Datenbanktabelle - eindeutig identifiziert werden. Daher werden wir auch diesen Begriff verwenden.",
+        "Es ist jedoch nicht ratsam, diesen Begriff allein zu verwenden. Wenn es sich um eine einzelne Tabelle handelt, wäre dies wahrscheinlich kein Problem. Wenn wir jedoch im Laufe der Zeit zusätzliche Tabellen für Trainer, Kurse und andere Inhalte erstellen, die alle denselben Begriff verwenden, kann dies zu einem Mangel an Klarheit führen. Die allgemeine Namenskonvention, die Richtlinien für Namen in Datenbanktabellen bereitstellt, besagt, dass jeder Name innerhalb derselben Datenbank nur einmal verwendet werden sollte. Obwohl dies keine strenge Regel ist, da die Datenbank trotz wiederholter Bezeichner funktionieren kann, ist es ratsam, sich an diese Richtlinie zu halten, da sie die Klarheit erheblich verbessert und die Wartung der Datenbank erleichtert.",
+        "Um einen eindeutigen Bezeichner zu erstellen, ist es sinnvoll, einen Verweis auf den Tabellennamen in allen Spalten einzubeziehen. Dadurch wird auf den ersten Blick klar, zu welcher Tabelle die jeweilige Spalte gehört. Daher fügen wir einfach den Tabellennamen vor dem entsprechenden Begriff hinzu, getrennt durch einen Unterstrich: members_id.",
+        "Bei dem Wert, den wir hier angeben, handelt es sich um eine Ganzzahl. Der geeignete Datentyp dafür ist INT. Daher definieren wir die erste Spalte mit dem folgenden Ausdruck:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "members_id INT"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Nach einem Komma können wir dann die zusätzlichen Spalten angeben. Als nächstes kommt der Vorname, für den der Ausdruck members_forename geeignet ist. Da dies keine Zahl, sondern eine Abfolge von einzelnen Buchstaben oder anderen Symbolen ist, können wir den Datentyp INT nicht dafür verwenden. Der Vorname ist ein Zeichenstring, der durch den Datentyp VARCHAR repräsentiert wird. Wir müssen jedoch immer die maximale Länge in Klammern angeben. Für die Eingabe des Vornamens sollten dabei 20 Buchstaben ausreichen. Daher definieren wir diese Spalte wie folgt:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "members_forename VARCHAR(20)"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Nach diesem Muster können wir die verbleibenden Spalten angeben. Auch der Nachname ist vom Typ VARCHAR, während wir für die Telefonnummer und das Alter INT-Werte verwenden können. Die Spaltenspezifikationen sind in Klammern eingeschlossen und durch Kommas getrennt. Zum Abschluss des Befehls steht ein Semikolon:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "CREATE TABLE members( members_id INT, members_forename VARCHAR(20), members_name VARCHAR(20), members_phone INT, members_age INT );"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "In diesem Fall haben wir jeden Spaltennamen in einer separaten Zeile geschrieben und die Einträge eingerückt. Dies dient nur einer übersichtlicheren Darstellung. Es ist für die korrekte Ausführung des Befehls nicht erforderlich. Es wäre auch möglich, alles in einer Zeile zu schreiben."
+      ]
+    },
+    {
+      "type": "important",
+      "text": "Formatierung trägt sehr zur Lesbarkeit des Codes bei und sollte deshalb auch bedacht werden, wenn es nicht notwendig ist!"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Nach Ausführung dieses Befehls sehen wir nicht nur Informationen über die erfolgreiche Ausführung im unteren Feld, sondern unsere neue Tabelle erscheint jetzt in der linken Spalte. Normalerweise ist es erforderlich, diesen Bereich mit den Pfeilsymbolen zu aktualisieren. Anschließend klicken wir auf unsere neue Datenbank und dann auf \"Tables\", \"members\" und \"Columns\". Dadurch können wir die Struktur unserer neuen Tabelle sehen. Die folgende Abbildung veranschaulicht die Darstellung."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB2.3.png",
+      "alt": "Bild: ABB2.3.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": ["Source: Screenshot from my local screen"]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Bei der ersten Ausführung funktioniert der entsprechende Befehl ohne Probleme. Wenn wir ihn jedoch erneut ausführen, erhalten wir eine Fehlermeldung. Dies liegt daran, dass die Tabelle bereits existiert. Daher können wir sie nicht erneut erstellen.",
+        "Dies stellt beim manuellen Einfügen von Datenbankbefehlen möglicherweise kein Problem dar, da wir in diesem Fall genau wissen, welche Tabellen bereits vorhanden sind, und wir den entsprechenden Befehl nicht erneut ausführen. Es ist jedoch auch möglich, mehrere SQL-Befehle zu einer größeren Routine zu kombinieren oder die Befehle mithilfe eines Computerprogramms zu automatisieren. In diesen Fällen kann ein ungültiger SQL-Befehl größere Probleme verursachen und einen Abbruch auslösen. Daher ist es ratsam, geeignete Vorsichtsmaßnahmen zu treffen, falls die Tabelle bereits vorhanden ist. Dazu fügen wir den Ausdruck ==IF NOT EXISTS== vor dem Tabellennamen hinzu. Der vollständige Befehl lautet dann ==CREATE TABLE IF NOT EXISTS==. Dies stellt sicher, dass die Tabelle nur erstellt wird, wenn es keine Elemente mit demselben Namen in der Datenbank gibt. Der komplette Befehl sieht nun folgendermaßen aus:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "CREATE TABLE IF NOT EXISTS members( members_id INT, members_forename VARCHAR(20), members_name VARCHAR(20), members_phone INT, members_age INT );"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Nun ist es wichtig, die verschiedenen Datentypen für Spalten in MySQL-Tabellen kennenzulernen. Wir haben bereits zwei der Wichtigsten verwendet: ==INT== und ==VARCHAR==. Es gibt jedoch viele andere Datentypen.",
+        "Beispielsweise ist es möglich, ganze Zahlen unterschiedlicher Länge zu verwenden. Der Datentyp ==INT== umfasst 4 Bytes und erlaubt Zahlen zwischen -2147483648 und 2147483647. Dies ist sicherlich übertrieben für die Angabe des Alters. Wenn wir den Speicherplatz minimieren möchten, können wir den Datentyp ==TINYINT== verwenden, der nur 1 Byte benötigt und Werte zwischen -128 und 127 aufnehmen kann. Dies sollte ausreichen, um das Alter darzustellen.",
+        "Für die Speicherung von Gleitkommazahlen eignen sich die Datentypen ==FLOAT== und ==DOUBLE==. Darüber hinaus gibt es verschiedene Datentypen für die Speicherung von Jahren, Zeit- und Datumsinformationen.",
+        "Ein weiterer wichtiger Datentyp für Gleitkommazahlen ist ==DECIMAL==. Dieser wird häufig zur Darstellung von Preisen verwendet, da er es ermöglicht, die Anzahl der Dezimalstellen genau anzugeben. Dies ist ideal für Preise, da sie immer mit zwei Dezimalstellen angezeigt werden. Um diesen Datentyp zu verwenden, musst Du nach seinem Namen ein Zahlenpaar in Klammern hinzufügen. Die erste Zahl gibt die maximale Gesamtanzahl der Ziffern an, die die Zahl enthalten kann, und die zweite Zahl gibt an, wie viele dieser Ziffern Dezimalstellen sind. Für Preise mit einem maximalen Wert von 999,99 Euro wäre beispielsweise folgende Definition geeignet: ==DECIMAL(5,2)==.",
+        "Auch für Zeichenfolgen gibt es mehrere Optionen. Neben ==VARCHAR== können wir auch den Datentyp ==CHAR== verwenden. Der Unterschied besteht darin, dass VARCHAR-Werte die Länge – und damit den Speicherplatz – an den Inhalt anpassen. Im Gegensatz dazu hat ein CHAR-Wert immer eine feste Länge – den Wert, den wir beim Erstellen der Spalte angegeben haben. Wenn wir nicht den gesamten Platz verwenden, wird der Rest mit Leerzeichen gefüllt. Da Leerzeichen auch Speicherplatz verbrauchen, ist dieser Datentyp in den meisten Fällen ineffizient und erhöht die Speicheranforderungen. Nur wenn die Länge für alle Einträge genau gleich ist – zum Beispiel im Fall von Produktcodes – kann die Verwendung von CHAR sinnvoll sein.",
+        "Abschließend hier eine Tabelle der wichtigsten Datentypen für SQL-Datenbanken. Sie ist nicht vollständig, bietet jedoch einen Überblick über die am häufigsten verwendeten Optionen:"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": ["Source: Own representation"]
+    },
+    {
+      "type": "title2",
+      "text": "Primärschlüssel und zusätzliche Einschränkungen und Attribute"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "In unserer ersten Datenbanktabelle haben wir nur den Namen und den Datentyp für jede Spalte angegeben. Es ist jedoch oft nützlich, zusätzliche Spezifikationen, Einschränkungen und Attribute hinzuzufügen. Ein besonders wichtiger Ausdruck ist ==PRIMARY KEY==, der eine Primärschlüssel-Einschränkung erstellt.",
+        "Um den Zweck eines Primärschlüssels zu verstehen, ist es wichtig, einen kleinen Ausblick darauf zu geben, wie wir später auf Informationen in der Datenbank zugreifen werden. Ein anfänglich intuitiver Ansatz könnte darin bestehen, die Zeilen- und Spaltennummern anzugeben. SQL funktioniert jedoch nicht auf diese Weise. Der Zugriff erfolgt stattdessen basierend auf den Werten und Strukturen, die wir definieren.",
+        "Um auf ein Feld zuzugreifen, müssen wir den Spaltennamen angeben und einen Wert bereitstellen, der in der entsprechenden Zeile vorhanden sein soll, um auf das Feld zuzugreifen. Wenn wir beispielsweise die Telefonnummer eines Mitglieds mit dem Nachnamen \"Mayer\" abrufen möchten, müssen wir einen SQL-Befehl verwenden, der angibt, dass wir die Telefonnummer in der Zeile abrufen möchten, in der der Nachname den Wert \"Mayer\" hat.",
+        "Solange es nur ein Mitglied mit diesem Nachnamen in der Tabelle gibt, funktioniert dies perfekt, und wir erhalten die gewünschte Telefonnummer. Wenn jedoch mehrere Mitglieder denselben Nachnamen teilen, besteht keine eindeutige Zuordnung mehr. In solchen Fällen erhalten wir mehrere Ergebnisse.",
+        "Die PRIMARY KEY-Einschränkung hilft, dieses Problem zu lösen. Sie stellt sicher, dass die Werte in der angegebenen Spalte (oder Kombination von Spalten) in allen Zeilen der Tabelle eindeutig sind. Diese Eindeutigkeit garantiert, dass jede Zeile eindeutig identifiziert werden kann, was eine effiziente und genaue Datenabfrage ermöglicht.",
+        "In unserem Beispiel können wir die Spalte members_id als Primärschlüssel festlegen, um sicherzustellen, dass jedes Mitglied eine eindeutige Kennung hat. Dies verhindert die Duplizierung von Mitglieds-IDs und ermöglicht es uns, Informationen zu bestimmten Mitgliedern ohne Zweifel abzurufen. Indem wir members_id als Primärschlüssel festlegen, stellen wir die Eindeutigkeit der ID jedes Mitglieds sicher und ermöglichen eine präzise Datenabfrage.",
+        "Die Sicherstellung einer eindeutigen Zuordnung ist beim Arbeiten mit einer Datenbank entscheidend. Daher ist es ratsam, eine Spalte zu bestimmen, in der jeder Wert nur einmal vorkommen sollte. In unserem Fall haben wir dies bereits mit der Mitglieds-ID getan. Jede Nummer wird nur einmal vergeben. Bisher mussten wir jedoch selbst dafür sorgen, dass Duplikate vermieden werden. Wenn wir die entsprechende Spalte als ==PRIMARY KEY== markieren, verwaltet das Datenbankmanagementsystem dies automatisch. Wenn wir die Mitglieds-ID als Primärschlüssel verwenden möchten, müssen wir die folgende Zeile beim Erstellen der Tabelle verwenden:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "members_id INT PRIMARY KEY"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Diese Bedingung stellt nicht nur sicher, dass kein Wert zweimal in der jeweiligen Spalte erscheinen kann, sondern verhindert auch, dass die Spalte leer bleibt. In Datenbanktabellen ist es nicht erforderlich, alle Felder auszufüllen. Wenn eines davon leer bleibt, wird ihm automatisch der Wert NULL zugewiesen. Wenn jedoch das Feld, das als unser Primärschlüssel bezeichnet ist, leer bleibt, wäre keine eindeutige Zuordnung mehr möglich. Daher verhindert das Datenbankmanagementsystem Einträge, bei denen die Spalte, die als Primärschlüssel markiert ist, leer bleibt."
+      ]
+    },
+    {
+      "type": "important",
+      "text": "Der Primärschlüssel (Primary Key) dient zur eindeutigen Identifizierung von Beobachtungen"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Wir können dieses Merkmal unabhängig vom Primärschlüssel zuweisen. Zum Beispiel wäre es in einer Mitgliederliste sinnlos, wenn die Felder für den Vornamen und den Nachnamen leer bleiben würden. Wir können sie jedoch nicht als Primärschlüssel verwenden - erstens kann jede Tabelle maximal einen Primärschlüssel enthalten, und zweitens ist es möglich, dass mehrere Mitglieder denselben Vornamen oder Nachnamen haben. Wenn wir einfach sicherstellen möchten, dass das Feld nicht leer bleibt, verwenden wir die NOT NULL-Bedingung. Wir definieren die entsprechenden Spalten wie folgt:"
+      ]
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Die Anforderung, dass ein Eintrag eindeutig sein muss, ist nicht auf den Primärschlüssel beschränkt. Zum Beispiel könnte es später notwendig sein, eine Chat-Plattform für Vereinsmitglieder einzurichten. Dafür ist ein eindeutiger Benutzername erforderlich. Es wäre möglich, eine weitere Spalte zur Tabelle hinzuzufügen. Wir können diese jedoch nicht als Primärschlüssel deklarieren, da wir bereits die PRIMARY KEY-Bedingung verwendet haben, und zweitens möchten wir hier auch leere Einträge akzeptieren - schließlich möchten nicht alle Mitglieder am Chat teilnehmen. Für diese Aufgabe wird die UNIQUE-Bedingung verwendet. Sie verhindert nur, dass Einträge in dieser Spalte wiederholt werden. Wir könnten die entsprechende Spalte wie folgt deklarieren:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "members_username VARCHAR(20) UNIQUE"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Das Attribut ==AUTO_INCREMENT== wird ebenfalls häufig verwendet. Dadurch müssen wir keinen Wert in das entsprechende Feld eingeben. Wenn wir eine neue Zeile hinzufügen, übernimmt das Datenbankmanagementsystem dies automatisch. Normalerweise erhöht es den Wert des letzten Eintrags um 1 - wenn jedoch Einträge gelöscht oder die Nummer manuell bearbeitet wurden, kann es zu Abweichungen kommen. Diese Funktion ist beispielsweise für die Mitgliedsnummer sehr nützlich. Auf diese Weise müssen wir keine Nummer selbst festlegen. Die entsprechende Befehlszeile sieht wie folgt aus:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "members_id INT PRIMARY KEY AUTO_INCREMENT"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Das Attribut ==UNSIGNED== wird auch gelegentlich verwendet. Dies stellt sicher, dass das entsprechende Feld keine negativen Zahlen enthalten kann. Dadurch verdoppelt sich effektiv der positive Wertebereich. Zum Beispiel, wenn wir eine Variable vom Typ TINYINT für das Alter verwenden möchten, um Speicherplatz zu sparen, kann sie einen maximalen Wert von 127 haben. Aufgrund der steigenden Lebenserwartung könnten wir besorgt sein, dass dieser Wert in Zukunft nicht ausreicht. Es ist jedoch nicht erforderlich, einen größeren Datentyp zu verwenden, der mehr Speicherplatz benötigt. Da das Alter nie negativ sein kann, können wir das Attribut UNSIGNED verwenden und dann einen Wertebereich zwischen 0 und 255 haben."
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "members_age TINYINT UNSIGNED"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Darüber hinaus gibt es einige zusätzliche Bedingungen und Attribute, die wir beim Erstellen von Spalten verwenden können. Einige von ihnen werden später im Kurs behandelt, während andere nur eine geringfügige Bedeutung haben.",
+        "Um ihre Verwendung zu demonstrieren, hier noch einmal der vollständige SQL-Befehl. Da wir die entsprechende Tabelle bereits erstellt haben, können wir sie nicht einfach erneut einfügen. Daher werden wir jetzt eine neue Tabelle mit unterschiedlichen Namen erstellen. Im nächsten Abschnitt werden wir lernen, wie man eine vorhandene Tabelle modifiziert."
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "CREATE TABLE IF NOT EXISTS members2 ( members2_id INT PRIMARY KEY AUTO_INCREMENT, members2_forename VARCHAR(20) NOT NULL, members2_name VARCHAR(20) NOT NULL, members2_phone INT, members2_age TINYINT UNSIGNED, members2_username VARCHAR(20) UNIQUE );"
+    },
+    {
+      "type": "title2",
+      "text": "Nachträgliche Änderungen an der Tabelle vornehmen"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Im letzten Abschnitt haben wir bereits festgestellt, dass es oft nützlich ist, nach der Erstellung Änderungen an einer Tabelle vorzunehmen. Da wir jedoch die dafür erforderlichen Befehle nicht kannten, haben wir einfach eine neue Tabelle mit einem anderen Namen erstellt. Dieser Ansatz ist natürlich nicht praktisch. Einerseits verringert er die Klarheit der Datenbankstruktur, andererseits verbrauchen die ungenutzten Tabellen viel Speicherplatz. Daher werden wir nun lernen, wie man eine bestehende Tabelle ändert.",
+        "Hierfür verwenden wir den Befehl ==ALTER TABLE== zusammen mit dem Namen der Tabelle. Dann müssen wir die Aktion angeben, die wir ausführen möchten. Es ist oft erforderlich, eine weitere Spalte zur Tabelle hinzuzufügen. In diesem Fall verwenden wir den Befehl ==ADD==, gefolgt vom Namen der Spalte, ihrem Datentyp und möglicherweise zusätzlichen Attributen und Bedingungen. Wenn wir beispielsweise eine Benutzernamen-Spalte zu unserer vorhandenen Mitglieder-Tabelle hinzufügen möchten, würden wir den folgenden Befehl verwenden:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "ALTER TABLE members ADD members_username VARCHAR(20) UNIQUE;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Im nächsten Schritt fügen wir die PRIMARY KEY-Bedingung zur Spalte members_id hinzu. Dazu verwenden wir erneut den Befehl ==ALTER TABLE==, den Namen der Tabelle und den Begriff ==ADD==. Dieses Mal fügen wir jedoch den Ausdruck ==PRIMARY KEY== hinzu. Anschließend geben wir in Klammern an, welche Spalte wir auf diese Weise kennzeichnen möchten:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "ALTER TABLE members ADD PRIMARY KEY (members_id);"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Wir können auch den Datentyp ändern. Dazu beginnen wir, indem wir ==ALTER TABLE== und den Namen der Tabelle angeben. Dann fügen wir den Ausdruck ==MODIFY== hinzu. Als Nächstes geben wir den Spaltennamen und den gewünschten Datentyp an. Um die Spalte für das Alter anzupassen, würden wir den folgenden Befehl verwenden:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "ALTER TABLE members MODIFY members_age TINYINT UNSIGNED;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Auf dieselbe Weise können wir die NOT NULL-Beschränkung den Spalten für den Vornamen und Nachnamen hinzufügen. Es ist jedoch wichtig zu beachten, dass wir diese Beschränkung nicht allein angeben können. Stattdessen müssen wir den gesamten Datentyp neu definieren:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "ALTER TABLE members MODIFY members_forename VARCHAR(20) NOT NULL; ALTER TABLE members MODIFY members_name VARCHAR(20) NOT NULL;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Wir geben auch das AUTO_INCREMENT-Attribut auf dieselbe Weise an:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "ALTER TABLE members MODIFY members_id INT AUTO_INCREMENT;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Manchmal ist es notwendig, eine Spalte zu löschen. Wenn wir beispielsweise beschließen, die Chat-Funktion für Mitglieder nicht zu implementieren, macht es Sinn, diese Spalte zu entfernen. In diesem Fall verwenden wir ebenfalls das ALTER TABLE-Kommando, fügen jedoch diesmal den Begriff DROP hinzu, gefolgt vom Namen der Spalte, die wir löschen möchten:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "ALTER TABLE members DROP members_username;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Um die Auswirkungen dieser Befehle zu überprüfen, können wir erneut die linke Spalte der Workbench betrachten. Wenn wir hier auf die Spalten der Tabelle zugreifen und nach Eingabe des entsprechenden Befehls aktualisieren, werden wir feststellen, ob wir eine Spalte entfernt oder hinzugefügt haben. Für weitere Details können wir auf eine einzelne Spalte klicken. Detaillierte Informationen werden unten links angezeigt. Wenn wir beispielsweise auf members_id klicken, sehen wir, dass der Datentyp ==INT== jetzt mit ==AI== für ==AUTO_INCREMENT== und ==PK== für ==PRIMARY KEY== markiert ist, wie in der folgenden Abbildung dargestellt."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "ABB2.4.png",
+      "alt": "Bild: ABB2.4.png"
+    },
+    {
+      "type": "text",
+      "paragraphs": ["Source: Screenshot from my local screen"]
+    },
+    {
+      "type": "title2",
+      "text": "Löschen einer Tabelle oder einer Datenbank"
+    },
+    {
+      "type": "title3",
+      "text": "So löschst Du eine Tabelle"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Da wir die Tabelle \"members\" gemäß unseren Anforderungen im vorherigen Abschnitt angepasst haben, ist die Tabelle \"members2\" unnötig geworden. Um Speicherplatz freizugeben, macht es Sinn, sie zu löschen. Zu diesem Zweck verwenden wir den Befehl ==DROP TABLE==, gefolgt vom Namen der Tabelle, die wir löschen möchten. Dieser Befehl sollte jedoch mit großer Vorsicht verwendet werden. Einmal ausgeführt, werden alle Inhalte, die sich in der Tabelle befanden, dauerhaft verloren gehen. Daher ist es entscheidend, sorgfältig zu überprüfen, ob wichtige Daten in der Tabelle vorhanden sind, bevor der Befehl ausgeführt wird. Im Fall der Tabelle \"members2\" gibt es keine wichtigen Daten, daher können wir mit dem entsprechenden Befehl fortfahren:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "DROP TABLE members2;"
+    },
+    {
+      "type": "title3",
+      "text": "So löschst Du eine Datenbank"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Ebenso kannst Du auch eine Datenbank löschen. Am Anfang dieses Kapitels haben wir die Datenbank \"testDB2\" erstellt, die ausschließlich für Übungszwecke gedacht war und nicht weiter verwendet wird. Daher macht es Sinn, sie ebenfalls zu löschen. Hierfür verwenden wir den Befehl ==DROP DATABASE==, gefolgt vom Namen der jeweiligen Datenbank:"
+      ]
+    },
+    {
+      "type": "code",
+      "language": "sql",
+      "code": "DROP DATABASE testdb2;"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Genau wie beim Löschen einer Tabelle ist es wichtig, vorsichtig zu sein, wenn Du eine Datenbank löschst, da alle Daten innerhalb dieser Datenbank dauerhaft verloren gehen. Stelle sicher, dass es keine wichtigen Informationen gibt, die du behalten möchtest, bevor Du diesen Befehl ausführst."
+      ]
+    },
+    {
+      "type": "title2",
+      "text": "Zusammenfassung"
+    },
+    {
+      "type": "text",
+      "paragraphs": [
+        "Dieses Kapitel führt in die grundlegenden Konzepte der Datenbankerstellung und -verwaltung mit MySQL ein und betont die Bedeutung der strukturierten Datenspeicherung. In MySQL kannst Du eine neue Datenbank mit SQL-Befehlen erstellen und ihren Namen angeben. Tabellen sind die Bausteine einer Datenbank, und dieses Kapitel zeigt, wie man sie erstellt. Es behandelt das Anlegen von Spalten mit unterschiedlichen Datentypen, um verschiedene Arten von Informationen wie Text, Zahlen und Datumsangaben präzise darzustellen und zu speichern. Das Kapitel erklärt auch das Konzept der Primärschlüssel zur eindeutigen Identifizierung von Datensätzen innerhalb einer Tabelle und führt Einschränkungen und Attribute ein, die auf Tabellenspalten angewendet werden können, um die Datenintegrität sicherzustellen und Regeln durchzusetzen. Manchmal sind Anpassungen an Tabellenstrukturen notwendig. Dieses Kapitel behandelt, wie man vorhandene Tabellen modifiziert, einschließlich des Hinzufügens, Änderns oder Löschens von Spalten nach Bedarf. Das Kapitel zeigt auch den Prozess des Entfernens von Tabellen und Datenbanken, wenn sie nicht mehr benötigt werden, und betont die Wichtigkeit der Vorsicht beim Ausführen von Löschvorgängen, um Datenverlust zu vermeiden. Insgesamt bietet dieses Kapitel ein erstes Verständnis dafür, wie man Datenbanken und Tabellen mit MySQL erstellt und verwaltet und legt damit den Grundstein für eine effektive Datenbankgestaltung und -wartung."
+      ]
+    },
+    {
+      "type": "sources",
+      "text": "MYSQL.COM, MySQL 8.0 Reference Manual, https://dev.mysql.com/doc/refman/8.0/en/, this source contains the MySQL Reference Manual. It presents, among other things, a full documentation of (almost) all SQL statements."
+    },
+    {
+      "type": "title2",
+      "text": "Resources"
+    },
+    {
+      "type": "title3",
+      "text": "Specialized Literature (Books, Professional Magazines, etc.):"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Rick Sliva, MySQL Crash Course: A Hands-on Introduction to Database Development, No Starch Press (May 2023), https://www.amazon.de/MySQL-Crash-Course-Hands-Introduction/dp/1718503008/ref=asc_df_1718503008?tag=bingshoppin0b-21&linkCode=df0&hvadid=80470689902067&hvnetw=o&hvqmt=e&hvbmt=be&hvdev=c&hvlocint=&hvlocphy=&hvtargid=pla-4584070164301777&psc=1. MySQL Crash Course is a fast-paced, no-nonsense introduction to relational database development. It’s filled with practical examples and expert advice that will have you up and running quickly."
+      ]
+    },
+    {
+      "type": "title3",
+      "text": "Blogs/Vlogs/Podcasts etc…"
+    },
+    {
+      "type": "list",
+      "items": [
+        "w3schools, SQL CREATE TABLE Statement, https://www.w3schools.com/sql/sql_create_table.asp",
+        "GeeksforGeeks, SQL CREATE TABLE, https://www.geeksforgeeks.org/sql-create-table/"
+      ]
+    },
+    {
+      "type": "title3",
+      "text": "(Explainer) Videos/Tutorials, Free Webinars, or Freely Available Webinar Recordings:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Lec-54: Create table in SQL with execution | SQL for Beginners | Oracle LIVE, Gate Smashers, https://www.youtube.com/watch?v=R6Ps7aUNPE4,",
+        "SQL Tutorial - 9: Create Table Statement, The Bad Tutorials, https://www.youtube.com/watch?v=oReH2vO8Izc. In both videos, you will learn how to create tables in SQL using the CREATE TABLE statement."
+      ]
+    }
+  ]
+}
