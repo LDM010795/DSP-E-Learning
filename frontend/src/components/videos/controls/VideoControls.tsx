@@ -53,7 +53,6 @@ const VideoControls: React.FC<Props> = ({
   onChangePlaybackRate,
   onToggleFullscreen,
   className,
-  isFullscreen,
 }) => {
   const [showSettings, setShowSettings] = useState(false);
   const volumeBarRef = useRef<HTMLDivElement | null>(null);

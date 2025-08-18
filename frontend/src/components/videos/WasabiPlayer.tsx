@@ -4,7 +4,7 @@
  * Spezialisierte Komponente für Wasabi Cloud Storage Videos mit presigned URLs
  */
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LogoDSP from "../../assets/dsp_no_background.png";
 import { isWasabiUrl, toWasabiKey } from "../../util/videoUtils";
 import {
@@ -33,7 +33,6 @@ const WasabiPlayer: React.FC<WasabiPlayerProps> = (props) => {
     className,
     onLoadedData,
     onCanPlay,
-    onLoadStart,
     onError,
     crossOrigin,
   } = props;
@@ -52,7 +51,7 @@ const WasabiPlayer: React.FC<WasabiPlayerProps> = (props) => {
     data: urlByKey,
     isFetching: fKey,
     error: eKey,
-  } = usePresignedByKey(!urlById ? key : undefined);
+  } = usePresignedByKey(!urlById ? key || undefined : undefined);
 
   const presignedUrl = urlById ?? urlByKey ?? null;
   const loading = fId || fKey;
@@ -249,7 +248,6 @@ const WasabiPlayer: React.FC<WasabiPlayerProps> = (props) => {
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onCanPlay={onCanPlay}
-            onLoadStart={onLoadStart}
             onError={onError}
             style={{}}
             // Buffer-Einstellungen für smoothere Wiedergabe

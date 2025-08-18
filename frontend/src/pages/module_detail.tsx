@@ -6,7 +6,6 @@ import "swiper/swiper-bundle.css";
 import { motion } from "framer-motion";
 import TagDifficulty from "../components/tags/tag_difficulty";
 import type { DifficultyLevel } from "../components/tags/tag_difficulty";
-import { TbTriangleInvertedFilled } from "react-icons/tb";
 import {
   IoCheckmarkCircleOutline,
   IoPlayCircleOutline,
@@ -20,7 +19,6 @@ import {
 } from "react-icons/io5";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LearningContentVideoLayout from "../components/layouts/learning_content_video";
-import ButtonSwipe from "../components/ui_elements/buttons/button_swipe";
 import SubBackground from "../components/layouts/SubBackground";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import {
@@ -48,13 +46,13 @@ function ModuleDetail() {
   const tasks: Task[] = useMemo(() => module?.tasks || [], [module]);
   const contents: Content[] = useMemo(() => module?.contents || [], [module]);
 
-  const handleNext = () => {
-    swiperRef.current?.slideNext();
-  };
+  // const handleNext = () => {
+  //   swiperRef.current?.slideNext();
+  // };
 
-  const handlePrev = () => {
-    swiperRef.current?.slidePrev();
-  };
+  // const handlePrev = () => {
+  //   swiperRef.current?.slidePrev();
+  // };
 
   // Calculate module progress
   const moduleProgress = useMemo(() => {

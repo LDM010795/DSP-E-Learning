@@ -41,7 +41,7 @@ const ArticlePage: React.FC = () => {
 
   const currentArticle = total > 0 ? articles[activeIndex] : undefined;
   const [showJson, setShowJson] = useState(false);
-  const [bookmarks, setBookmarks] = useState<
+  const [bookmarks] = useState<
     import("../components/ui_elements/BookmarkLayer").Bookmark[]
   >([]);
 

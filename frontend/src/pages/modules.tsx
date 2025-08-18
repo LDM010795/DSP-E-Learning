@@ -142,8 +142,8 @@ function Modules() {
   // NEU: Extrahiere alle einzigartigen Kategorien aus den Modulen
   const allCategories = useMemo(() => {
     const categories = modules
-      .map((module) => module.category)
-      .filter((category): category is string => Boolean(category)); // Filtere null/undefined und sorge für string[] Typ
+      .map((module) => module.category?.name)
+      .filter((categoryName): categoryName is string => Boolean(categoryName));
     return [...new Set(categories)];
   }, [modules]);
 
@@ -189,8 +189,8 @@ function Modules() {
         if (activeCategoryFilters.length === 0) return true;
         // Stelle sicher, dass module.category existiert und ein String ist
         return (
-          typeof module.category === "string" &&
-          activeCategoryFilters.includes(module.category)
+          typeof module.category?.name === "string" &&
+          activeCategoryFilters.includes(module.category.name)
         );
       })();
 
