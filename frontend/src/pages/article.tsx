@@ -123,21 +123,21 @@ const ArticlePage: React.FC = () => {
                 <button
                   onClick={handlePrev}
                   disabled={activeIndex === 0 || total === 0}
-                  className="px-3 py-2 rounded-lg border bg-white/70 text-gray-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Zurück
                 </button>
                 <button
                   onClick={handleNext}
                   disabled={activeIndex >= total - 1 || total === 0}
-                  className="px-3 py-2 rounded-lg border bg-white/70 text-gray-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Weiter
                 </button>
                 {currentArticle?.json_content && (
                   <button
                     onClick={() => setShowJson(true)}
-                    className="px-3 py-2 rounded-lg border bg-white/70 text-gray-700 hover:bg-gray-50"
+                    className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 cursor-pointer"
                   >
                     JSON ansehen
                   </button>
@@ -224,13 +224,13 @@ const ArticlePage: React.FC = () => {
                       ),
                     )
                   }
-                  className="px-3 py-1.5 rounded-lg border bg-white text-gray-700 hover:bg-gray-50 text-sm"
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-all duration-200 cursor-pointer text-sm"
                 >
                   Kopieren
                 </button>
                 <button
                   onClick={() => setShowJson(false)}
-                  className="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 text-sm"
+                  className="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 transition-all duration-200 cursor-pointer text-sm"
                 >
                   Schließen
                 </button>
