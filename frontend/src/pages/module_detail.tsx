@@ -267,9 +267,22 @@ function ModuleDetail() {
                     </div>
                     <button
                       onClick={() => navigate(`/modules/${module.id}/articles`)}
-                      className="px-4 py-2 rounded-lg bg-white/70 backdrop-blur-sm border border-white/60 text-gray-700 hover:bg-white"
+                      className="group flex items-center justify-center space-x-2 rounded-lg px-4 py-2.5
+                        bg-white/60 hover:bg-white/80 backdrop-blur-sm
+                        border border-orange-200/50 hover:border-orange-300/70
+                        text-gray-700 hover:text-orange-600
+                        shadow-sm hover:shadow-md
+                        transition-all duration-200 ease-in-out
+                        focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:ring-offset-1
+                        hover:cursor-pointer active:scale-[0.98]" 
                     >
-                      Lernbeiträge anzeigen
+                      {/* Subtle accent bar */}
+                      <div className="w-1 h-4 bg-orange-400/70 rounded-full group-hover:bg-orange-500 transition-colors duration-200"></div>
+
+                      {/* Content */}
+                      <span className="text-sm font-medium">
+                        Lernbeiträge anzeigen
+                      </span>
                     </button>
                   </div>
                 )}
@@ -290,7 +303,7 @@ function ModuleDetail() {
                           className="bg-white rounded-lg border border-gray-200 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
                           onClick={() =>
                             navigate(
-                              `/modules/${moduleId}/chapters/${chapter.id}`,
+                              `/modules/${moduleId}/chapters/${chapter.id}`
                             )
                           }
                         >

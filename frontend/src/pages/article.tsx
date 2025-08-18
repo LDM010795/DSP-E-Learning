@@ -27,7 +27,7 @@ const ArticlePage: React.FC = () => {
 
   const articles: ModuleArticle[] = useMemo(
     () => module?.articles || [],
-    [module],
+    [module]
   );
   const total = articles.length;
 
@@ -52,7 +52,7 @@ const ArticlePage: React.FC = () => {
       { label: module?.title || "Modul" },
       { label: "Lernbeiträge" },
     ],
-    [module?.title],
+    [module?.title]
   );
 
   const handlePrev = () => {
@@ -77,7 +77,7 @@ const ArticlePage: React.FC = () => {
   console.log("📄 ArticlePage: Articles in module:", module?.articles);
   console.log(
     "🖼️ ArticlePage: Article images in module:",
-    module?.article_images,
+    module?.article_images
   );
 
   if (!module) {
@@ -123,21 +123,21 @@ const ArticlePage: React.FC = () => {
                 <button
                   onClick={handlePrev}
                   disabled={activeIndex === 0 || total === 0}
-                  className="px-3 py-2 rounded-lg border bg-white/70 text-gray-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Zurück
                 </button>
                 <button
                   onClick={handleNext}
                   disabled={activeIndex >= total - 1 || total === 0}
-                  className="px-3 py-2 rounded-lg border bg-white/70 text-gray-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Weiter
                 </button>
                 {currentArticle?.json_content && (
                   <button
                     onClick={() => setShowJson(true)}
-                    className="px-3 py-2 rounded-lg border bg-white/70 text-gray-700 hover:bg-gray-50"
+                    className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 cursor-pointer"
                   >
                     JSON ansehen
                   </button>
@@ -220,17 +220,17 @@ const ArticlePage: React.FC = () => {
                       JSON.stringify(
                         currentArticle.json_content as Record<string, unknown>,
                         null,
-                        2,
-                      ),
+                        2
+                      )
                     )
                   }
-                  className="px-3 py-1.5 rounded-lg border bg-white text-gray-700 hover:bg-gray-50 text-sm"
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-all duration-200 cursor-pointer text-sm"
                 >
                   Kopieren
                 </button>
                 <button
                   onClick={() => setShowJson(false)}
-                  className="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 text-sm"
+                  className="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 transition-all duration-200 cursor-pointer text-sm"
                 >
                   Schließen
                 </button>
