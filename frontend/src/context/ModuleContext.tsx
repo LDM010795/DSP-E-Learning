@@ -105,6 +105,18 @@ export interface ModuleCategory {
 }
 
 /**
+ * Artikel/Lernbeiträge innerhalb eines Moduls
+ */
+export interface Article {
+  id: number;
+  title: string;
+  order: number;
+  url?: string | null;
+  // JSON content as produced by backend; we only care that it has a 'content' array
+  json_content?: { content?: unknown[] } | null;
+}
+
+/**
  * Modul-Struktur
  */
 export interface Module {
@@ -115,6 +127,8 @@ export interface Module {
   chapters?: Chapter[]; // Neue Chapter-Struktur
   contents?: Content[]; // Fallback für alte Struktur
   tasks?: Task[]; // Fallback für alte Struktur
+  articles?: Article[]; // Lernbeiträge (werden vom Backend mitgeliefert)
+  article_images?: Record<string, string>; // Mapping image_name -> cloud_url
 }
 
 // --- Context Type Definition ---

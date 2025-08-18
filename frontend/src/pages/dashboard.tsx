@@ -21,7 +21,7 @@
  */
 
 import React, { useState /*, useEffect*/ } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TagDifficulty from "../components/tags/tag_difficulty";
 import type { DifficultyLevel } from "../components/tags/tag_difficulty";
 import {
@@ -53,6 +53,7 @@ function Dashboard() {
   // --- State Management ---
   const { modules, loading, error, fetchModules } = useModules();
   const [showAllModules, setShowAllModules] = useState(false);
+  const navigate = useNavigate();
 
   // --- Loading State ---
   if (loading) {
@@ -76,7 +77,7 @@ function Dashboard() {
             <Breadcrumbs items={[{ label: "Dashboard" }]} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Dashboard
               </h1>
             </div>
@@ -116,7 +117,7 @@ function Dashboard() {
 
   const totalLessons = modules.reduce(
     (sum, m) => sum + (m.contents?.length || 0),
-    0,
+    0
   );
   const averageLessonsPerModule =
     totalModules > 0 ? (totalLessons / totalModules).toFixed(1) : "0.0";
@@ -131,14 +132,14 @@ function Dashboard() {
       }
       return acc;
     },
-    {} as Record<DifficultyLevel, number>,
+    {} as Record<DifficultyLevel, number>
   );
 
   /**
    * Berechnet die durchschnittliche Schwierigkeit eines Moduls
    */
   const calculateModuleDifficulty = (
-    tasks?: ContextTask[],
+    tasks?: ContextTask[]
   ): DifficultyLevel | null => {
     if (!tasks || tasks.length === 0) return null;
     const difficultyMap: Record<string, number> = {
@@ -147,13 +148,13 @@ function Dashboard() {
       Schwer: 3,
     };
     const validTasks = tasks.filter(
-      (task) => difficultyMap[task.difficulty] !== undefined,
+      (task) => difficultyMap[task.difficulty] !== undefined
     );
     if (validTasks.length === 0) return null;
 
     const totalDifficultyScore = validTasks.reduce(
       (sum, task) => sum + difficultyMap[task.difficulty],
-      0,
+      0
     );
     const averageScore = totalDifficultyScore / validTasks.length;
 
@@ -247,12 +248,12 @@ function Dashboard() {
   return (
     <div className="min-h-screen">
       {/* --- Hero Section --- */}
-      <div className="px-4 py-8">
-        <div className="max-w-7xl mx-auto">
-          <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+      <div className="px-3 pt-3 pb-6">
+        <div className="max-w-[95vw] mx-auto">
+          <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
               Dashboard
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -261,39 +262,27 @@ function Dashboard() {
             </p>
           </div>
 
-          {/* --- Statistics Cards --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <StatCard
-              title="Verfügbare Module"
-              value={totalModules}
-              icon={<IoLibraryOutline className="text-2xl" />}
-              accentColor="bg-blue-100"
-              description={`${averageLessonsPerModule} Lektionen pro Modul`}
-            />
-            <StatCard
-              title="Gesamtaufgaben"
-              value={totalTasks}
-              icon={<IoListOutline className="text-2xl" />}
-              accentColor="bg-green-100"
-              description={`${averageTasksPerModule} Aufgaben pro Modul`}
-            />
-            <StatCard
-              title="Lernstunden"
-              value="24.5"
-              icon={<IoTimeOutline className="text-2xl" />}
-              accentColor="bg-purple-100"
-              description="Diese Woche"
-            />
-            <StatCard
-              title="Fortschritt"
-              value="68%"
-              icon={<BsSpeedometer2 className="text-2xl" />}
-              accentColor="bg-orange-100"
-              description="Gesamtfortschritt"
-            />
-          </div>
+          {/* --- Statistics Cards (alter Stand) --- */}
+          <SubBackground className="mb-12" padding="lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              <StatCard
+                title="Verfügbare Module"
+                value={totalModules}
+                icon={<IoLibraryOutline className="text-2xl" />}
+                accentColor="bg-blue-100"
+                description={`${averageLessonsPerModule} Lektionen pro Modul`}
+              />
+              <StatCard
+                title="Gesamtaufgaben"
+                value={totalTasks}
+                icon={<IoListOutline className="text-2xl" />}
+                accentColor="bg-green-100"
+                description={`${averageTasksPerModule} Aufgaben pro Modul`}
+              />
+            </div>
+          </SubBackground>
 
-          {/* --- Main Content Grid --- */}
+          {/* --- Main Content Grid (alter Stand) --- */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* --- Module Overview --- */}
             <div className="lg:col-span-2">
@@ -351,7 +340,7 @@ function Dashboard() {
                             </Link>
                           </div>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
 
@@ -393,7 +382,7 @@ function Dashboard() {
                             {count}
                           </span>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 </div>

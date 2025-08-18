@@ -5,7 +5,7 @@ const ContentTableOfContents: React.FC<ContentTableOfContentsProps> = ({
   items,
 }) => {
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 my-6">
+    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 my-6 w-full">
       <h3 className="text-lg font-semibold text-gray-900 mb-3">
         Inhaltsverzeichnis
       </h3>

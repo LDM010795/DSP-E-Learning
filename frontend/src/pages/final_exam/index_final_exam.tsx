@@ -32,12 +32,12 @@ const IndexFinalExam: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionComment, setSubmissionComment] = useState("");
   const [selectedAttemptId, setSelectedAttemptId] = useState<number | null>(
-    null,
+    null
   );
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedExamForPopup, setSelectedExamForPopup] = useState<Exam | null>(
-    null,
+    null
   );
   const [selectedAttemptForPopup, setSelectedAttemptForPopup] =
     useState<ExamAttempt | null>(null);
@@ -101,7 +101,7 @@ const IndexFinalExam: React.FC = () => {
     if (!container) return;
 
     const activeButton = container.querySelector<HTMLButtonElement>(
-      `[data-tab="${activeTab}"]`,
+      `[data-tab="${activeTab}"]`
     );
     if (activeButton) {
       setSliderStyle({
@@ -128,7 +128,7 @@ const IndexFinalExam: React.FC = () => {
               "relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer",
               activeTab === tab
                 ? "text-white"
-                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
             )}
           >
             {tabLabels[tab]} {/* Verwende das Label aus dem Mapping */}
@@ -189,7 +189,7 @@ const IndexFinalExam: React.FC = () => {
   const handleSubmitExam = async () => {
     if (selectedAttemptId !== null) {
       console.log(
-        `Submitting exam attempt ${selectedAttemptId} with ${uploadedFiles.length} files`,
+        `Submitting exam attempt ${selectedAttemptId} with ${uploadedFiles.length} files`
       );
       try {
         const success = await submitExam(selectedAttemptId, uploadedFiles);
@@ -271,13 +271,13 @@ const IndexFinalExam: React.FC = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
+        <div className="relative px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
             <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
-                Abschlussprüfungen
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
+                Abschlussprüfung
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 Hier findest du alle verfügbaren Abschlussprüfungen und kannst

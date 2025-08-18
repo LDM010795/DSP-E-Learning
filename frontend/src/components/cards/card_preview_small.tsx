@@ -89,7 +89,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
         "shadow-sm hover:shadow-md",
         "transition-all duration-200 ease-in-out",
         "hover:scale-[1.02] hover:-translate-y-1",
-        className,
+        className
       )}
       onClick={onClick}
       whileHover={{ y: -2 }}
@@ -101,7 +101,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
           className={clsx(
             "relative w-full aspect-video overflow-hidden",
             "bg-gradient-to-br from-gray-100 to-gray-200",
-            classNameImage,
+            classNameImage
           )}
         >
           <img
@@ -141,7 +141,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
               "font-semibold text-gray-900 text-base leading-tight",
               "group-hover:text-[#ff863d] transition-colors duration-200",
               "line-clamp-2",
-              classNameTitle,
+              classNameTitle
             )}
           >
             {title}
@@ -151,7 +151,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
             <p
               className={clsx(
                 "text-sm text-gray-600 mt-2 line-clamp-2",
-                classNameDescription,
+                classNameDescription
               )}
             >
               {description}
@@ -181,7 +181,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
                   : status === "in-progress"
                     ? "text-[#ff863d]"
                     : "text-gray-500",
-                classNameProgressText,
+                classNameProgressText
               )}
             >
               {progress}%
@@ -195,7 +195,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
                 className={clsx(
                   "h-2 rounded-full transition-all duration-300",
                   getProgressBarColor(),
-                  classNameProgressBar,
+                  classNameProgressBar
                 )}
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
@@ -208,7 +208,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
               <div
                 className={clsx(
                   "absolute top-0 left-0 h-2 rounded-full opacity-50 blur-sm",
-                  getProgressBarColor(),
+                  getProgressBarColor()
                 )}
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />

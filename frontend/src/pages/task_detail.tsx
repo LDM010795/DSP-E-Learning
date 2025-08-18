@@ -88,19 +88,19 @@ function TaskDetails() {
 
   const previousTask = useMemo(
     () => (currentTaskIndex > 0 ? tasks[currentTaskIndex - 1] : undefined),
-    [tasks, currentTaskIndex],
+    [tasks, currentTaskIndex]
   );
   const nextTask = useMemo(
     () =>
       currentTaskIndex < tasks.length - 1
         ? tasks[currentTaskIndex + 1]
         : undefined,
-    [tasks, currentTaskIndex],
+    [tasks, currentTaskIndex]
   );
   const isFirstTask = useMemo(() => currentTaskIndex === 0, [currentTaskIndex]);
   const isLastTask = useMemo(
     () => currentTaskIndex === tasks.length - 1,
-    [tasks, currentTaskIndex],
+    [tasks, currentTaskIndex]
   );
 
   const handleTaskSuccess = useCallback(() => {
@@ -155,12 +155,12 @@ function TaskDetails() {
     ];
     return (
       <div className="min-h-screen">
-        <div className="px-4 py-8">
+        <div className="px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={errorBreadcrumbs} className="mb-6" />
+            <Breadcrumbs items={errorBreadcrumbs} className="mb-3" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Fehler beim Laden
               </h1>
             </div>
@@ -196,15 +196,15 @@ function TaskDetails() {
     ];
     return (
       <div className="min-h-screen">
-        <div className="px-4 py-8">
+        <div className="px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
             <Breadcrumbs
               items={moduleNotFoundErrorBreadcrumbs}
-              className="mb-6"
+              className="mb-3"
             />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Modul nicht gefunden
               </h1>
             </div>
@@ -243,15 +243,15 @@ function TaskDetails() {
     ];
     return (
       <div className="min-h-screen">
-        <div className="px-4 py-8">
+        <div className="px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
             <Breadcrumbs
               items={taskNotFoundErrorBreadcrumbs}
-              className="mb-6"
+              className="mb-3"
             />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Aufgabe nicht gefunden
               </h1>
             </div>
@@ -296,10 +296,10 @@ function TaskDetails() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
+        <div className="relative px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
             {breadcrumbItems.length > 0 && (
-              <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+              <Breadcrumbs items={breadcrumbItems} className="mb-3" />
             )}
 
             {isPageLoading ? (
@@ -323,7 +323,7 @@ function TaskDetails() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent">
+                            <h1 className="text-3xl md:text-4xl font-bold text-gray-700">
                               {currentTask.title}
                             </h1>
                             {currentTask.completed && (
@@ -422,16 +422,14 @@ function TaskDetails() {
                   {/* Task Content Area - basierend auf task_type */}
                   <div className="lg:col-span-2">
                     <SubBackground>
-                      {currentTask.task_type === 'programming' ? (
+                      {currentTask.task_type === "programming" ? (
                         <CodeEditorWithOutput
                           taskId={currentTask.id}
                           className="rounded-xl overflow-hidden"
                           onSuccess={handleTaskSuccess}
                         />
-                      ) : currentTask.task_type === 'multiple_choice' ? (
-                        <div>
-
-                        </div>
+                      ) : currentTask.task_type === "multiple_choice" ? (
+                        <div></div>
                       ) : (
                         <div className="flex items-center justify-center min-h-[400px]">
                           <div className="text-center">
@@ -440,10 +438,13 @@ function TaskDetails() {
                               Task-Typ nicht unterstützt
                             </h2>
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                              Der Task-Typ "{currentTask.task_type}" wird noch nicht unterstützt.
+                              Der Task-Typ "{currentTask.task_type}" wird noch
+                              nicht unterstützt.
                             </p>
                             <div className="flex items-center justify-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                              <span className="text-sm font-medium text-gray-600">Task-Type:</span>
+                              <span className="text-sm font-medium text-gray-600">
+                                Task-Type:
+                              </span>
                               <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                                 {currentTask.task_type}
                               </span>

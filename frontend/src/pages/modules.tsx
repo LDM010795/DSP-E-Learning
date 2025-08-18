@@ -37,7 +37,7 @@ function Modules() {
   >([]);
   // NEU: State für Kategorie-Filter
   const [activeCategoryFilters, setActiveCategoryFilters] = useState<string[]>(
-    [],
+    []
   );
   // NEU: State für den Ansichtsmodus - Default bleibt "standard"
   const [viewMode, setViewMode] = useState<ViewMode>("standard");
@@ -51,7 +51,7 @@ function Modules() {
   useEffect(() => {
     console.log(
       "Modules-Komponente: Aktualisierte Module erhalten",
-      modules.length,
+      modules.length
     );
   }, [modules]);
 
@@ -151,7 +151,7 @@ function Modules() {
   const sortedAndFilteredModules = [...modules]
     .filter((module: Module) => {
       const calculateDifficultyForFilter = (
-        tasksForFilter?: Task[],
+        tasksForFilter?: Task[]
       ): DifficultyLevel | null => {
         if (!tasksForFilter || tasksForFilter.length === 0) return null;
         const difficultyMap: Record<string, number> = {
@@ -161,7 +161,7 @@ function Modules() {
         };
         const totalDifficultyScore = tasksForFilter.reduce(
           (sum, task) => sum + (difficultyMap[task.difficulty] || 0),
-          0,
+          0
         );
         const averageScore = totalDifficultyScore / tasksForFilter.length;
         if (averageScore < 1.7) return "Einfach";
@@ -236,7 +236,7 @@ function Modules() {
             <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Modulübersicht
               </h1>
             </div>
@@ -268,12 +268,12 @@ function Modules() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
+        <div className="relative px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
             <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Modulübersicht
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -302,7 +302,7 @@ function Modules() {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 pb-8">
+      <div className="px-3 pb-6">
         <div className="max-w-[95vw] mx-auto">
           {/* Module Count & Filter Status */}
           <div className="flex items-center space-x-4 mb-6">
@@ -375,7 +375,7 @@ function Modules() {
                         "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
                         viewMode === "standard"
                           ? "bg-[#ff863d] text-white shadow-sm"
-                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
                       )}
                       aria-label="Standardansicht"
                       title="Standardansicht"
@@ -390,7 +390,7 @@ function Modules() {
                         "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
                         viewMode === "table"
                           ? "bg-[#ff863d] text-white shadow-sm"
-                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5"
                       )}
                       aria-label="Tabellenansicht"
                       title="Tabellenansicht"
@@ -407,7 +407,7 @@ function Modules() {
             {viewMode === "standard" ? (
               <div
                 className={clsx(
-                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
+                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
                 )}
               >
                 {sortedAndFilteredModules.length > 0 ? (
@@ -415,7 +415,7 @@ function Modules() {
                     const moduleTasks = module.tasks || [];
                     const totalTasksInModule = moduleTasks.length;
                     const completedTasksInModule = moduleTasks.filter(
-                      (task) => task.completed,
+                      (task) => task.completed
                     ).length;
                     const progressPercent =
                       totalTasksInModule > 0

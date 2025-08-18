@@ -94,7 +94,7 @@ function ChapterDetail() {
             <Breadcrumbs items={errorBreadcrumbs} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Kapitel nicht gefunden
               </h1>
             </div>
@@ -132,26 +132,18 @@ function ChapterDetail() {
 
   return (
     <div className="min-h-screen">
-      <div className="px-4 py-8">
+      <div className="px-3 pt-3 pb-6">
         <div className="max-w-[95vw] mx-auto">
-          <Breadcrumbs items={breadcrumbs} className="mb-6" />
+          <Breadcrumbs items={breadcrumbs} className="mb-3" />
 
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <button
-                onClick={handleBackToModule}
-                className="flex items-center gap-2 text-gray-600 hover:text-[#ff863d] transition-colors"
-              >
-                <IoArrowBackOutline className="h-5 w-5" />
-                <span>Zurück zum Modul</span>
-              </button>
-            </div>
+            {/* Zurück-zum-Modul Button entfernt */}
 
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-2">
-                  {chapter.title}
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-700 mb-2">
+                  Kapitel: {chapter.title}
                 </h1>
                 {chapter.description && (
                   <p className="text-gray-600 text-lg leading-relaxed max-w-3xl">
@@ -160,23 +152,14 @@ function ChapterDetail() {
                 )}
               </div>
 
-              {/* Progress */}
-              <div className="text-right">
-                <div className="text-2xl font-bold text-[#ff863d]">
-                  {chapterProgress}%
-                </div>
-                <div className="text-sm text-gray-600">
-                  {chapter.tasks.filter((t) => t.completed).length} von{" "}
-                  {chapter.tasks.length} Aufgaben
-                </div>
-              </div>
+              {/* Progress entfernt (nur in Kapitelübersicht anzeigen) */}
             </div>
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Videos */}
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 gap-8">
+            {/* Videos */}
+            <div>
               {selectedVideo ? (
                 // Video Player View
                 <motion.div
@@ -193,23 +176,21 @@ function ChapterDetail() {
                       (c) => c.id === selectedVideo.id
                     )}
                     totalLessons={chapter.contents.length}
-                    tasks={chapter.tasks}
+                    contentId={selectedVideo.id}
+                    relatedVideos={chapter.contents.map((c) => ({
+                      id: c.id,
+                      title: c.title,
+                      video_url: c.video_url,
+                    }))}
+                    onSelectContent={(id) => {
+                      const target = chapter.contents.find((c) => c.id === id);
+                      if (target) setSelectedVideo(target);
+                    }}
                   />
-
-                  {/* Back to Video List Button */}
-                  <div className="mt-6">
-                    <button
-                      onClick={() => setSelectedVideo(null)}
-                      className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#ff863d] transition-colors"
-                    >
-                      <IoListOutline className="h-4 w-4" />
-                      <span>Zurück zur Videoliste</span>
-                    </button>
-                  </div>
                 </motion.div>
               ) : (
                 // Video List View
-                <div>
+                <SubBackground>
                   <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                     <IoVideocamOutline className="h-5 w-5 text-[#ff863d]" />
                     Lernvideos ({chapter.contents.length})
@@ -222,7 +203,7 @@ function ChapterDetail() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="bg-white rounded-lg border border-gray-200 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
+                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4]/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
                         onClick={() => handleVideoSelect(video)}
                       >
                         <div className="flex items-center gap-4">
@@ -246,72 +227,11 @@ function ChapterDetail() {
                       </motion.div>
                     ))}
                   </div>
-                </div>
+                </SubBackground>
               )}
             </div>
 
-            {/* Right Column - Tasks */}
-            <div className="lg:col-span-1">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <IoCheckmarkCircleOutline className="h-5 w-5 text-[#ff863d]" />
-                Aufgaben ({chapter.tasks.length})
-              </h2>
-
-              <div className="space-y-3">
-                {chapter.tasks.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <IoListOutline className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>Keine Aufgaben für dieses Kapitel verfügbar.</p>
-                  </div>
-                ) : (
-                  chapter.tasks.map((task, index) => (
-                    <motion.div
-                      key={task.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="bg-white rounded-lg border border-gray-200 p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                            task.completed
-                              ? "bg-green-500 text-white"
-                              : "bg-gray-200 text-gray-600"
-                          }`}
-                        >
-                          {task.completed ? (
-                            <IoCheckmarkCircle className="h-4 w-4" />
-                          ) : (
-                            <span className="text-xs font-medium">
-                              {index + 1}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-gray-900 mb-1">
-                            {task.title}
-                          </h3>
-                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                            {task.description}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <TagDifficulty
-                              difficulty={task.difficulty as DifficultyLevel}
-                            />
-                            {task.hint && (
-                              <span className="text-xs text-gray-500">
-                                💡 Tipp verfügbar
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
-                )}
-              </div>
-            </div>
+            {/* Aufgaben-Liste entfernt (nur in Kapitelübersicht anzeigen) */}
           </div>
         </div>
       </div>

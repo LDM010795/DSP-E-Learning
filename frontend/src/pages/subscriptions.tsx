@@ -187,7 +187,7 @@ const SubscriptionsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden -mx-20 -my-10">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Parallax Hintergrund-Element mit Gradient */}
       <motion.div
         className="absolute inset-x-0 top-0 h-[150%] z-0"
@@ -398,7 +398,7 @@ const SubscriptionsPage: React.FC = () => {
           animate="animate"
           className="text-center mb-20"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-gray-600">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-700 mb-6">
             Wähle deinen Plan
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -452,7 +452,7 @@ const SubscriptionsPage: React.FC = () => {
               {/* Plan Header with Gradient */}
               <div
                 className={`p-6 bg-gradient-to-r ${getAccentColor(
-                  plan.name,
+                  plan.name
                 )} text-white relative overflow-hidden`}
               >
                 {/* Decorative circle */}
@@ -510,7 +510,7 @@ const SubscriptionsPage: React.FC = () => {
                       : plan.highlight
                         ? "bg-gradient-to-r from-[#ff863d] to-[#ff863d] text-white"
                         : `bg-gradient-to-r ${getAccentColor(
-                            plan.name,
+                            plan.name
                           )} text-white`
                   } focus:outline-none focus:ring-2 focus:ring-dsp-orange focus:ring-opacity-50`}
                 >

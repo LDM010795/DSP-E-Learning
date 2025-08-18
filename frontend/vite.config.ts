@@ -101,7 +101,7 @@ export default defineConfig({
   define: {
     // Deaktiviere Source Maps für Monaco Editor
     "process.env.NODE_ENV": JSON.stringify(
-      process.env.NODE_ENV || "development",
+      process.env.NODE_ENV || "development"
     ),
   },
 
