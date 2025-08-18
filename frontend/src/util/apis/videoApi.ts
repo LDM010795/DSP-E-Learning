@@ -35,7 +35,7 @@ export const getPresignedUrlById = async (contentId: number) => {
  */
 export const getPresignedUrlByKey = async (key: string) => {
   const response = await api.get(
-    `${VIDEO_ENDPOINTS.PRESIGNED_BY_KEY}?key=${encodeURIComponent(key)}`
+    `${VIDEO_ENDPOINTS.PRESIGNED_BY_KEY}?key=${encodeURIComponent(key)}`,
   );
   return response.data;
 };

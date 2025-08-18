@@ -4,7 +4,7 @@ import { JsonContentBlock } from "./types";
  * Konvertiert rohe JSON-Daten in das erwartete JsonContentBlock Format
  */
 export const convertToJsonContentBlock = (
-  rawData: unknown
+  rawData: unknown,
 ): JsonContentBlock[] => {
   if (!rawData || !Array.isArray(rawData)) {
     console.warn("Ungültige JSON-Daten: Kein Array gefunden");
@@ -74,7 +74,7 @@ export const validateContentData = (data: unknown): string[] => {
  */
 export const sectionizeFallback = (
   text: string,
-  wordsPerSection: number = 150
+  wordsPerSection: number = 150,
 ): string[] => {
   if (!text) return [];
 
@@ -209,7 +209,7 @@ function splitSentencesDEAdvanced(text: string): string[] {
 
 export function autoParagraphSegments(
   raw: string,
-  opts: ParagraphingOptions = {}
+  opts: ParagraphingOptions = {},
 ): string[] {
   const { minWords = 40, targetWords = 100, maxWords = 160 } = opts;
   const sections: string[] = [];

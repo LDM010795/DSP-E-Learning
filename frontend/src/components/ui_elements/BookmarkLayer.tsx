@@ -34,7 +34,7 @@ const BookmarkLayer: React.FC<BookmarkLayerProps> = ({
         </div>
       ))}
     </>,
-    document.body
+    document.body,
   );
 };
 

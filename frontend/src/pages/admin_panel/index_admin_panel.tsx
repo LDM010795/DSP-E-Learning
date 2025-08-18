@@ -65,7 +65,7 @@ const IndexAdminPanel: React.FC = () => {
     }
 
     const activeButton = container.querySelector<HTMLButtonElement>(
-      `[data-tab="${activeTab}"]`
+      `[data-tab="${activeTab}"]`,
     );
     if (activeButton) {
       setSliderStyle({
@@ -121,7 +121,7 @@ const IndexAdminPanel: React.FC = () => {
                     : isDisabled
                       ? "text-gray-400 cursor-not-allowed"
                       : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
-                  isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                  isDisabled ? "cursor-not-allowed" : "cursor-pointer",
                 )}
                 title={isDisabled ? "Nur für Administratoren" : description}
               >
@@ -169,7 +169,7 @@ const IndexAdminPanel: React.FC = () => {
                     "inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium",
                     user?.is_superuser
                       ? "bg-green-50 text-green-700 border border-green-200"
-                      : "bg-blue-50 text-blue-700 border border-blue-200"
+                      : "bg-blue-50 text-blue-700 border border-blue-200",
                   )}
                 >
                   <IoShieldCheckmarkOutline className="w-4 h-4" />

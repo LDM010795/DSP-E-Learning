@@ -39,12 +39,12 @@ const DraggableResizableWindow: React.FC<DraggableResizableWindowProps> = ({
   const defaultW = Math.min(
     initialWidth ?? 794,
     maxWidth ?? Number.POSITIVE_INFINITY,
-    Math.max(minWidth, Math.floor(viewportW * 0.9))
+    Math.max(minWidth, Math.floor(viewportW * 0.9)),
   );
   const defaultH = Math.min(
     initialHeight ?? 1123,
     maxHeight ?? Number.POSITIVE_INFINITY,
-    Math.max(minHeight, Math.floor(viewportH * 0.9))
+    Math.max(minHeight, Math.floor(viewportH * 0.9)),
   );
 
   const [rect, setRect] = React.useState({
@@ -103,19 +103,19 @@ const DraggableResizableWindow: React.FC<DraggableResizableWindowProps> = ({
     const viewportLimitH = Math.max(0, viewportH - rect.t - 8);
     const hardMaxW = Math.min(
       viewportLimitW,
-      maxWidth ?? Number.POSITIVE_INFINITY
+      maxWidth ?? Number.POSITIVE_INFINITY,
     );
     const hardMaxH = Math.min(
       viewportLimitH,
-      maxHeight ?? Number.POSITIVE_INFINITY
+      maxHeight ?? Number.POSITIVE_INFINITY,
     );
     const w = Math.min(
       Math.max(minWidth, resizeState.current.w + dx),
-      hardMaxW
+      hardMaxW,
     );
     const h = Math.min(
       Math.max(minHeight, resizeState.current.h + dy),
-      hardMaxH
+      hardMaxH,
     );
     setRect((r) => ({ ...r, w, h }));
   };
@@ -127,11 +127,11 @@ const DraggableResizableWindow: React.FC<DraggableResizableWindowProps> = ({
       const viewportLimitH = Math.max(0, viewportH - r.t - 8);
       const hardMaxW = Math.min(
         viewportLimitW,
-        maxWidth ?? Number.POSITIVE_INFINITY
+        maxWidth ?? Number.POSITIVE_INFINITY,
       );
       const hardMaxH = Math.min(
         viewportLimitH,
-        maxHeight ?? Number.POSITIVE_INFINITY
+        maxHeight ?? Number.POSITIVE_INFINITY,
       );
       const w = Math.min(Math.max(minWidth, r.w), hardMaxW);
       const h = Math.min(Math.max(minHeight, r.h), hardMaxH);

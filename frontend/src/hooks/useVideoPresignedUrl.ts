@@ -24,7 +24,7 @@ export function usePresignedById(contentId?: number) {
     enabled,
     queryFn: async () => {
       console.log(
-        `🔍 DEBUG: Hook - Request presigned URL für contentId: ${contentId}`
+        `🔍 DEBUG: Hook - Request presigned URL für contentId: ${contentId}`,
       );
       const data = await getPresignedUrlById(contentId!);
       console.log(`🔍 DEBUG: Hook - Response Data:`, data);
@@ -81,7 +81,7 @@ export function useStoragePresignedByKey(key?: string) {
     enabled,
     queryFn: async () => {
       console.log(
-        `🔍 DEBUG: Hook - Request STORAGE presigned URL für key: ${key}`
+        `🔍 DEBUG: Hook - Request STORAGE presigned URL für key: ${key}`,
       );
       const data = await getPresignedByKey(key!);
       console.log(`🔍 DEBUG: Hook - STORAGE Response Data:`, data);

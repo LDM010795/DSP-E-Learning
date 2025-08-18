@@ -6,7 +6,7 @@ export const getCssPath = (el: Element): string => {
     const parent: Element | null = node.parentElement;
     if (!parent) break;
     const siblings = Array.from(parent.children).filter(
-      (c: Element) => c.tagName === node!.tagName
+      (c: Element) => c.tagName === node!.tagName,
     );
     const index = siblings.indexOf(node) + 1;
     segments.unshift(`${tag}:nth-of-type(${index})`);
@@ -32,14 +32,14 @@ export const highlightAnchor = (el: HTMLElement, ms = 1200): void => {
     "ring-2",
     "ring-amber-400",
     "ring-offset-2",
-    "ring-offset-transparent"
+    "ring-offset-transparent",
   );
   window.setTimeout(() => {
     el.classList.remove(
       "ring-2",
       "ring-amber-400",
       "ring-offset-2",
-      "ring-offset-transparent"
+      "ring-offset-transparent",
     );
   }, ms);
 };

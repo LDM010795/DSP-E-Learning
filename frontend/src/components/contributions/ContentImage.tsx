@@ -22,7 +22,7 @@ const ContentImage: React.FC<ContentImageProps> = ({ src, alt, caption }) => {
           observer.disconnect();
         }
       },
-      { root: null, rootMargin: "200px", threshold: 0.01 }
+      { root: null, rootMargin: "200px", threshold: 0.01 },
     );
     observer.observe(containerRef.current);
     return () => observer.disconnect();

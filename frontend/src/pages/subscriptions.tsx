@@ -452,7 +452,7 @@ const SubscriptionsPage: React.FC = () => {
               {/* Plan Header with Gradient */}
               <div
                 className={`p-6 bg-gradient-to-r ${getAccentColor(
-                  plan.name
+                  plan.name,
                 )} text-white relative overflow-hidden`}
               >
                 {/* Decorative circle */}
@@ -510,7 +510,7 @@ const SubscriptionsPage: React.FC = () => {
                       : plan.highlight
                         ? "bg-gradient-to-r from-[#ff863d] to-[#ff863d] text-white"
                         : `bg-gradient-to-r ${getAccentColor(
-                            plan.name
+                            plan.name,
                           )} text-white`
                   } focus:outline-none focus:ring-2 focus:ring-dsp-orange focus:ring-opacity-50`}
                 >

@@ -62,7 +62,7 @@ function ChapterDetail() {
   const chapterProgress = useMemo(() => {
     if (!chapter || chapter.tasks.length === 0) return 0;
     const completedTasks = chapter.tasks.filter(
-      (task) => task.completed
+      (task) => task.completed,
     ).length;
     return Math.round((completedTasks / chapter.tasks.length) * 100);
   }, [chapter]);
@@ -173,7 +173,7 @@ function ChapterDetail() {
                     description={selectedVideo.description}
                     supplementaryContent={selectedVideo.supplementary_contents}
                     currentLessonIndex={chapter.contents.findIndex(
-                      (c) => c.id === selectedVideo.id
+                      (c) => c.id === selectedVideo.id,
                     )}
                     totalLessons={chapter.contents.length}
                     contentId={selectedVideo.id}

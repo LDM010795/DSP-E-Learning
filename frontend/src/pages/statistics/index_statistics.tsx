@@ -111,7 +111,7 @@ function IndexStatistics() {
                       "hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
                       activeTab === tab.id
                         ? "bg-[#ff863d] text-white shadow-sm"
-                        : "bg-white/60 text-gray-600 hover:bg-white/80 hover:text-[#ff863d] border border-white/40"
+                        : "bg-white/60 text-gray-600 hover:bg-white/80 hover:text-[#ff863d] border border-white/40",
                     )}
                   >
                     <IconComponent className="w-6 h-6 mx-auto mb-2" />
@@ -119,7 +119,9 @@ function IndexStatistics() {
                     <div
                       className={clsx(
                         "text-xs mt-1 leading-tight",
-                        activeTab === tab.id ? "text-white/80" : "text-gray-500"
+                        activeTab === tab.id
+                          ? "text-white/80"
+                          : "text-gray-500",
                       )}
                     >
                       {tab.description}

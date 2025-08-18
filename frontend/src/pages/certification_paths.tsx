@@ -47,7 +47,7 @@ interface ApiCertificationPath {
 
 // Hilfsfunktion, um Icon-Namen zu Komponenten zu mappen
 const getIconComponent = (
-  iconName: string | null | undefined
+  iconName: string | null | undefined,
 ): React.ElementType => {
   if (iconName && Icons[iconName as keyof typeof Icons]) {
     return Icons[iconName as keyof typeof Icons];
@@ -94,7 +94,7 @@ const ExamAccordionItem: React.FC<{
         "cursor-pointer",
         isCompleted
           ? "bg-green-50/60 border-green-200" // Kein Hover-Effekt für abgeschlossene
-          : "bg-white/60 border-white/40 backdrop-blur-sm hover:bg-[#ffe7d4]/60"
+          : "bg-white/60 border-white/40 backdrop-blur-sm hover:bg-[#ffe7d4]/60",
       )}
       // KORREKTUR: Accessibility immer anwenden
       role="button"
@@ -113,7 +113,7 @@ const ExamAccordionItem: React.FC<{
             "w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold",
             isCompleted
               ? "bg-green-500 text-white"
-              : "bg-gray-200 text-gray-600"
+              : "bg-gray-200 text-gray-600",
           )}
         >
           {isCompleted ? <Icons.IoCheckmark className="w-4 h-4" /> : index + 1}
@@ -126,7 +126,7 @@ const ExamAccordionItem: React.FC<{
           <p
             className={clsx(
               "text-base font-semibold",
-              isCompleted ? "text-gray-600 line-through" : "text-gray-800"
+              isCompleted ? "text-gray-600 line-through" : "text-gray-800",
             )}
           >
             {exam.exam_title}
@@ -169,7 +169,7 @@ function CertificationPaths() {
 
   // State für das Popup
   const [selectedExamForPopup, setSelectedExamForPopup] = useState<Exam | null>(
-    null
+    null,
   );
 
   // Cached API für Certification Paths mit 5-Minuten Cache
@@ -181,16 +181,16 @@ function CertificationPaths() {
     "certification-paths",
     async () => {
       const response = await api.get<ApiCertificationPath[]>(
-        "/exams/certification-paths/"
+        "/exams/certification-paths/",
       );
       // Sortiere Pfade nach 'order', dann 'title'
       const sortedPaths = (response.data || []).sort(
         (a, b) =>
-          (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title)
+          (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title),
       );
       return sortedPaths;
     },
-    { ttl: 300000 } // 5 Minuten Cache
+    { ttl: 300000 }, // 5 Minuten Cache
   );
 
   // Error handling
@@ -215,7 +215,7 @@ function CertificationPaths() {
       setSelectedExamForPopup(fullExam);
     } else {
       console.warn(
-        `Vollständige Exam-Daten für ID ${examId} nicht in allExams gefunden.`
+        `Vollständige Exam-Daten für ID ${examId} nicht in allExams gefunden.`,
       );
     }
   };
@@ -317,7 +317,7 @@ function CertificationPaths() {
                   // --- Fortschrittsberechnung ---
                   const totalExams = sortedExams.length;
                   const completedExamCount = sortedExams.filter((exam) =>
-                    completedExamIds.has(exam.id)
+                    completedExamIds.has(exam.id),
                   ).length;
                   const isPathCompleted =
                     totalExams > 0 && completedExamCount === totalExams;
@@ -341,7 +341,7 @@ function CertificationPaths() {
                                 "text-xs font-medium px-2 py-0.5 rounded-full",
                                 isPathCompleted
                                   ? "bg-green-100 text-green-800"
-                                  : "bg-gray-100 text-gray-600"
+                                  : "bg-gray-100 text-gray-600",
                               )}
                             >
                               {completedExamCount} / {totalExams} abgeschlossen
@@ -384,7 +384,7 @@ function CertificationPaths() {
                             {sortedExams.map((exam, index) => {
                               // Finde die vollen Exam-Daten für die Beschreibung
                               const fullExam = allExams.find(
-                                (e) => e.id === exam.id
+                                (e) => e.id === exam.id,
                               );
                               return (
                                 <ExamAccordionItem
@@ -436,7 +436,7 @@ function CertificationPaths() {
           // Finde den passenden Attempt für die ausgewählte Prüfung
           const attemptForPopup =
             completedExams.find(
-              (att) => att.exam.id === selectedExamForPopup.id
+              (att) => att.exam.id === selectedExamForPopup.id,
             ) || null; // Fallback auf null, falls kein Attempt gefunden wird
 
           return (

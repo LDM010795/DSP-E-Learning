@@ -85,14 +85,14 @@ const VideoControls: React.FC<Props> = ({
       duration > 0
         ? Math.min(100, Math.max(0, (currentTime / duration) * 100))
         : 0,
-    [currentTime, duration]
+    [currentTime, duration],
   );
   const bufferedPercent = useMemo(
     () =>
       duration > 0
         ? Math.min(100, Math.max(0, (buffered / duration) * 100))
         : 0,
-    [buffered, duration]
+    [buffered, duration],
   );
 
   return (

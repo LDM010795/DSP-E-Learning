@@ -10,7 +10,7 @@ export const shortenUrl = (url: string, maxLength: number = 60): string => {
 export const renderLink = (
   url: string,
   key: string | number,
-  maxLength: number = 60
+  maxLength: number = 60,
 ): React.ReactNode => {
   const displayText = shortenUrl(url, maxLength);
   return (
@@ -29,7 +29,7 @@ export const renderLink = (
 
 export const processLinksInText = (
   text: string,
-  maxLength: number = 60
+  maxLength: number = 60,
 ): React.ReactNode[] => {
   const urlRegex = /(https?:\/\/[^\s,;]+)/g;
   const parts = text.split(urlRegex);

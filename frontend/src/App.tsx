@@ -95,7 +95,7 @@ const AppContent: React.FC = () => {
               "/certification-paths", // Zertifikatspfade
               "/final-exam", // Abschlussprüfungen
               "/user-stats", // Deine Statistik
-            ].includes(link.to)
+            ].includes(link.to),
         ),
         // Kein Back‑Office, keine Content Demo im Header
       ]

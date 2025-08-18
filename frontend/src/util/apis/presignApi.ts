@@ -20,7 +20,7 @@ export const PRESIGN_ENDPOINTS = {
  */
 export const getPresignedByKey = async (key: string) => {
   const response = await api.get(
-    `${PRESIGN_ENDPOINTS.SIGN_BY_KEY}?key=${encodeURIComponent(key)}`
+    `${PRESIGN_ENDPOINTS.SIGN_BY_KEY}?key=${encodeURIComponent(key)}`,
   );
   return response.data as {
     presigned_url: string;

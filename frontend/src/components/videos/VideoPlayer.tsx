@@ -31,7 +31,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   crossOrigin,
 }) => {
   console.log(
-    `🔍 DEBUG: VideoPlayer - Eingang: videoUrl=${videoUrl}, contentId=${contentId}`
+    `🔍 DEBUG: VideoPlayer - Eingang: videoUrl=${videoUrl}, contentId=${contentId}`,
   );
 
   if (!videoUrl) {

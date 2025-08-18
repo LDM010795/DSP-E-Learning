@@ -26,7 +26,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
   // Scope bookmarks by pathname to avoid collisions across pages
   const scopedKey = useMemo(
     () => `${storageKey}:${location.pathname}`,
-    [storageKey]
+    [storageKey],
   );
 
   useEffect(() => {
@@ -100,14 +100,14 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
           "ring-2",
           "ring-amber-400",
           "ring-offset-2",
-          "ring-offset-transparent"
+          "ring-offset-transparent",
         );
         window.setTimeout(() => {
           el.classList.remove(
             "ring-2",
             "ring-amber-400",
             "ring-offset-2",
-            "ring-offset-transparent"
+            "ring-offset-transparent",
           );
         }, 1200);
         return;
@@ -124,7 +124,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
       (n as HTMLElement).classList.remove(
         "relative",
         "pl-2",
-        "shadow-[inset_3px_0_0_#f59e0b]"
+        "shadow-[inset_3px_0_0_#f59e0b]",
       );
     });
     bookmarks.forEach((b) => {
@@ -142,7 +142,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
         (n as HTMLElement).classList.remove(
           "relative",
           "pl-2",
-          "shadow-[inset_3px_0_0_#f59e0b]"
+          "shadow-[inset_3px_0_0_#f59e0b]",
         );
       });
     };
@@ -165,8 +165,8 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
     if (!editingId) return;
     setBookmarks((prev) =>
       prev.map((b) =>
-        b.id === editingId ? { ...b, label: editValue.trim() || b.label } : b
-      )
+        b.id === editingId ? { ...b, label: editValue.trim() || b.label } : b,
+      ),
     );
     setEditingId(null);
     setEditValue("");

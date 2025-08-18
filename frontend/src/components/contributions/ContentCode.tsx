@@ -37,7 +37,7 @@ const ContentCode: React.FC<ContentCodeProps> = ({
 
   const cleanText = React.useMemo(
     () => text.replace(/^(sql\$|js\$|ts\$|py\$|css\$|html\$)\s*/i, "").trim(),
-    [text]
+    [text],
   );
 
   const prismLang = normalizeLang(language);
