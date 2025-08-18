@@ -57,14 +57,14 @@ const WasabiPlayer: React.FC<WasabiPlayerProps> = (props) => {
   const loading = fId || fKey;
 
   console.log(
-    `🔍 DEBUG: WasabiPlayer - urlById: ${urlById ? "verfügbar" : "nicht verfügbar"}`
+    `🔍 DEBUG: WasabiPlayer - urlById: ${urlById ? "verfügbar" : "nicht verfügbar"}`,
   );
   console.log(`🔍 DEBUG: WasabiPlayer - key: ${key}`);
   console.log(
-    `🔍 DEBUG: WasabiPlayer - urlByKey: ${urlByKey ? "verfügbar" : "nicht verfügbar"}`
+    `🔍 DEBUG: WasabiPlayer - urlByKey: ${urlByKey ? "verfügbar" : "nicht verfügbar"}`,
   );
   console.log(
-    `🔍 DEBUG: WasabiPlayer - presignedUrl: ${presignedUrl ? "verfügbar" : "nicht verfügbar"}`
+    `🔍 DEBUG: WasabiPlayer - presignedUrl: ${presignedUrl ? "verfügbar" : "nicht verfügbar"}`,
   );
   console.log(`🔍 DEBUG: WasabiPlayer - loading: ${loading}`);
 
@@ -80,7 +80,7 @@ const WasabiPlayer: React.FC<WasabiPlayerProps> = (props) => {
     }
     hideTimeoutRef.current = window.setTimeout(
       () => setShowChrome(false),
-      2000
+      2000,
     );
   };
 
@@ -189,7 +189,7 @@ const WasabiPlayer: React.FC<WasabiPlayerProps> = (props) => {
   }, [hasStarted]);
 
   const [isFullscreen, setIsFullscreen] = useState<boolean>(
-    !!document.fullscreenElement
+    !!document.fullscreenElement,
   );
 
   const handleToggleFullscreen = () => {
