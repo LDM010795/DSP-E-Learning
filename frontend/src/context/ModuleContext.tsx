@@ -53,6 +53,7 @@ export interface ProgrammingConfig {
 }
 
 export type TaskConfig = MultipleChoiceConfig | ProgrammingConfig | null;
+export type TaskType = "multiple_choice" | "programming";
 
 /**
  * Aufgaben innerhalb eines Moduls
@@ -65,7 +66,7 @@ export interface Task {
   hint?: string | null;
   order: number;
   test_file_path?: string; // Possibly needed for editor linking
-  task_type: string;
+  task_type: TaskType;
   task_config?: TaskConfig;
   completed: boolean;
 }

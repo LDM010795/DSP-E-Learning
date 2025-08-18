@@ -23,6 +23,23 @@ import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
 import { useModules, Module, Task } from "../context/ModuleContext";
 import TaskSuccessModal from "../components/messages/TaskSuccessModal";
+import type {
+  MultipleChoiceConfig,
+  TaskConfig,
+} from "../context/ModuleContext";
+import MultipleChoice, {
+  MultipleChoiceOption,
+} from "../components/ui_elements/MultipleChoice/multiple_choice.tsx";
+
+// --- Type Guard ---
+// Checks if the provided config object is of type MultipleChoiceConfig.
+// This function is used to distinguish between different possible task configurations
+// (such as MultipleChoiceConfig vs ProgrammingConfig) at runtime.
+function isMultipleChoiceConfig(
+  config: TaskConfig | undefined,
+): config is MultipleChoiceConfig {
+  return !!config && "options" in config && "correct_answer" in config;
+}
 
 function TaskDetails() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -34,6 +51,8 @@ function TaskDetails() {
   const [isHintVisible, setIsHintVisible] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | undefined>();
+  const [showResult, setShowResult] = useState(false);
 
   const {
     module,
@@ -103,6 +122,49 @@ function TaskDetails() {
     [tasks, currentTaskIndex],
   );
 
+  // State variable to hold and display an error message for wrong answers in multiple choice tasks
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Add this to your state
+
+  const handleSelectOption = (id: string) => {
+    if (!showResult) {
+      setSelectedOption(id);
+      setErrorMessage(null); // Clear any previous error when a new option is selected
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Only proceed if an option is selected and the config exists
+    if (!selectedOption || !correctOptionId) return;
+    setShowResult(true);
+
+    if (selectedOption === correctOptionId) {
+      // Correct answer selected
+      try {
+        // Example API call (replace with real API when available)
+        await fetch("/api/save-progress", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            taskId: currentTask?.id,
+            userAnswer: selectedOption,
+            result: "correct",
+          }),
+        });
+        // Optionally: Show success modal or message here
+        // setIsSuccessModalOpen(true);
+      } catch (error) {
+        // Handle API error (for now, you can log or show a message)
+        console.error("Failed to save progress:", error);
+      }
+    } else {
+      // Incorrect answer: let user try again
+      setErrorMessage("Leider falsch. Bitte versuche es erneut."); // Show feedback
+      setShowResult(false); // Optionally, you may allow another attempt immediately
+    }
+  };
+
   const handleTaskSuccess = useCallback(() => {
     setIsSuccessModalOpen(true);
   }, []);
@@ -133,6 +195,47 @@ function TaskDetails() {
     navigate(`/modules/${moduleId}/tasks/${previousTask.id}`);
     setTimeout(() => setIsPageLoading(false), 50);
   }, [previousTask, moduleId, navigate, isPageLoading]);
+
+  // Memorized extraction of multiple choice configuration from the current task
+  // Returns undefined for non-multiple choice tasks
+  const multipleChoiceConfig = useMemo(
+    () =>
+      isMultipleChoiceConfig(currentTask?.task_config)
+        ? currentTask?.task_config
+        : undefined,
+    [currentTask],
+  );
+
+  // Memoized calculation of the question text (uses explanation or falls back to title)
+  // If the explanation is present in the config, it is used as the question text
+  // Only recalculates if 'multipleChoiceConfig' changes.
+  const multipleChoiceQuestion = useMemo(
+    () => multipleChoiceConfig?.explanation ?? currentTask?.title,
+    [multipleChoiceConfig, currentTask],
+  );
+
+  // Memoized mapping of options for the MultipleChoice component
+  // Returns undefined if 'correct_answer' is not specified.
+  // Only recalculates if 'multipleChoiceConfig' changes.
+  const multipleChoiceOptions: MultipleChoiceOption[] = useMemo(
+    () =>
+      multipleChoiceConfig?.options
+        ? multipleChoiceConfig.options.map((option, index) => ({
+            id: index.toString(),
+            answer: option.answer,
+          }))
+        : [],
+    [multipleChoiceConfig],
+  );
+
+  // Memoized calculation of the correct option's ID as a string
+  const correctOptionId = useMemo(
+    () =>
+      multipleChoiceConfig?.correct_answer !== undefined
+        ? multipleChoiceConfig.correct_answer.toString()
+        : undefined,
+    [multipleChoiceConfig],
+  );
 
   if (loading) {
     return (
@@ -429,7 +532,72 @@ function TaskDetails() {
                           onSuccess={handleTaskSuccess}
                         />
                       ) : currentTask.task_type === "multiple_choice" ? (
-                        <div></div>
+                        <div className="max-w-xl mx-auto">
+                          <MultipleChoice
+                            question={multipleChoiceQuestion ?? ""}
+                            options={multipleChoiceOptions}
+                            selectedId={selectedOption}
+                            onSelect={handleSelectOption}
+                            disabled={showResult || currentTask.completed}
+                          />
+
+                          {/* Show Submit Button if not completed */}
+                          {!showResult && !currentTask.completed && (
+                            <>
+                              <ButtonPrimary
+                                title="Antwort einreichen"
+                                onClick={handleSubmit}
+                                disabled={selectedOption === undefined}
+                                classNameButton="mt-4 w-full"
+                              />
+                              {errorMessage && (
+                                <div className="text-red-600 mt-2 font-semibold flex items-center space-x-2">
+                                  <IoAlertCircleOutline className="w-5 h-5" />
+                                  <span>{errorMessage}</span>
+                                </div>
+                              )}
+                            </>
+                          )}
+
+                          {/* Show Result/Feedback after submission */}
+                          {showResult && (
+                            <div className="mt-4">
+                              {selectedOption === correctOptionId ? (
+                                <div className="text-green-600 font-semibold flex items-center space-x-2">
+                                  <IoCheckmarkCircleOutline className="w-5 h-5" />
+                                  <span>
+                                    Richtig!{" "}
+                                    {multipleChoiceConfig?.explanation && (
+                                      <span className="text-gray-700 ml-2">
+                                        {multipleChoiceConfig.explanation}
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="text-red-600 font-semibold flex items-center space-x-2">
+                                  <IoAlertCircleOutline className="w-5 h-5" />
+                                  <span>
+                                    Leider falsch.{" "}
+                                    {multipleChoiceConfig?.explanation && (
+                                      <span className="text-gray-700 ml-2">
+                                        {multipleChoiceConfig.explanation}
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {currentTask.completed && !showResult && (
+                            <div className="mt-4 text-green-700 flex items-center space-x-2">
+                              <IoCheckmarkCircleOutline className="w-5 h-5" />
+                              <span>
+                                Diese Aufgabe wurde bereits abgeschlossen.
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       ) : (
                         <div className="flex items-center justify-center min-h-[400px]">
                           <div className="text-center">
