@@ -142,8 +142,8 @@ function Modules() {
   // NEU: Extrahiere alle einzigartigen Kategorien aus den Modulen
   const allCategories = useMemo(() => {
     const categories = modules
-      .map((module) => module.category)
-      .filter((category): category is string => Boolean(category)); // Filtere null/undefined und sorge für string[] Typ
+      .map((module) => module.category?.name)
+      .filter((categoryName): categoryName is string => Boolean(categoryName));
     return [...new Set(categories)];
   }, [modules]);
 
@@ -189,8 +189,8 @@ function Modules() {
         if (activeCategoryFilters.length === 0) return true;
         // Stelle sicher, dass module.category existiert und ein String ist
         return (
-          typeof module.category === "string" &&
-          activeCategoryFilters.includes(module.category)
+          typeof module.category?.name === "string" &&
+          activeCategoryFilters.includes(module.category.name)
         );
       })();
 
@@ -236,7 +236,7 @@ function Modules() {
             <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Modulübersicht
               </h1>
             </div>
@@ -268,12 +268,12 @@ function Modules() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
+        <div className="relative px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
             <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Modulübersicht
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -302,7 +302,7 @@ function Modules() {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 pb-8">
+      <div className="px-3 pb-6">
         <div className="max-w-[95vw] mx-auto">
           {/* Module Count & Filter Status */}
           <div className="flex items-center space-x-4 mb-6">

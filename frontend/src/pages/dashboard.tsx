@@ -37,7 +37,7 @@ import {
   IoTimeOutline,
   IoAlertCircleOutline,
 } from "react-icons/io5";
-import { BsSpeedometer2 } from "react-icons/bs";
+// import { BsSpeedometer2 } from "react-icons/bs";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import ComingSoonOverlaySmall from "../components/messages/coming_soon_overlay_small";
@@ -53,6 +53,7 @@ function Dashboard() {
   // --- State Management ---
   const { modules, loading, error, fetchModules } = useModules();
   const [showAllModules, setShowAllModules] = useState(false);
+  // const navigate = useNavigate();
 
   // --- Loading State ---
   if (loading) {
@@ -76,7 +77,7 @@ function Dashboard() {
             <Breadcrumbs items={[{ label: "Dashboard" }]} className="mb-6" />
 
             <div className="text-center mb-6">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
                 Dashboard
               </h1>
             </div>
@@ -247,12 +248,12 @@ function Dashboard() {
   return (
     <div className="min-h-screen">
       {/* --- Hero Section --- */}
-      <div className="px-4 py-8">
-        <div className="max-w-7xl mx-auto">
-          <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+      <div className="px-3 pt-3 pb-6">
+        <div className="max-w-[95vw] mx-auto">
+          <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
               Dashboard
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -261,39 +262,27 @@ function Dashboard() {
             </p>
           </div>
 
-          {/* --- Statistics Cards --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <StatCard
-              title="Verfügbare Module"
-              value={totalModules}
-              icon={<IoLibraryOutline className="text-2xl" />}
-              accentColor="bg-blue-100"
-              description={`${averageLessonsPerModule} Lektionen pro Modul`}
-            />
-            <StatCard
-              title="Gesamtaufgaben"
-              value={totalTasks}
-              icon={<IoListOutline className="text-2xl" />}
-              accentColor="bg-green-100"
-              description={`${averageTasksPerModule} Aufgaben pro Modul`}
-            />
-            <StatCard
-              title="Lernstunden"
-              value="24.5"
-              icon={<IoTimeOutline className="text-2xl" />}
-              accentColor="bg-purple-100"
-              description="Diese Woche"
-            />
-            <StatCard
-              title="Fortschritt"
-              value="68%"
-              icon={<BsSpeedometer2 className="text-2xl" />}
-              accentColor="bg-orange-100"
-              description="Gesamtfortschritt"
-            />
-          </div>
+          {/* --- Statistics Cards (alter Stand) --- */}
+          <SubBackground className="mb-12" padding="lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              <StatCard
+                title="Verfügbare Module"
+                value={totalModules}
+                icon={<IoLibraryOutline className="text-2xl" />}
+                accentColor="bg-blue-100"
+                description={`${averageLessonsPerModule} Lektionen pro Modul`}
+              />
+              <StatCard
+                title="Gesamtaufgaben"
+                value={totalTasks}
+                icon={<IoListOutline className="text-2xl" />}
+                accentColor="bg-green-100"
+                description={`${averageTasksPerModule} Aufgaben pro Modul`}
+              />
+            </div>
+          </SubBackground>
 
-          {/* --- Main Content Grid --- */}
+          {/* --- Main Content Grid (alter Stand) --- */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* --- Module Overview --- */}
             <div className="lg:col-span-2">

@@ -74,9 +74,9 @@ const IndexUserSettings: React.FC = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
+        <div className="relative px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -84,8 +84,8 @@ const IndexUserSettings: React.FC = () => {
               transition={{ duration: 0.5 }}
               className="text-center mb-8"
             >
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
-                Benutzereinstellungen
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
+                Einstellungen
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 Verwalte und personalisiere dein Konto nach deinen Wünschen.

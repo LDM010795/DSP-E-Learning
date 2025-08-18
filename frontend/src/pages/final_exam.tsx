@@ -875,13 +875,13 @@ function FinalExam() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="relative px-4 py-8">
+        <div className="relative px-3 pt-3 pb-6">
           <div className="max-w-[95vw] mx-auto">
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
             <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent mb-4">
-                Abschlussprüfungen
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-700 mb-4">
+                Abschlussprüfung
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Hier findest du alle verfügbaren Abschlussprüfungen und kannst
@@ -904,7 +904,7 @@ function FinalExam() {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 pb-8">
+      <div className="px-3 pb-6">
         <div className="max-w-[95vw] mx-auto">
           {activeTab === "übersicht" && renderOverviewTab()}
           {activeTab === "verfügbar" && renderAvailableExams()}

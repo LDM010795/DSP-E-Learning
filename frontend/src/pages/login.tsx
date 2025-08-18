@@ -166,7 +166,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
             </div>
 
             <h2
-              className={`text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4 transition-all duration-200 ease-out
+              className={`text-3xl font-bold text-gray-700 mb-4 transition-all duration-200 ease-out
               ${
                 isVisible
                   ? "opacity-100 translate-y-0"
@@ -252,7 +252,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
             <div className="space-y-6">
               <div className="text-center">
                 <h2
-                  className={`text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-3
+                  className={`text-3xl font-bold text-gray-700 mb-3
                   transition-all duration-200 ease-out
                   ${
                     isVisible

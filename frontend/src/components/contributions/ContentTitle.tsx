@@ -1,34 +1,46 @@
 import React from "react";
+import { ContentTitleProps } from "./types";
 
-interface ContentTitleProps {
-  content: string;
-  level?: 1 | 2 | 3;
-}
+const ContentTitle: React.FC<ContentTitleProps> = ({ text, level = 1 }) => {
+  // Debug: Title-Block Inhalt loggen
+  console.log("📝 ContentTitle received:", { text, level });
 
-const ContentTitle: React.FC<ContentTitleProps> = ({ content, level = 1 }) => {
-  const getTitleClasses = () => {
+  // Bereinige Titel-Text (entferne "Titel2$", "Titel3$" Marker)
+  const cleanText = text
+    .replace(/^Titel[23]?\$\s*/, "")
+    .replace(/\s*Titel[23]?\$$/, "")
+    .trim();
+
+  const getTitleElement = () => {
     switch (level) {
       case 1:
-        return "text-2xl font-semibold text-gray-800 mb-4 mt-8";
+        return (
+          <h1 className="text-3xl font-bold text-gray-900 mb-4 mt-6 leading-tight">
+            {cleanText}
+          </h1>
+        );
       case 2:
-        return "text-xl font-semibold text-gray-800 mb-3 mt-6";
+        return (
+          <h2 className="text-2xl font-bold text-gray-900 mb-3 mt-5 leading-tight">
+            {cleanText}
+          </h2>
+        );
       case 3:
-        return "text-lg font-semibold text-gray-800 mb-2 mt-4";
+        return (
+          <h3 className="text-xl font-bold text-gray-900 mb-2 mt-4 leading-tight">
+            {cleanText}
+          </h3>
+        );
       default:
-        return "text-2xl font-semibold text-gray-800 mb-4 mt-8";
+        return (
+          <h1 className="text-2xl font-bold text-gray-900 mb-4 mt-6">
+            {cleanText}
+          </h1>
+        );
     }
   };
 
-  switch (level) {
-    case 1:
-      return <h1 className={getTitleClasses()}>{content}</h1>;
-    case 2:
-      return <h2 className={getTitleClasses()}>{content}</h2>;
-    case 3:
-      return <h3 className={getTitleClasses()}>{content}</h3>;
-    default:
-      return <h1 className={getTitleClasses()}>{content}</h1>;
-  }
+  return getTitleElement();
 };
 
 export default ContentTitle;
