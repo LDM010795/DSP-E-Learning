@@ -1,16 +1,12 @@
 import React from "react";
-
-interface ContentListProps {
-  items: string[];
-}
+import { ContentListProps } from "./types";
 
 const ContentList: React.FC<ContentListProps> = ({ items }) => {
   return (
-    <ul className="space-y-3 mb-6">
+    <ul className="list-disc list-inside space-y-2 my-4 text-gray-800 leading-7">
       {items.map((item, index) => (
-        <li key={index} className="flex items-start">
-          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-          <span className="text-gray-700 leading-relaxed">{item}</span>
+        <li key={index} className="leading-relaxed">
+          {item}
         </li>
       ))}
     </ul>

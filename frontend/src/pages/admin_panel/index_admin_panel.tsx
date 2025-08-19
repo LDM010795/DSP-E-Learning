@@ -153,7 +153,7 @@ const IndexAdminPanel: React.FC = () => {
                 <div className="p-3 rounded-xl bg-[#ffe7d4]">
                   <IoShieldCheckmarkOutline className="w-8 h-8 text-[#ff863d]" />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-[#ff863d] bg-clip-text text-transparent">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-700">
                   Admin Panel
                 </h1>
               </div>

@@ -72,7 +72,7 @@ export interface Task {
 }
 
 /**
- * Inhalt innerhalb eines Moduls
+ * Inhalt innerhalb eines Kapitels
  */
 export interface Content {
   id: number;
@@ -85,11 +85,36 @@ export interface Content {
 }
 
 /**
+ * Kapitel innerhalb eines Moduls
+ */
+export interface Chapter {
+  id: number;
+  title: string;
+  description: string;
+  order: number;
+  is_active: boolean;
+  contents: Content[];
+  tasks: Task[];
+}
+
+/**
  * Kategorie-Struktur
  */
 export interface ModuleCategory {
   id: number;
   name: string;
+}
+
+/**
+ * Artikel/Lernbeiträge innerhalb eines Moduls
+ */
+export interface Article {
+  id: number;
+  title: string;
+  order: number;
+  url?: string | null;
+  // JSON content as produced by backend; we only care that it has a 'content' array
+  json_content?: { content?: unknown[] } | null;
 }
 
 /**
@@ -100,8 +125,11 @@ export interface Module {
   title: string;
   category: ModuleCategory;
   is_public: boolean;
-  contents?: Content[];
-  tasks?: Task[];
+  chapters?: Chapter[]; // Neue Chapter-Struktur
+  contents?: Content[]; // Fallback für alte Struktur
+  tasks?: Task[]; // Fallback für alte Struktur
+  articles?: Article[]; // Lernbeiträge (werden vom Backend mitgeliefert)
+  article_images?: Record<string, string>; // Mapping image_name -> cloud_url
 }
 
 // --- Context Type Definition ---
@@ -166,6 +194,21 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       const sortedModules = response.data
         .map((module) => ({
           ...module,
+          // Neue Chapter-Struktur verarbeiten
+          chapters: module.chapters
+            ? [...module.chapters]
+                .sort((a, b) => a.order - b.order)
+                .map((chapter) => ({
+                  ...chapter,
+                  contents: [...(chapter.contents || [])].sort(
+                    (a, b) => a.order - b.order,
+                  ),
+                  tasks: [...(chapter.tasks || [])].sort(
+                    (a, b) => a.order - b.order,
+                  ),
+                }))
+            : undefined,
+          // Fallback für alte Struktur
           contents: [...(module.contents || [])].sort(
             (a, b) => a.order - b.order,
           ),

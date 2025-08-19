@@ -113,7 +113,7 @@ function LandingPage() {
   }, [mouseX, mouseY]);
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 overflow-x-hidden mx-[-80px] my-[-40px]">
+    <div className="bg-gradient-to-b from-white to-gray-50 overflow-x-hidden">
       {/* Hero Section - mit Parallax und Maus-Effekten */}
       <section className="relative overflow-hidden p-6 pt-20 pb-20 flex flex-col items-center justify-center text-center min-h-screen">
         {/* Parallax Hintergrund-Element mit Punktmuster */}

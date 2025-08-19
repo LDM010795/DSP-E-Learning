@@ -25,8 +25,11 @@ import React, { useState } from "react";
 import "./App.css";
 
 // --- Utils ---
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, useLocation } from "react-router-dom";
 import { prefetchCommonResources } from "./util/performance";
+
+// --- React Query ---
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // --- Components ---
 import HeaderNavigation from "./components/layouts/header.tsx";
@@ -72,6 +75,7 @@ const AppContent: React.FC = () => {
   const { user, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
+  const location = useLocation();
 
   // --- Event Handlers ---
   const openLoginPopup = () => setLoginPopupOpen(true);
@@ -84,9 +88,16 @@ const AppContent: React.FC = () => {
   // --- Navigation Configuration ---
   const mainNav = isAuthenticated
     ? [
-        ...privateNavLinks,
-        ...(isAdmin ? [{ title: "Back‑Office", to: "/admin" }] : []),
-        { title: "Content Demo", to: "/content-demo" },
+        // Nur erlaubte Links anzeigen (einige Routen bewusst ausblenden)
+        ...privateNavLinks.filter(
+          (link) =>
+            ![
+              "/certification-paths", // Zertifikatspfade
+              "/final-exam", // Abschlussprüfungen
+              "/user-stats", // Deine Statistik
+            ].includes(link.to),
+        ),
+        // Kein Back‑Office, keine Content Demo im Header
       ]
     : publicNavLinks;
 
@@ -96,6 +107,10 @@ const AppContent: React.FC = () => {
         { title: "Ausloggen", action: logout },
       ]
     : [{ title: "Einloggen", action: openLoginPopup }];
+
+  // --- Check if current page should have full-screen layout (no margins) ---
+  const isFullScreenPage =
+    location.pathname === "/" || location.pathname === "/subscriptions";
 
   // --- Loading State ---
   if (isLoading || isOAuthLoading) {
@@ -130,9 +145,15 @@ const AppContent: React.FC = () => {
 
       {/* --- Main Content Area --- */}
       <main className="flex-grow overflow-auto">
-        <div className="mx-20 my-10">
+        {isFullScreenPage ? (
+          // Full-screen layout for landing page and subscriptions (no margins)
           <AnimatedRoutes isAdmin={isAdmin} />
-        </div>
+        ) : (
+          // Standard layout with margins for all other pages
+          <div className="mx-2 sm:mx-6 md:mx-10 lg:mx-16 xl:mx-20 mt-2 sm:mt-3 md:mt-4 mb-6 lg:mb-8">
+            <AnimatedRoutes isAdmin={isAdmin} />
+          </div>
+        )}
       </main>
 
       {/* --- Login Popup --- */}
@@ -148,16 +169,28 @@ const AppContent: React.FC = () => {
  * Authentifizierung, Module und Prüfungen.
  */
 function App() {
+  // Create a client
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+      },
+    },
+  });
+
   return (
-    <Router>
-      <AuthProvider>
-        <ModuleProvider>
-          <ExamProvider>
-            <AppContent />
-          </ExamProvider>
-        </ModuleProvider>
-      </AuthProvider>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <AuthProvider>
+          <ModuleProvider>
+            <ExamProvider>
+              <AppContent />
+            </ExamProvider>
+          </ModuleProvider>
+        </AuthProvider>
+      </Router>
+    </QueryClientProvider>
   );
 }
 

@@ -28,6 +28,7 @@ import PageTransition from "./PageTransition";
 import Dashboard from "../../pages/dashboard";
 import Modules from "../../pages/modules";
 import ModuleDetail from "../../pages/module_detail";
+import ChapterDetail from "../../pages/chapter_detail";
 import TaskDetails from "../../pages/task_detail";
 import IndexFinalExam from "../../pages/final_exam/index_final_exam";
 import IndexStatistics from "../../pages/statistics/index_statistics";
@@ -38,6 +39,7 @@ import IndexAdminPanel from "../../pages/admin_panel/index_admin_panel";
 import ForcePasswordChangePage from "../../pages/ForcePasswordChangePage";
 import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
+import ArticlePage from "../../pages/article";
 import ExternalRegister from "../../pages/ExternalRegister";
 
 // --- Component Imports ---
@@ -135,6 +137,22 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             element={
               <PageTransition>
                 <ModuleDetail />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/modules/:moduleId/articles"
+            element={
+              <PageTransition>
+                <ArticlePage />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/modules/:moduleId/chapters/:chapterId"
+            element={
+              <PageTransition>
+                <ChapterDetail />
               </PageTransition>
             }
           />
