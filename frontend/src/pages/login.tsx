@@ -489,11 +489,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
 
                 {/* Registration Prompt */}
                 <div
-                    className={`transition-all duration-200 ease-out
+                  className={`transition-all duration-200 ease-out
                     ${
-                      isVisible 
-                          ? "opacity-100 translate-y-0" 
-                          : "opacity-0 translate-y-4"
+                      isVisible
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-4"
                     }
                     ${isClosing ? "opacity-0 translate-y-4" : ""}`}
                 >
@@ -501,18 +501,17 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                     <span className="text-gray-500">
                       Noch kein Konto?{" "}
                       <Link
-                          to="/register"
-                          className="text-dsp-orange font-semibold hover:underline"
-                          onClick={() => {
-                            onClose(); // Optional: closes popup after clicking register
-                            }}
+                        to="/register"
+                        className="text-dsp-orange font-semibold hover:underline"
+                        onClick={() => {
+                          onClose(); // Optional: closes popup after clicking register
+                        }}
                       >
                         Jetzt registrieren
                       </Link>
                     </span>
                   </div>
                 </div>
-
               </div>
             </div>
           )}
