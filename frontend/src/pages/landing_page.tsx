@@ -386,12 +386,6 @@ function LandingPage() {
           </div>
         </AnimatedSection>
       </section>
-      {/* Footer */}
-      <footer className="p-6 text-center text-sm text-gray-500 bg-white border-t border-gray-200">
-        © {new Date().getFullYear()} DataSmart Learning. Alle Rechte
-        vorbehalten.
-        {/* Optional: Links zu Impressum, Datenschutz */}
-      </footer>
 
       {/* Video Modal */}
       {isVideoModalOpen && (
