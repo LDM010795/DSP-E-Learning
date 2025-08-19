@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 // --- Navigation Types ---
 
@@ -43,6 +43,4 @@ export type FooterNavigationProps = {
  * Vordefinierte Navigation
  */
 
-export const FooterNavigation: NavLink[] = [
-
-]
+export const FooterNavigation: NavLink[] = [];

@@ -159,9 +159,8 @@ const AppContent: React.FC = () => {
 
       {/* --- Login Popup --- */}
       {isLoginPopupOpen && <LoginPopup onClose={closeLoginPopup} />}
-        {/* Footer Navigation */}
-        <FooterNavigation/>
-
+      {/* Footer Navigation */}
+      <FooterNavigation />
     </div>
   );
 };
