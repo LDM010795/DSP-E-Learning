@@ -149,7 +149,8 @@ function normalizeFieldErrors(data: unknown): FieldErrors {
 
   for (const [key, val] of Object.entries(data as Record<string, unknown>)) {
     if (Array.isArray(val)) out[key] = String(val[0] ?? "");
-    else if (typeof val === "object" && val !== null) out[key] = JSON.stringify(val);
+    else if (typeof val === "object" && val !== null)
+      out[key] = JSON.stringify(val);
     else out[key] = String(val ?? "");
   }
   return out;
@@ -185,7 +186,7 @@ const ExternalRegister: React.FC = () => {
       form.password.length > 0 &&
       form.password_confirm.length > 0 &&
       form.password !== form.password_confirm,
-    [form.password, form.password_confirm]
+    [form.password, form.password_confirm],
   );
 
   const emailInvalid = useMemo(() => {
@@ -194,9 +195,16 @@ const ExternalRegister: React.FC = () => {
   }, [form.email]);
 
   const isFormValid = useMemo(() => {
-    if (!form.username || !form.email || !form.password || !form.password_confirm) return false;
+    if (
+      !form.username ||
+      !form.email ||
+      !form.password ||
+      !form.password_confirm
+    )
+      return false;
     if (emailInvalid || passwordsMismatch) return false;
-    if (form.password.length < 8 || form.password_confirm.length < 8) return false;
+    if (form.password.length < 8 || form.password_confirm.length < 8)
+      return false;
     return true;
   }, [form, emailInvalid, passwordsMismatch]);
 
@@ -214,8 +222,10 @@ const ExternalRegister: React.FC = () => {
 
     if (!isFormValid) {
       const next: FieldErrors = {};
-      if (passwordsMismatch) next.password_confirm = "Passwörter stimmen nicht überein.";
-      if (emailInvalid) next.email = "Bitte eine gültige E-Mail-Adresse eingeben.";
+      if (passwordsMismatch)
+        next.password_confirm = "Passwörter stimmen nicht überein.";
+      if (emailInvalid)
+        next.email = "Bitte eine gültige E-Mail-Adresse eingeben.";
       setFieldErrors(next);
       setError("Bitte korrigiere die markierten Fehler.");
       return;
@@ -241,7 +251,6 @@ const ExternalRegister: React.FC = () => {
 
       setSuccessMsg("Registrierung erfolgreich! Willkommen 🎉");
       setTimeout(() => navigate("/subscriptions"), 1200);
-
     } catch (err) {
       const axErr = err as AxiosError<unknown>;
       const payload = axErr.response?.data ?? null;
@@ -267,7 +276,9 @@ const ExternalRegister: React.FC = () => {
         <div className="flex flex-col items-center space-y-2 mb-4">
           <img src={LogoDSP} alt="DSP Logo" className="h-14 mb-2" />
           <h1 className="text-3xl font-bold text-gray-800">Registrieren</h1>
-          <p className="text-gray-600 text-center text-base">Erstelle einen Account als externer Nutzer.</p>
+          <p className="text-gray-600 text-center text-base">
+            Erstelle einen Account als externer Nutzer.
+          </p>
         </div>
 
         {/* Global Messages */}
@@ -286,11 +297,17 @@ const ExternalRegister: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {/* Username */}
           <div>
-            <label className="block text-sm font-semibold mb-1" htmlFor="username">
+            <label
+              className="block text-sm font-semibold mb-1"
+              htmlFor="username"
+            >
               Benutzername
             </label>
             <div className="relative">
-              <IoPersonOutline className="absolute left-3 top-3 text-gray-400" aria-hidden />
+              <IoPersonOutline
+                className="absolute left-3 top-3 text-gray-400"
+                aria-hidden
+              />
               <input
                 id="username"
                 name="username"
@@ -305,7 +322,9 @@ const ExternalRegister: React.FC = () => {
                 required
               />
             </div>
-            {fieldErrors.username && <div className="text-sm text-red-500">{fieldErrors.username}</div>}
+            {fieldErrors.username && (
+              <div className="text-sm text-red-500">{fieldErrors.username}</div>
+            )}
           </div>
 
           {/* Email */}
@@ -314,14 +333,19 @@ const ExternalRegister: React.FC = () => {
               E-Mail
             </label>
             <div className="relative">
-              <IoMailOutline className="absolute left-3 top-3 text-gray-400" aria-hidden />
+              <IoMailOutline
+                className="absolute left-3 top-3 text-gray-400"
+                aria-hidden
+              />
               <input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 className={`w-full pl-10 pr-3 py-2 border rounded-xl shadow-sm bg-white/60 focus:ring-2 focus:border-orange-400 ${
-                  fieldErrors.email || emailInvalid ? "border-red-400" : "border-gray-200"
+                  fieldErrors.email || emailInvalid
+                    ? "border-red-400"
+                    : "border-gray-200"
                 }`}
                 placeholder="E-Mail-Adresse"
                 value={form.email}
@@ -331,14 +355,18 @@ const ExternalRegister: React.FC = () => {
             </div>
             {(fieldErrors.email || emailInvalid) && (
               <div className="text-sm text-red-500">
-                {fieldErrors.email || "Bitte eine gültige E-Mail-Adresse eingeben."}
+                {fieldErrors.email ||
+                  "Bitte eine gültige E-Mail-Adresse eingeben."}
               </div>
             )}
           </div>
 
           {/* First name */}
           <div>
-            <label className="block text-sm font-semibold mb-1" htmlFor="first_name">
+            <label
+              className="block text-sm font-semibold mb-1"
+              htmlFor="first_name"
+            >
               Vorname
             </label>
             <input
@@ -353,12 +381,19 @@ const ExternalRegister: React.FC = () => {
               value={form.first_name}
               onChange={handleChange}
             />
-            {fieldErrors.first_name && <div className="text-sm text-red-500">{fieldErrors.first_name}</div>}
+            {fieldErrors.first_name && (
+              <div className="text-sm text-red-500">
+                {fieldErrors.first_name}
+              </div>
+            )}
           </div>
 
           {/* Last name */}
           <div>
-            <label className="block text-sm font-semibold mb-1" htmlFor="last_name">
+            <label
+              className="block text-sm font-semibold mb-1"
+              htmlFor="last_name"
+            >
               Nachname
             </label>
             <input
@@ -373,16 +408,26 @@ const ExternalRegister: React.FC = () => {
               value={form.last_name}
               onChange={handleChange}
             />
-            {fieldErrors.last_name && <div className="text-sm text-red-500">{fieldErrors.last_name}</div>}
+            {fieldErrors.last_name && (
+              <div className="text-sm text-red-500">
+                {fieldErrors.last_name}
+              </div>
+            )}
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-semibold mb-1" htmlFor="password">
+            <label
+              className="block text-sm font-semibold mb-1"
+              htmlFor="password"
+            >
               Passwort
             </label>
             <div className="relative">
-              <IoLockClosedOutline className="absolute left-3 top-3 text-gray-400" aria-hidden />
+              <IoLockClosedOutline
+                className="absolute left-3 top-3 text-gray-400"
+                aria-hidden
+              />
               <input
                 id="password"
                 name="password"
@@ -402,28 +447,44 @@ const ExternalRegister: React.FC = () => {
                 className="absolute right-3 top-2 text-gray-400 hover:text-orange-500"
                 onClick={() => setShowPassword((v) => !v)}
                 tabIndex={-1}
-                aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                aria-label={
+                  showPassword ? "Passwort verbergen" : "Passwort anzeigen"
+                }
               >
-                {showPassword ? <IoEyeOffOutline className="w-5 h-5" /> : <IoEyeOutline className="w-5 h-5" />}
+                {showPassword ? (
+                  <IoEyeOffOutline className="w-5 h-5" />
+                ) : (
+                  <IoEyeOutline className="w-5 h-5" />
+                )}
               </button>
             </div>
-            {fieldErrors.password && <div className="text-sm text-red-500">{fieldErrors.password}</div>}
+            {fieldErrors.password && (
+              <div className="text-sm text-red-500">{fieldErrors.password}</div>
+            )}
           </div>
 
           {/* Password Confirm */}
           <div>
-            <label className="block text-sm font-semibold mb-1" htmlFor="password_confirm">
+            <label
+              className="block text-sm font-semibold mb-1"
+              htmlFor="password_confirm"
+            >
               Passwort bestätigen
             </label>
             <div className="relative">
-              <IoLockClosedOutline className="absolute left-3 top-3 text-gray-400" aria-hidden />
+              <IoLockClosedOutline
+                className="absolute left-3 top-3 text-gray-400"
+                aria-hidden
+              />
               <input
                 id="password_confirm"
                 name="password_confirm"
                 type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 className={`w-full pl-10 pr-10 py-2 border rounded-xl shadow-sm bg-white/60 focus:ring-2 focus:border-orange-400 ${
-                  fieldErrors.password_confirm || passwordsMismatch ? "border-red-400" : "border-gray-200"
+                  fieldErrors.password_confirm || passwordsMismatch
+                    ? "border-red-400"
+                    : "border-gray-200"
                 }`}
                 placeholder="Passwort erneut eingeben"
                 value={form.password_confirm}
@@ -436,14 +497,21 @@ const ExternalRegister: React.FC = () => {
                 className="absolute right-3 top-2 text-gray-400 hover:text-orange-500"
                 onClick={() => setShowPassword((v) => !v)}
                 tabIndex={-1}
-                aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                aria-label={
+                  showPassword ? "Passwort verbergen" : "Passwort anzeigen"
+                }
               >
-                {showPassword ? <IoEyeOffOutline className="w-5 h-5" /> : <IoEyeOutline className="w-5 h-5" />}
+                {showPassword ? (
+                  <IoEyeOffOutline className="w-5 h-5" />
+                ) : (
+                  <IoEyeOutline className="w-5 h-5" />
+                )}
               </button>
             </div>
             {(fieldErrors.password_confirm || passwordsMismatch) && (
               <div className="text-sm text-red-500">
-                {fieldErrors.password_confirm || "Passwörter stimmen nicht überein."}
+                {fieldErrors.password_confirm ||
+                  "Passwörter stimmen nicht überein."}
               </div>
             )}
           </div>
@@ -463,7 +531,12 @@ const ExternalRegister: React.FC = () => {
         {/* Loading */}
         {loading && (
           <div className="flex justify-center mt-4">
-            <LoadingSpinner message="Registriere..." size="md" variant="pulse" showBackground={false} />
+            <LoadingSpinner
+              message="Registriere..."
+              size="md"
+              variant="pulse"
+              showBackground={false}
+            />
           </div>
         )}
 
