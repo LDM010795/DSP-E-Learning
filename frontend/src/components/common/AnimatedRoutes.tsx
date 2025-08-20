@@ -40,6 +40,7 @@ import ForcePasswordChangePage from "../../pages/ForcePasswordChangePage";
 import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
 import ArticlePage from "../../pages/article";
+import ExternalRegister from "../../pages/ExternalRegister";
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -104,6 +105,14 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           element={
             <PageTransition>
               <Privacypolicy />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PageTransition>
+              <ExternalRegister />
             </PageTransition>
           }
         />

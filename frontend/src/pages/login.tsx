@@ -12,6 +12,7 @@ import MicrosoftLoginButton from "../components/ui_elements/buttons/button_micro
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import { useAuth } from "../context/AuthContext.tsx"; // Import useAuth
 import { useModules } from "../context/ModuleContext.tsx";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; // Import für Navigation
 
 interface LoginPopupProps {
@@ -485,6 +486,32 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                   }}
                   className="w-full shadow-md hover:shadow-lg transition-shadow duration-200"
                 />
+
+                {/* Registration Prompt */}
+                <div
+                  className={`transition-all duration-200 ease-out
+                    ${
+                      isVisible
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-4"
+                    }
+                    ${isClosing ? "opacity-0 translate-y-4" : ""}`}
+                >
+                  <div className="text-center mt-6">
+                    <span className="text-gray-500">
+                      Noch kein Konto?{" "}
+                      <Link
+                        to="/register"
+                        className="text-dsp-orange font-semibold hover:underline"
+                        onClick={() => {
+                          onClose(); // Optional: closes popup after clicking register
+                        }}
+                      >
+                        Jetzt registrieren
+                      </Link>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
