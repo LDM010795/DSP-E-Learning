@@ -12,7 +12,10 @@ function Impressum() {
                     />
                 </div>
                 <div className="flex-1 text-center lg:text-left">
-                    <h3 className="text-xl text-gray-500 mb-2">Rechtliche Informationen</h3>
+                    <div className="flex items-center mb-2">
+                        <div className="w-1 h-8 bg-dsp-orange mr-3 rounded"/>
+                        <h3 className="text-xl text-gray-500">Rechtliche Informationen</h3>
+                </div>
                     <h1 className="text-4xl font-bold mb-4">Impressum</h1>
                     <p className="text-gray-700 leading-relaxed">
                         Alle wichtigen Angaben auf einen Blick. Hier findest du die gesetzlichen Pflichtangaben zu unserem Unternehmen,
@@ -24,7 +27,10 @@ function Impressum() {
             {/* Content Section */}
             <div className="space-y-8 ">
                 <section className="bg-gray-50 p-6 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-semibold mb-4">Anbieter dieser Seite</h2>
+                    <div className="flex items-center mb-4">
+                        <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+                        <h3 className="font-semibold">Anbieter dieser Seite ist:</h3>
+                    </div>
                     <p className="mb-2 font-medium">DataSmart Point GmbH</p>
                     <p className="mb-2">
                         Anschrift:<br />
@@ -50,7 +56,7 @@ function Impressum() {
                 </section>
 
                 <section className="bg-gray-50 p-6 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-semibold mb-4">Urheberrecht</h2>
+                    <h3 className="font-semibold mb-4">Urheberrecht</h3>
                     <p className="leading-relaxed">
                         Die Inhalte und Werke auf dieser Website unterliegen dem deutschen Urheberrecht. Jegliche Vervielfältigung, Bearbeitung, Verbreitung oder Verwertung außerhalb der Grenzen des Urheberrechts bedarf der schriftlichen Zustimmung des Autors oder Erstellers.
                         Das Herunterladen und Kopieren der Seite ist nur für den privaten, nicht kommerziellen Gebrauch erlaubt. Wenn Inhalte von Dritten verwendet werden, werden deren Urheberrechte beachtet.
