@@ -41,22 +41,22 @@ interface TaskMultipleChoiceQuestion {
 
 // API-Funktion für Multiple-Choice-Fragen
 const getTaskMultipleChoiceByTask = async (
-  taskId: number
+  taskId: number,
 ): Promise<TaskMultipleChoiceQuestion[]> => {
   try {
     console.log(
       "🔍 [TaskDetail] Fetching multiple choice questions for task:",
-      taskId
+      taskId,
     );
     const response = await api.get(
-      `/modules/task-multiple-choice/list/?task_id=${taskId}`
+      `/modules/task-multiple-choice/list/?task_id=${taskId}`,
     );
     console.log("🔍 [TaskDetail] API response:", response.data);
     return response.data || [];
   } catch (error) {
     console.error(
       "❌ [TaskDetail] Error fetching multiple choice questions:",
-      error
+      error,
     );
     throw error;
   }
@@ -133,7 +133,7 @@ function TaskDetails() {
       // Sofort die Antwort verarbeiten
       handleSubmitQuestion(currentQuestion.id, optionId);
     },
-    [currentQuestion]
+    [currentQuestion],
   );
 
   // Antwort verarbeiten
@@ -175,7 +175,7 @@ function TaskDetails() {
       currentQuestionIndex,
       multipleChoiceQuestions.length,
       handleTaskSuccess,
-    ]
+    ],
   );
 
   const {
@@ -256,20 +256,20 @@ function TaskDetails() {
   useEffect(() => {
     console.log(
       "🔍 [TaskDetail] useEffect triggered with currentTask:",
-      currentTask
+      currentTask,
     );
 
     if (currentTask && currentTask.task_type === "multiple_choice") {
       console.log(
         "🔍 [TaskDetail] Loading multiple choice questions for task:",
-        currentTask.id
+        currentTask.id,
       );
       setIsLoadingQuestions(true);
       getTaskMultipleChoiceByTask(currentTask.id)
         .then((data: TaskMultipleChoiceQuestion[]) => {
           console.log(
             "🔍 [TaskDetail] Loaded multiple choice questions:",
-            data
+            data,
           );
           setMultipleChoiceQuestions(data || []);
           setCurrentQuestionIndex(0);
@@ -279,7 +279,7 @@ function TaskDetails() {
         .catch((error: unknown) => {
           console.error(
             "❌ [TaskDetail] Error loading multiple choice questions:",
-            error
+            error,
           );
           setMultipleChoiceQuestions([]);
         })
@@ -289,7 +289,7 @@ function TaskDetails() {
     } else {
       console.log(
         "🔍 [TaskDetail] Not loading multiple choice questions. Task type:",
-        currentTask?.task_type
+        currentTask?.task_type,
       );
       setMultipleChoiceQuestions([]);
       setCurrentQuestionIndex(0);
@@ -300,19 +300,19 @@ function TaskDetails() {
 
   const previousTask = useMemo(
     () => (currentTaskIndex > 0 ? tasks[currentTaskIndex - 1] : undefined),
-    [tasks, currentTaskIndex]
+    [tasks, currentTaskIndex],
   );
   const nextTask = useMemo(
     () =>
       currentTaskIndex < tasks.length - 1
         ? tasks[currentTaskIndex + 1]
         : undefined,
-    [tasks, currentTaskIndex]
+    [tasks, currentTaskIndex],
   );
   const isFirstTask = useMemo(() => currentTaskIndex === 0, [currentTaskIndex]);
   const isLastTask = useMemo(
     () => currentTaskIndex === tasks.length - 1,
-    [tasks, currentTaskIndex]
+    [tasks, currentTaskIndex],
   );
 
   const handleCloseSuccessModal = useCallback(() => {
@@ -641,16 +641,16 @@ function TaskDetails() {
                       {(() => {
                         console.log(
                           "🔍 [TaskDetail] Rendering task content. Task type:",
-                          currentTask?.task_type
+                          currentTask?.task_type,
                         );
                         console.log(
                           "🔍 [TaskDetail] Current task:",
-                          currentTask
+                          currentTask,
                         );
 
                         if (currentTask?.task_type === "programming") {
                           console.log(
-                            "🔍 [TaskDetail] Rendering programming task"
+                            "🔍 [TaskDetail] Rendering programming task",
                           );
                           return (
                             <CodeEditorWithOutput
@@ -663,15 +663,15 @@ function TaskDetails() {
                           currentTask?.task_type === "multiple_choice"
                         ) {
                           console.log(
-                            "🔍 [TaskDetail] Rendering multiple choice task"
+                            "🔍 [TaskDetail] Rendering multiple choice task",
                           );
                           console.log(
                             "🔍 [TaskDetail] Multiple choice questions:",
-                            multipleChoiceQuestions
+                            multipleChoiceQuestions,
                           );
                           console.log(
                             "🔍 [TaskDetail] Loading questions:",
-                            isLoadingQuestions
+                            isLoadingQuestions,
                           );
 
                           return (
@@ -766,7 +766,7 @@ function TaskDetails() {
                           );
                         } else {
                           console.log(
-                            "🔍 [TaskDetail] Rendering unsupported task type"
+                            "🔍 [TaskDetail] Rendering unsupported task type",
                           );
                           return (
                             <div className="flex items-center justify-center min-h-[400px]">
