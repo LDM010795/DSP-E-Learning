@@ -4,7 +4,7 @@ function Privacypolicy() {
       {/* Page Header */}
       <div className="mb-8">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h4 className="font-bold">Deine Daten sind bei uns sicher</h4>
         </div>
         <h1 className="text-5xl">Datenschutz</h1>
@@ -18,7 +18,7 @@ function Privacypolicy() {
       {/* Sections */}
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 1 Information über die Erhebung personenbezogener Daten
           </h2>
@@ -73,7 +73,7 @@ function Privacypolicy() {
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">§ 2 Ihre Rechte</h2>
         </div>
         <p>
@@ -95,7 +95,7 @@ function Privacypolicy() {
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 3 Erhebung personenbezogener Daten bei Besuch unserer Website.
           </h2>
@@ -190,7 +190,7 @@ function Privacypolicy() {
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 4 Weitere Funktionen und Angebote unserer Website
           </h2>
@@ -227,7 +227,7 @@ function Privacypolicy() {
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 5 Widerspruch oder Widerruf gegen die Verarbeitung Ihrer Daten
           </h2>
@@ -261,7 +261,7 @@ function Privacypolicy() {
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 6 Einsatz von Google Analytics
           </h2>
@@ -396,7 +396,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 7 Nutzungsbasierte Werbeinhalte
           </h2>
@@ -684,7 +684,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             § 8 Datenschutz bei Bewerbungen und im Bewerbungsverfahren
           </h2>
@@ -738,7 +738,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">§ 9 Löschung</h2>
         </div>
         <p>
@@ -753,7 +753,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Ergänzung Google-Formulare</h2>
         </div>
         <p>
@@ -776,7 +776,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Hosting</h2>
         </div>
         <p>
@@ -804,7 +804,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Ihre Rechte auf Auskunft, Berechtigung, Sperre, Löschung und
             Widerspruch
@@ -832,7 +832,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Änderung unserer Datenschutzbestimmungen
           </h2>
@@ -849,7 +849,7 @@ https://www.google.com/intl/de/analytics/learn/privacy.html"
       </section>
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Fragen an den Datenschutzbeauftragten
           </h2>

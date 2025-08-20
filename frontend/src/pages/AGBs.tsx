@@ -4,7 +4,7 @@ function AGBs() {
       {/* Page Header */}
       <div className="mb-8">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h4 className="font-bold">Unsere AGBs</h4>
         </div>
         <h1 className="text-5xl">Allgemeine Geschäftsbedingungen</h1>
@@ -18,7 +18,7 @@ function AGBs() {
       {/* Sections */}
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Voraussetzungen zur Teilnahme
           </h2>
@@ -35,7 +35,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Anmeldung</h2>
         </div>
         <p>
@@ -49,7 +49,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Organisation und Ablauf</h2>
         </div>
         <p>
@@ -82,7 +82,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Widerruf und Kündigung</h2>
         </div>
         <p>
@@ -142,7 +142,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Technische Voraussetzungen</h2>
         </div>
         <p>
@@ -169,7 +169,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Fälligkeit der Lehrgangsgebühr
           </h2>
@@ -192,7 +192,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Ausbildungsangebot und Änderungen
           </h2>
@@ -218,7 +218,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Leistungsnachweise</h2>
         </div>
         <p>
@@ -255,7 +255,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">
             Kopierschutz und Ausschluss von der Nutzung
           </h2>
@@ -271,7 +271,7 @@ function AGBs() {
 
       <section className="bg-gray-50 p-6 rounded-lg shadow-md space-y-4">
         <div className="flex items-center mb-2">
-          <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+          <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
           <h2 className="text-2xl font-semibold">Gewährleistung und Haftung</h2>
         </div>
         <p>

@@ -29,7 +29,7 @@ function Impressum() {
       <div className="space-y-8 ">
         <section className="bg-gray-50 p-6 rounded-lg shadow-md">
           <div className="flex items-center mb-4">
-            <div className="w-1 h-6 bg-orange-500 mr-3 rounded"></div>
+            <div className="w-1 h-6 bg-dsp-orange mr-3 rounded"></div>
             <h3 className="font-semibold">Anbieter dieser Seite ist:</h3>
           </div>
           <p className="mb-2 font-medium">DataSmart Point GmbH</p>
