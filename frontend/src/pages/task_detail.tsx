@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ButtonPrimary from "../components/ui_elements/buttons/button_primary";
@@ -23,23 +23,44 @@ import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
 import { useModules, Module, Task } from "../context/ModuleContext";
 import TaskSuccessModal from "../components/messages/TaskSuccessModal";
-import type {
-  MultipleChoiceConfig,
-  TaskConfig,
-} from "../context/ModuleContext";
-import MultipleChoice, {
-  MultipleChoiceOption,
-} from "../components/ui_elements/MultipleChoice/multiple_choice.tsx";
+import MultipleChoice from "../components/ui_elements/MultipleChoice/multiple_choice.tsx";
+import { api } from "../util/apis";
 
-// --- Type Guard ---
-// Checks if the provided config object is of type MultipleChoiceConfig.
-// This function is used to distinguish between different possible task configurations
-// (such as MultipleChoiceConfig vs ProgrammingConfig) at runtime.
-function isMultipleChoiceConfig(
-  config: TaskConfig | undefined,
-): config is MultipleChoiceConfig {
-  return !!config && "options" in config && "correct_answer" in config;
+// Interface für Multiple-Choice-Aufgaben von der API
+interface TaskMultipleChoiceQuestion {
+  id: number;
+  task: number;
+  question: string;
+  option_1: string;
+  option_2: string;
+  option_3: string;
+  option_4: string;
+  correct_answer: number;
+  order: number;
 }
+
+// API-Funktion für Multiple-Choice-Fragen
+const getTaskMultipleChoiceByTask = async (
+  taskId: number
+): Promise<TaskMultipleChoiceQuestion[]> => {
+  try {
+    console.log(
+      "🔍 [TaskDetail] Fetching multiple choice questions for task:",
+      taskId
+    );
+    const response = await api.get(
+      `/modules/task-multiple-choice/list/?task_id=${taskId}`
+    );
+    console.log("🔍 [TaskDetail] API response:", response.data);
+    return response.data || [];
+  } catch (error) {
+    console.error(
+      "❌ [TaskDetail] Error fetching multiple choice questions:",
+      error
+    );
+    throw error;
+  }
+};
 
 function TaskDetails() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -51,8 +72,111 @@ function TaskDetails() {
   const [isHintVisible, setIsHintVisible] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string | undefined>();
-  const [showResult, setShowResult] = useState(false);
+
+  // Multiple-Choice spezifische States
+  const [multipleChoiceQuestions, setMultipleChoiceQuestions] = useState<
+    TaskMultipleChoiceQuestion[]
+  >([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedOptions, setSelectedOptions] = useState<{
+    [questionId: number]: string;
+  }>({});
+  const [showResults, setShowResults] = useState(false);
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
+
+  // Task Success Handler (muss vor anderen Funktionen definiert werden)
+  const handleTaskSuccess = useCallback(() => {
+    console.log("🔍 [TaskDetail] Task completed successfully!");
+    setIsSuccessModalOpen(true);
+  }, []);
+
+  // Aktuelle Frage
+  const currentQuestion = useMemo(() => {
+    if (multipleChoiceQuestions.length === 0) return null;
+    return multipleChoiceQuestions[currentQuestionIndex];
+  }, [multipleChoiceQuestions, currentQuestionIndex]);
+
+  // Optionen für die aktuelle Frage
+  const multipleChoiceOptions = useMemo(() => {
+    if (!currentQuestion) return [];
+
+    return [
+      { id: "1", answer: currentQuestion.option_1 },
+      { id: "2", answer: currentQuestion.option_2 },
+      { id: "3", answer: currentQuestion.option_3 },
+      { id: "4", answer: currentQuestion.option_4 },
+    ].filter((option) => option.answer.trim() !== "");
+  }, [currentQuestion]);
+
+  // Fortschritt in Prozent
+  const progressPercentage = useMemo(() => {
+    if (multipleChoiceQuestions.length === 0) return 0;
+    return ((currentQuestionIndex + 1) / multipleChoiceQuestions.length) * 100;
+  }, [currentQuestionIndex, multipleChoiceQuestions.length]);
+
+  // Option auswählen und automatisch einreichen
+  const handleSelectOption = useCallback(
+    (optionId: string) => {
+      if (!currentQuestion) return;
+
+      console.log("🔍 [TaskDetail] Option selected:", {
+        questionId: currentQuestion.id,
+        optionId,
+      });
+
+      // Option setzen
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [currentQuestion.id]: optionId,
+      }));
+
+      // Sofort die Antwort verarbeiten
+      handleSubmitQuestion(currentQuestion.id, optionId);
+    },
+    [currentQuestion]
+  );
+
+  // Antwort verarbeiten
+  const handleSubmitQuestion = useCallback(
+    (questionId: number, optionId: string) => {
+      if (!currentQuestion) return;
+
+      console.log("🔍 [TaskDetail] Processing answer:", {
+        questionId,
+        optionId,
+      });
+
+      const isCorrect = optionId === currentQuestion.correct_answer.toString();
+      console.log("🔍 [TaskDetail] Answer correct:", isCorrect);
+
+      // Ergebnis anzeigen
+      setShowResults(true);
+
+      // Kurze Verzögerung für Feedback
+      setTimeout(() => {
+        if (isCorrect) {
+          // Richtig - zur nächsten Frage
+          if (currentQuestionIndex < multipleChoiceQuestions.length - 1) {
+            setCurrentQuestionIndex((prev) => prev + 1);
+            setShowResults(false);
+          } else {
+            // Alle Fragen beantwortet
+            handleTaskSuccess();
+          }
+        } else {
+          // Falsch - Frage bleibt aktiv für Wiederholung
+          setShowResults(false);
+          // Frage bleibt aktiv für Wiederholung
+        }
+      }, 1500); // 1.5 Sekunden Feedback anzeigen
+    },
+    [
+      currentQuestion,
+      currentQuestionIndex,
+      multipleChoiceQuestions.length,
+      handleTaskSuccess,
+    ]
+  );
 
   const {
     module,
@@ -65,16 +189,30 @@ function TaskDetails() {
     tasks: Task[];
     currentTaskIndex: number;
   } = useMemo(() => {
-    if (!moduleId || !taskId)
+    console.log("🔍 [TaskDetail] useMemo triggered with:", {
+      moduleId,
+      taskId,
+      modules,
+    });
+
+    if (!moduleId || !taskId) {
+      console.log("❌ [TaskDetail] Missing moduleId or taskId");
       return {
         module: undefined,
         currentTask: undefined,
         tasks: [],
         currentTaskIndex: -1,
       };
+    }
+
     const numericModuleId = parseInt(moduleId, 10);
     const numericTaskId = parseInt(taskId, 10);
+
     if (isNaN(numericModuleId) || isNaN(numericTaskId)) {
+      console.log("❌ [TaskDetail] Invalid moduleId or taskId:", {
+        moduleId,
+        taskId,
+      });
       return {
         module: undefined,
         currentTask: undefined,
@@ -84,7 +222,10 @@ function TaskDetails() {
     }
 
     const foundModule = modules.find((mod) => mod.id === numericModuleId);
+    console.log("🔍 [TaskDetail] Found module:", foundModule);
+
     if (!foundModule) {
+      console.log("❌ [TaskDetail] Module not found for ID:", numericModuleId);
       return {
         module: undefined,
         currentTask: undefined,
@@ -94,8 +235,14 @@ function TaskDetails() {
     }
 
     const moduleTasks = foundModule.tasks || [];
+    console.log("🔍 [TaskDetail] Module tasks:", moduleTasks);
+
     const taskIndex = moduleTasks.findIndex((t) => t.id === numericTaskId);
     const foundTask = taskIndex !== -1 ? moduleTasks[taskIndex] : undefined;
+
+    console.log("🔍 [TaskDetail] Found task:", foundTask);
+    console.log("🔍 [TaskDetail] Task index:", taskIndex);
+    console.log("🔍 [TaskDetail] Task task_type:", foundTask?.task_type);
 
     return {
       module: foundModule,
@@ -105,69 +252,68 @@ function TaskDetails() {
     };
   }, [modules, moduleId, taskId]);
 
+  // Lade Multiple-Choice-Aufgaben wenn sich die Task ändert
+  useEffect(() => {
+    console.log(
+      "🔍 [TaskDetail] useEffect triggered with currentTask:",
+      currentTask
+    );
+
+    if (currentTask && currentTask.task_type === "multiple_choice") {
+      console.log(
+        "🔍 [TaskDetail] Loading multiple choice questions for task:",
+        currentTask.id
+      );
+      setIsLoadingQuestions(true);
+      getTaskMultipleChoiceByTask(currentTask.id)
+        .then((data: TaskMultipleChoiceQuestion[]) => {
+          console.log(
+            "🔍 [TaskDetail] Loaded multiple choice questions:",
+            data
+          );
+          setMultipleChoiceQuestions(data || []);
+          setCurrentQuestionIndex(0);
+          setSelectedOptions({});
+          setShowResults(false);
+        })
+        .catch((error: unknown) => {
+          console.error(
+            "❌ [TaskDetail] Error loading multiple choice questions:",
+            error
+          );
+          setMultipleChoiceQuestions([]);
+        })
+        .finally(() => {
+          setIsLoadingQuestions(false);
+        });
+    } else {
+      console.log(
+        "🔍 [TaskDetail] Not loading multiple choice questions. Task type:",
+        currentTask?.task_type
+      );
+      setMultipleChoiceQuestions([]);
+      setCurrentQuestionIndex(0);
+      setSelectedOptions({});
+      setShowResults(false);
+    }
+  }, [currentTask]);
+
   const previousTask = useMemo(
     () => (currentTaskIndex > 0 ? tasks[currentTaskIndex - 1] : undefined),
-    [tasks, currentTaskIndex],
+    [tasks, currentTaskIndex]
   );
   const nextTask = useMemo(
     () =>
       currentTaskIndex < tasks.length - 1
         ? tasks[currentTaskIndex + 1]
         : undefined,
-    [tasks, currentTaskIndex],
+    [tasks, currentTaskIndex]
   );
   const isFirstTask = useMemo(() => currentTaskIndex === 0, [currentTaskIndex]);
   const isLastTask = useMemo(
     () => currentTaskIndex === tasks.length - 1,
-    [tasks, currentTaskIndex],
+    [tasks, currentTaskIndex]
   );
-
-  // State variable to hold and display an error message for wrong answers in multiple choice tasks
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Add this to your state
-
-  const handleSelectOption = (id: string) => {
-    if (!showResult) {
-      setSelectedOption(id);
-      setErrorMessage(null); // Clear any previous error when a new option is selected
-    }
-  };
-
-  const handleSubmit = async () => {
-    // Only proceed if an option is selected and the config exists
-    if (!selectedOption || !correctOptionId) return;
-    setShowResult(true);
-
-    if (selectedOption === correctOptionId) {
-      // Correct answer selected
-      try {
-        // Example API call (replace with real API when available)
-        await fetch("/api/save-progress", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            taskId: currentTask?.id,
-            userAnswer: selectedOption,
-            result: "correct",
-          }),
-        });
-        // Optionally: Show success modal or message here
-        // setIsSuccessModalOpen(true);
-      } catch (error) {
-        // Handle API error (for now, you can log or show a message)
-        console.error("Failed to save progress:", error);
-      }
-    } else {
-      // Incorrect answer: let user try again
-      setErrorMessage("Leider falsch. Bitte versuche es erneut."); // Show feedback
-      setShowResult(false); // Optionally, you may allow another attempt immediately
-    }
-  };
-
-  const handleTaskSuccess = useCallback(() => {
-    setIsSuccessModalOpen(true);
-  }, []);
 
   const handleCloseSuccessModal = useCallback(() => {
     setIsSuccessModalOpen(false);
@@ -195,47 +341,6 @@ function TaskDetails() {
     navigate(`/modules/${moduleId}/tasks/${previousTask.id}`);
     setTimeout(() => setIsPageLoading(false), 50);
   }, [previousTask, moduleId, navigate, isPageLoading]);
-
-  // Memorized extraction of multiple choice configuration from the current task
-  // Returns undefined for non-multiple choice tasks
-  const multipleChoiceConfig = useMemo(
-    () =>
-      isMultipleChoiceConfig(currentTask?.task_config)
-        ? currentTask?.task_config
-        : undefined,
-    [currentTask],
-  );
-
-  // Memoized calculation of the question text (uses explanation or falls back to title)
-  // If the explanation is present in the config, it is used as the question text
-  // Only recalculates if 'multipleChoiceConfig' changes.
-  const multipleChoiceQuestion = useMemo(
-    () => multipleChoiceConfig?.explanation ?? currentTask?.title,
-    [multipleChoiceConfig, currentTask],
-  );
-
-  // Memoized mapping of options for the MultipleChoice component
-  // Returns undefined if 'correct_answer' is not specified.
-  // Only recalculates if 'multipleChoiceConfig' changes.
-  const multipleChoiceOptions: MultipleChoiceOption[] = useMemo(
-    () =>
-      multipleChoiceConfig?.options
-        ? multipleChoiceConfig.options.map((option, index) => ({
-            id: index.toString(),
-            answer: option.answer,
-          }))
-        : [],
-    [multipleChoiceConfig],
-  );
-
-  // Memoized calculation of the correct option's ID as a string
-  const correctOptionId = useMemo(
-    () =>
-      multipleChoiceConfig?.correct_answer !== undefined
-        ? multipleChoiceConfig.correct_answer.toString()
-        : undefined,
-    [multipleChoiceConfig],
-  );
 
   if (loading) {
     return (
@@ -455,6 +560,14 @@ function TaskDetails() {
                         <TagDifficulty
                           difficulty={currentTask.difficulty as DifficultyLevel}
                         />
+                        {currentTask.task_type === "multiple_choice" &&
+                          multipleChoiceQuestions.length > 0 && (
+                            <div className="flex items-center space-x-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-full">
+                              <span className="font-medium text-blue-700">
+                                {multipleChoiceQuestions.length} Fragen
+                              </span>
+                            </div>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -525,101 +638,160 @@ function TaskDetails() {
                   {/* Task Content Area - basierend auf task_type */}
                   <div className="lg:col-span-2">
                     <SubBackground>
-                      {currentTask.task_type === "programming" ? (
-                        <CodeEditorWithOutput
-                          taskId={currentTask.id}
-                          className="rounded-xl overflow-hidden"
-                          onSuccess={handleTaskSuccess}
-                        />
-                      ) : currentTask.task_type === "multiple_choice" ? (
-                        <div className="max-w-xl mx-auto">
-                          <MultipleChoice
-                            question={multipleChoiceQuestion ?? ""}
-                            options={multipleChoiceOptions}
-                            selectedId={selectedOption}
-                            onSelect={handleSelectOption}
-                            disabled={showResult || currentTask.completed}
-                          />
+                      {(() => {
+                        console.log(
+                          "🔍 [TaskDetail] Rendering task content. Task type:",
+                          currentTask?.task_type
+                        );
+                        console.log(
+                          "🔍 [TaskDetail] Current task:",
+                          currentTask
+                        );
 
-                          {/* Show Submit Button if not completed */}
-                          {!showResult && !currentTask.completed && (
-                            <>
-                              <ButtonPrimary
-                                title="Antwort einreichen"
-                                onClick={handleSubmit}
-                                disabled={selectedOption === undefined}
-                                classNameButton="mt-4 w-full"
-                              />
-                              {errorMessage && (
-                                <div className="text-red-600 mt-2 font-semibold flex items-center space-x-2">
-                                  <IoAlertCircleOutline className="w-5 h-5" />
-                                  <span>{errorMessage}</span>
+                        if (currentTask?.task_type === "programming") {
+                          console.log(
+                            "🔍 [TaskDetail] Rendering programming task"
+                          );
+                          return (
+                            <CodeEditorWithOutput
+                              taskId={currentTask.id}
+                              className="rounded-xl overflow-hidden"
+                              onSuccess={handleTaskSuccess}
+                            />
+                          );
+                        } else if (
+                          currentTask?.task_type === "multiple_choice"
+                        ) {
+                          console.log(
+                            "🔍 [TaskDetail] Rendering multiple choice task"
+                          );
+                          console.log(
+                            "🔍 [TaskDetail] Multiple choice questions:",
+                            multipleChoiceQuestions
+                          );
+                          console.log(
+                            "🔍 [TaskDetail] Loading questions:",
+                            isLoadingQuestions
+                          );
+
+                          return (
+                            <div className="max-w-2xl mx-auto">
+                              {isLoadingQuestions ? (
+                                <div className="flex items-center justify-center min-h-[400px]">
+                                  <LoadingSpinner
+                                    message="Lade Fragen..."
+                                    size="lg"
+                                    variant="pulse"
+                                    showBackground={false}
+                                  />
                                 </div>
-                              )}
-                            </>
-                          )}
-
-                          {/* Show Result/Feedback after submission */}
-                          {showResult && (
-                            <div className="mt-4">
-                              {selectedOption === correctOptionId ? (
-                                <div className="text-green-600 font-semibold flex items-center space-x-2">
-                                  <IoCheckmarkCircleOutline className="w-5 h-5" />
-                                  <span>
-                                    Richtig!{" "}
-                                    {multipleChoiceConfig?.explanation && (
-                                      <span className="text-gray-700 ml-2">
-                                        {multipleChoiceConfig.explanation}
-                                      </span>
-                                    )}
-                                  </span>
+                              ) : multipleChoiceQuestions.length === 0 ? (
+                                <div className="text-center py-12">
+                                  <IoListOutline className="text-6xl text-gray-400 mb-6 mx-auto" />
+                                  <h2 className="text-2xl font-bold text-gray-600 mb-4">
+                                    Keine Fragen verfügbar
+                                  </h2>
+                                  <p className="text-gray-600 mb-6 leading-relaxed">
+                                    Für diese Aufgabe sind noch keine
+                                    Multiple-Choice-Fragen verfügbar.
+                                  </p>
                                 </div>
                               ) : (
-                                <div className="text-red-600 font-semibold flex items-center space-x-2">
-                                  <IoAlertCircleOutline className="w-5 h-5" />
-                                  <span>
-                                    Leider falsch.{" "}
-                                    {multipleChoiceConfig?.explanation && (
-                                      <span className="text-gray-700 ml-2">
-                                        {multipleChoiceConfig.explanation}
+                                <div className="space-y-6">
+                                  {/* Progress Bar */}
+                                  <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div
+                                      className="bg-[#ff863d] h-2 rounded-full transition-all duration-300"
+                                      style={{
+                                        width: `${progressPercentage}%`,
+                                      }}
+                                    ></div>
+                                  </div>
+
+                                  {/* Question Counter */}
+                                  <div className="text-center text-sm text-gray-600">
+                                    Frage {currentQuestionIndex + 1} von{" "}
+                                    {multipleChoiceQuestions.length}
+                                  </div>
+
+                                  {/* Current Question */}
+                                  <MultipleChoice
+                                    question={currentQuestion?.question || ""}
+                                    options={multipleChoiceOptions}
+                                    selectedId={
+                                      selectedOptions[currentQuestion?.id || 0]
+                                    }
+                                    onSelect={handleSelectOption}
+                                    disabled={
+                                      showResults || currentTask.completed
+                                    }
+                                  />
+
+                                  {/* Result Feedback */}
+                                  {showResults && currentQuestion && (
+                                    <div className="mt-4 p-4 rounded-lg border">
+                                      {selectedOptions[currentQuestion.id] ===
+                                      currentQuestion.correct_answer.toString() ? (
+                                        <div className="text-green-600 font-semibold flex items-center space-x-2">
+                                          <IoCheckmarkCircleOutline className="w-5 h-5" />
+                                          <span>
+                                            Richtig! Weiter zur nächsten
+                                            Frage...
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <div className="text-red-600 font-semibold flex items-center space-x-2">
+                                          <IoAlertCircleOutline className="w-5 h-5" />
+                                          <span>
+                                            Leider falsch. Versuche es nochmal!
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Completed Message */}
+                                  {currentTask.completed && (
+                                    <div className="mt-4 text-green-700 flex items-center space-x-2">
+                                      <IoCheckmarkCircleOutline className="w-5 h-5" />
+                                      <span>
+                                        Diese Aufgabe wurde bereits
+                                        abgeschlossen.
                                       </span>
-                                    )}
-                                  </span>
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
-                          )}
-                          {currentTask.completed && !showResult && (
-                            <div className="mt-4 text-green-700 flex items-center space-x-2">
-                              <IoCheckmarkCircleOutline className="w-5 h-5" />
-                              <span>
-                                Diese Aufgabe wurde bereits abgeschlossen.
-                              </span>
+                          );
+                        } else {
+                          console.log(
+                            "🔍 [TaskDetail] Rendering unsupported task type"
+                          );
+                          return (
+                            <div className="flex items-center justify-center min-h-[400px]">
+                              <div className="text-center">
+                                <IoCodeSlashOutline className="text-6xl text-gray-400 mb-6 mx-auto" />
+                                <h2 className="text-2xl font-bold text-gray-600 mb-4">
+                                  Task-Typ nicht unterstützt
+                                </h2>
+                                <p className="text-gray-600 mb-6 leading-relaxed">
+                                  Der Task-Typ "{currentTask?.task_type}" wird
+                                  noch nicht unterstützt.
+                                </p>
+                                <div className="flex items-center justify-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
+                                  <span className="text-sm font-medium text-gray-600">
+                                    Task-Type:
+                                  </span>
+                                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                    {currentTask?.task_type || "undefined"}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center min-h-[400px]">
-                          <div className="text-center">
-                            <IoCodeSlashOutline className="text-6xl text-gray-400 mb-6 mx-auto" />
-                            <h2 className="text-2xl font-bold text-gray-600 mb-4">
-                              Task-Typ nicht unterstützt
-                            </h2>
-                            <p className="text-gray-600 mb-6 leading-relaxed">
-                              Der Task-Typ "{currentTask.task_type}" wird noch
-                              nicht unterstützt.
-                            </p>
-                            <div className="flex items-center justify-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                              <span className="text-sm font-medium text-gray-600">
-                                Task-Type:
-                              </span>
-                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-                                {currentTask.task_type}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                          );
+                        }
+                      })()}
                     </SubBackground>
                   </div>
                 </div>

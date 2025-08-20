@@ -43,7 +43,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       onHoverStart={onHoverStart}
       onHoverEnd={onHoverEnd}
       className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3
-        bg-white/80 backdrop-blur-sm hover:bg-white/90
+        bg-white/80 backdrop-blur-sm hover:bg-white/90 bg-dsp
         text-gray-700 hover:text-[#FF6D25] font-semibold
         border-2 border-[#FF6D25]/40 hover:border-[#FF6D25]/60
         shadow-sm hover:shadow-lg hover:shadow-[#FF6D25]/10
