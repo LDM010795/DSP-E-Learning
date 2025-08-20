@@ -84,28 +84,28 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           }
         />
         <Route
-            path={"/Impressum"}
-            element={
+          path={"/Impressum"}
+          element={
             <PageTransition>
-                <Impressum/>
+              <Impressum />
             </PageTransition>
-            }
+          }
         />
         <Route
-        path={"/AGB"}
-        element={
-        <PageTransition>
-            <AGBs/>
-        </PageTransition>
-        }
+          path={"/AGB"}
+          element={
+            <PageTransition>
+              <AGBs />
+            </PageTransition>
+          }
         />
         <Route
-        path={"/Datenschutz"}
-        element={
-        <PageTransition>
-            <Privacypolicy/>
-        </PageTransition>
-        }
+          path={"/Datenschutz"}
+          element={
+            <PageTransition>
+              <Privacypolicy />
+            </PageTransition>
+          }
         />
 
         {/* --- Geschützte Routen --- */}
