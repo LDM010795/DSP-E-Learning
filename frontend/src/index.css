@@ -1,6 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400&family=Inter+Tight:wght@600&display=swap");
 @import "tailwindcss";
 
+@layer base {
+    h1 {
+        @apply text-4xl
+    }
+    h2 {
+        @apply text-3xl
+    }
+    h3 {
+        @apply text-2xl
+    }
+    h1 {
+        @apply text-xl
+    }
+}
+
 body {
   font-family: "Manrope", sans-serif;
   font-weight: 400;
@@ -13,7 +28,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Manrop", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 600;
 }
 
@@ -21,6 +36,7 @@ h6 {
   --color-dsp-orange: #ff6d25;
   --color-dsp-orange_medium: #ffb697;
   --color-dsp-orange_light: #fedac7;
+  --color-dsp-white: #ffffff;
 }
 
 /* Chrome, Safari und Edge */
