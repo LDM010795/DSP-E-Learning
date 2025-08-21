@@ -36,6 +36,7 @@ import HeaderNavigation from "./components/layouts/header.tsx";
 import DSPBackground from "./components/layouts/DSPBackground.tsx";
 import AnimatedRoutes from "./components/common/AnimatedRoutes.tsx";
 import LoginPopup from "./pages/login";
+import FooterNavigation from "./components/layouts/footer.tsx";
 
 // --- Assets ---
 import LogoDSP from "./assets/dsp_no_background.png";
@@ -158,6 +159,8 @@ const AppContent: React.FC = () => {
 
       {/* --- Login Popup --- */}
       {isLoginPopupOpen && <LoginPopup onClose={closeLoginPopup} />}
+      {/* Footer Navigation */}
+      <FooterNavigation />
     </div>
   );
 };

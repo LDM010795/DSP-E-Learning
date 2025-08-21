@@ -44,6 +44,9 @@ import ExternalRegister from "../../pages/ExternalRegister";
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
+import Impressum from "../../pages/Impressum.tsx";
+import Privacypolicy from "../../pages/Privacypolicy.tsx";
+import AGBs from "../../pages/AGBs.tsx";
 
 /**
  * Props für AnimatedRoutes Komponente
@@ -78,6 +81,30 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           element={
             <PageTransition>
               <SubscriptionsPage />
+            </PageTransition>
+          }
+        />
+        <Route
+          path={"/Impressum"}
+          element={
+            <PageTransition>
+              <Impressum />
+            </PageTransition>
+          }
+        />
+        <Route
+          path={"/AGB"}
+          element={
+            <PageTransition>
+              <AGBs />
+            </PageTransition>
+          }
+        />
+        <Route
+          path={"/Datenschutz"}
+          element={
+            <PageTransition>
+              <Privacypolicy />
             </PageTransition>
           }
         />
