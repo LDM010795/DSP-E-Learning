@@ -37,7 +37,10 @@ import api from "../../util/apis/api.ts";
 
 export type StripeConfigResponse = { publishableKey: string };
 export type SetupIntentResponse = { client_secret: string };
-export type CheckoutSessionPayload = { price_id: string; course_id: number | string };
+export type CheckoutSessionPayload = {
+  price_id: string;
+  course_id: number | string;
+};
 export type CheckoutSessionResponse = { checkout_url: string; id: string };
 export type PaymentMethodCard = {
   id: string;
@@ -47,7 +50,9 @@ export type PaymentMethodCard = {
   exp_year?: number;
   is_default: boolean;
 };
-export type ListPaymentMethodsResponse = { payment_methods: PaymentMethodCard[] };
+export type ListPaymentMethodsResponse = {
+  payment_methods: PaymentMethodCard[];
+};
 
 // ---------- Tiny TTL Cache & In-flight Registry ----------
 
@@ -122,17 +127,13 @@ function debounceKey<TArgs extends unknown[], TOut>(
 
 // ---------- Helpers to dedupe in-flight calls ----------
 
-async function dedup<T>(
-  key: string,
-  factory: () => Promise<T>,
-): Promise<T> {
+async function dedup<T>(key: string, factory: () => Promise<T>): Promise<T> {
   if (inflight.has(key)) {
     return inflight.get(key) as Promise<T>;
   }
-  const p = factory()
-    .finally(() => {
-      inflight.delete(key);
-    });
+  const p = factory().finally(() => {
+    inflight.delete(key);
+  });
   inflight.set(key, p as Promise<unknown>);
   return p;
 }
@@ -143,13 +144,18 @@ async function dedup<T>(
  * Returns Stripe publishable key.
  * Cached for 10 minutes (600_000ms). De-duplicates concurrent callers.
  */
-export async function getStripeConfig(signal?: AbortSignal): Promise<StripeConfigResponse> {
+export async function getStripeConfig(
+  signal?: AbortSignal,
+): Promise<StripeConfigResponse> {
   const cacheKey = "stripe:config";
   const cached = cacheGet<StripeConfigResponse>(cacheKey);
   if (cached) return cached;
 
   return dedup(cacheKey, async () => {
-    const { data } = await api.get<StripeConfigResponse>("/payments/stripe/config/", { signal });
+    const { data } = await api.get<StripeConfigResponse>(
+      "/payments/stripe/config/",
+      { signal },
+    );
     cacheSet(cacheKey, data, 600_000);
     return data;
   });
@@ -160,16 +166,21 @@ export async function getStripeConfig(signal?: AbortSignal): Promise<StripeConfi
  * Debounced to collapse rapid submit clicks.
  * Accepts AbortSignal to cancel if component unmounts.
  */
-const _createSetupIntent = async (signal?: AbortSignal): Promise<SetupIntentResponse> => {
-  const { data } = await api.post<SetupIntentResponse>("/payments/stripe/setup-intent/", {}, { signal });
+const _createSetupIntent = async (
+  signal?: AbortSignal,
+): Promise<SetupIntentResponse> => {
+  const { data } = await api.post<SetupIntentResponse>(
+    "/payments/stripe/setup-intent/",
+    {},
+    { signal },
+  );
   return data;
 };
 
-export const createSetupIntent = debounceKey<[AbortSignal?], SetupIntentResponse>(
-  "stripe:setup-intent",
-  800,
-  _createSetupIntent,
-);
+export const createSetupIntent = debounceKey<
+  [AbortSignal?],
+  SetupIntentResponse
+>("stripe:setup-intent", 800, _createSetupIntent);
 
 /**
  * Creates a Checkout Session (one-off purchase).
@@ -180,29 +191,40 @@ const _createCheckoutSession = async (
   payload: CheckoutSessionPayload,
   signal?: AbortSignal,
 ): Promise<CheckoutSessionResponse> => {
-  const body = { price_id: payload.price_id, course_id: String(payload.course_id) };
-  const { data } = await api.post<CheckoutSessionResponse>("/payments/stripe/checkout-session/", body, { signal });
+  const body = {
+    price_id: payload.price_id,
+    course_id: String(payload.course_id),
+  };
+  const { data } = await api.post<CheckoutSessionResponse>(
+    "/payments/stripe/checkout-session/",
+    body,
+    { signal },
+  );
   return data;
 };
 
-export const createCheckoutSession = throttleKey<[CheckoutSessionPayload, AbortSignal?], CheckoutSessionResponse>(
-  "stripe:checkout",
-  2_000,
-  _createCheckoutSession,
-);
+export const createCheckoutSession = throttleKey<
+  [CheckoutSessionPayload, AbortSignal?],
+  CheckoutSessionResponse
+>("stripe:checkout", 2_000, _createCheckoutSession);
 
 /**
  * Lists saved payment methods.
  * Cached keep UI snappy while avoiding stale data.
  * De-duplicates concurrent callers.
  */
-export async function listPaymentMethods(signal?: AbortSignal): Promise<ListPaymentMethodsResponse> {
+export async function listPaymentMethods(
+  signal?: AbortSignal,
+): Promise<ListPaymentMethodsResponse> {
   const cacheKey = "stripe:payment-methods";
   const cached = cacheGet<ListPaymentMethodsResponse>(cacheKey);
   if (cached) return cached;
 
   return dedup(cacheKey, async () => {
-    const { data } = await api.get<ListPaymentMethodsResponse>("/payments/stripe/payment-methods/", { signal });
+    const { data } = await api.get<ListPaymentMethodsResponse>(
+      "/payments/stripe/payment-methods/",
+      { signal },
+    );
     cacheSet(cacheKey, data, 30_000);
     return data;
   });
@@ -225,4 +247,3 @@ export async function setDefaultPaymentMethod(
   ttlCache.delete("stripe:payment-methods");
   return data;
 }
-

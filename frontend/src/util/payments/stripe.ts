@@ -74,7 +74,9 @@ export function getStripe(publishableKey: string): Promise<Stripe | null> {
   if (!publishableKey) {
     if (import.meta.env?.MODE !== "production") {
       // eslint-disable-next-line no-console
-      console.warn("[Stripe] Missing publishable key — did you fetch /stripe/config/?");
+      console.warn(
+        "[Stripe] Missing publishable key — did you fetch /stripe/config/?",
+      );
     }
     // Still return a stable Promise to avoid crashing call sites.
     return Promise.resolve(null);
