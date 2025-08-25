@@ -60,20 +60,19 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-  await login({ username: email, password }); // Cookies werden gesetzt
-  setLoginSuccess(true);
+      await login({ username: email, password }); // Cookies werden gesetzt
+      setLoginSuccess(true);
 
-  if (rememberMe) localStorage.setItem("rememberedUsername", email);
-  else localStorage.removeItem("rememberedUsername");
+      if (rememberMe) localStorage.setItem("rememberedUsername", email);
+      else localStorage.removeItem("rememberedUsername");
 
-  // Weiterleitung
-  await fetchModules();
-  setTimeout(() => {
-    onClose();
-    navigate("/dashboard");
-  }, 500);
-
-} catch (err: unknown) {
+      // Weiterleitung
+      await fetchModules();
+      setTimeout(() => {
+        onClose();
+        navigate("/dashboard");
+      }, 500);
+    } catch (err: unknown) {
       console.error("Unerwarteter Fehler während des Login-Prozesses:", err);
       setError("Ein unerwarteter Fehler ist aufgetreten.");
     } finally {

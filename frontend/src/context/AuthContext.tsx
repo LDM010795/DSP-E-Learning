@@ -159,27 +159,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Validates tokens and manages automatic logout on expiration
    */
   useEffect(() => {
-      let cancelled = false;
+    let cancelled = false;
 
-      (async () => {
-          try {
-              const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
-              if (!cancelled && res.data?.access) {
-                  const decoded = jwtDecode<DecodedToken>(res.data.access);
-                  setTokens(res.data.access);
-                  setUser(decoded);
-                  tokenCache.set("current_user", decoded);
-              }
-          } catch {
-              // keine Konsole mit Sensitivem; einfach als "nicht eingeloggt" weiter
-          } finally {
-              if (!cancelled) setIsLoading(false);
-          }
-      })();
+    (async () => {
+      try {
+        const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
+        if (!cancelled && res.data?.access) {
+          const decoded = jwtDecode<DecodedToken>(res.data.access);
+          setTokens(res.data.access);
+          setUser(decoded);
+          tokenCache.set("current_user", decoded);
+        }
+      } catch {
+        // keine Konsole mit Sensitivem; einfach als "nicht eingeloggt" weiter
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
 
-      return () => {
-          cancelled = true
-      };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   /**
@@ -199,26 +199,31 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       password: string;
     }): Promise<LoginResult> => {
       setIsLoading(true);
-        try {
-    const res = await api.post<{ access: string; require_password_change?: boolean }>(
-      "/token/", credentials, { baseURL: "http://localhost:8000", withCredentials: true } // wichtig: Cookie setzen lassen
-    );
+      try {
+        const res = await api.post<{
+          access: string;
+          require_password_change?: boolean;
+        }>(
+          "/token/",
+          credentials,
+          { baseURL: "http://localhost:8000", withCredentials: true }, // wichtig: Cookie setzen lassen
+        );
 
-    const access = res.data?.access;
-    if (!access) {
-      return { success: false, error: "Unerwartete Serverantwort." };
-    }
+        const access = res.data?.access;
+        if (!access) {
+          return { success: false, error: "Unerwartete Serverantwort." };
+        }
 
-    const decoded = jwtDecode<DecodedToken>(access);
-    setTokens(access);
-    setUser(decoded);
-    tokenCache.set("current_user", decoded);
+        const decoded = jwtDecode<DecodedToken>(access);
+        setTokens(access);
+        setUser(decoded);
+        tokenCache.set("current_user", decoded);
 
-    return {
-      success: true,
-      require_password_change: !!res.data.require_password_change,
-    };
-        } catch (err: unknown) {
+        return {
+          success: true,
+          require_password_change: !!res.data.require_password_change,
+        };
+      } catch (err: unknown) {
         console.error("Error during login API call:", err);
         let errorMessage =
           "Login fehlgeschlagen. Bitte versuchen Sie es später erneut.";
@@ -256,21 +261,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const logout = useStableCallback(async () => {
     setIsLoading(true);
-  try {
-    await api.post("/logout", null, { baseURL: "http://localhost:8000", withCredentials: true });
-  } catch {
-    // bewusst still – kein Leaken sensibler Infos
-  } finally {
-    tokenCache.clear();
-    setTokens(null);
-    setUser(null);
+    try {
+      await api.post("/logout", null, {
+        baseURL: "http://localhost:8000",
+        withCredentials: true,
+      });
+    } catch {
+      // bewusst still – kein Leaken sensibler Infos
+    } finally {
+      tokenCache.clear();
+      setTokens(null);
+      setUser(null);
 
-    // Multi-Tab-Sync (optional)
-    try { new BroadcastChannel("auth").postMessage({ type: "logout" }); } catch {}
+      // Multi-Tab-Sync (optional)
+      try {
+        new BroadcastChannel("auth").postMessage({ type: "logout" });
+      } catch {}
 
-    setIsLoading(false);
-  }
-}, []);
+      setIsLoading(false);
+    }
+  }, []);
 
   /**
    * Function to set authentication tokens from OAuth providers
@@ -282,25 +292,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const setAuthTokens = useStableCallback(async (): Promise<void> => {
     setIsLoading(true);
-  try {
-    const res = await api.post<{ access: string }>("/token/refresh/", null, { baseURL: "http://localhost:8000", withCredentials: true });
-    const access = res.data?.access;
-    if (access) {
-      const decoded = jwtDecode<DecodedToken>(access);
-      setTokens(access);
-      setUser(decoded);
-      tokenCache.set("current_user", decoded);
-    } else {
+    try {
+      const res = await api.post<{ access: string }>("/token/refresh/", null, {
+        baseURL: "http://localhost:8000",
+        withCredentials: true,
+      });
+      const access = res.data?.access;
+      if (access) {
+        const decoded = jwtDecode<DecodedToken>(access);
+        setTokens(access);
+        setUser(decoded);
+        tokenCache.set("current_user", decoded);
+      } else {
+        setTokens(null);
+        setUser(null);
+      }
+    } catch {
       setTokens(null);
       setUser(null);
+    } finally {
+      setIsLoading(false);
     }
-  } catch {
-    setTokens(null);
-    setUser(null);
-  } finally {
-    setIsLoading(false);
-  }
-}, []);
+  }, []);
 
   /**
    * Performance optimization: Memoized context value
