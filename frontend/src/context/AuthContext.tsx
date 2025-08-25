@@ -91,8 +91,6 @@ interface LoginResult {
  * Defines all authentication-related state and methods
  */
 interface AuthContextType {
-  /** Current JWT tokens (null if not authenticated) */
-  tokens: AuthTokens | null;
   /** Decoded user information (null if not authenticated) */
   user: DecodedToken | null;
   /** Boolean flag indicating authentication status */
@@ -145,52 +143,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   /**
-   * JWT tokens state with memoized initialization
-   * Reads from localStorage only once during component initialization
+   * JWT tokens state
    */
-  const [tokens, setTokens] = useState<AuthTokens | null>(() => {
-    const storedTokens = localStorage.getItem("authTokens");
-    return storedTokens ? JSON.parse(storedTokens) : null;
-  });
-
-  /**
-   * User state with memoized initialization and caching
-   * Decodes JWT token and validates expiration
-   */
-  const [user, setUser] = useState<DecodedToken | null>(() => {
-    const storedTokens = localStorage.getItem("authTokens");
-    if (storedTokens) {
-      try {
-        const tokenData = JSON.parse(storedTokens);
-
-        // Performance optimization: Check cache first to avoid repeated JWT decoding
-        const cachedUser = tokenCache.get("current_user");
-        if (cachedUser) {
-          return cachedUser;
-        }
-
-        const decoded = jwtDecode<DecodedToken>(tokenData.access);
-        // Validate token expiration
-        const currentTime = Date.now() / 1000;
-        if (decoded.exp && decoded.exp > currentTime) {
-          // Cache the decoded token for performance
-          tokenCache.set("current_user", decoded);
-          return decoded;
-        } else {
-          // Token expired, remove it
-          localStorage.removeItem("authTokens");
-          tokenCache.clear();
-          return null;
-        }
-      } catch (error) {
-        console.error("Error decoding token on initial load:", error);
-        localStorage.removeItem("authTokens");
-        tokenCache.clear();
-        return null;
-      }
-    }
-    return null;
-  });
+  const [tokens, setTokens] = useState<string | null>(null);
+  const [user, setUser] = useState<DecodedToken | null>(null);
 
   /**
    * Loading state for authentication operations
@@ -203,36 +159,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Validates tokens and manages automatic logout on expiration
    */
   useEffect(() => {
-    if (tokens) {
-      try {
-        const decoded = jwtDecode<DecodedToken>(tokens.access);
-        const currentTime = Date.now() / 1000;
-        if (decoded.exp && decoded.exp > currentTime) {
-          setUser(decoded);
-        } else {
-          console.log(
-            "Access token expired on load, attempting refresh or logout needed.",
-          );
-          // Remove expired token and reset state
-          localStorage.removeItem("authTokens");
-          setTokens(null);
-          setUser(null);
-          // Redirect to landing page
-          window.location.href = "/";
-        }
-      } catch (error) {
-        console.error("Error decoding token on initial load:", error);
-        localStorage.removeItem("authTokens");
-        setTokens(null);
-        setUser(null);
-        // Redirect to landing page on error
-        window.location.href = "/";
-      }
-    } else {
-      setUser(null);
-    }
-    setIsLoading(false);
-  }, [tokens]);
+      let cancelled = false;
+
+      (async () => {
+          try {
+              const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
+              if (!cancelled && res.data?.access) {
+                  const decoded = jwtDecode<DecodedToken>(res.data.access);
+                  setTokens(res.data.access);
+                  setUser(decoded);
+                  tokenCache.set("current_user", decoded);
+              }
+          } catch {
+              // keine Konsole mit Sensitivem; einfach als "nicht eingeloggt" weiter
+          } finally {
+              if (!cancelled) setIsLoading(false);
+          }
+      })();
+
+      return () => {
+          cancelled = true
+      };
+  }, []);
 
   /**
    * Login function for username/password authentication
@@ -251,38 +199,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       password: string;
     }): Promise<LoginResult> => {
       setIsLoading(true);
-      try {
-        const response = await api.post<LoginApiResponse>("/token/", {
-          username: credentials.username,
-          password: credentials.password,
-        });
+        try {
+    const res = await api.post<{ access: string; require_password_change?: boolean }>(
+      "/token/", credentials, { baseURL: "http://localhost:8000", withCredentials: true } // wichtig: Cookie setzen lassen
+    );
 
-        const data = response.data;
-        if (data && data.access && data.refresh) {
-          const newTokens: AuthTokens = {
-            access: data.access,
-            refresh: data.refresh,
-          };
-          const decoded = jwtDecode<DecodedToken>(newTokens.access);
+    const access = res.data?.access;
+    if (!access) {
+      return { success: false, error: "Unerwartete Serverantwort." };
+    }
 
-          // Performance optimization: Update cache with new user data
-          tokenCache.set("current_user", decoded);
+    const decoded = jwtDecode<DecodedToken>(access);
+    setTokens(access);
+    setUser(decoded);
+    tokenCache.set("current_user", decoded);
 
-          localStorage.setItem("authTokens", JSON.stringify(newTokens));
-          setTokens(newTokens);
-          setUser(decoded);
-          console.log("User logged in, tokens stored.");
-          return {
-            success: true,
-            require_password_change: data.require_password_change ?? false,
-          };
-        } else {
-          return {
-            success: false,
-            error: "Ungültige Antwort vom Server erhalten.",
-          };
-        }
-      } catch (err: unknown) {
+    return {
+      success: true,
+      require_password_change: !!res.data.require_password_change,
+    };
+        } catch (err: unknown) {
         console.error("Error during login API call:", err);
         let errorMessage =
           "Login fehlgeschlagen. Bitte versuchen Sie es später erneut.";
@@ -320,38 +256,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const logout = useStableCallback(async () => {
     setIsLoading(true);
-    console.log("Logging out...");
-    const storedTokens = localStorage.getItem("authTokens");
-    const refreshToken = storedTokens ? JSON.parse(storedTokens).refresh : null;
-
-    if (refreshToken) {
-      try {
-        // Send refresh token to logout endpoint for blacklisting
-        await api.post("/users/logout/", { refresh_token: refreshToken });
-        console.log("Logout successful on backend.");
-      } catch (error) {
-        // Ignore backend logout errors but proceed with local logout
-        console.error(
-          "Backend logout failed, proceeding with local logout:",
-          error,
-        );
-      }
-    }
-
-    // Performance optimization: Clear cache on logout
+  try {
+    await api.post("/logout", null, { baseURL: "http://localhost:8000", withCredentials: true });
+  } catch {
+    // bewusst still – kein Leaken sensibler Infos
+  } finally {
     tokenCache.clear();
-
-    // Always remove local data
-    localStorage.removeItem("authTokens");
-
-    // Clear OAuth session state for fresh login
-    sessionStorage.removeItem("ms_oauth_processed");
-    console.log("🧹 OAuth Session State beim Logout zurückgesetzt");
-
     setTokens(null);
     setUser(null);
+
+    // Multi-Tab-Sync (optional)
+    try { new BroadcastChannel("auth").postMessage({ type: "logout" }); } catch {}
+
     setIsLoading(false);
-  }, []);
+  }
+}, []);
 
   /**
    * Function to set authentication tokens from OAuth providers
@@ -361,32 +280,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    *
    * @param newTokens - JWT token pair from OAuth provider
    */
-  const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
-    try {
-      setIsLoading(true);
-      const decoded = jwtDecode<DecodedToken>(newTokens.access);
-
-      // Performance optimization: Update cache with new user data
-      tokenCache.set("current_user", decoded);
-
-      localStorage.setItem("authTokens", JSON.stringify(newTokens));
-      setTokens(newTokens); // Triggers useEffect to update user state
+  const setAuthTokens = useStableCallback(async (): Promise<void> => {
+    setIsLoading(true);
+  try {
+    const res = await api.post<{ access: string }>("/token/refresh/", null, { baseURL: "http://localhost:8000", withCredentials: true });
+    const access = res.data?.access;
+    if (access) {
+      const decoded = jwtDecode<DecodedToken>(access);
+      setTokens(access);
       setUser(decoded);
-
-      console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
-        user: decoded.username,
-        exp: new Date(decoded.exp! * 1000).toLocaleString(),
-      });
-    } catch (error) {
-      console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
-      // Cleanup on error
-      localStorage.removeItem("authTokens");
+      tokenCache.set("current_user", decoded);
+    } else {
       setTokens(null);
       setUser(null);
-    } finally {
-      setIsLoading(false);
     }
-  }, []);
+  } catch {
+    setTokens(null);
+    setUser(null);
+  } finally {
+    setIsLoading(false);
+  }
+}, []);
 
   /**
    * Performance optimization: Memoized context value
@@ -394,15 +308,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-      tokens,
       user,
-      isAuthenticated: !!tokens,
+      isAuthenticated: !!user,
       login,
       logout,
       setAuthTokens,
       isLoading,
     }),
-    [tokens, user, login, logout, setAuthTokens, isLoading],
+    [user, login, logout, setAuthTokens, isLoading],
   );
 
   return (
