@@ -24,6 +24,9 @@
  * const stripe = getStripe(publishableKey); // Promise<Stripe | null>
  * <Elements stripe={stripe} options={{ clientSecret }}>...</Elements>
  * ```
+ *
+ * Author: DSP Development Team
+ * Date: 2025-08-25
  */
 
 import { loadStripe, Stripe } from "@stripe/stripe-js";

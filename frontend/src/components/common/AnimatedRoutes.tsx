@@ -41,6 +41,9 @@ import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
 import ArticlePage from "../../pages/article";
 import ExternalRegister from "../../pages/ExternalRegister";
+import PaymentsSuccess from "../../pages/payments/Success";
+import PaymentsCancel from "../../pages/payments/Cancel";
+
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -116,6 +119,14 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             </PageTransition>
           }
         />
+          <Route
+             path="/payments/success"
+             element={<PaymentsSuccess />}
+         />
+         <Route
+             path="/payments/cancel"
+             element={<PaymentsCancel />}
+         />
 
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>

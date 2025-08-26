@@ -29,6 +29,8 @@
  * const { client_secret } = await createSetupIntent();
  * ```
  *
+ * Author: DSP Development Team
+ * Date: 2025-08-25
  */
 
 import api from "../../util/apis/api.ts";
