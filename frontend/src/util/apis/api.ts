@@ -31,9 +31,7 @@ let failedQueue: {
   reject: (reason?: any) => void;
 }[] = [];
 
-const processQueue = (
-  error: AxiosError | null
-) => {
+const processQueue = (error: AxiosError | null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
