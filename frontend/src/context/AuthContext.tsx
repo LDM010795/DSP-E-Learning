@@ -165,15 +165,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
         if (!cancelled) {
-            const fakedecode: DecodedToken = {
-                user_id: 1,
-                username: "musterman"
-            }
+          const fakedecode: DecodedToken = {
+            user_id: 1,
+            username: "musterman",
+          };
           setUser(fakedecode);
           tokenCache.set("current_user", fakedecode);
         }
       } catch {
-        console.error("useeffect error")
+        console.error("useeffect error");
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -207,15 +207,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           password: credentials.password,
         });
 
-        const error = res.status != 200
-          if (error) {
-              return { success: false, error: "Unerwartete Serverantwort." };
-          }
+        const error = res.status != 200;
+        if (error) {
+          return { success: false, error: "Unerwartete Serverantwort." };
+        }
 
         const fakedecode: DecodedToken = {
-                user_id: 1,
-                username: "musterman"
-            }
+          user_id: 1,
+          username: "musterman",
+        };
 
         setUser(fakedecode);
         tokenCache.set("current_user", fakedecode);
@@ -227,7 +227,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       } catch (err: unknown) {
         console.error("Error during login API call:", err);
         let errorMessage =
-        ("Login fehlgeschlagen. Bitte versuchen Sie es später erneut.");
+          "Login fehlgeschlagen. Bitte versuchen Sie es später erneut.";
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
             errorMessage = "Ungültige Anmeldedaten.";
@@ -298,7 +298,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       const access = res.data?.access;
       if (access) {
         const decoded = jwtDecode<DecodedToken>(access);
-        setTokens({access});
+        setTokens({ access });
         setUser(decoded);
         tokenCache.set("current_user", decoded);
       } else {
