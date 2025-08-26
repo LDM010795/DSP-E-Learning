@@ -319,7 +319,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-        tokens,
+      tokens,
       user,
       isAuthenticated: !!user,
       login,
