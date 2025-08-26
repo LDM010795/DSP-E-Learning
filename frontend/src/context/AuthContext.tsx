@@ -91,6 +91,7 @@ interface LoginResult {
  * Defines all authentication-related state and methods
  */
 interface AuthContextType {
+  tokens: AuthTokens | null;
   /** Decoded user information (null if not authenticated) */
   user: DecodedToken | null;
   /** Boolean flag indicating authentication status */
@@ -145,7 +146,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   /**
    * JWT tokens state
    */
-  const [tokens, setTokens] = useState<string | null>(null);
+  const [tokens, setTokens] = useState<AuthTokens | null>(null);
   const [user, setUser] = useState<DecodedToken | null>(null);
 
   /**
@@ -166,7 +167,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
         if (!cancelled && res.data?.access) {
           const decoded = jwtDecode<DecodedToken>(res.data.access);
-          setTokens(res.data.access);
           setUser(decoded);
           tokenCache.set("current_user", decoded);
         }
@@ -200,22 +200,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }): Promise<LoginResult> => {
       setIsLoading(true);
       try {
-        const res = await api.post<{
-          access: string;
-          require_password_change?: boolean;
-        }>(
-          "/token/",
-          credentials,
-          { baseURL: "http://localhost:8000", withCredentials: true }, // wichtig: Cookie setzen lassen
-        );
+        const res = await api.post<LoginApiResponse>("/token/", {
+          username: credentials.username,
+          password: credentials.password,
+        });
 
         const access = res.data?.access;
         if (!access) {
           return { success: false, error: "Unerwartete Serverantwort." };
         }
 
-        const decoded = jwtDecode<DecodedToken>(access);
-        setTokens(access);
+        const decoded = jwtDecode<DecodedToken>(res.data.access);
+        const newTokens: AuthTokens = {
+          access: res.data.access,
+          refresh: res.data.refresh,
+        };
+
+        setTokens(newTokens);
         setUser(decoded);
         tokenCache.set("current_user", decoded);
 
@@ -225,8 +226,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         };
       } catch (err: unknown) {
         console.error("Error during login API call:", err);
-        let errorMessage =
-          "Login fehlgeschlagen. Bitte versuchen Sie es später erneut.";
+        let errorMessage;
+        ("Login fehlgeschlagen. Bitte versuchen Sie es später erneut.");
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
             errorMessage = "Ungültige Anmeldedaten.";
@@ -293,10 +294,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const setAuthTokens = useStableCallback(async (): Promise<void> => {
     setIsLoading(true);
     try {
-      const res = await api.post<{ access: string }>("/token/refresh/", null, {
-        baseURL: "http://localhost:8000",
-        withCredentials: true,
-      });
+      const res = await api.post<{ access: string }>("/token/refresh/", null);
       const access = res.data?.access;
       if (access) {
         const decoded = jwtDecode<DecodedToken>(access);
@@ -321,6 +319,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
+        tokens,
       user,
       isAuthenticated: !!user,
       login,
