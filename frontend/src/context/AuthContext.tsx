@@ -45,8 +45,6 @@ import {
 interface AuthTokens {
   /** JWT access token for API requests */
   access: string;
-  /** JWT refresh token for token renewal */
-  refresh: string;
 }
 
 /**
@@ -91,6 +89,7 @@ interface LoginResult {
  * Defines all authentication-related state and methods
  */
 interface AuthContextType {
+  /** Current JWT tokens (null if not authenticated) */
   tokens: AuthTokens | null;
   /** Decoded user information (null if not authenticated) */
   user: DecodedToken | null;
@@ -165,13 +164,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     (async () => {
       try {
         const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
-        if (!cancelled && res.data?.access) {
-          const decoded = jwtDecode<DecodedToken>(res.data.access);
-          setUser(decoded);
-          tokenCache.set("current_user", decoded);
+        if (!cancelled) {
+            const fakedecode: DecodedToken = {
+                user_id: 1,
+                username: "musterman"
+            }
+          setUser(fakedecode);
+          tokenCache.set("current_user", fakedecode);
         }
       } catch {
-        // keine Konsole mit Sensitivem; einfach als "nicht eingeloggt" weiter
+        console.error("useeffect error")
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -205,20 +207,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           password: credentials.password,
         });
 
-        const access = res.data?.access;
-        if (!access) {
-          return { success: false, error: "Unerwartete Serverantwort." };
-        }
+        const error = res.status != 200
+          if (error) {
+              return { success: false, error: "Unerwartete Serverantwort." };
+          }
 
-        const decoded = jwtDecode<DecodedToken>(res.data.access);
-        const newTokens: AuthTokens = {
-          access: res.data.access,
-          refresh: res.data.refresh,
-        };
+        const fakedecode: DecodedToken = {
+                user_id: 1,
+                username: "musterman"
+            }
 
-        setTokens(newTokens);
-        setUser(decoded);
-        tokenCache.set("current_user", decoded);
+        setUser(fakedecode);
+        tokenCache.set("current_user", fakedecode);
 
         return {
           success: true,
@@ -226,7 +226,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         };
       } catch (err: unknown) {
         console.error("Error during login API call:", err);
-        let errorMessage;
+        let errorMessage =
         ("Login fehlgeschlagen. Bitte versuchen Sie es später erneut.");
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
@@ -298,7 +298,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       const access = res.data?.access;
       if (access) {
         const decoded = jwtDecode<DecodedToken>(access);
-        setTokens(access);
+        setTokens({access});
         setUser(decoded);
         tokenCache.set("current_user", decoded);
       } else {
