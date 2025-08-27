@@ -124,6 +124,20 @@ import LoadingSpinner from "../components/ui_elements/loading_spinner.tsx";
 import { useNavigate } from "react-router-dom";
 import api from "../util/apis/api.ts";
 import type { AxiosError } from "axios";
+import { useAuth } from "../context/AuthContext.tsx";
+import { useModules } from "../context/ModuleContext.tsx";
+
+// ---- AuthContext login result type + type guard ----
+type LoginResult = { success: boolean };
+
+function isLoginResult(obj: unknown): obj is LoginResult {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "success" in obj &&
+    typeof (obj as { success?: unknown }).success === "boolean"
+  );
+}
 
 /** --- Types --- */
 
@@ -176,6 +190,10 @@ const ExternalRegister: React.FC = () => {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const navigate = useNavigate();
+
+  const { login } = useAuth();
+  const { fetchModules } = useModules();
+
 
   // Prevent double-submit
   const submitRef = useRef<boolean>(false);
@@ -240,17 +258,39 @@ const ExternalRegister: React.FC = () => {
     try {
       // baseURL is VITE_API_URL (e.g., http://127.0.0.1:8000/api/elearning)
       await api.post("/users/register/", form);
-      // Auto-login immediately
-      const loginRes = await api.post("/token/", {
-        username: form.username,
-        password: form.password,
-      });
+      // Try to auto-login using AuthContext
+      // Try to auto-login using AuthContext
+      try {
+        const result = await login({
+          username: form.username,
+          password: form.password,
+        });
 
-      // Store tokens for Axios interceptors
-      localStorage.setItem("authTokens", JSON.stringify(loginRes.data));
+        let ok = false;
+        if (typeof result === "boolean") {
+          ok = result;
+        } else if (isLoginResult(result)) {
+          ok = result.success;
+        }
 
-      setSuccessMsg("Registrierung erfolgreich! Willkommen 🎉");
-      setTimeout(() => navigate("/subscriptions"), 1200);
+        if (ok) {
+          // hydrate user-scoped data so the header/UI updates instantly
+          if (typeof fetchModules === "function") {
+            await fetchModules();
+          }
+          navigate("/user-settings?tab=payments", { replace: true, state: { from: "register" } });
+          return;
+        }
+
+        // Fallback: registration worked → guide to /login
+        setSuccessMsg("Registrierung erfolgreich!");
+        setTimeout(() => navigate("/user-settings?tab=payments", { state: { from: "register" } }), 1200);
+      } catch {
+        // Network/unknown error during auto-login → fallback to /login
+        setSuccessMsg("Registrierung erfolgreich! Bitte melde dich an.");
+        setTimeout(() => navigate("/login"), 1200);
+      }
+
     } catch (err) {
       const axErr = err as AxiosError<unknown>;
       const payload = axErr.response?.data ?? null;
