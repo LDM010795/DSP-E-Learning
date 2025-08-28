@@ -162,7 +162,7 @@ interface ModuleProviderProps {
  * und benutzer-spezifischer Datenverwaltung.
  */
 export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated} = useAuth();
 
   // --- Performance-optimierte API-Calls ---
 
@@ -173,7 +173,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     error,
     refresh: fetchModules,
   } = useCachedApi(
-    `modules-${user?.user_id || "anonymous"}`, // User-specific cache key
+    `modules-${isAuthenticated || "anonymous"}`, // User-specific cache key
     async () => {
       if (!isAuthenticated) {
         console.log(

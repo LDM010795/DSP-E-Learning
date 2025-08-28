@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
-  const { user, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -16,7 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
     return <div>Authentifizierung wird geprüft...</div>;
   }
 
-  if (!user) {
+  if (!isAuthenticated) {
     // Benutzer nicht eingeloggt, leite zur Startseite um.
     // Speichere den ursprünglichen Pfad, um nach dem Login dorthin zurückzukehren (optional)
     return <Navigate to="/" state={{ from: location }} replace />;

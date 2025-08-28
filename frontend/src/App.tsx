@@ -73,7 +73,7 @@ const AppContent: React.FC = () => {
   }, []);
 
   // --- State Management ---
-  const { user, logout, isLoading } = useAuth();
+  const {isAuthenticated, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
   const location = useLocation();
@@ -83,8 +83,7 @@ const AppContent: React.FC = () => {
   const closeLoginPopup = () => setLoginPopupOpen(false);
 
   // --- Authorization Logic ---
-  const isAdmin = !!(user?.is_staff || user?.is_superuser);
-  const isAuthenticated = !!user;
+  const isAdmin = false; //TODO : how to check for Admin?
 
   // --- Navigation Configuration ---
   const mainNav = isAuthenticated

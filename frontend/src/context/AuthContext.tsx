@@ -29,47 +29,15 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { jwtDecode, JwtPayload } from "jwt-decode";
 import api from "../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
 import axios from "axios"; // Sicherstellen, dass axios importiert ist
 // Performance optimization imports
 import {
   useShallowMemo,
   useStableCallback,
-  AdvancedCache,
 } from "../util/performance";
 
-/**
- * JWT token pair structure for authentication
- */
-interface AuthTokens {
-  /** JWT access token for API requests */
-  access: string;
-}
 
-/**
- * API response structure from login endpoint
- * Extends AuthTokens with additional authentication flags
- */
-interface LoginApiResponse extends AuthTokens {
-  /** Flag indicating if user must change password on next login */
-  require_password_change?: boolean;
-}
-
-/**
- * Decoded JWT token payload structure
- * Contains user information and permissions
- */
-interface DecodedToken extends JwtPayload {
-  /** Unique user identifier */
-  user_id: number;
-  /** Username for display and identification */
-  username: string;
-  /** Staff permission flag for admin access */
-  is_staff?: boolean;
-  /** Superuser permission flag for full admin access */
-  is_superuser?: boolean;
-}
 
 /**
  * Login function return type
@@ -89,9 +57,7 @@ interface LoginResult {
  * Defines all authentication-related state and methods
  */
 interface AuthContextType {
-  /** Decoded user information (null if not authenticated) */
-  user: DecodedToken | null;
-  /** Boolean flag indicating authentication status */
+  /** Boolean flag indicating authentication status, true for authenticated*/
   isAuthenticated: boolean;
   /** Login function for username/password authentication */
   login: (credentials: {
@@ -100,8 +66,6 @@ interface AuthContextType {
   }) => Promise<LoginResult>;
   /** Logout function to clear authentication state */
   logout: () => void;
-  /** Function to set tokens from OAuth providers (Microsoft, etc.) */
-  setAuthTokens: (tokens: AuthTokens) => void;
   /** Loading state for authentication operations */
   isLoading: boolean;
 }
@@ -112,15 +76,6 @@ interface AuthContextType {
  */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/**
- * Performance optimization: Advanced cache for token validation
- * Reduces localStorage access and JWT decoding operations
- */
-const tokenCache = new AdvancedCache<DecodedToken>({
-  storage: "memory",
-  ttl: 60000, // 1 minute cache for token validation
-  maxSize: 1,
-});
 
 /**
  * Authentication Provider Component
@@ -141,16 +96,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   /**
-   * JWT tokens state
-   */
-  const [user, setUser] = useState<DecodedToken | null>(null);
-
-  /**
    * Loading state for authentication operations
    * Starts as true until initialization is complete
    */
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+    /**
+    * Authentification state for login operation
+     * Starts as false until logged in
+    */
+    const [isAuthenticated, setAuthentification] = useState<boolean>(false);
   /**
    * Effect to handle token changes and user state updates
    * Validates tokens and manages automatic logout on expiration
@@ -161,12 +115,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     (async () => {
       try {
         if (!cancelled) {
-          const fakedecode: DecodedToken = {
-            user_id: 1,
-            username: "musterman",
-          };
-          setUser(fakedecode);
-          tokenCache.set("current_user", fakedecode);
+
         }
       } catch {
         console.error("useeffect error");
@@ -198,7 +147,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }): Promise<LoginResult> => {
       setIsLoading(true);
       try {
-        const response = await api.post<LoginApiResponse>("/token/", {
+        const response = await api.post("/token/", {
           username: credentials.username,
           password: credentials.password,
         });
@@ -208,13 +157,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           return { success: false, error: "Unerwartete Serverantwort." };
         }
 
-        const fakedecode: DecodedToken = {
-          user_id: 1,
-          username: "musterman",
-        };
+        setAuthentification(true)
 
-        setUser(fakedecode);
-        tokenCache.set("current_user", fakedecode);
 
         return {
           success: true,
@@ -258,6 +202,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const logout = useStableCallback(async () => {
     setIsLoading(true);
+    setAuthentification(false)
     console.log("Logging out...");
 
       try {
@@ -272,15 +217,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         );
       }
 
-
-    // Performance optimization: Clear cache on logout
-    tokenCache.clear();
-
     // Clear OAuth session state for fresh login
     sessionStorage.removeItem("ms_oauth_processed");
     console.log("🧹 OAuth Session State beim Logout zurückgesetzt");
 
-    setUser(null);
     setIsLoading(false);
   }, []);
 
@@ -292,22 +232,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    *
    * @param newTokens - JWT token pair from OAuth provider
    */
-  const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
+  const setAuthTokens = useStableCallback((): void => {
     setIsLoading(true);
     try {
       setIsLoading(true);
-      const decoded = jwtDecode<DecodedToken>(newTokens.access);
-      tokenCache.set("current_user", decoded);
-      setUser(decoded);
+      setAuthentification(true)
 
       console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
-        user: decoded.username,
-        exp: new Date(decoded.exp! * 1000).toLocaleString(),
       });
     } catch (error) {
+        setAuthentification(false)
       console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
       // Cleanup on error
-      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -319,14 +255,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-      user,
-      isAuthenticated: !!user,
+      isAuthenticated,
       login,
       logout,
       setAuthTokens,
       isLoading,
     }),
-    [user, login, logout, setAuthTokens, isLoading],
+    [isAuthenticated, login, logout, setAuthTokens, isLoading],
   );
 
   return (
