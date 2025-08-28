@@ -89,8 +89,6 @@ interface LoginResult {
  * Defines all authentication-related state and methods
  */
 interface AuthContextType {
-  /** Current JWT tokens (null if not authenticated) */
-  tokens: AuthTokens | null;
   /** Decoded user information (null if not authenticated) */
   user: DecodedToken | null;
   /** Boolean flag indicating authentication status */
@@ -145,7 +143,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   /**
    * JWT tokens state
    */
-  const [tokens, setTokens] = useState<AuthTokens | null>(null);
   const [user, setUser] = useState<DecodedToken | null>(null);
 
   /**
@@ -201,12 +198,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }): Promise<LoginResult> => {
       setIsLoading(true);
       try {
-        const res = await api.post<LoginApiResponse>("/token/", {
+        const response = await api.post<LoginApiResponse>("/token/", {
           username: credentials.username,
           password: credentials.password,
         });
 
-        const error = res.status != 200;
+        const error = response.status != 200;
         if (error) {
           return { success: false, error: "Unerwartete Serverantwort." };
         }
@@ -221,7 +218,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
         return {
           success: true,
-          require_password_change: !!res.data.require_password_change,
+          require_password_change: !!response.data.require_password_change,
         };
       } catch (err: unknown) {
         console.error("Error during login API call:", err);
@@ -261,25 +258,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const logout = useStableCallback(async () => {
     setIsLoading(true);
-    try {
-      await api.post("/logout", null, {
-        baseURL: "http://localhost:8000",
-        withCredentials: true,
-      });
-    } catch {
-      // bewusst still – kein Leaken sensibler Infos
-    } finally {
-      tokenCache.clear();
-      setTokens(null);
-      setUser(null);
+    console.log("Logging out...");
 
-      // Multi-Tab-Sync (optional)
       try {
-        new BroadcastChannel("auth").postMessage({ type: "logout" });
-      } catch {}
+        // Send refresh token to logout endpoint for blacklisting
+        await api.post("/users/logout/");
+        console.log("Logout successful on backend.");
+      } catch (error) {
+        // Ignore backend logout errors but proceed with local logout
+        console.error(
+          "Backend logout failed, proceeding with local logout:",
+          error,
+        );
+      }
 
-      setIsLoading(false);
-    }
+
+    // Performance optimization: Clear cache on logout
+    tokenCache.clear();
+
+    // Clear OAuth session state for fresh login
+    sessionStorage.removeItem("ms_oauth_processed");
+    console.log("🧹 OAuth Session State beim Logout zurückgesetzt");
+
+    setUser(null);
+    setIsLoading(false);
   }, []);
 
   /**
@@ -296,7 +298,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(true);
       const decoded = jwtDecode<DecodedToken>(newTokens.access);
       tokenCache.set("current_user", decoded);
-      setTokens(newTokens);
       setUser(decoded);
 
       console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
@@ -306,7 +307,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     } catch (error) {
       console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
       // Cleanup on error
-      setTokens(null);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -319,7 +319,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-      tokens,
       user,
       isAuthenticated: !!user,
       login,
