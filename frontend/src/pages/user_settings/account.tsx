@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import ButtonPrimary from "../../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../../components/ui_elements/buttons/button_secondary";
@@ -11,9 +11,7 @@ import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
 import api from "../../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
 
-interface ProfileApiResponse {
-
-}
+interface ProfileApiResponse {}
 
 const Account: React.FC = () => {
   const [loadingPassword, setLoadingPassword] = useState(false);
@@ -144,10 +142,9 @@ const Account: React.FC = () => {
   };
 
   const UserFetchData = async () => {
-      let response = await api.get<ProfileApiResponse>('/users/me/')
-      return response.data
-  }
-
+    let response = await api.get<ProfileApiResponse>("/users/me/");
+    return response.data;
+  };
 
   return (
     <motion.div

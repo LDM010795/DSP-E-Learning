@@ -293,13 +293,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
     setIsLoading(true);
     try {
-      setIsLoading(true)
-        const decoded = jwtDecode<DecodedToken>(newTokens.access)
-        tokenCache.set("current_user", decoded);
-      setTokens(newTokens)
-        setUser(decoded)
+      setIsLoading(true);
+      const decoded = jwtDecode<DecodedToken>(newTokens.access);
+      tokenCache.set("current_user", decoded);
+      setTokens(newTokens);
+      setUser(decoded);
 
-        console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
+      console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
         user: decoded.username,
         exp: new Date(decoded.exp! * 1000).toLocaleString(),
       });
@@ -311,7 +311,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     } finally {
       setIsLoading(false);
     }
-
   }, []);
 
   /**
