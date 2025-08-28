@@ -163,7 +163,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     (async () => {
       try {
-        const res = await api.post<{ access: string }>("/token/refresh/"); // liest HttpOnly-Cookie serverseitig
         if (!cancelled) {
           const fakedecode: DecodedToken = {
             user_id: 1,
@@ -291,26 +290,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    *
    * @param newTokens - JWT token pair from OAuth provider
    */
-  const setAuthTokens = useStableCallback(async (): Promise<void> => {
+  const setAuthTokens = useStableCallback((newTokens: AuthTokens): void => {
     setIsLoading(true);
     try {
-      const res = await api.post<{ access: string }>("/token/refresh/", null);
-      const access = res.data?.access;
-      if (access) {
-        const decoded = jwtDecode<DecodedToken>(access);
-        setTokens({ access });
-        setUser(decoded);
+      setIsLoading(true)
+        const decoded = jwtDecode<DecodedToken>(newTokens.access)
         tokenCache.set("current_user", decoded);
-      } else {
-        setTokens(null);
-        setUser(null);
-      }
-    } catch {
+      setTokens(newTokens)
+        setUser(decoded)
+
+        console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
+        user: decoded.username,
+        exp: new Date(decoded.exp! * 1000).toLocaleString(),
+      });
+    } catch (error) {
+      console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
+      // Cleanup on error
       setTokens(null);
       setUser(null);
     } finally {
       setIsLoading(false);
     }
+
   }, []);
 
   /**
