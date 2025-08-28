@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import { motion } from "framer-motion";
 import ButtonPrimary from "../../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../../components/ui_elements/buttons/button_secondary";
@@ -144,14 +144,10 @@ const Account: React.FC = () => {
   };
 
   const UserFetchData = async () => {
-      return await api.get<ProfileApiResponse>('/users/me/')
+      let response = await api.get<ProfileApiResponse>('/users/me/')
+      return response.data
   }
 
-    useEffect(() => {
-        // check to see if user data is fetchable
-        let response = UserFetchData()
-        console.error("Angekommen")
-    }, []);
 
   return (
     <motion.div
