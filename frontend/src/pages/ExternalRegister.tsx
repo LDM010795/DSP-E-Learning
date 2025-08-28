@@ -194,7 +194,6 @@ const ExternalRegister: React.FC = () => {
   const { login } = useAuth();
   const { fetchModules } = useModules();
 
-
   // Prevent double-submit
   const submitRef = useRef<boolean>(false);
 
@@ -290,7 +289,6 @@ const ExternalRegister: React.FC = () => {
         setSuccessMsg("Registrierung erfolgreich! Bitte melde dich an.");
         setTimeout(() => navigate("/login"), 1200);
       }
-
     } catch (err) {
       const axErr = err as AxiosError<unknown>;
       const payload = axErr.response?.data ?? null;

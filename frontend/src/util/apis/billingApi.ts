@@ -36,7 +36,6 @@
 import api from "../../util/apis/api.ts";
 import type { AxiosError } from "axios";
 
-
 // ---------- Types ----------
 
 export type StripeConfigResponse = { publishableKey: string };

@@ -85,21 +85,15 @@ import SubscribeButton from "../components/payments/SubscribeButton"; // step 3 
 import { listPaymentMethods } from "../util/apis/billingApi"; // step 1 helper (GET saved cards)
 import { useAuth } from "../context/AuthContext";
 
-
 function getHttpStatus(e: unknown): number | null {
-  if (typeof e !== "object" || e === null)
-    return null;
+  if (typeof e !== "object" || e === null) return null;
   const ax = e as { response?: { status?: unknown } };
   if (ax.response && typeof ax.response.status === "number")
     return ax.response.status;
   const fx = e as { status?: unknown };
-  if (typeof fx.status === "number")
-    return fx.status;
+  if (typeof fx.status === "number") return fx.status;
   return null;
 }
-
-
-
 
 // Explicit plan type so map(plan => ...) is not inferred as `never`
 type Plan = {
@@ -110,10 +104,9 @@ type Plan = {
   isCurrent: boolean;
   highlight: boolean;
   cta: string;
-  priceId?: string;   // required when type === "paid"
-  courseId?: string;  // optional external identifier you pass to backend
+  priceId?: string; // required when type === "paid"
+  courseId?: string; // optional external identifier you pass to backend
 };
-
 
 // ---------- Animation Variants (unchanged) ----------
 const pageVariants = {
@@ -199,7 +192,9 @@ const getPlanIcon = (planName: string) => {
 };
 
 // ---------- Stripe price IDs (replace with your real ones) ----------
-const STANDARD_PRICE_ID = import.meta.env.VITE_STRIPE_STANDARD_PRICE_ID ?? "price_1S13df9d7ohkarhsUi2ogCwg";  // TODO: replace
+const STANDARD_PRICE_ID =
+  import.meta.env.VITE_STRIPE_STANDARD_PRICE_ID ??
+  "price_1S13df9d7ohkarhsUi2ogCwg"; // TODO: replace
 
 // Lightweight view state: we keep your visual page intact, but gate it behind “needs card?”
 type ViewState = "loading" | "needsCard" | "ready" | "error";
@@ -213,7 +208,6 @@ const SubscriptionsPage: React.FC = () => {
   const [view, setView] = useState<ViewState>("loading");
   const abortRef = React.useRef<AbortController | null>(null);
   const { isAuthenticated } = useAuth();
-
 
   // Motion values for your parallax (original)
   const mouseX = useMotionValue(0);
@@ -247,11 +241,10 @@ const SubscriptionsPage: React.FC = () => {
     };
   }, [mouseX, mouseY]);
 
-
   /**
-  * On mount (and whenever auth becomes ready), check if the user has a saved card.
-  * We wait for `isAuthenticated` so we don’t fire the API while logged out (prevents 401 spam).
-  */
+   * On mount (and whenever auth becomes ready), check if the user has a saved card.
+   * We wait for `isAuthenticated` so we don’t fire the API while logged out (prevents 401 spam).
+   */
   useEffect(() => {
     // Not logged in yet? Just keep the friendly loader.
     if (!isAuthenticated) {
@@ -312,9 +305,6 @@ const SubscriptionsPage: React.FC = () => {
       ac.abort();
     };
   }, [isAuthenticated]);
-
-
-
 
   // --- Plans (unchanged data, but we’ll wire “Standard” with Stripe) ---
   const plans: Plan[] = [
@@ -495,7 +485,10 @@ const SubscriptionsPage: React.FC = () => {
                  - Keep Business as "coming soon"
                  - Standard is now live → remove its ribbon */}
               {plan.name === "Business" && (
-                <ComingSoonRibbon position="top-right" text="Demnächst verfügbar" />
+                <ComingSoonRibbon
+                  position="top-right"
+                  text="Demnächst verfügbar"
+                />
               )}
 
               {/* Plan Header with Gradient */}
@@ -550,22 +543,28 @@ const SubscriptionsPage: React.FC = () => {
                 <div className="w-full">
                   {plan.type === "paid" ? (
                     <SubscribeButton
-                        priceId={plan.priceId!}
-                        courseId={plan.courseId ?? plan.name}
-                        label={plan.cta}
-                        className={`w-full py-4 px-6 rounded-xl font-bold text-base transition cursor-pointer ${
-                          plan.highlight 
-                              ? "bg-gradient-to-r from-[#ff863d] to-[#ff863d] text-white" 
-                              : `bg-gradient-to-r ${getAccentColor(plan.name)} text-white`
-                        } focus:outline-none focus:ring-2 focus:ring-dsp-orange focus:ring-opacity-50`}
+                      priceId={plan.priceId!}
+                      courseId={plan.courseId ?? plan.name}
+                      label={plan.cta}
+                      className={`w-full py-4 px-6 rounded-xl font-bold text-base transition cursor-pointer ${
+                        plan.highlight
+                          ? "bg-gradient-to-r from-[#ff863d] to-[#ff863d] text-white"
+                          : `bg-gradient-to-r ${getAccentColor(plan.name)} text-white`
+                      } focus:outline-none focus:ring-2 focus:ring-dsp-orange focus:ring-opacity-50`}
                     />
-
-
                   ) : (
                     <motion.button
-                      whileHover={{ scale: plan.type === "coming_soon" ? 1.0 : 1.03 }}
-                      whileTap={{ scale: plan.type === "coming_soon" ? 1.0 : 0.97 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      whileHover={{
+                        scale: plan.type === "coming_soon" ? 1.0 : 1.03,
+                      }}
+                      whileTap={{
+                        scale: plan.type === "coming_soon" ? 1.0 : 0.97,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
                       disabled={plan.type === "coming_soon" || plan.isCurrent}
                       className={`w-full py-4 px-6 rounded-xl font-bold text-base transition cursor-pointer ${
                         plan.isCurrent || plan.type === "coming_soon"
@@ -582,8 +581,8 @@ const SubscriptionsPage: React.FC = () => {
                       {plan.isCurrent
                         ? "Aktueller Plan"
                         : plan.type === "coming_soon"
-                        ? "Demnächst verfügbar"
-                        : plan.cta}
+                          ? "Demnächst verfügbar"
+                          : plan.cta}
                     </motion.button>
                   )}
                 </div>

@@ -9,7 +9,12 @@ import Notifications from "./notifications";
 import Design from "./design";
 import clsx from "clsx";
 
-type TabState = "profil" | "konto" | "benachrichtigungen" | "design" | "zahlungen" ;
+type TabState =
+  | "profil"
+  | "konto"
+  | "benachrichtigungen"
+  | "design"
+  | "zahlungen";
 
 // Tab Labels Mapping für bessere Übersicht
 const tabLabels: Record<TabState, string> = {
@@ -24,7 +29,7 @@ const IndexUserSettings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabState>(() => {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tab") as TabState | null;
-    return (t && (t in tabLabels)) ? t : "profil";
+    return t && t in tabLabels ? t : "profil";
   });
   const [sliderStyle, setSliderStyle] = useState({});
   const tabsRef = useRef<HTMLDivElement>(null);

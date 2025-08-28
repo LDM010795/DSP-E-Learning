@@ -109,9 +109,7 @@ export default function PaymentMethodsPanel() {
       {loading && <div className="text-gray-500">Lade…</div>}
 
       {/* Error state */}
-      {!loading && error && (
-        <div className="text-red-600 mb-4">{error}</div>
-      )}
+      {!loading && error && <div className="text-red-600 mb-4">{error}</div>}
 
       {/* List saved payment methods if any */}
       {!loading && items.length > 0 && (

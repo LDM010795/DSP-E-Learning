@@ -24,7 +24,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
   const linksWithSubscriptions = useMemo(() => {
     const alreadyHas = links.some((l) => l.to === "/subscriptions");
     return alreadyHas ? links : [...links, subscriptionsLink];
-    }, [links]);
+  }, [links]);
 
   // Filtere Links basierend auf Auth-Status
   const filteredLinks = linksWithSubscriptions.filter(

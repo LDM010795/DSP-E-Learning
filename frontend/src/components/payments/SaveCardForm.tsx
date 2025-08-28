@@ -28,7 +28,12 @@
  */
 
 import React from "react";
-import { Elements, useElements, useStripe, PaymentElement } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  useElements,
+  useStripe,
+  PaymentElement,
+} from "@stripe/react-stripe-js";
 import { getStripe, warmStripe } from "../../util/payments/stripe";
 import { createSetupIntent, getStripeConfig } from "../../util/apis/billingApi";
 
@@ -79,18 +84,25 @@ export default function SaveCardForm({
           createSetupIntent(),
         ]);
 
-        if (!client_secret) throw new Error("Fehlender client_secret vom Backend.");
+        if (!client_secret)
+          throw new Error("Fehlender client_secret vom Backend.");
 
         // Performance: warm load Stripe SDK early
         warmStripe(publishableKey);
 
         if (!cancelled) {
-          setState({ kind: "ready", publishableKey, clientSecret: client_secret });
+          setState({
+            kind: "ready",
+            publishableKey,
+            clientSecret: client_secret,
+          });
         }
       } catch (err) {
         if (cancelled) return;
         const message =
-          err instanceof Error ? err.message : "Konnte Stripe-Konfiguration nicht laden.";
+          err instanceof Error
+            ? err.message
+            : "Konnte Stripe-Konfiguration nicht laden.";
         setState({ kind: "error", message });
       }
     })();
@@ -113,11 +125,14 @@ export default function SaveCardForm({
     [publishableKey],
   );
 
-
   // Render different states
   if (state.kind === "idle" || state.kind === "loading") {
     return (
-      <div className={className ?? "w-full max-w-lg bg-white rounded-2xl p-6 shadow"}>
+      <div
+        className={
+          className ?? "w-full max-w-lg bg-white rounded-2xl p-6 shadow"
+        }
+      >
         <h2 className="text-lg font-semibold mb-3">{title}</h2>
         <p className="text-gray-600">Lade Zahlungsformular…</p>
       </div>
@@ -126,7 +141,11 @@ export default function SaveCardForm({
 
   if (state.kind === "error") {
     return (
-      <div className={className ?? "w-full max-w-lg bg-white rounded-2xl p-6 shadow"}>
+      <div
+        className={
+          className ?? "w-full max-w-lg bg-white rounded-2xl p-6 shadow"
+        }
+      >
         <h2 className="text-lg font-semibold mb-3">{title}</h2>
         <div className="text-red-600">{state.message}</div>
         {showSkip && (
@@ -143,7 +162,9 @@ export default function SaveCardForm({
   }
 
   return (
-    <div className={className ?? "w-full max-w-lg bg-white rounded-2xl p-6 shadow"}>
+    <div
+      className={className ?? "w-full max-w-lg bg-white rounded-2xl p-6 shadow"}
+    >
       <h2 className="text-lg font-semibold mb-4">{title}</h2>
 
       {/* Provide Stripe context to children */}
@@ -205,7 +226,9 @@ function InnerSaveCardForm({
       });
 
       if (error) {
-        setErrorMsg(error.message ?? "Die Zahlungsbestätigung ist fehlgeschlagen.");
+        setErrorMsg(
+          error.message ?? "Die Zahlungsbestätigung ist fehlgeschlagen.",
+        );
         return;
       }
 
@@ -213,7 +236,9 @@ function InnerSaveCardForm({
       onSuccess?.();
     } catch (err) {
       setErrorMsg(
-        err instanceof Error ? err.message : "Unbekannter Fehler bei der Zahlungsbestätigung.",
+        err instanceof Error
+          ? err.message
+          : "Unbekannter Fehler bei der Zahlungsbestätigung.",
       );
     } finally {
       setSubmitting(false);

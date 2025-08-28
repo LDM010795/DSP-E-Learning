@@ -45,7 +45,7 @@ function truncateMiddle(s: string, left = 8, right = 8): string {
 const PaymentsSuccess: React.FC = () => {
   const navigate = useNavigate();
   const sessionId = useQueryParam("session_id"); // e.g. "cs_test_..."
-  const courseId = useQueryParam("course");      // e.g. "standard"
+  const courseId = useQueryParam("course"); // e.g. "standard"
 
   // Go next: default → dashboard (could also be course detail page)
   const handleGoNext = React.useCallback(() => {
@@ -69,9 +69,12 @@ const PaymentsSuccess: React.FC = () => {
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="max-w-lg w-full bg-white/95 shadow-xl rounded-2xl p-8 border border-white/20 text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Zahlung erfolgreich 🎉</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Zahlung erfolgreich 🎉
+        </h1>
         <p className="text-gray-600">
-          Vielen Dank! Deine Zahlung wurde verarbeitet und dein Zugang wird eingerichtet.
+          Vielen Dank! Deine Zahlung wurde verarbeitet und dein Zugang wird
+          eingerichtet.
         </p>
 
         {/* Meta info: show truncated Session-ID + copy option, and course ID */}

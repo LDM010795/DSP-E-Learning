@@ -34,9 +34,12 @@ const PaymentsCancel: React.FC = () => {
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="max-w-lg w-full bg-white/95 shadow-xl rounded-2xl p-8 border border-white/20 text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Zahlung abgebrochen</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Zahlung abgebrochen
+        </h1>
         <p className="text-gray-600">
-          Kein Problem – es wurde nichts berechnet. Du kannst den Kauf jederzeit erneut versuchen.
+          Kein Problem – es wurde nichts berechnet. Du kannst den Kauf jederzeit
+          erneut versuchen.
         </p>
 
         {courseId && (
