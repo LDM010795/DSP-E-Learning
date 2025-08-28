@@ -60,18 +60,34 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-      await login({ username: email, password }); // Cookies werden gesetzt
-      setLoginSuccess(true);
+      const loginResponse = await login({ username: email, password });
 
-      if (rememberMe) localStorage.setItem("rememberedUsername", email);
-      else localStorage.removeItem("rememberedUsername");
+      if (loginResponse.success) {
+        setLoginSuccess(true);
 
-      // Weiterleitung
-      await fetchModules();
-      setTimeout(() => {
-        onClose();
-        navigate("/dashboard");
-      }, 500);
+        // Anmeldedaten merken
+        if (rememberMe) {
+          localStorage.setItem("rememberedUsername", email);
+        } else {
+          localStorage.removeItem("rememberedUsername");
+        }
+
+        // Prüfe, ob Passwortänderung erforderlich ist
+        if (loginResponse.require_password_change) {
+          setTimeout(() => {
+            navigate("/force-password-change");
+            onClose();
+          }, 1000);
+        } else {
+          await fetchModules();
+          setTimeout(() => {
+            onClose();
+            navigate("/dashboard");
+          }, 1000);
+        }
+      } else {
+        setError(loginResponse.error || "Login fehlgeschlagen.");
+      }
     } catch (err: unknown) {
       console.error("Unerwarteter Fehler während des Login-Prozesses:", err);
       setError("Ein unerwarteter Fehler ist aufgetreten.");

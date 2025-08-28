@@ -49,18 +49,25 @@ api.interceptors.response.use(
       _retry?: boolean;
     };
 
+    // Prüfe auf 401 Fehler UND dass es nicht die Refresh-Route selbst ist UND dass es kein Wiederholungsversuch ist
+    // Der Pfad ist relativ zur baseURL, daher wird "/api" hier entfernt.
     if (
       error.response?.status === 401 &&
       !originalRequest.url?.includes("/token/refresh/") &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/token/")
+      !originalRequest.url?.includes("/token/") // Ignoriere Login-Endpunkt
     ) {
       if (isRefreshing) {
+        // Wenn bereits ein Refresh läuft, füge die Anfrage zur Warteschlange hinzu
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(() => api(originalRequest));
+        }).then(() => api(originalRequest))
+            .catch((err) => {
+            return Promise.reject(err);
+          });
       }
 
+      // Markiere als Wiederholungsversuch und starte Refresh
       originalRequest._retry = true;
       isRefreshing = true;
 
@@ -82,7 +89,7 @@ api.interceptors.response.use(
       }
     }
 
-    // Für alle anderen Fehler leite sie einfach weiter
+    // Für alle anderen Fehler, leite sie einfach weiter
     return Promise.reject(error);
   },
 );
