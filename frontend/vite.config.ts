@@ -79,7 +79,7 @@ export default defineConfig({
 
   esbuild: {
     treeShaking: true,
-    drop: ["console", "debugger"],
+    // drop: ["console", "debugger"],
   },
 
   css: {

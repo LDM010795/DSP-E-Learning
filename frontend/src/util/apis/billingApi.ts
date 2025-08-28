@@ -34,6 +34,8 @@
  */
 
 import api from "../../util/apis/api.ts";
+import type { AxiosError } from "axios";
+
 
 // ---------- Types ----------
 
@@ -212,8 +214,9 @@ export const createCheckoutSession = throttleKey<
 
 /**
  * Lists saved payment methods.
- * Cached keep UI snappy while avoiding stale data.
- * De-duplicates concurrent callers.
+ * - Returns [] on 404/403 so UI can show SaveCardForm instead of a hard error.
+ * - Throws on other errors (Subscriptions page will catch and fall back).
+ * - Cached briefly to keep UI snappy; we DO NOT cache errors.
  */
 export async function listPaymentMethods(
   signal?: AbortSignal,
@@ -223,12 +226,26 @@ export async function listPaymentMethods(
   if (cached) return cached;
 
   return dedup(cacheKey, async () => {
-    const { data } = await api.get<ListPaymentMethodsResponse>(
-      "/payments/stripe/payment-methods/",
-      { signal },
-    );
-    cacheSet(cacheKey, data, 30_000);
-    return data;
+    try {
+      const { data } = await api.get<ListPaymentMethodsResponse>(
+        "/payments/stripe/payment-methods/",
+        { signal },
+      );
+      cacheSet(cacheKey, data, 30_000);
+      return data;
+    } catch (e) {
+      const ax = e as AxiosError<any>;
+      const status = ax?.response?.status ?? null;
+
+      // Gracefully degrade: if billing isn’t provisioned yet or forbidden,
+      // pretend there are no saved cards so the UI shows SaveCardForm.
+      if (status === 404 || status === 403) {
+        const empty: ListPaymentMethodsResponse = { payment_methods: [] };
+        cacheSet(cacheKey, empty, 5_000);
+        return empty;
+      }
+      throw e;
+    }
   });
 }
 

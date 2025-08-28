@@ -26,24 +26,45 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+/** Helper to extract query params like session_id / course */
 function useQueryParam(name: string): string | null {
   const value = new URLSearchParams(window.location.search).get(name);
   return value;
 }
 
+/**
+ * Middle-ellipsis truncation for long IDs
+ * Example: cs_test_abc123...xyz789
+ */
+function truncateMiddle(s: string, left = 8, right = 8): string {
+  if (!s) return "";
+  if (s.length <= left + right + 3) return s;
+  return `${s.slice(0, left)}…${s.slice(-right)}`;
+}
+
 const PaymentsSuccess: React.FC = () => {
   const navigate = useNavigate();
   const sessionId = useQueryParam("session_id"); // e.g. "cs_test_..."
-  const courseId = useQueryParam("course");      // e.g. "42"
+  const courseId = useQueryParam("course");      // e.g. "standard"
 
-  // Keep any logic outside render body (no hooks needed here)
+  // Go next: default → dashboard (could also be course detail page)
   const handleGoNext = React.useCallback(() => {
-    // Choose the next step later:
-    // - If there is a course detail page: navigate(`/modules/${courseId}`)
-    // - If onboarding flow: navigate("/subscriptions")
-    // - Default to dashboard:
     navigate("/dashboard");
-  }, [navigate /*, courseId*/]);
+  }, [navigate]);
+
+  // Truncate the Session-ID for display
+  const shortSession = sessionId ? truncateMiddle(sessionId, 10, 10) : "";
+
+  // Copy full Session-ID to clipboard (optional helper)
+  const copySessionId = async () => {
+    if (!sessionId) return;
+    try {
+      await navigator.clipboard.writeText(sessionId);
+      // (Optional) add toast/snackbar here
+    } catch {
+      // ignore clipboard errors
+    }
+  };
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
@@ -53,11 +74,32 @@ const PaymentsSuccess: React.FC = () => {
           Vielen Dank! Deine Zahlung wurde verarbeitet und dein Zugang wird eingerichtet.
         </p>
 
-        <div className="mt-6 text-left space-y-1 text-sm text-gray-500">
-          {sessionId && <div><span className="font-medium">Session-ID:</span> {sessionId}</div>}
-          {courseId && <div><span className="font-medium">Kurs-ID:</span> {courseId}</div>}
+        {/* Meta info: show truncated Session-ID + copy option, and course ID */}
+        <div className="mt-6 text-left space-y-2 text-sm text-gray-600">
+          {sessionId && (
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-gray-700">Session-ID:</span>
+              <span className="font-mono text-gray-700" title={sessionId}>
+                {shortSession}
+              </span>
+              <button
+                type="button"
+                onClick={copySessionId}
+                className="text-[#ff863d] hover:underline"
+              >
+                Kopieren
+              </button>
+            </div>
+          )}
+          {courseId && (
+            <div>
+              <span className="font-medium text-gray-700">Kurs-ID:</span>{" "}
+              <span className="text-gray-700">{courseId}</span>
+            </div>
+          )}
         </div>
 
+        {/* CTA: go back to dashboard */}
         <button
           type="button"
           onClick={handleGoNext}

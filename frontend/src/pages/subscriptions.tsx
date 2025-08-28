@@ -83,6 +83,22 @@ import { throttle } from "../util/performance";
 import SaveCardForm from "../components/payments/SaveCardForm"; // step 4 component (save card via SetupIntent)
 import SubscribeButton from "../components/payments/SubscribeButton"; // step 3 component (Checkout Session)
 import { listPaymentMethods } from "../util/apis/billingApi"; // step 1 helper (GET saved cards)
+import { useAuth } from "../context/AuthContext";
+
+
+function getHttpStatus(e: unknown): number | null {
+  if (typeof e !== "object" || e === null)
+    return null;
+  const ax = e as { response?: { status?: unknown } };
+  if (ax.response && typeof ax.response.status === "number")
+    return ax.response.status;
+  const fx = e as { status?: unknown };
+  if (typeof fx.status === "number")
+    return fx.status;
+  return null;
+}
+
+
 
 
 // Explicit plan type so map(plan => ...) is not inferred as `never`
@@ -183,7 +199,7 @@ const getPlanIcon = (planName: string) => {
 };
 
 // ---------- Stripe price IDs (replace with your real ones) ----------
-const STANDARD_PRICE_ID = "price_123_production_or_test"; // TODO: replace
+const STANDARD_PRICE_ID = import.meta.env.VITE_STRIPE_STANDARD_PRICE_ID ?? "price_1S13df9d7ohkarhsUi2ogCwg";  // TODO: replace
 
 // Lightweight view state: we keep your visual page intact, but gate it behind “needs card?”
 type ViewState = "loading" | "needsCard" | "ready" | "error";
@@ -196,6 +212,8 @@ const SubscriptionsPage: React.FC = () => {
   // Stripe flow state
   const [view, setView] = useState<ViewState>("loading");
   const abortRef = React.useRef<AbortController | null>(null);
+  const { isAuthenticated } = useAuth();
+
 
   // Motion values for your parallax (original)
   const mouseX = useMotionValue(0);
@@ -229,12 +247,18 @@ const SubscriptionsPage: React.FC = () => {
     };
   }, [mouseX, mouseY]);
 
+
   /**
-   * NEW: On mount, ask backend if user already has a saved card.
-   * - If none → show SaveCardForm (with Skip)
-   * - If exists → go straight to plans
-   */
+  * On mount (and whenever auth becomes ready), check if the user has a saved card.
+  * We wait for `isAuthenticated` so we don’t fire the API while logged out (prevents 401 spam).
+  */
   useEffect(() => {
+    // Not logged in yet? Just keep the friendly loader.
+    if (!isAuthenticated) {
+      setView("loading");
+      return;
+    }
+
     let cancelled = false;
     abortRef.current?.abort();
     const ac = new AbortController();
@@ -243,18 +267,43 @@ const SubscriptionsPage: React.FC = () => {
     (async () => {
       try {
         setView("loading");
-        const res = await listPaymentMethods(ac.signal); // { payment_methods: [...] }
-        const hasAny =
-          Array.isArray(res?.payment_methods) &&
-          res.payment_methods.length > 0;
 
-        if (!cancelled) {
-          setView(hasAny ? "ready" : "needsCard");
-        }
+        // First attempt
+        const first = await listPaymentMethods(ac.signal);
+        if (cancelled) return;
+
+        const hasAny =
+          Array.isArray(first?.payment_methods) &&
+          first.payment_methods.length > 0;
+
+        setView(hasAny ? "ready" : "needsCard");
       } catch (err) {
         if (cancelled) return;
-        console.error("Fehler beim Laden der Zahlungsmethoden:", err);
-        setView("error");
+
+        const status = getHttpStatus(err);
+
+        // Token race right after register? Try once more after a short delay.
+        if (status === 401) {
+          try {
+            await new Promise((r) => setTimeout(r, 150));
+            const second = await listPaymentMethods(ac.signal);
+            if (cancelled) return;
+
+            const hasAny =
+              Array.isArray(second?.payment_methods) &&
+              second.payment_methods.length > 0;
+
+            setView(hasAny ? "ready" : "needsCard");
+            return;
+          } catch {
+            // still unauthorized → show SaveCardForm (user can add/skip)
+            setView("needsCard");
+            return;
+          }
+        }
+
+        // Unknown / network error → prefer “needsCard” (more helpful than a hard error)
+        setView("needsCard");
       }
     })();
 
@@ -262,7 +311,10 @@ const SubscriptionsPage: React.FC = () => {
       cancelled = true;
       ac.abort();
     };
-  }, []);
+  }, [isAuthenticated]);
+
+
+
 
   // --- Plans (unchanged data, but we’ll wire “Standard” with Stripe) ---
   const plans: Plan[] = [

@@ -80,14 +80,6 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           }
         />
         <Route
-          path="/subscriptions"
-          element={
-            <PageTransition>
-              <SubscriptionsPage />
-            </PageTransition>
-          }
-        />
-        <Route
           path={"/Impressum"}
           element={
             <PageTransition>
@@ -201,6 +193,14 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+            <Route
+                path="/subscriptions"
+                element={
+                <PageTransition>
+                    <SubscriptionsPage />
+                </PageTransition>
+            }
+            />
 
           {/* Prüfungen und Zertifikate */}
           <Route

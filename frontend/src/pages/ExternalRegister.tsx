@@ -278,13 +278,13 @@ const ExternalRegister: React.FC = () => {
           if (typeof fetchModules === "function") {
             await fetchModules();
           }
-          navigate("/user-settings?tab=payments", { replace: true, state: { from: "register" } });
+          navigate("/subscriptions", { replace: true });
           return;
         }
 
         // Fallback: registration worked → guide to /login
         setSuccessMsg("Registrierung erfolgreich!");
-        setTimeout(() => navigate("/user-settings?tab=payments", { state: { from: "register" } }), 1200);
+        setTimeout(() => navigate("/login"), 1200);
       } catch {
         // Network/unknown error during auto-login → fallback to /login
         setSuccessMsg("Registrierung erfolgreich! Bitte melde dich an.");
