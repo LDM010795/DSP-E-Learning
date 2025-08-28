@@ -61,8 +61,9 @@ api.interceptors.response.use(
         // Wenn bereits ein Refresh läuft, füge die Anfrage zur Warteschlange hinzu
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(() => api(originalRequest))
-            .catch((err) => {
+        })
+          .then(() => api(originalRequest))
+          .catch((err) => {
             return Promise.reject(err);
           });
       }
