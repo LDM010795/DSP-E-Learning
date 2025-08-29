@@ -105,28 +105,6 @@ function throttleKey<TArgs extends unknown[], TOut>(
   };
 }
 
-const debounceTimers = new Map<string, number>();
-function debounceKey<TArgs extends unknown[], TOut>(
-  keyBase: string,
-  delayMs: number,
-  fn: (...args: TArgs) => Promise<TOut>,
-) {
-  return (...args: TArgs) =>
-    new Promise<TOut>((resolve, reject) => {
-      const key = keyOf(keyBase, args);
-      const prev = debounceTimers.get(key);
-      if (prev) window.clearTimeout(prev);
-      const id = window.setTimeout(async () => {
-        debounceTimers.delete(key);
-        try {
-          resolve(await fn(...args));
-        } catch (e) {
-          reject(e);
-        }
-      }, delayMs);
-      debounceTimers.set(key, id as unknown as number);
-    });
-}
 
 // ---------- Helpers to dedupe in-flight calls ----------
 
@@ -169,21 +147,17 @@ export async function getStripeConfig(
  * Debounced to collapse rapid submit clicks.
  * Accepts AbortSignal to cancel if component unmounts.
  */
-const _createSetupIntent = async (
-  signal?: AbortSignal,
-): Promise<SetupIntentResponse> => {
+export async function createSetupIntent(
+    signal?: AbortSignal,
+    ):
+    Promise<SetupIntentResponse> {
   const { data } = await api.post<SetupIntentResponse>(
-    "/payments/stripe/setup-intent/",
-    {},
-    { signal },
-  );
+      "/payments/stripe/setup-intent/",
+      {},
+      { signal },
+      );
   return data;
-};
-
-export const createSetupIntent = debounceKey<
-  [AbortSignal?],
-  SetupIntentResponse
->("stripe:setup-intent", 800, _createSetupIntent);
+}
 
 /**
  * Creates a Checkout Session (one-off purchase).
@@ -233,7 +207,7 @@ export async function listPaymentMethods(
       cacheSet(cacheKey, data, 30_000);
       return data;
     } catch (e) {
-      const ax = e as AxiosError<any>;
+      const ax = e as AxiosError<unknown>;
       const status = ax?.response?.status ?? null;
 
       // Gracefully degrade: if billing isn’t provisioned yet or forbidden,

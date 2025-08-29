@@ -34,8 +34,11 @@ import {
   useStripe,
   PaymentElement,
 } from "@stripe/react-stripe-js";
+import { setDefaultPaymentMethod } from "../../util/apis/billingApi";
 import { getStripe, warmStripe } from "../../util/payments/stripe";
 import { createSetupIntent, getStripeConfig } from "../../util/apis/billingApi";
+// import type { AxiosError } from "axios";
+
 
 type SaveCardFormProps = {
   onSuccess?: () => void;
@@ -63,55 +66,71 @@ export default function SaveCardForm({
 }: SaveCardFormProps) {
   const [state, setState] = React.useState<LoaderState>({ kind: "idle" });
 
-  // AbortController allows cancelling API calls if component unmounts
-  const abortRef = React.useRef<AbortController | null>(null);
 
   // Bootstrap effect: fetch publishable key + create SetupIntent
   React.useEffect(() => {
-    let cancelled = false;
-    abortRef.current?.abort();
-    const ac = new AbortController();
-    abortRef.current = ac;
+  let cancelled = false;
 
-    (async () => {
-      try {
-        setState({ kind: "loading" });
+  (async () => {
+    try {
+      setState({ kind: "loading" });
+      console.log("[SaveCardForm] fetching stripe config + setup intent…");
 
-        // 1. Get publishable key for Stripe.js
-        // 2. Create SetupIntent (returns client_secret)
-        const [{ publishableKey }, { client_secret }] = await Promise.all([
-          getStripeConfig(),
-          createSetupIntent(),
-        ]);
+      // Call without AbortSignal (prevents dev-time abort churn)
+      const [{ publishableKey }, { client_secret }] = await Promise.all([
+        getStripeConfig(),
+        createSetupIntent(),
+      ]);
 
-        if (!client_secret)
-          throw new Error("Fehlender client_secret vom Backend.");
+      console.log("[SaveCardForm] got response", {
+        hasPK: !!publishableKey,
+        hasSecret: !!client_secret,
+      });
 
-        // Performance: warm load Stripe SDK early
-        warmStripe(publishableKey);
+      if (!client_secret) throw new Error("Fehlender client_secret vom Backend.");
 
-        if (!cancelled) {
-          setState({
-            kind: "ready",
-            publishableKey,
-            clientSecret: client_secret,
-          });
-        }
-      } catch (err) {
-        if (cancelled) return;
-        const message =
-          err instanceof Error
-            ? err.message
-            : "Konnte Stripe-Konfiguration nicht laden.";
-        setState({ kind: "error", message });
+      warmStripe(publishableKey);
+
+      if (!cancelled) {
+        console.log("[SaveCardForm] setting state → ready");
+        setState({
+          kind: "ready",
+          publishableKey,
+          clientSecret: client_secret,
+        });
       }
-    })();
+    } catch (err: unknown) {
+      if (cancelled) return;
 
-    return () => {
-      cancelled = true;
-      ac.abort();
-    };
-  }, []);
+      // Do not treat “canceled” as an error (some libs still throw this)
+      const name = (err as { name?: string })?.name;
+      const code = (err as { code?: string })?.code;
+      const msg = err instanceof Error ? (err.message || "").toLowerCase() : "";
+      if (name === "AbortError" || code === "ERR_CANCELED" || msg === "canceled") {
+        console.log("[SaveCardForm] canceled (ignored).");
+        return;
+      }
+
+      // Show a useful message
+      const ax = err as import("axios").AxiosError<unknown>;
+      const status = ax?.response?.status;
+      const data = ax?.response?.data;
+      console.error("[SaveCardForm] bootstrap failed", { status, data, err });
+
+      const message =
+        (typeof data === "string" && data) ||
+        ((data as { detail?: string })?.detail ?? "") ||
+        (err instanceof Error ? err.message : "Konnte Stripe-Konfiguration nicht laden.");
+
+      setState({ kind: "error", message });
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
 
   // Always compute a stable key so hooks stay at the top level.
   // If we’re not ready yet, publishableKey is undefined.
@@ -217,7 +236,7 @@ function InnerSaveCardForm({
 
     try {
       // Confirm the SetupIntent (attach card to customer)
-      const { error } = await stripe.confirmSetup({
+      const { setupIntent, error } = await stripe.confirmSetup({
         elements,
         redirect: "if_required", // avoid full redirect when possible
         confirmParams: {
@@ -231,6 +250,18 @@ function InnerSaveCardForm({
         );
         return;
       }
+
+      // If no redirect was required, and we have the SetupIntent locally,
+      // set the PM as default immediately for great UX
+      const pmId = setupIntent?.payment_method;
+      if (pmId && typeof pmId === "string") {
+        try {
+          await setDefaultPaymentMethod(pmId);
+        } catch {
+          // Non-fatal — webhook will still set it; we just don’t block UX.
+          }
+      }
+
 
       // Success → card attached to user
       onSuccess?.();
