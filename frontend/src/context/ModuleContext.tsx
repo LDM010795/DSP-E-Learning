@@ -173,7 +173,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     error,
     refresh: fetchModules,
   } = useCachedApi(
-    `modules-${isAuthenticated || "anonymous"}`, // User-specific cache key
+    `modules-${isAuthenticated}`, // User-specific cache key
     async () => {
       if (!isAuthenticated) {
         console.log(
