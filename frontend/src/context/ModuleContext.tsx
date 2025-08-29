@@ -162,7 +162,7 @@ interface ModuleProviderProps {
  * und benutzer-spezifischer Datenverwaltung.
  */
 export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
-  const { isAuthenticated} = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // --- Performance-optimierte API-Calls ---
 

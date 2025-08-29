@@ -32,12 +32,7 @@ import React, {
 import api from "../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
 import axios from "axios"; // Sicherstellen, dass axios importiert ist
 // Performance optimization imports
-import {
-  useShallowMemo,
-  useStableCallback,
-} from "../util/performance";
-
-
+import { useShallowMemo, useStableCallback } from "../util/performance";
 
 /**
  * Login function return type
@@ -76,7 +71,6 @@ interface AuthContextType {
  */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
 /**
  * Authentication Provider Component
  *
@@ -100,11 +94,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Starts as true until initialization is complete
    */
   const [isLoading, setIsLoading] = useState<boolean>(true);
-    /**
-    * Authentification state for login operation
-     * Starts as false until logged in
-    */
-    const [isAuthenticated, setAuthentification] = useState<boolean>(false);
+  /**
+   * Authentification state for login operation
+   * Starts as false until logged in
+   */
+  const [isAuthenticated, setAuthentification] = useState<boolean>(false);
   /**
    * Effect to handle token changes and user state updates
    * Validates tokens and manages automatic logout on expiration
@@ -115,7 +109,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     (async () => {
       try {
         if (!cancelled) {
-
         }
       } catch {
         console.error("useeffect error");
@@ -157,8 +150,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           return { success: false, error: "Unerwartete Serverantwort." };
         }
 
-        setAuthentification(true)
-
+        setAuthentification(true);
 
         return {
           success: true,
@@ -202,20 +194,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const logout = useStableCallback(async () => {
     setIsLoading(true);
-    setAuthentification(false)
+    setAuthentification(false);
     console.log("Logging out...");
 
-      try {
-        // Send refresh token to logout endpoint for blacklisting
-        await api.post("/users/logout/");
-        console.log("Logout successful on backend.");
-      } catch (error) {
-        // Ignore backend logout errors but proceed with local logout
-        console.error(
-          "Backend logout failed, proceeding with local logout:",
-          error,
-        );
-      }
+    try {
+      // Send refresh token to logout endpoint for blacklisting
+      await api.post("/users/logout/");
+      console.log("Logout successful on backend.");
+    } catch (error) {
+      // Ignore backend logout errors but proceed with local logout
+      console.error(
+        "Backend logout failed, proceeding with local logout:",
+        error,
+      );
+    }
 
     // Clear OAuth session state for fresh login
     sessionStorage.removeItem("ms_oauth_processed");
@@ -236,12 +228,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoading(true);
     try {
       setIsLoading(true);
-      setAuthentification(true)
+      setAuthentification(true);
 
-      console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
-      });
+      console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {});
     } catch (error) {
-        setAuthentification(false)
+      setAuthentification(false);
       console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
       // Cleanup on error
     } finally {

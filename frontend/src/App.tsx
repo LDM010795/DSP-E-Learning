@@ -73,7 +73,7 @@ const AppContent: React.FC = () => {
   }, []);
 
   // --- State Management ---
-  const {isAuthenticated, logout, isLoading } = useAuth();
+  const { isAuthenticated, logout, isLoading } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
   const location = useLocation();
