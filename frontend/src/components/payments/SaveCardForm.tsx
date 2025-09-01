@@ -188,14 +188,16 @@ export default function SaveCardForm({
 
       {/* Provide Stripe context to children */}
       <Elements
-        stripe={stripePromise}
-        options={{
-          clientSecret: state.clientSecret,
-          appearance: {
-            theme: "stripe",
-            variables: { colorPrimary: "#f97316" }, // optional branding (orange)
-          },
-        }}
+          stripe={stripePromise}
+          options={{
+            clientSecret: state.clientSecret,
+            appearance: {
+              theme: "stripe",
+              variables: { colorPrimary: "#f97316" },
+            },
+            // Hide wallets in “save-card-only” flow
+            wallets: { link: "never", applePay: "never", googlePay: "never" },
+              }}
       >
         <InnerSaveCardForm
           onSuccess={onSuccess}
@@ -240,26 +242,30 @@ function InnerSaveCardForm({
         elements,
         redirect: "if_required", // avoid full redirect when possible
         confirmParams: {
-          return_url: window.location.origin + "/payments/success", // fallback if Stripe forces redirect
+          return_url: window.location.origin + "/payments/return", // fallback if Stripe forces redirect
         },
       });
 
       if (error) {
+        console.error("[SaveCardForm] confirmSetup error", error);
         setErrorMsg(
           error.message ?? "Die Zahlungsbestätigung ist fehlgeschlagen.",
         );
         return;
       }
+      console.log("[SaveCardForm] confirmSetup OK", setupIntent);
 
       // If no redirect was required, and we have the SetupIntent locally,
       // set the PM as default immediately for great UX
       const pmId = setupIntent?.payment_method;
       if (pmId && typeof pmId === "string") {
+        console.log("[SaveCardForm] calling setDefaultPaymentMethod", pmId);
         try {
           await setDefaultPaymentMethod(pmId);
-        } catch {
-          // Non-fatal — webhook will still set it; we just don’t block UX.
-          }
+          console.log("[SaveCardForm] setDefaultPaymentMethod OK");
+        } catch (e) {
+          console.warn("[SaveCardForm] setDefaultPaymentMethod failed (non-fatal)", e);
+        }
       }
 
 
@@ -280,7 +286,19 @@ function InnerSaveCardForm({
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {/* Stripe PaymentElement = all-in-one card field (handles brand, expiry, CVC, etc.) */}
       <div className="rounded-xl border border-gray-200 p-3 bg-white">
-        <PaymentElement id="payment-element" />
+        <PaymentElement
+            id="payment-element"
+            options={{
+              // Don’t surface browser/Link wallets on this Save-Card flow
+              wallets: {
+                link: "never",
+                applePay: "never",
+                googlePay: "never",
+              },
+              // (Optional) Only show “card” in the Payment Element
+              paymentMethodOrder: ["card"],
+            }}
+        />
       </div>
 
       {/* Error display (if any) */}

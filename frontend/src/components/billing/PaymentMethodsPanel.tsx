@@ -13,15 +13,18 @@
  *    POST /api/elearning/payments/stripe/setup-intent/    → SaveCardForm handles
  *
  * USER FLOW
- * 1. Component mounts → fetches saved payment methods.
- * 2. If cards exist → shows list with default card marked.
- * 3. Always renders SaveCardForm → user can add new card or skip.
- * 4. On success or skip → navigates to /dashboard.
+ *  1. Component mounts → fetches saved payment methods.
+ *  2. If cards exist → shows list with default card marked.
+ *  3. SaveCardForm is shown only if no cards exist, or if user clicks
+ *     “Neue Karte hinzufügen”.
+ *  4. On success → reloads list and hides the form.
+ *  5. On skip → redirects to /dashboard (only if no card exists).
  *
  * STATE HANDLING
- * - loading   → show "Lade…"
- * - error     → show error message (but still render SaveCardForm)
- * - items     → array of saved PaymentMethods
+ * - loading      → show "Lade…"
+ * - error        → show error message (only if no cards are available)
+ * - items        → array of saved PaymentMethods
+ * - showAddForm  → whether SaveCardForm is currently visible
  *
  * PERFORMANCE & SAFETY
  * - Uses AbortController to cancel API requests on unmount.
@@ -40,6 +43,9 @@
  * DEPENDENCIES
  * - SaveCardForm (handles Stripe Elements + SetupIntent)
  * - billingApi.listPaymentMethods (Axios → backend)
+ *
+ * Author: DSP Development Team
+ * Date: 2025-08-26
  */
 
 import * as React from "react";
@@ -61,41 +67,29 @@ export default function PaymentMethodsPanel() {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [items, setItems] = React.useState<PM[]>([]);
+  const [showAddForm, setShowAddForm] = React.useState(false);
+
+  const load = React.useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await listPaymentMethods();
+      const list = res?.payment_methods ?? [];
+      setItems(list);
+      // show the add form only when there are no cards yet
+      setShowAddForm(list.length === 0);
+    } catch {
+      setError("Konnte Zahlungsdaten nicht laden.");
+      // if we can't load and have no items, keep the form visible
+      if (items.length === 0) setShowAddForm(true);
+    } finally {
+      setLoading(false);
+    }
+    }, [items.length]);
 
   React.useEffect(() => {
-    let cancelled = false;
-    const ac = new AbortController();
-
-    (async () => {
-      try {
-        setLoading(true);
-
-        // --- API call: fetch saved payment methods from backend ---
-        const res = await listPaymentMethods(ac.signal);
-
-        if (!cancelled) {
-          // Use safe fallback in case backend returns null/undefined
-          setItems(res?.payment_methods ?? []);
-          setError(null);
-        }
-      } catch {
-        if (!cancelled) {
-          // Error fetching → show error but still render SaveCardForm
-          setError("Konnte Zahlungsdaten nicht laden.");
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    })();
-
-    // Cleanup when component unmounts
-    return () => {
-      cancelled = true;
-      ac.abort();
-    };
-  }, []);
+    void load();
+    }, [load]);
 
   return (
     <div className="bg-white/90 border border-gray-200 rounded-2xl p-6">
@@ -109,7 +103,9 @@ export default function PaymentMethodsPanel() {
       {loading && <div className="text-gray-500">Lade…</div>}
 
       {/* Error state */}
-      {!loading && error && <div className="text-red-600 mb-4">{error}</div>}
+      {!loading && items.length === 0 && error && (
+          <div className="text-red-600 mb-4">{error}</div>
+      )}
 
       {/* List saved payment methods if any */}
       {!loading && items.length > 0 && (
@@ -127,6 +123,7 @@ export default function PaymentMethodsPanel() {
                 <div className="text-gray-700">
                   {pm.brand ?? "Karte"} •••• {pm.last4} — {pm.exp_month}/
                   {pm.exp_year}
+                  {(pm.brand ?? "Karte").toUpperCase()} •••• {pm.last4} — {pm.exp_month}/{pm.exp_year}
                 </div>
 
                 {/* Badge if this is the default card */}
@@ -138,22 +135,36 @@ export default function PaymentMethodsPanel() {
               </li>
             ))}
           </ul>
+          <div className="mt-4">
+            <button
+                type="button"
+                onClick={() => setShowAddForm((v) => !v)}
+                className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50"
+            >
+              {showAddForm ? "Abbrechen" : "Neue Karte hinzufügen"}
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Always render SaveCardForm, so user can add new card or skip */}
-      <SaveCardForm
-        title="Kredit- oder Debitkarte hinzufügen"
-        showSkip
-        onSuccess={() => {
-          // After saving a card, reload or redirect to dashboard
-          window.location.replace("/dashboard");
-        }}
-        onSkip={() => {
-          // If user skips, also redirect to dashboard
-          window.location.replace("/dashboard");
-        }}
-      />
+      {/* Show form only when needed */}
+      {!loading && showAddForm && (
+          <SaveCardForm
+              title="Kredit- oder Debitkarte hinzufügen"
+              showSkip={items.length === 0} // hide “Später” if we already have a card
+              onSuccess={async () => {
+                await load();              // refresh list
+                setShowAddForm(false);     // collapse form
+                }}
+              onSkip={() => {
+                if (items.length === 0) {
+                  window.location.replace("/dashboard");
+                } else {
+                  setShowAddForm(false);
+                }
+              }}
+          />
+      )}
     </div>
   );
 }

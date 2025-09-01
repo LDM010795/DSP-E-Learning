@@ -1,16 +1,15 @@
+import { useEffect, useMemo, useState } from "react";
+import { Elements, useStripe } from "@stripe/react-stripe-js";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { getStripeConfig, setDefaultPaymentMethod } from "../../util/apis/billingApi";
 
-import { useEffect, useState } from "react";
-import { useStripe } from "@stripe/react-stripe-js";
-import { setDefaultPaymentMethod } from "../../util/apis/billingApi";
-
-export default function PaymentsReturn() {
+function PaymentsReturnInner() {
   const stripe = useStripe();
   const [msg, setMsg] = useState("Finalisiere Zahlung…");
 
   useEffect(() => {
     if (!stripe) return;
 
-    // Stripe appends ?setup_intent=...&setup_intent_client_secret=... when it redirects back
     const sp = new URLSearchParams(window.location.search);
     const siClientSecret = sp.get("setup_intent_client_secret");
     if (!siClientSecret) {
@@ -28,7 +27,7 @@ export default function PaymentsReturn() {
         try {
           await setDefaultPaymentMethod(setupIntent.payment_method);
         } catch {
-          // ignore: webhook should set it; we don't block UX here
+          // non-fatal; webhook/other sync may also handle it
         }
         setMsg("Zahlungsmethode gespeichert. Weiterleitung…");
         window.location.replace("/dashboard");
@@ -39,4 +38,34 @@ export default function PaymentsReturn() {
   }, [stripe]);
 
   return <div className="p-6 text-gray-700">{msg}</div>;
+}
+
+export default function PaymentsReturn() {
+  const [pk, setPk] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { publishableKey } = await getStripeConfig();
+        setPk(publishableKey);
+      } catch (e) {
+        setErr("Stripe-Konfiguration konnte nicht geladen werden.");
+      }
+    })();
+  }, []);
+
+  const stripePromise = useMemo<Promise<Stripe | null>>(
+    () => (pk ? loadStripe(pk) : Promise.resolve(null)),
+    [pk]
+  );
+
+  if (err) return <div className="p-6 text-red-600">{err}</div>;
+  if (!pk) return <div className="p-6 text-gray-700">Lade…</div>;
+
+  return (
+    <Elements stripe={stripePromise} options={{ appearance: { theme: "stripe" } }}>
+      <PaymentsReturnInner />
+    </Elements>
+  );
 }

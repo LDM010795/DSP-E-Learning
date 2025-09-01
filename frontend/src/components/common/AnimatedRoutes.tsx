@@ -44,6 +44,8 @@ import ExternalRegister from "../../pages/ExternalRegister";
 import PaymentsSuccessRoute from "../../pages/payments/PaymentsSuccessRoute";
 import PaymentsSuccess from "../../pages/payments/Success";
 import PaymentsCancel from "../../pages/payments/Cancel";
+import PaymentsReturn from "../../pages/payments/PaymentsReturn";
+
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -128,6 +130,10 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
                 </PageTransition>
           }
           />
+          <Route
+              path="/payments/return"
+              element={<PaymentsReturn />} />
+
 
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>

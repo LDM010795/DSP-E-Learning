@@ -189,38 +189,29 @@ export const createCheckoutSession = throttleKey<
  * Lists saved payment methods.
  * - Returns [] on 404/403 so UI can show SaveCardForm instead of a hard error.
  * - Throws on other errors (Subscriptions page will catch and fall back).
- * - Cached briefly to keep UI snappy; we DO NOT cache errors.
+ * - Always fetches fresh data from the backend (no caching).
  */
+
 export async function listPaymentMethods(
   signal?: AbortSignal,
 ): Promise<ListPaymentMethodsResponse> {
-  const cacheKey = "stripe:payment-methods";
-  const cached = cacheGet<ListPaymentMethodsResponse>(cacheKey);
-  if (cached) return cached;
+  try {
+    const { data } = await api.get<ListPaymentMethodsResponse>(
+      "/payments/stripe/payment-methods/",
+      { signal, headers: { "Cache-Control": "no-store" } },
+    );
+    return data;
+  } catch (e) {
+    const ax = e as AxiosError<unknown>;
+    const status = ax?.response?.status ?? null;
 
-  return dedup(cacheKey, async () => {
-    try {
-      const { data } = await api.get<ListPaymentMethodsResponse>(
-        "/payments/stripe/payment-methods/",
-        { signal },
-      );
-      cacheSet(cacheKey, data, 30_000);
-      return data;
-    } catch (e) {
-      const ax = e as AxiosError<unknown>;
-      const status = ax?.response?.status ?? null;
-
-      // Gracefully degrade: if billing isn’t provisioned yet or forbidden,
-      // pretend there are no saved cards so the UI shows SaveCardForm.
-      if (status === 404 || status === 403) {
-        const empty: ListPaymentMethodsResponse = { payment_methods: [] };
-        cacheSet(cacheKey, empty, 5_000);
-        return empty;
-      }
-      throw e;
+    if (status === 404 || status === 403) {
+      return { payment_methods: [] };
     }
-  });
+    throw e;
+  }
 }
+
 
 /**
  * Sets default payment method for user’s customer.
@@ -238,4 +229,13 @@ export async function setDefaultPaymentMethod(
   // bust cache so next list fetch is fresh
   ttlCache.delete("stripe:payment-methods");
   return data;
+}
+
+/**
+ * Clears any cached billing data.
+ * Call this on login/logout to avoid leaking payment methods across users.
+ */
+export function clearBillingCaches() {
+  ttlCache.clear();
+  inflight.clear();
 }
