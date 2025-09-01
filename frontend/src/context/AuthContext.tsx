@@ -32,7 +32,7 @@ import React, {
 import api from "../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
 import axios from "axios"; // Sicherstellen, dass axios importiert ist
 // Performance optimization imports
-import {useShallowMemo, useStableCallback} from "../util/performance";
+import { useShallowMemo, useStableCallback } from "../util/performance";
 
 /**
  * Login function return type
@@ -48,12 +48,12 @@ interface LoginResult {
 }
 
 interface UserData {
-    date_joined: string;
-    email: string;
-    first_name: string;
-    force_password_change: boolean;
-    full_name: string;
-    /** Unique user identifier */
+  date_joined: string;
+  email: string;
+  first_name: string;
+  force_password_change: boolean;
+  full_name: string;
+  /** Unique user identifier */
   user_id: number;
   is_active: boolean;
 
@@ -65,7 +65,6 @@ interface UserData {
   last_name: string;
   /** Username for display and identification */
   username: string;
-
 }
 
 /**
@@ -73,7 +72,7 @@ interface UserData {
  * Defines all authentication-related state and methods
  */
 interface AuthContextType {
-    user?: UserData;
+  user?: UserData;
   /** Boolean flag indicating authentication status, true for authenticated*/
   isAuthenticated: boolean;
   /** Login function for username/password authentication */
@@ -121,10 +120,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Starts as false until logged in
    */
   const [isAuthenticated, setAuthentification] = useState<boolean>(false);
-    /**
-     * Handle user data using /users/me api endpoint
-     */
-    const [user, setUser] = useState<UserData | null>(null);
+  /**
+   * Handle user data using /users/me api endpoint
+   */
+  const [user, setUser] = useState<UserData | null>(null);
   /**
    * Effect to handle token changes and user state updates
    * Validates tokens and manages automatic logout on expiration
@@ -180,11 +179,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
         // set user information
         try {
-            const response = await api.get("users/me")
-            setUser(response.data)
-        }
-        catch {
-            console.error("Nutzerdaten nicht gefunden")
+          const response = await api.get("users/me");
+          setUser(response.data);
+        } catch {
+          console.error("Nutzerdaten nicht gefunden");
         }
 
         return {
@@ -281,7 +279,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-        user,
+      user,
       isAuthenticated,
       login,
       logout,
