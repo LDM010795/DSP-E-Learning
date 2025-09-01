@@ -53,7 +53,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { isAuthenticated, setAuthTokens } = useAuth();
+  const { isAuthenticated} = useAuth();
 
   // --- React StrictMode Protection ---
   // Verhindert doppelte OAuth-Callback-Verarbeitung
@@ -122,13 +122,6 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         );
       }
 
-      // --- Tokens setzen ---
-      const authTokens = {
-        access: authResponse.tokens.access,
-        refresh: authResponse.tokens.refresh,
-      };
-
-      setAuthTokens(authTokens);
       cleanupUrlAfterAuth();
 
       console.log("✅ Microsoft authentication successful.");
@@ -145,7 +138,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, setAuthTokens]);
+  }, [navigate]);
 
   /**
    * Automatische Callback-Behandlung bei Page Load
