@@ -74,22 +74,25 @@ export default function PaymentMethodsPanel() {
     setError(null);
     try {
       const res = await listPaymentMethods();
-      const list = res?.payment_methods ?? [];
+      const raw = res?.payment_methods ?? [];
+
+      // default first
+      const list = [...raw].sort((a, b) => Number(b.is_default) - Number(a.is_default));
+
       setItems(list);
-      // show the add form only when there are no cards yet
       setShowAddForm(list.length === 0);
     } catch {
       setError("Konnte Zahlungsdaten nicht laden.");
-      // if we can't load and have no items, keep the form visible
-      if (items.length === 0) setShowAddForm(true);
+      // If we can't load, keep the form visible only if we have nothing cached
+      setShowAddForm((prev) => (items.length === 0 ? true : prev));
     } finally {
       setLoading(false);
     }
-    }, [items.length]);
+  }, [items.length]);
 
   React.useEffect(() => {
     void load();
-    }, [load]);
+  }, [load]);
 
   return (
     <div className="bg-white/90 border border-gray-200 rounded-2xl p-6">
@@ -121,10 +124,11 @@ export default function PaymentMethodsPanel() {
               >
                 {/* Show masked card details */}
                 <div className="text-gray-700">
-                  {pm.brand ?? "Karte"} •••• {pm.last4} — {pm.exp_month}/
-                  {pm.exp_year}
-                  {(pm.brand ?? "Karte").toUpperCase()} •••• {pm.last4} — {pm.exp_month}/{pm.exp_year}
+                  {(pm.brand ?? "Karte").toUpperCase()} •••• {pm.last4} —{" "}
+                  {String(pm.exp_month ?? "").padStart(2, "0")}/
+                  {String(pm.exp_year ?? "").slice(-2)}
                 </div>
+
 
                 {/* Badge if this is the default card */}
                 {pm.is_default && (
