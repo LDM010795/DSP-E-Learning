@@ -53,7 +53,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setOAuthLogin } = useAuth();
 
   // --- React StrictMode Protection ---
   // Verhindert doppelte OAuth-Callback-Verarbeitung
@@ -122,6 +122,7 @@ export const useMicrosoftAuth = (): UseMicrosoftAuthReturn => {
         );
       }
 
+      setOAuthLogin(null);
       cleanupUrlAfterAuth();
 
       console.log("✅ Microsoft authentication successful.");

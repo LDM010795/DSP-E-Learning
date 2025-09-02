@@ -82,6 +82,8 @@ interface AuthContextType {
   }) => Promise<LoginResult>;
   /** Logout function to clear authentication state */
   logout: () => void;
+  /** Function to set Authentification status from OAuth providers, automatically fetches user data*/
+  setOAuthLogin: (dummy: null) => void;
   /** Loading state for authentication operations */
   isLoading: boolean;
 }
@@ -123,7 +125,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   /**
    * Handle user data using /users/me api endpoint
    */
-  const [user, setUser] = useState<UserData | null>(null);
+  const [user, setUser] = useState<UserData | undefined>(undefined);
   /**
    * Effect to handle token changes and user state updates
    * Validates tokens and manages automatic logout on expiration
@@ -257,13 +259,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    *
    * @param newTokens - JWT token pair from OAuth provider
    */
-  const setAuthTokens = useStableCallback((): void => {
+  const setOAuthLogin = useStableCallback(async (): Promise<void> => {
     setIsLoading(true);
     try {
-      setIsLoading(true);
       setAuthentification(true);
+      // set user information
+      const response = await api.get("users/me");
+      setUser(response.data);
 
-      console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {});
+      console.log("Nutzer eingeloggt und Daten auf elearning Plattform gefunden");
     } catch (error) {
       setAuthentification(false);
       console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
@@ -283,10 +287,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       isAuthenticated,
       login,
       logout,
-      setAuthTokens,
+      setOAuthLogin,
       isLoading,
     }),
-    [user, isAuthenticated, login, logout, setAuthTokens, isLoading],
+    [user, isAuthenticated, login, logout, setOAuthLogin, isLoading],
   );
 
   return (
