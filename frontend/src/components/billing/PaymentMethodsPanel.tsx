@@ -77,7 +77,9 @@ export default function PaymentMethodsPanel() {
       const raw = res?.payment_methods ?? [];
 
       // default first
-      const list = [...raw].sort((a, b) => Number(b.is_default) - Number(a.is_default));
+      const list = [...raw].sort(
+        (a, b) => Number(b.is_default) - Number(a.is_default),
+      );
 
       setItems(list);
       setShowAddForm(list.length === 0);
@@ -107,7 +109,7 @@ export default function PaymentMethodsPanel() {
 
       {/* Error state */}
       {!loading && items.length === 0 && error && (
-          <div className="text-red-600 mb-4">{error}</div>
+        <div className="text-red-600 mb-4">{error}</div>
       )}
 
       {/* List saved payment methods if any */}
@@ -129,7 +131,6 @@ export default function PaymentMethodsPanel() {
                   {String(pm.exp_year ?? "").slice(-2)}
                 </div>
 
-
                 {/* Badge if this is the default card */}
                 {pm.is_default && (
                   <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-700">
@@ -141,9 +142,9 @@ export default function PaymentMethodsPanel() {
           </ul>
           <div className="mt-4">
             <button
-                type="button"
-                onClick={() => setShowAddForm((v) => !v)}
-                className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50"
+              type="button"
+              onClick={() => setShowAddForm((v) => !v)}
+              className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50"
             >
               {showAddForm ? "Abbrechen" : "Neue Karte hinzufügen"}
             </button>
@@ -153,21 +154,21 @@ export default function PaymentMethodsPanel() {
 
       {/* Show form only when needed */}
       {!loading && showAddForm && (
-          <SaveCardForm
-              title="Kredit- oder Debitkarte hinzufügen"
-              showSkip={items.length === 0} // hide “Später” if we already have a card
-              onSuccess={async () => {
-                await load();              // refresh list
-                setShowAddForm(false);     // collapse form
-                }}
-              onSkip={() => {
-                if (items.length === 0) {
-                  window.location.replace("/dashboard");
-                } else {
-                  setShowAddForm(false);
-                }
-              }}
-          />
+        <SaveCardForm
+          title="Kredit- oder Debitkarte hinzufügen"
+          showSkip={items.length === 0} // hide “Später” if we already have a card
+          onSuccess={async () => {
+            await load(); // refresh list
+            setShowAddForm(false); // collapse form
+          }}
+          onSkip={() => {
+            if (items.length === 0) {
+              window.location.replace("/dashboard");
+            } else {
+              setShowAddForm(false);
+            }
+          }}
+        />
       )}
     </div>
   );

@@ -105,7 +105,6 @@ function throttleKey<TArgs extends unknown[], TOut>(
   };
 }
 
-
 // ---------- Helpers to dedupe in-flight calls ----------
 
 async function dedup<T>(key: string, factory: () => Promise<T>): Promise<T> {
@@ -148,14 +147,13 @@ export async function getStripeConfig(
  * Accepts AbortSignal to cancel if component unmounts.
  */
 export async function createSetupIntent(
-    signal?: AbortSignal,
-    ):
-    Promise<SetupIntentResponse> {
+  signal?: AbortSignal,
+): Promise<SetupIntentResponse> {
   const { data } = await api.post<SetupIntentResponse>(
-      "/payments/stripe/setup-intent/",
-      {},
-      { signal },
-      );
+    "/payments/stripe/setup-intent/",
+    {},
+    { signal },
+  );
   return data;
 }
 
@@ -211,7 +209,6 @@ export async function listPaymentMethods(
     throw e;
   }
 }
-
 
 /**
  * Sets default payment method for user’s customer.

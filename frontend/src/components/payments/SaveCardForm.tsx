@@ -39,7 +39,6 @@ import { getStripe, warmStripe } from "../../util/payments/stripe";
 import { createSetupIntent, getStripeConfig } from "../../util/apis/billingApi";
 // import type { AxiosError } from "axios";
 
-
 type SaveCardFormProps = {
   onSuccess?: () => void;
   onSkip?: () => void;
@@ -66,71 +65,77 @@ export default function SaveCardForm({
 }: SaveCardFormProps) {
   const [state, setState] = React.useState<LoaderState>({ kind: "idle" });
 
-
   // Bootstrap effect: fetch publishable key + create SetupIntent
   React.useEffect(() => {
-  let cancelled = false;
+    let cancelled = false;
 
-  (async () => {
-    try {
-      setState({ kind: "loading" });
-      console.log("[SaveCardForm] fetching stripe config + setup intent…");
+    (async () => {
+      try {
+        setState({ kind: "loading" });
+        console.log("[SaveCardForm] fetching stripe config + setup intent…");
 
-      // Call without AbortSignal (prevents dev-time abort churn)
-      const [{ publishableKey }, { client_secret }] = await Promise.all([
-        getStripeConfig(),
-        createSetupIntent(),
-      ]);
+        // Call without AbortSignal (prevents dev-time abort churn)
+        const [{ publishableKey }, { client_secret }] = await Promise.all([
+          getStripeConfig(),
+          createSetupIntent(),
+        ]);
 
-      console.log("[SaveCardForm] got response", {
-        hasPK: !!publishableKey,
-        hasSecret: !!client_secret,
-      });
-
-      if (!client_secret) throw new Error("Fehlender client_secret vom Backend.");
-
-      warmStripe(publishableKey);
-
-      if (!cancelled) {
-        console.log("[SaveCardForm] setting state → ready");
-        setState({
-          kind: "ready",
-          publishableKey,
-          clientSecret: client_secret,
+        console.log("[SaveCardForm] got response", {
+          hasPK: !!publishableKey,
+          hasSecret: !!client_secret,
         });
+
+        if (!client_secret)
+          throw new Error("Fehlender client_secret vom Backend.");
+
+        warmStripe(publishableKey);
+
+        if (!cancelled) {
+          console.log("[SaveCardForm] setting state → ready");
+          setState({
+            kind: "ready",
+            publishableKey,
+            clientSecret: client_secret,
+          });
+        }
+      } catch (err: unknown) {
+        if (cancelled) return;
+
+        // Do not treat “canceled” as an error (some libs still throw this)
+        const name = (err as { name?: string })?.name;
+        const code = (err as { code?: string })?.code;
+        const msg =
+          err instanceof Error ? (err.message || "").toLowerCase() : "";
+        if (
+          name === "AbortError" ||
+          code === "ERR_CANCELED" ||
+          msg === "canceled"
+        ) {
+          console.log("[SaveCardForm] canceled (ignored).");
+          return;
+        }
+
+        // Show a useful message
+        const ax = err as import("axios").AxiosError<unknown>;
+        const status = ax?.response?.status;
+        const data = ax?.response?.data;
+        console.error("[SaveCardForm] bootstrap failed", { status, data, err });
+
+        const message =
+          (typeof data === "string" && data) ||
+          ((data as { detail?: string })?.detail ?? "") ||
+          (err instanceof Error
+            ? err.message
+            : "Konnte Stripe-Konfiguration nicht laden.");
+
+        setState({ kind: "error", message });
       }
-    } catch (err: unknown) {
-      if (cancelled) return;
+    })();
 
-      // Do not treat “canceled” as an error (some libs still throw this)
-      const name = (err as { name?: string })?.name;
-      const code = (err as { code?: string })?.code;
-      const msg = err instanceof Error ? (err.message || "").toLowerCase() : "";
-      if (name === "AbortError" || code === "ERR_CANCELED" || msg === "canceled") {
-        console.log("[SaveCardForm] canceled (ignored).");
-        return;
-      }
-
-      // Show a useful message
-      const ax = err as import("axios").AxiosError<unknown>;
-      const status = ax?.response?.status;
-      const data = ax?.response?.data;
-      console.error("[SaveCardForm] bootstrap failed", { status, data, err });
-
-      const message =
-        (typeof data === "string" && data) ||
-        ((data as { detail?: string })?.detail ?? "") ||
-        (err instanceof Error ? err.message : "Konnte Stripe-Konfiguration nicht laden.");
-
-      setState({ kind: "error", message });
-    }
-  })();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
-
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Always compute a stable key so hooks stay at the top level.
   // If we’re not ready yet, publishableKey is undefined.
@@ -188,16 +193,16 @@ export default function SaveCardForm({
 
       {/* Provide Stripe context to children */}
       <Elements
-          stripe={stripePromise}
-          options={{
-            clientSecret: state.clientSecret,
-            appearance: {
-              theme: "stripe",
-              variables: { colorPrimary: "#f97316" },
-            },
-            // Hide wallets in “save-card-only” flow
-            wallets: { link: "never", applePay: "never", googlePay: "never" },
-              }}
+        stripe={stripePromise}
+        options={{
+          clientSecret: state.clientSecret,
+          appearance: {
+            theme: "stripe",
+            variables: { colorPrimary: "#f97316" },
+          },
+          // Hide wallets in “save-card-only” flow
+          wallets: { link: "never", applePay: "never", googlePay: "never" },
+        }}
       >
         <InnerSaveCardForm
           onSuccess={onSuccess}
@@ -264,10 +269,12 @@ function InnerSaveCardForm({
           await setDefaultPaymentMethod(pmId);
           console.log("[SaveCardForm] setDefaultPaymentMethod OK");
         } catch (e) {
-          console.warn("[SaveCardForm] setDefaultPaymentMethod failed (non-fatal)", e);
+          console.warn(
+            "[SaveCardForm] setDefaultPaymentMethod failed (non-fatal)",
+            e,
+          );
         }
       }
-
 
       // Success → card attached to user
       onSuccess?.();
@@ -287,17 +294,17 @@ function InnerSaveCardForm({
       {/* Stripe PaymentElement = all-in-one card field (handles brand, expiry, CVC, etc.) */}
       <div className="rounded-xl border border-gray-200 p-3 bg-white">
         <PaymentElement
-            id="payment-element"
-            options={{
-              // Don’t surface browser/Link wallets on this Save-Card flow
-              wallets: {
-                link: "never",
-                applePay: "never",
-                googlePay: "never",
-              },
-              // (Optional) Only show “card” in the Payment Element
-              paymentMethodOrder: ["card"],
-            }}
+          id="payment-element"
+          options={{
+            // Don’t surface browser/Link wallets on this Save-Card flow
+            wallets: {
+              link: "never",
+              applePay: "never",
+              googlePay: "never",
+            },
+            // (Optional) Only show “card” in the Payment Element
+            paymentMethodOrder: ["card"],
+          }}
         />
       </div>
 

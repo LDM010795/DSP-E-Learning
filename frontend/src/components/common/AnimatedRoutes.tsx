@@ -46,7 +46,6 @@ import PaymentsSuccess from "../../pages/payments/Success";
 import PaymentsCancel from "../../pages/payments/Cancel";
 import PaymentsReturn from "../../pages/payments/PaymentsReturn";
 
-
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
 import Impressum from "../../pages/Impressum.tsx";
@@ -113,27 +112,18 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             </PageTransition>
           }
         />
+        <Route path="/payments/success" element={<PaymentsSuccessRoute />} />
+        <Route path="/payments/cancel" element={<PaymentsCancel />} />
+        {/* Checkout Session success (one-off purchase) */}
         <Route
-            path="/payments/success"
-            element={<PaymentsSuccessRoute />}
-        />
-        <Route
-            path="/payments/cancel"
-            element={<PaymentsCancel />}
-        />
-          {/* Checkout Session success (one-off purchase) */}
-          <Route
-              path="/payments/checkout/success"
-              element={
-                <PageTransition>
-                  <PaymentsSuccess />
-                </PageTransition>
+          path="/payments/checkout/success"
+          element={
+            <PageTransition>
+              <PaymentsSuccess />
+            </PageTransition>
           }
-          />
-          <Route
-              path="/payments/return"
-              element={<PaymentsReturn />} />
-
+        />
+        <Route path="/payments/return" element={<PaymentsReturn />} />
 
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>
