@@ -267,7 +267,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       const response = await api.get("users/me");
       setUser(response.data);
 
-      console.log("Nutzer eingeloggt und Daten auf elearning Plattform gefunden");
+      console.log(
+        "Nutzer eingeloggt und Daten auf elearning Plattform gefunden",
+      );
     } catch (error) {
       setAuthentification(false);
       console.error("❌ Fehler beim Setzen der OAuth Tokens:", error);
