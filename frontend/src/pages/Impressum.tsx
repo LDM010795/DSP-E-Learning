@@ -65,18 +65,6 @@ function Impressum() {
             Dritter enthalten. Eine Haftung für die Inhalte dieser Links können
             wir nicht übernehmen.
           </p>
-          <p>
-            OS-Plattform: Die Europäische Union hat eine Online-Plattform
-            („OS-Plattform“) zur außergerichtlichen Beilegung von
-            Verbraucherrechtsstreitigkeiten eingerichtet:{" "}
-            <a
-              href="https://ec.europa.eu/consumers/odr"
-              target="_blank"
-              className="text-dsp-orange underline"
-            >
-              https://ec.europa.eu/consumers/odr
-            </a>
-          </p>
         </section>
 
         <section className="bg-gray-50 p-6 rounded-lg shadow-md">
