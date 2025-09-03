@@ -4,7 +4,8 @@ interface ButtonFilterSimpleProps<T extends string> {
   label: string;
   options: T[];
   activeOptions: T[];
-  onOptionClick: (option: T) => void;
+  multiSelectEnabled: boolean;
+  onOptionClick: (newActiveOptions: T[]) => void;
   onClearClick: () => void;
   activeClassName?: string;
   inactiveClassName?: string;
@@ -16,6 +17,7 @@ const ButtonFilterSimple = <T extends string>({
   label,
   options,
   activeOptions,
+  multiSelectEnabled,
   onOptionClick,
   onClearClick,
   activeClassName = "bg-dsp-blue text-white border-dsp-blue", // Default active style
@@ -29,7 +31,19 @@ const ButtonFilterSimple = <T extends string>({
       {options.map((option) => (
         <button
           key={option}
-          onClick={() => onOptionClick(option)}
+          onClick={() => {
+            let newActiveOptions = [];
+            if (multiSelectEnabled) {
+              newActiveOptions = activeOptions.includes(option)
+                ? activeOptions.filter(o => o !== option)
+                : [...activeOptions, option];
+            } else {
+              newActiveOptions = activeOptions.includes(option)
+                ? []
+                : [option];
+            }
+            onOptionClick(newActiveOptions)
+          }}
           className={clsx(
             buttonClassName,
             activeOptions.includes(option)

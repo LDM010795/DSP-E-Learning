@@ -664,12 +664,6 @@ const AdminPanelExamReviewSection: React.FC = () => {
     setSelectedAttempt(null);
   };
 
-  const handleStatusFilterChange = (label: StatusLabel) => {
-    setActiveStatusFilter((prev) =>
-      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label],
-    );
-  };
-
   // Gefilterte und sortierte Versuche
   const filteredAndSortedAttempts = useMemo(() => {
     if (!Array.isArray(examsWithTotalPoints)) {
@@ -749,7 +743,8 @@ const AdminPanelExamReviewSection: React.FC = () => {
           label="Status:"
           options={["Eingereicht", "Bewertet"] as StatusLabel[]}
           activeOptions={activeStatusFilter}
-          onOptionClick={handleStatusFilterChange}
+          multiSelectEnabled={false}
+          onOptionClick={setActiveStatusFilter}
           onClearClick={() => setActiveStatusFilter([])}
           activeClassName="bg-dsp-orange text-white border-dsp-orange"
         />
