@@ -36,7 +36,6 @@
 import api from "../../util/apis/api.ts";
 import type { AxiosError } from "axios";
 
-
 // base for payments
 const API_ROOT = import.meta.env.VITE_API_ROOT || "http://127.0.0.1:8000/api";
 const PAYMENTS_BASE = `${API_ROOT}/payments/stripe`;
@@ -110,7 +109,6 @@ function throttleKey<TArgs extends unknown[], TOut>(
   };
 }
 
-
 // ---------- Helpers to dedupe in-flight calls ----------
 
 async function dedup<T>(key: string, factory: () => Promise<T>): Promise<T> {
@@ -156,10 +154,10 @@ export async function createSetupIntent(
   signal?: AbortSignal,
 ): Promise<SetupIntentResponse> {
   const { data } = await api.post<SetupIntentResponse>(
-      `${PAYMENTS_BASE}/setup-intent/`,
-      {},
-      { signal },
-      );
+    `${PAYMENTS_BASE}/setup-intent/`,
+    {},
+    { signal },
+  );
   return data;
 }
 
@@ -215,7 +213,6 @@ export async function listPaymentMethods(
     throw e;
   }
 }
-
 
 /**
  * Sets default payment method for user’s customer.
