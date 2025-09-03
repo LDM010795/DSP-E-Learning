@@ -29,8 +29,11 @@ type ViewMode = "standard" | "table";
 
 function Modules() {
   const { modules, loading, error, fetchModules } = useModules();
-  const [activeFilters, setActiveFilters] = useState<DifficultyLevel[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  // NEU: State für Schwierigkeitsfilter
+  const [activeDifficultyFilters, setActiveDifficultyFilters] = useState<
+    DifficultyLevel[]
+  >([]);
   // NEU: State für Statusfilter
   const [activeStatusFilters, setActiveStatusFilters] = useState<
     ModuleStatus[]
@@ -39,6 +42,7 @@ function Modules() {
   const [activeCategoryFilters, setActiveCategoryFilters] = useState<string[]>(
     [],
   );
+
   // NEU: State für den Ansichtsmodus - Default bleibt "standard"
   const [viewMode, setViewMode] = useState<ViewMode>("standard");
 
@@ -76,16 +80,6 @@ function Modules() {
     return undefined;
   };
 
-  const handleFilterChange = (difficulty: DifficultyLevel) => {
-    setActiveFilters((prevFilters) => {
-      if (prevFilters.includes(difficulty)) {
-        return prevFilters.filter((f) => f !== difficulty);
-      } else {
-        return [...prevFilters, difficulty];
-      }
-    });
-  };
-
   // NEU: Hilfsfunktion zur Bestimmung des Modulstatus
   const getModuleStatus = (module: Module): ModuleStatus => {
     const tasks = module.tasks || [];
@@ -102,16 +96,6 @@ function Modules() {
       return "Abgeschlossen";
     }
     return "In Bearbeitung";
-  };
-
-  const handleStatusFilterChange = (status: ModuleStatus) => {
-    setActiveStatusFilters((prevFilters) => {
-      if (prevFilters.includes(status)) {
-        return prevFilters.filter((f) => f !== status);
-      } else {
-        return [...prevFilters, status];
-      }
-    });
   };
 
   // NEU: Handler für Kategorie-Filter
@@ -169,9 +153,12 @@ function Modules() {
         else return "Schwer";
       };
       const difficultyMatch = (() => {
-        if (activeFilters.length === 0) return true;
+        if (activeDifficultyFilters.length === 0) return true;
         const avgDifficulty = calculateDifficultyForFilter(module.tasks);
-        return avgDifficulty !== null && activeFilters.includes(avgDifficulty);
+        return (
+          avgDifficulty !== null &&
+          activeDifficultyFilters.includes(avgDifficulty)
+        );
       })();
       const searchMatch =
         searchTerm === "" ||
@@ -309,7 +296,7 @@ function Modules() {
             <span className="text-sm font-medium text-gray-600">
               {sortedAndFilteredModules.length} von {modules.length} Modulen
             </span>
-            {(activeFilters.length > 0 ||
+            {(activeDifficultyFilters.length > 0 ||
               activeStatusFilters.length > 0 ||
               activeCategoryFilters.length > 0 ||
               searchTerm) && (
@@ -339,17 +326,19 @@ function Modules() {
                       "Abgeschlossen",
                     ]}
                     activeOptions={activeStatusFilters}
-                    onOptionClick={handleStatusFilterChange}
+                    onOptionClick={setActiveStatusFilters}
                     onClearClick={() => setActiveStatusFilters([])}
+                    multiSelectEnabled={false}
                     activeClassName="bg-[#ff863d] text-white border-[#ff863d]"
                   />
                   <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
                   <ButtonFilterSimple
                     label="Schwierigkeit:"
                     options={["Einfach", "Mittel", "Schwer"]}
-                    activeOptions={activeFilters}
-                    onOptionClick={handleFilterChange}
-                    onClearClick={() => setActiveFilters([])}
+                    activeOptions={activeDifficultyFilters}
+                    onOptionClick={setActiveDifficultyFilters}
+                    onClearClick={() => setActiveDifficultyFilters([])}
+                    multiSelectEnabled={true}
                     activeClassName="bg-[#ff863d] text-white border-[#ff863d]"
                   />
                   <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
