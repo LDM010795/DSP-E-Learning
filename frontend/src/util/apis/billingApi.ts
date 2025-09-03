@@ -14,11 +14,11 @@
  * Endpoints covered:
  * ------------------
  *
- * - GET  /api/elearning/payments/stripe/config/        → Stripe publishable key
- * - POST /api/elearning/payments/stripe/setup-intent/  → SetupIntent client secret
- * - POST /api/elearning/payments/stripe/checkout-session/ → CheckoutSession URL + id
- * - GET  /api/elearning/payments/stripe/payment-methods/ → List saved cards
- * - POST /api/elearning/payments/stripe/payment-methods/default/ → Set default card
+ * - GET  {API_ROOT}/payments/stripe/config/        → Stripe publishable key
+ * - POST {API_ROOT}/payments/stripe/setup-intent/  → SetupIntent client secret
+ * - POST {API_ROOT}/payments/stripe/checkout-session/ → CheckoutSession URL + id
+ * - GET  {API_ROOT}/payments/stripe/payment-methods/ → List saved cards
+ * - POST {API_ROOT}/payments/stripe/payment-methods/default/ → Set default card
  *
  * Usage:
  * ------
@@ -35,6 +35,11 @@
 
 import api from "../../util/apis/api.ts";
 import type { AxiosError } from "axios";
+
+
+// base for payments
+const API_ROOT = import.meta.env.VITE_API_ROOT || "http://127.0.0.1:8000/api";
+const PAYMENTS_BASE = `${API_ROOT}/payments/stripe`;
 
 // ---------- Types ----------
 
@@ -105,6 +110,7 @@ function throttleKey<TArgs extends unknown[], TOut>(
   };
 }
 
+
 // ---------- Helpers to dedupe in-flight calls ----------
 
 async function dedup<T>(key: string, factory: () => Promise<T>): Promise<T> {
@@ -133,7 +139,7 @@ export async function getStripeConfig(
 
   return dedup(cacheKey, async () => {
     const { data } = await api.get<StripeConfigResponse>(
-      "/payments/stripe/config/",
+      `${PAYMENTS_BASE}/config/`,
       { signal },
     );
     cacheSet(cacheKey, data, 600_000);
@@ -150,10 +156,10 @@ export async function createSetupIntent(
   signal?: AbortSignal,
 ): Promise<SetupIntentResponse> {
   const { data } = await api.post<SetupIntentResponse>(
-    "/payments/stripe/setup-intent/",
-    {},
-    { signal },
-  );
+      `${PAYMENTS_BASE}/setup-intent/`,
+      {},
+      { signal },
+      );
   return data;
 }
 
@@ -171,7 +177,7 @@ const _createCheckoutSession = async (
     course_id: String(payload.course_id),
   };
   const { data } = await api.post<CheckoutSessionResponse>(
-    "/payments/stripe/checkout-session/",
+    `${PAYMENTS_BASE}/checkout-session/`,
     body,
     { signal },
   );
@@ -195,7 +201,7 @@ export async function listPaymentMethods(
 ): Promise<ListPaymentMethodsResponse> {
   try {
     const { data } = await api.get<ListPaymentMethodsResponse>(
-      "/payments/stripe/payment-methods/",
+      `${PAYMENTS_BASE}/payment-methods/`,
       { signal, headers: { "Cache-Control": "no-store" } },
     );
     return data;
@@ -210,6 +216,7 @@ export async function listPaymentMethods(
   }
 }
 
+
 /**
  * Sets default payment method for user’s customer.
  * Invalidates the local payment methods cache upon success.
@@ -219,7 +226,7 @@ export async function setDefaultPaymentMethod(
   signal?: AbortSignal,
 ): Promise<{ detail: string }> {
   const { data } = await api.post<{ detail: string }>(
-    "/payments/stripe/payment-methods/default/",
+    `${PAYMENTS_BASE}/payment-methods/default/`,
     { payment_method_id },
     { signal },
   );
