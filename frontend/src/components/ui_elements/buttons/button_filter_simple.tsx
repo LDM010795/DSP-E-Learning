@@ -35,14 +35,12 @@ const ButtonFilterSimple = <T extends string>({
             let newActiveOptions = [];
             if (multiSelectEnabled) {
               newActiveOptions = activeOptions.includes(option)
-                ? activeOptions.filter(o => o !== option)
+                ? activeOptions.filter((o) => o !== option)
                 : [...activeOptions, option];
             } else {
-              newActiveOptions = activeOptions.includes(option)
-                ? []
-                : [option];
+              newActiveOptions = activeOptions.includes(option) ? [] : [option];
             }
-            onOptionClick(newActiveOptions)
+            onOptionClick(newActiveOptions);
           }}
           className={clsx(
             buttonClassName,

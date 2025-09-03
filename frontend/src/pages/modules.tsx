@@ -29,13 +29,19 @@ type ViewMode = "standard" | "table";
 
 function Modules() {
   const { modules, loading, error, fetchModules } = useModules();
-    const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   // NEU: State für Schwierigkeitsfilter
-  const [activeDifficultyFilters, setActiveDifficultyFilters] = useState<DifficultyLevel[]>([]);
+  const [activeDifficultyFilters, setActiveDifficultyFilters] = useState<
+    DifficultyLevel[]
+  >([]);
   // NEU: State für Statusfilter
-  const [activeStatusFilters, setActiveStatusFilters] = useState<ModuleStatus[]>([]);
+  const [activeStatusFilters, setActiveStatusFilters] = useState<
+    ModuleStatus[]
+  >([]);
   // NEU: State für Kategorie-Filter
-  const [activeCategoryFilters, setActiveCategoryFilters] = useState<string[]>([],);
+  const [activeCategoryFilters, setActiveCategoryFilters] = useState<string[]>(
+    [],
+  );
 
   // NEU: State für den Ansichtsmodus - Default bleibt "standard"
   const [viewMode, setViewMode] = useState<ViewMode>("standard");
@@ -149,7 +155,10 @@ function Modules() {
       const difficultyMatch = (() => {
         if (activeDifficultyFilters.length === 0) return true;
         const avgDifficulty = calculateDifficultyForFilter(module.tasks);
-        return avgDifficulty !== null && activeDifficultyFilters.includes(avgDifficulty);
+        return (
+          avgDifficulty !== null &&
+          activeDifficultyFilters.includes(avgDifficulty)
+        );
       })();
       const searchMatch =
         searchTerm === "" ||
@@ -291,11 +300,11 @@ function Modules() {
               activeStatusFilters.length > 0 ||
               activeCategoryFilters.length > 0 ||
               searchTerm) && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#ff863d]/10 text-[#ff863d] border border-[#ff863d]/20">
-                  <IoSearchOutline className="w-3 h-3 mr-1" />
-                  Gefiltert
-                </span>
-              )}
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#ff863d]/10 text-[#ff863d] border border-[#ff863d]/20">
+                <IoSearchOutline className="w-3 h-3 mr-1" />
+                Gefiltert
+              </span>
+            )}
           </div>
 
           {/* Combined Filter & Content Area */}
