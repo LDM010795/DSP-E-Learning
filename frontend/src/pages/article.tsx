@@ -60,7 +60,7 @@ const ArticlePage: React.FC = () => {
       { label: module?.title || "Modul" },
       { label: "Lernbeiträge" },
     ],
-    [module?.title]
+    [module?.title],
   );
 
   const handlePrev = () => {
@@ -93,7 +93,7 @@ const ArticlePage: React.FC = () => {
   console.log("📄 ArticlePage: Articles in module:", module?.articles);
   console.log(
     "🖼️ ArticlePage: Article images in module:",
-    module?.article_images
+    module?.article_images,
   );
 
   if (!module) {
@@ -236,8 +236,8 @@ const ArticlePage: React.FC = () => {
                       JSON.stringify(
                         currentArticle.json_content as Record<string, unknown>,
                         null,
-                        2
-                      )
+                        2,
+                      ),
                     )
                   }
                   className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-all duration-200 cursor-pointer text-sm"

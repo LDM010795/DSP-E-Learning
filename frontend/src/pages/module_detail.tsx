@@ -275,7 +275,7 @@ function ModuleDetail() {
                           className="bg-white rounded-lg border border-gray-200 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
                           onClick={() =>
                             navigate(
-                              `/modules/${moduleId}/chapters/${chapter.id}`
+                              `/modules/${moduleId}/chapters/${chapter.id}`,
                             )
                           }
                         >

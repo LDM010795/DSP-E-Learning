@@ -179,7 +179,7 @@ function ChapterDetail() {
                     description={selectedVideo.description}
                     supplementaryContent={selectedVideo.supplementary_contents}
                     currentLessonIndex={chapter.contents.findIndex(
-                      (c) => c.id === selectedVideo.id
+                      (c) => c.id === selectedVideo.id,
                     )}
                     totalLessons={chapter.contents.length}
                     contentId={selectedVideo.id}
