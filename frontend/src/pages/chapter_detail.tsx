@@ -12,6 +12,7 @@ import LearningContentVideoLayout from "../components/layouts/learning_content_v
 import SubBackground from "../components/layouts/SubBackground";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import { useModules, Module, Content, Chapter } from "../context/ModuleContext";
+import { Link } from "react-router-dom";
 
 function ChapterDetail() {
   const { modules, loading, error } = useModules();
@@ -144,6 +145,25 @@ function ChapterDetail() {
 
           {/* Main Content */}
           <div className="grid grid-cols-1 gap-8">
+            {/* Lernbeiträge CTA für dieses Kapitel */}
+            {module.articles && module.articles.length > 0 && (
+              <SubBackground>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    Lernbeiträge in diesem Kapitel anzeigen
+                  </div>
+                  <Link
+                    to={`/modules/${module.id}/articles?c=${chapter.id}`}
+                    className="group flex items-center justify-center space-x-2 rounded-lg px-4 py-2.5 bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-orange-200/50 hover:border-orange-300/70 text-gray-700 hover:text-orange-600 shadow-sm hover:shadow-md transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:ring-offset-1"
+                  >
+                    <div className="w-1 h-4 bg-orange-400/70 rounded-full group-hover:bg-orange-500 transition-colors duration-200"></div>
+                    <span className="text-sm font-medium">
+                      Lernbeiträge anzeigen
+                    </span>
+                  </Link>
+                </div>
+              </SubBackground>
+            )}
             {/* Videos */}
             <div>
               {selectedVideo ? (

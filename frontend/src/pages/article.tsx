@@ -25,10 +25,18 @@ const ArticlePage: React.FC = () => {
     return modules.find((m) => m.id === id);
   }, [modules, moduleId]);
 
-  const articles: ModuleArticle[] = useMemo(
-    () => module?.articles || [],
-    [module]
-  );
+  // Optionales Kapitel-Filtering per Query-Param 'c'
+  const articles: ModuleArticle[] = useMemo(() => {
+    const all = module?.articles || [];
+    const chapterParam = params.get("c");
+    if (!chapterParam) return all;
+    const chapterId = parseInt(chapterParam, 10);
+    if (Number.isNaN(chapterId)) return all;
+    return all.filter(
+      (a) =>
+        (a as ModuleArticle & { chapter?: number | null }).chapter === chapterId
+    );
+  }, [module, params]);
   const total = articles.length;
 
   const activeIndex = useMemo(() => {
@@ -56,10 +64,18 @@ const ArticlePage: React.FC = () => {
   );
 
   const handlePrev = () => {
-    if (activeIndex > 0) setParams({ a: String(activeIndex - 1) });
+    if (activeIndex > 0)
+      setParams({
+        a: String(activeIndex - 1),
+        c: params.get("c") || undefined,
+      });
   };
   const handleNext = () => {
-    if (activeIndex < total - 1) setParams({ a: String(activeIndex + 1) });
+    if (activeIndex < total - 1)
+      setParams({
+        a: String(activeIndex + 1),
+        c: params.get("c") || undefined,
+      });
   };
 
   if (loading) {

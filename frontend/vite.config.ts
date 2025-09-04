@@ -79,7 +79,7 @@ export default defineConfig({
 
   esbuild: {
     treeShaking: true,
-    drop: ["console", "debugger"],
+    // drop: ["console", "debugger"],
   },
 
   css: {
@@ -101,7 +101,7 @@ export default defineConfig({
   define: {
     // Deaktiviere Source Maps für Monaco Editor
     "process.env.NODE_ENV": JSON.stringify(
-      process.env.NODE_ENV || "development",
+      process.env.NODE_ENV || "development"
     ),
   },
 

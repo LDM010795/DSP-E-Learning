@@ -9,9 +9,11 @@
  */
 export function isWasabiUrl(url: string): boolean {
   try {
-    return new URL(url).host.includes("wasabisys.com");
+    const sanitized = url.replace(/\s/g, "%20");
+    return new URL(sanitized).host.includes("wasabisys.com");
   } catch {
-    return false;
+    // Fallback: simple string check, auch wenn URL Parsing wegen Leerzeichen fehlschlägt
+    return typeof url === "string" && url.includes("wasabisys.com");
   }
 }
 
@@ -21,7 +23,8 @@ export function isWasabiUrl(url: string): boolean {
  */
 export function toWasabiKey(url: string): string | null {
   try {
-    const u = new URL(url);
+    const sanitized = url.replace(/\s/g, "%20");
+    const u = new URL(sanitized);
     const host = u.host;
     const parts = u.pathname.replace(/^\/+/, "").split("/");
     if (!parts.length) return null;
@@ -33,13 +36,22 @@ export function toWasabiKey(url: string): string | null {
     }
 
     // Virtual-host: https://bucket.s3.eu-.../key...
-    // Einige gespeicherte URLs enthalten fälschlich den Bucket zusätzlich im Pfad.
-    // Entferne ihn, falls vorhanden.
     const bucketFromHost = host.split(".s3.")[0];
     const keyParts = parts[0] === bucketFromHost ? parts.slice(1) : parts;
     return decodeURIComponent(keyParts.join("/"));
   } catch {
-    return null;
+    // Fallback Parsing ohne URL-API (z.B. wenn Leerzeichen enthalten sind)
+    try {
+      const idx = url.indexOf("wasabisys.com");
+      if (idx === -1) return null;
+      // Alles nach der Domain nehmen und führende Slashes entfernen
+      const after = url.slice(idx + "wasabisys.com".length);
+      const path = after.replace(/^.*?\//, ""); // entferne evtl. ersten Segment (Bucket in Host oder Pfad)
+      const cleaned = path.replace(/^\/+/, "");
+      return decodeURIComponent(cleaned);
+    } catch {
+      return null;
+    }
   }
 }
 

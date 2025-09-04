@@ -20,7 +20,7 @@
  * Version: 1.0.0
  */
 
-import React, { useState /*, useEffect*/ } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import TagDifficulty from "../components/tags/tag_difficulty";
 import type { DifficultyLevel } from "../components/tags/tag_difficulty";
@@ -55,8 +55,75 @@ function Dashboard() {
   const [showAllModules, setShowAllModules] = useState(false);
   // const navigate = useNavigate();
 
+  // Einfache Test-Logs die definitiv funktionieren
+  if (process.env.NODE_ENV === "development") {
+    console.log("🚀 [DASHBOARD SIMPLE] Dashboard wird gerendert!");
+    console.warn("⚠️ [DASHBOARD SIMPLE] Dashboard Warnung!");
+    console.error("❌ [DASHBOARD SIMPLE] Dashboard Error!");
+  }
+
+  // --- Debug Logs für Testing ---
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("🔍 [DASHBOARD DEBUG] Component mounted");
+      console.log("📊 [DASHBOARD DEBUG] Current state:", {
+        modulesCount: modules.length,
+        loading,
+        error: error?.message,
+        showAllModules,
+      });
+
+      // Zusätzliche sichtbare Logs für Testing
+      console.warn("⚠️ [DASHBOARD TEST] Diese Warnung sollte sichtbar sein!");
+      console.error("❌ [DASHBOARD TEST] Dieser Error sollte sichtbar sein!");
+      alert(
+        "🔍 Dashboard Debug: Component wurde geladen! Schauen Sie in die Konsole (F12)."
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("🔄 [DASHBOARD DEBUG] Modules data changed:", {
+      modulesCount: modules.length,
+      modules: modules.map((m) => ({
+        id: m.id,
+        title: m.title,
+        tasksCount: m.tasks?.length || 0,
+        contentsCount: m.contents?.length || 0,
+      })),
+    });
+  }, [modules]);
+
+  useEffect(() => {
+    console.log("⚡ [DASHBOARD DEBUG] Loading state changed:", loading);
+  }, [loading]);
+
+  useEffect(() => {
+    if (error) {
+      console.error("❌ [DASHBOARD ERROR] Error occurred:", {
+        message: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }, [error]);
+
+  // --- Performance Monitoring ---
+  useEffect(() => {
+    const startTime = performance.now();
+
+    return () => {
+      const endTime = performance.now();
+      console.log("⏱️ [DASHBOARD PERFORMANCE] Component render time:", {
+        duration: `${(endTime - startTime).toFixed(2)}ms`,
+        timestamp: new Date().toISOString(),
+      });
+    };
+  });
+
   // --- Loading State ---
   if (loading) {
+    console.log("🔄 [DASHBOARD DEBUG] Rendering loading state");
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
         <SubBackground>
@@ -70,6 +137,7 @@ function Dashboard() {
 
   // --- Error State ---
   if (error) {
+    console.error("❌ [DASHBOARD ERROR] Rendering error state:", error);
     return (
       <div className="min-h-screen">
         <div className="px-4 py-8">
@@ -93,7 +161,10 @@ function Dashboard() {
                     "Es gab ein Problem beim Abrufen der Moduldaten."}
                 </p>
                 <button
-                  onClick={() => fetchModules()}
+                  onClick={() => {
+                    console.log("🔄 [DASHBOARD DEBUG] Retry button clicked");
+                    fetchModules();
+                  }}
                   className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
@@ -107,22 +178,39 @@ function Dashboard() {
   }
 
   // --- Data Calculations ---
+  console.log("📊 [DASHBOARD DEBUG] Starting data calculations");
 
   const totalModules = modules.length;
+  console.log("📊 [DASHBOARD DEBUG] Total modules:", totalModules);
 
   const allTasks: ContextTask[] = modules.flatMap((m) => m.tasks || []);
   const totalTasks = allTasks.length;
   const averageTasksPerModule =
     totalModules > 0 ? (totalTasks / totalModules).toFixed(1) : "0.0";
 
+  console.log("📊 [DASHBOARD DEBUG] Task statistics:", {
+    totalTasks,
+    averageTasksPerModule,
+    tasksPerModule: modules.map((m) => ({
+      moduleTitle: m.title,
+      taskCount: m.tasks?.length || 0,
+    })),
+  });
+
   const totalLessons = modules.reduce(
     (sum, m) => sum + (m.contents?.length || 0),
-    0,
+    0
   );
   const averageLessonsPerModule =
     totalModules > 0 ? (totalLessons / totalModules).toFixed(1) : "0.0";
 
+  console.log("📊 [DASHBOARD DEBUG] Lesson statistics:", {
+    totalLessons,
+    averageLessonsPerModule,
+  });
+
   // --- Difficulty Analysis ---
+  console.log("🎯 [DASHBOARD DEBUG] Starting difficulty analysis");
 
   const tasksByDifficulty = allTasks.reduce(
     (acc, task) => {
@@ -132,14 +220,19 @@ function Dashboard() {
       }
       return acc;
     },
-    {} as Record<DifficultyLevel, number>,
+    {} as Record<DifficultyLevel, number>
+  );
+
+  console.log(
+    "🎯 [DASHBOARD DEBUG] Difficulty distribution:",
+    tasksByDifficulty
   );
 
   /**
    * Berechnet die durchschnittliche Schwierigkeit eines Moduls
    */
   const calculateModuleDifficulty = (
-    tasks?: ContextTask[],
+    tasks?: ContextTask[]
   ): DifficultyLevel | null => {
     if (!tasks || tasks.length === 0) return null;
     const difficultyMap: Record<string, number> = {
@@ -148,13 +241,13 @@ function Dashboard() {
       Schwer: 3,
     };
     const validTasks = tasks.filter(
-      (task) => difficultyMap[task.difficulty] !== undefined,
+      (task) => difficultyMap[task.difficulty] !== undefined
     );
     if (validTasks.length === 0) return null;
 
     const totalDifficultyScore = validTasks.reduce(
       (sum, task) => sum + difficultyMap[task.difficulty],
-      0,
+      0
     );
     const averageScore = totalDifficultyScore / validTasks.length;
 
@@ -173,6 +266,7 @@ function Dashboard() {
   // }, {} as Record<DifficultyLevel, number>);
 
   // --- Module Analysis ---
+  console.log("📈 [DASHBOARD DEBUG] Starting module analysis");
 
   let maxTasks = -1,
     minTasks = Infinity;
@@ -195,6 +289,13 @@ function Dashboard() {
     }
   });
   if (minTasks === Infinity) minTasks = 0;
+
+  console.log("📈 [DASHBOARD DEBUG] Module analysis results:", {
+    maxTasks,
+    minTasks,
+    modulesWithMostTasks,
+    modulesWithLeastTasks,
+  });
 
   // --- Utility Functions ---
 
@@ -245,6 +346,25 @@ function Dashboard() {
 
   const breadcrumbItems = [{ label: "Dashboard" }];
 
+  // --- Event Handlers mit Logging ---
+  const handleShowAllModulesToggle = () => {
+    console.log(
+      "🔄 [DASHBOARD DEBUG] Toggle show all modules:",
+      !showAllModules
+    );
+    setShowAllModules(!showAllModules);
+  };
+
+  const handleModuleClick = (moduleId: string, moduleTitle: string) => {
+    console.log("🔗 [DASHBOARD DEBUG] Module clicked:", {
+      moduleId,
+      moduleTitle,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  console.log("🎨 [DASHBOARD DEBUG] Rendering main dashboard content");
+
   return (
     <div className="min-h-screen">
       {/* --- Hero Section --- */}
@@ -294,7 +414,7 @@ function Dashboard() {
                       Modul-Übersicht
                     </h2>
                     <button
-                      onClick={() => setShowAllModules(!showAllModules)}
+                      onClick={handleShowAllModulesToggle}
                       className="text-[#ff863d] hover:text-[#fa8c45] font-medium transition-colors"
                     >
                       {showAllModules ? "Weniger anzeigen" : "Alle anzeigen"}
@@ -334,13 +454,16 @@ function Dashboard() {
                             </div>
                             <Link
                               to={`/modules/${module.id}`}
+                              onClick={() =>
+                                handleModuleClick(module.id, module.title)
+                              }
                               className="px-4 py-2 bg-[#ff863d] text-white rounded-lg hover:bg-[#fa8c45] transition-colors font-medium text-sm"
                             >
                               Öffnen
                             </Link>
                           </div>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
 
@@ -348,6 +471,11 @@ function Dashboard() {
                     <div className="mt-6 text-center">
                       <Link
                         to="/modules"
+                        onClick={() =>
+                          console.log(
+                            "🔗 [DASHBOARD DEBUG] 'Alle Module anzeigen' clicked"
+                          )
+                        }
                         className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white rounded-xl hover:from-[#fa8c45] hover:to-[#ff863d] transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                       >
                         <IoLibraryOutline className="mr-2" />
@@ -382,7 +510,7 @@ function Dashboard() {
                             {count}
                           </span>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 </div>
@@ -454,6 +582,13 @@ const StatCard: React.FC<StatCardProps> = ({
   accentColor = "bg-gray-100",
   description,
 }) => {
+  // --- Debug Log für StatCard ---
+  console.log("📊 [STATCARD DEBUG] Rendering stat card:", {
+    title,
+    value,
+    description,
+  });
+
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-[#ff863d]/30 transition-all duration-200 hover:shadow-md">
       <div className="flex items-center justify-between mb-4">

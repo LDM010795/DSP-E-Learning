@@ -95,6 +95,8 @@ export interface Chapter {
   is_active: boolean;
   contents: Content[];
   tasks: Task[];
+  // Lernbeiträge auf Kapitel-Ebene (wird vom Backend via ChapterSerializer.articles geliefert)
+  articles?: Article[];
 }
 
 /**
@@ -115,6 +117,8 @@ export interface Article {
   url?: string | null;
   // JSON content as produced by backend; we only care that it has a 'content' array
   json_content?: { content?: unknown[] } | null;
+  // Kapitel-Referenz für kapitelbasiertes Filtern
+  chapter?: number | null;
 }
 
 /**

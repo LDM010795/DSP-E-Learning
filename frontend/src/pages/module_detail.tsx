@@ -258,34 +258,6 @@ function ModuleDetail() {
             {/* Content Area */}
             <div className="lg:col-span-2">
               <SubBackground>
-                {/* Lernbeiträge CTA */}
-                {module.articles && module.articles.length > 0 && (
-                  <div className="mb-6 flex items-center justify-between">
-                    <div className="text-sm text-gray-600">
-                      {module.articles.length} Lernbeitr
-                      {module.articles.length === 1 ? "ag" : "äge"} verfügbar
-                    </div>
-                    <button
-                      onClick={() => navigate(`/modules/${module.id}/articles`)}
-                      className="group flex items-center justify-center space-x-2 rounded-lg px-4 py-2.5
-                        bg-white/60 hover:bg-white/80 backdrop-blur-sm
-                        border border-orange-200/50 hover:border-orange-300/70
-                        text-gray-700 hover:text-orange-600
-                        shadow-sm hover:shadow-md
-                        transition-all duration-200 ease-in-out
-                        focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:ring-offset-1
-                        hover:cursor-pointer active:scale-[0.98]"
-                    >
-                      {/* Subtle accent bar */}
-                      <div className="w-1 h-4 bg-orange-400/70 rounded-full group-hover:bg-orange-500 transition-colors duration-200"></div>
-
-                      {/* Content */}
-                      <span className="text-sm font-medium">
-                        Lernbeiträge anzeigen
-                      </span>
-                    </button>
-                  </div>
-                )}
                 {chapters.length > 0 ? (
                   // Neue Chapter-Struktur
                   <div className="space-y-4">

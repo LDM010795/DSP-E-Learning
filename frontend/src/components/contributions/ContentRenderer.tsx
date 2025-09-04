@@ -68,13 +68,13 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
         // Spezielle Behandlung für Titel-Marker in Text-Blöcken
         // Wenn Text nur "Titel2$ ... Titel2$" enthält, als Title rendern
         const titleMatch = textContent.match(
-          /^Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$$/,
+          /^Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$$/
         );
         if (titleMatch) {
           const level = titleMatch[1] ? parseInt(titleMatch[1]) : 2;
           const titleText = titleMatch[2].trim();
           console.log(
-            `🔄 Converting text to title: level=${level}, text="${titleText}"`,
+            `🔄 Converting text to title: level=${level}, text="${titleText}"`
           );
           return <ContentTitle key={index} text={titleText} level={level} />;
         }
@@ -161,13 +161,13 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
         // Spezielle Behandlung: Manche Titel sind fälschlicherweise als code-Blöcke markiert
         // Prüfe ob Code-Block nur Titel-Marker enthält
         const codeTitleMatch = codeContent.match(
-          /^\s*Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$\s*$/,
+          /^\s*Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$\s*$/
         );
         if (codeTitleMatch) {
           const level = codeTitleMatch[1] ? parseInt(codeTitleMatch[1]) : 2;
           const titleText = codeTitleMatch[2].trim();
           console.log(
-            `🔄 Converting code to title: level=${level}, text="${titleText}"`,
+            `🔄 Converting code to title: level=${level}, text="${titleText}"`
           );
           return <ContentTitle key={index} text={titleText} level={level} />;
         }
@@ -175,7 +175,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
         // Prüfe auch ob es ein leerer Code-Block mit nur Titel-Marker ist
         if (codeContent.trim().match(/^Titel[23]?\$\s*$/)) {
           console.log(
-            `🔄 Ignoriere leeren Code-Titel-Marker: "${codeContent.trim()}"`,
+            `🔄 Ignoriere leeren Code-Titel-Marker: "${codeContent.trim()}"`
           );
           return null; // Rendere nichts
         }
@@ -213,7 +213,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
             // Wenn nur "Titel3$" allein steht, ignoriere es
             if (firstItem.trim() === `Titel${titleMatch[1] || ""}$`) {
               console.log(
-                `🔄 List: Ignoriere leeren Titel-Marker: "${firstItem}"`,
+                `🔄 List: Ignoriere leeren Titel-Marker: "${firstItem}"`
               );
               return <ContentList key={index} items={listItems.slice(1)} />;
             } else {
@@ -222,7 +222,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                 .replace(/^Titel[23]?\$\s*/, "")
                 .trim();
               console.log(
-                `🔄 List mit Titel gefunden: level=${level}, title="${titleText}"`,
+                `🔄 List mit Titel gefunden: level=${level}, title="${titleText}"`
               );
               return (
                 <React.Fragment key={index}>
@@ -268,7 +268,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
           ? (tableBlock.headers as string[])
           : [];
         const safeRows: (string | number | null)[][] = Array.isArray(
-          tableBlock.rows,
+          tableBlock.rows
         )
           ? (tableBlock.rows as (string | number | null)[][])
           : [];
@@ -287,13 +287,13 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
 
         // 1. Prüfe ob Sources-Block NUR ein Titel-Marker ist (fälschlich als Sources markiert)
         const onlyTitleMatch = sourcesText.match(
-          /^\s*Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$\s*$/,
+          /^\s*Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$\s*$/
         );
         if (onlyTitleMatch) {
           const level = onlyTitleMatch[1] ? parseInt(onlyTitleMatch[1]) : 2;
           const titleText = onlyTitleMatch[2].trim();
           console.log(
-            `🔄 Converting sources to title: level=${level}, text="${titleText}"`,
+            `🔄 Converting sources to title: level=${level}, text="${titleText}"`
           );
           return <ContentTitle key={index} text={titleText} level={level} />;
         }
@@ -301,14 +301,14 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
         // 2. Prüfe ob es ein leerer Sources-Block mit nur Titel-Marker ist
         if (sourcesText.trim().match(/^Titel[23]?\$\s*$/)) {
           console.log(
-            `🔄 Ignoriere leeren Sources-Titel-Marker: "${sourcesText.trim()}"`,
+            `🔄 Ignoriere leeren Sources-Titel-Marker: "${sourcesText.trim()}"`
           );
           return null; // Rendere nichts
         }
 
         // 3. Wenn Sources-Block einen Titel enthält (Titel2$ ... Titel2$), separiere ihn
         const sourceTitleMatch = sourcesText.match(
-          /^(Titel[23]?\$\s*.*?\s*Titel[23]?\$)(.*)/s,
+          /^(Titel[23]?\$\s*.*?\s*Titel[23]?\$)(.*)/s
         );
         if (sourceTitleMatch) {
           const titlePart = sourceTitleMatch[1];
@@ -316,14 +316,14 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
 
           // Extrahiere Titel
           const titleTextMatch = titlePart.match(
-            /Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$/,
+            /Titel([23]?)\$\s*(.*?)\s*Titel[23]?\$/
           );
           if (titleTextMatch) {
             const level = titleTextMatch[1] ? parseInt(titleTextMatch[1]) : 2;
             const titleText = titleTextMatch[2].trim();
 
             console.log(
-              `🔄 Sources mit Titel gefunden: level=${level}, title="${titleText}", content="${contentPart}"`,
+              `🔄 Sources mit Titel gefunden: level=${level}, title="${titleText}", content="${contentPart}"`
             );
 
             return (
