@@ -44,11 +44,11 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       onHoverEnd={onHoverEnd}
       className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3
         bg-white/80 backdrop-blur-sm hover:bg-white/90
-        text-gray-700 hover:text-[#FF6D25] font-semibold
-        border-2 border-[#FF6D25]/40 hover:border-[#FF6D25]/60
-        shadow-sm hover:shadow-lg hover:shadow-[#FF6D25]/10
+        text-gray-700 hover:text-dsp-orange font-semibold
+        border-2 border-dsp-orange/40 hover:border-dsp-orange/60
+        shadow-sm hover:shadow-lg hover:shadow-dsp-orange/10
         transition-all duration-200 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-[#FF6D25]/20 focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-dsp-orange/20 focus:ring-offset-2
         ${
           disabled
             ? "opacity-50 cursor-not-allowed hover:scale-100 hover:text-gray-700 hover:bg-white/80"
@@ -65,7 +65,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       }}
     >
       {/* Background glow effect */}
-      <div className="absolute inset-0 bg-[#FF6D25]/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-dsp-orange/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
       {/* Content */}
       <div
@@ -78,7 +78,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
         )}
         {icon && (
           <motion.span
-            className={`${classNameIcon} flex-shrink-0 text-[#FF6D25] group-hover:text-[#FFB697]`}
+            className={`${classNameIcon} flex-shrink-0 text-dsp-orange group-hover:text-dsp-orange_medium`}
             variants={iconVariants}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
@@ -89,7 +89,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
 
       {/* Shine effect */}
       <div className="absolute inset-0 rounded-xl overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#FF6D25]/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-dsp-orange/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
       </div>
     </motion.button>
   );

@@ -130,7 +130,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       case "spinner":
         return (
           <motion.div animate={spinnerAnimation}>
-            <IoSyncOutline className={clsx(config.icon, "text-[#FF6D25]")} />
+            <IoSyncOutline className={clsx(config.icon, "text-dsp-orange")} />
           </motion.div>
         );
 
@@ -138,7 +138,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         return (
           <motion.div animate={spinnerAnimation}>
             <IoHourglassOutline
-              className={clsx(config.icon, "text-[#FF6D25]")}
+              className={clsx(config.icon, "text-dsp-orange")}
             />
           </motion.div>
         );
@@ -147,7 +147,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         return (
           <motion.div
             className={clsx(
-              "rounded-full bg-gradient-to-r from-[#FF6D25] to-[#FFB697]",
+              "rounded-full bg-gradient-to-r from-dsp-orange to-dsp-orange_medium",
               config.icon,
             )}
             animate={pulseAnimation}
@@ -160,7 +160,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             {[0, 1, 2].map((index) => (
               <motion.div
                 key={index}
-                className="w-2 h-2 bg-[#FF6D25] rounded-full"
+                className="w-2 h-2 bg-dsp-orange rounded-full"
                 animate={dotsAnimation}
                 transition={{
                   ...dotsAnimation.transition,
@@ -174,7 +174,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       default:
         return (
           <motion.div animate={spinnerAnimation}>
-            <IoSyncOutline className={clsx(config.icon, "text-[#FF6D25]")} />
+            <IoSyncOutline className={clsx(config.icon, "text-dsp-orange")} />
           </motion.div>
         );
     }
@@ -200,7 +200,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         {renderLoadingIndicator()}
 
         {/* Subtle glow effect */}
-        <div className="absolute inset-0 bg-[#FF6D25]/20 rounded-full blur-lg opacity-50 -z-10" />
+        <div className="absolute inset-0 bg-dsp-orange/20 rounded-full blur-lg opacity-50 -z-10" />
       </div>
 
       {/* --- Loading Message --- */}
@@ -241,7 +241,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         transition={{ duration: 0.3, delay: 0.2 }}
       >
         <motion.div
-          className="h-full bg-gradient-to-r from-[#FF6D25] to-[#FFB697] rounded-full"
+          className="h-full bg-gradient-to-r from-dsp-orange to-dsp-orange_medium rounded-full"
           animate={{
             x: ["-100%", "100%"],
           }}

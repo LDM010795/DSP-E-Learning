@@ -69,14 +69,14 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`relative group flex items-center justify-center space-x-3 rounded-xl px-6 py-3
-        bg-gradient-to-r from-[#FF6D25] to-[#FFB697] 
-        hover:from-[#FFB697] hover:to-[#FF6D25]
+        bg-gradient-to-r from-dsp-orange to-dsp-orange_medium 
+        hover:from-dsp-orange_medium hover:to-dsp-orange
         text-white font-semibold
-        shadow-lg shadow-[#FF6D25]/25 hover:shadow-xl hover:shadow-[#FF6D25]/30
-        border border-[#FF6D25]/20 hover:border-[#FF6D25]/40
+        shadow-lg shadow-dsp-orange/25 hover:shadow-xl hover:shadow-dsp-orange/30
+        border border-dsp-orange/20 hover:border-dsp-orange/40
         backdrop-blur-sm
         transition-all duration-200 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-[#FF6D25]/20 focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-dsp-orange/20 focus:ring-offset-2
         ${
           disabled
             ? "opacity-50 cursor-not-allowed hover:scale-100 hover:shadow-lg"
@@ -92,7 +92,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
       }}
     >
       {/* --- Background Glow Effect --- */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#FF6D25] to-[#FFB697] rounded-xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-dsp-orange to-dsp-orange_medium rounded-xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
 
       {/* --- Content --- */}
       <div className="relative flex items-center space-x-3">
