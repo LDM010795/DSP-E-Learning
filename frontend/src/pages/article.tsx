@@ -34,7 +34,8 @@ const ArticlePage: React.FC = () => {
     if (Number.isNaN(chapterId)) return all;
     return all.filter(
       (a) =>
-        (a as ModuleArticle & { chapter?: number | null }).chapter === chapterId
+        (a as ModuleArticle & { chapter?: number | null }).chapter ===
+        chapterId,
     );
   }, [module, params]);
   const total = articles.length;

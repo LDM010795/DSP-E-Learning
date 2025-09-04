@@ -77,7 +77,7 @@ function Dashboard() {
       console.warn("⚠️ [DASHBOARD TEST] Diese Warnung sollte sichtbar sein!");
       console.error("❌ [DASHBOARD TEST] Dieser Error sollte sichtbar sein!");
       alert(
-        "🔍 Dashboard Debug: Component wurde geladen! Schauen Sie in die Konsole (F12)."
+        "🔍 Dashboard Debug: Component wurde geladen! Schauen Sie in die Konsole (F12).",
       );
     }
   }, []);
@@ -199,7 +199,7 @@ function Dashboard() {
 
   const totalLessons = modules.reduce(
     (sum, m) => sum + (m.contents?.length || 0),
-    0
+    0,
   );
   const averageLessonsPerModule =
     totalModules > 0 ? (totalLessons / totalModules).toFixed(1) : "0.0";
@@ -220,19 +220,19 @@ function Dashboard() {
       }
       return acc;
     },
-    {} as Record<DifficultyLevel, number>
+    {} as Record<DifficultyLevel, number>,
   );
 
   console.log(
     "🎯 [DASHBOARD DEBUG] Difficulty distribution:",
-    tasksByDifficulty
+    tasksByDifficulty,
   );
 
   /**
    * Berechnet die durchschnittliche Schwierigkeit eines Moduls
    */
   const calculateModuleDifficulty = (
-    tasks?: ContextTask[]
+    tasks?: ContextTask[],
   ): DifficultyLevel | null => {
     if (!tasks || tasks.length === 0) return null;
     const difficultyMap: Record<string, number> = {
@@ -241,13 +241,13 @@ function Dashboard() {
       Schwer: 3,
     };
     const validTasks = tasks.filter(
-      (task) => difficultyMap[task.difficulty] !== undefined
+      (task) => difficultyMap[task.difficulty] !== undefined,
     );
     if (validTasks.length === 0) return null;
 
     const totalDifficultyScore = validTasks.reduce(
       (sum, task) => sum + difficultyMap[task.difficulty],
-      0
+      0,
     );
     const averageScore = totalDifficultyScore / validTasks.length;
 
@@ -350,7 +350,7 @@ function Dashboard() {
   const handleShowAllModulesToggle = () => {
     console.log(
       "🔄 [DASHBOARD DEBUG] Toggle show all modules:",
-      !showAllModules
+      !showAllModules,
     );
     setShowAllModules(!showAllModules);
   };
@@ -463,7 +463,7 @@ function Dashboard() {
                             </Link>
                           </div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
 
@@ -473,7 +473,7 @@ function Dashboard() {
                         to="/modules"
                         onClick={() =>
                           console.log(
-                            "🔗 [DASHBOARD DEBUG] 'Alle Module anzeigen' clicked"
+                            "🔗 [DASHBOARD DEBUG] 'Alle Module anzeigen' clicked",
                           )
                         }
                         className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white rounded-xl hover:from-[#fa8c45] hover:to-[#ff863d] transition-all duration-200 font-medium shadow-md hover:shadow-lg"
@@ -510,7 +510,7 @@ function Dashboard() {
                             {count}
                           </span>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>
