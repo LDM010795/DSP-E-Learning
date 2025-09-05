@@ -122,7 +122,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Starts as false until logged in
    */
   const [isAuthenticated, setAuthentification] = useState<boolean>(false);
-    /**
+  /**
    * Handle user data using /users/me api endpoint
    */
   const [user, setUser] = useState<UserData | undefined>(undefined);
@@ -131,27 +131,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Checks with server if current cookies are usable
    */
   useEffect(() => {
-
-      const fetchUserData = async () => {
-          try {
-          const response = await api.get("users/me");
-          if (response.status == 200){
-              setUser(response.data);
-              setAuthentification(true)
-          }
-            else {
-                console.error(response.statusText);
-          }
-        } catch (error) {
-          console.error(error);
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get("users/me");
+        if (response.status == 200) {
+          setUser(response.data);
+          setAuthentification(true);
+        } else {
+          console.error(response.statusText);
         }
-        finally {
-              setIsLoading(false)
-          }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      fetchUserData();
-
+    fetchUserData();
   }, []);
 
   /**
