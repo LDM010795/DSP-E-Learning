@@ -109,7 +109,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  * @param children - React components that need access to authentication
  * @returns JSX.Element containing the authentication provider
  */
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+export const AuthProvider: React.FC<{ children: ReactNode }> = async ({
   children,
 }) => {
   /**
@@ -122,31 +122,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Starts as false until logged in
    */
   const [isAuthenticated, setAuthentification] = useState<boolean>(false);
-  /**
+    /**
    * Handle user data using /users/me api endpoint
    */
   const [user, setUser] = useState<UserData | undefined>(undefined);
   /**
    * Effect to handle token changes and user state updates
-   * Validates tokens and manages automatic logout on expiration
+   * Checks with server if current cookies are usable
    */
   useEffect(() => {
-    let cancelled = false;
-
     (async () => {
       try {
-        if (!cancelled) {
+          const response = await api.get("users/me");
+          if (response.status == 200){
+              return response.data
+          }
+            else {
+                console.error(response.statusText);
+                // Redirect to landing page
+                window.location.href = "/";
+                return undefined;
+          }
+        } catch (error) {
+          console.error(error);
+          // Redirect to landing page
+          window.location.href = "/";
+          return undefined;
         }
-      } catch {
-        console.error("useeffect error");
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
     })();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   /**

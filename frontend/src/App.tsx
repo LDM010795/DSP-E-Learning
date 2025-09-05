@@ -78,6 +78,8 @@ const AppContent: React.FC = () => {
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
   const location = useLocation();
 
+  // on refresh, check if user has a cookie by fetching user data
+
   // --- Event Handlers ---
   const openLoginPopup = () => setLoginPopupOpen(true);
   const closeLoginPopup = () => setLoginPopupOpen(false);
