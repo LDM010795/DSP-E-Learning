@@ -41,6 +41,10 @@ import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
 import ArticlePage from "../../pages/article";
 import ExternalRegister from "../../pages/ExternalRegister";
+import PaymentsSuccessRoute from "../../pages/payments/PaymentsSuccessRoute";
+import PaymentsSuccess from "../../pages/payments/Success";
+import PaymentsCancel from "../../pages/payments/Cancel";
+import PaymentsReturn from "../../pages/payments/PaymentsReturn";
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -77,14 +81,6 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
           }
         />
         <Route
-          path="/subscriptions"
-          element={
-            <PageTransition>
-              <SubscriptionsPage />
-            </PageTransition>
-          }
-        />
-        <Route
           path={"/Impressum"}
           element={
             <PageTransition>
@@ -116,6 +112,18 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             </PageTransition>
           }
         />
+        <Route path="/payments/success" element={<PaymentsSuccessRoute />} />
+        <Route path="/payments/cancel" element={<PaymentsCancel />} />
+        {/* Checkout Session success (one-off purchase) */}
+        <Route
+          path="/payments/checkout/success"
+          element={
+            <PageTransition>
+              <PaymentsSuccess />
+            </PageTransition>
+          }
+        />
+        <Route path="/payments/return" element={<PaymentsReturn />} />
 
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>
@@ -187,6 +195,14 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             element={
               <PageTransition>
                 <TaskDetails />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/subscriptions"
+            element={
+              <PageTransition>
+                <SubscriptionsPage />
               </PageTransition>
             }
           />

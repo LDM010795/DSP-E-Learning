@@ -39,6 +39,8 @@ import {
   AdvancedCache,
 } from "../util/performance";
 
+import { clearBillingCaches } from "../util/apis/billingApi";
+
 /**
  * JWT token pair structure for authentication
  */
@@ -271,6 +273,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           localStorage.setItem("authTokens", JSON.stringify(newTokens));
           setTokens(newTokens);
           setUser(decoded);
+
+          clearBillingCaches();
+
           console.log("User logged in, tokens stored.");
           return {
             success: true,
@@ -341,6 +346,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     // Performance optimization: Clear cache on logout
     tokenCache.clear();
 
+    clearBillingCaches();
+
     // Always remove local data
     localStorage.removeItem("authTokens");
 
@@ -372,6 +379,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       localStorage.setItem("authTokens", JSON.stringify(newTokens));
       setTokens(newTokens); // Triggers useEffect to update user state
       setUser(decoded);
+
+      clearBillingCaches();
 
       console.log("🔥 OAuth Tokens erfolgreich im AuthContext gesetzt:", {
         user: decoded.username,

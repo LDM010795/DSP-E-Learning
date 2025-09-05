@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { IoCardOutline } from "react-icons/io5";
 import clsx from "clsx";
 import LinkSidebar from "../ui_elements/links/link_sidebar";
 import { HeaderNavigationProps, NavLink, NavItem } from "./header.types";
@@ -13,8 +14,20 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const subscriptionsLink: NavLink = {
+    to: "/subscriptions",
+    title: "Abonnements", // German label
+    icon: <IoCardOutline className="w-5 h-5" />,
+    requiresAuth: true,
+  };
+
+  const linksWithSubscriptions = useMemo(() => {
+    const alreadyHas = links.some((l) => l.to === "/subscriptions");
+    return alreadyHas ? links : [...links, subscriptionsLink];
+  }, [links]);
+
   // Filtere Links basierend auf Auth-Status
-  const filteredLinks = links.filter(
+  const filteredLinks = linksWithSubscriptions.filter(
     (link) => !link.requiresAuth || (link.requiresAuth && isAuthenticated),
   );
 
