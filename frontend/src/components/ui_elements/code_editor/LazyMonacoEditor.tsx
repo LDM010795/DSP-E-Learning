@@ -42,9 +42,9 @@ const MonacoEditorComponent = React.lazy(async () => {
           colors: {
             "editor.background": "#ffe7d4",
             "editor.foreground": "#000000",
-            "editorCursor.foreground": getDspThemeColorCode("--color-dsp-orange"),
+            "editorCursor.foreground": getDspThemeColorCode("dsp-orange"),
             "editor.lineHighlightBackground": "#FFECB3",
-            "editorLineNumber.foreground": getDspThemeColorCode("--color-dsp-orange"),
+            "editorLineNumber.foreground": getDspThemeColorCode("dsp-orange"),
             "editor.selectionBackground": "#FFD180",
             "editor.inactiveSelectionBackground": "#FFE0B2",
           },

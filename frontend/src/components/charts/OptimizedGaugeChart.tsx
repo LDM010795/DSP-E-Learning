@@ -40,7 +40,7 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
     progressValue,
     width = 300,
     height = 300,
-    primaryColor = getDspThemeColorCode("--color-dsp-orange"),
+    primaryColor = getDspThemeColorCode("dsp-orange"),
     backgroundColor = "#ffe7d4",
     showLabels = true,
   }) => {

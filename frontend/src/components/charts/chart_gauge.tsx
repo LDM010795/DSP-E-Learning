@@ -48,7 +48,7 @@ const ChartGauge = memo<ChartGaugeProps>(
               show: true,
               width: 10,
               roundCap: true,
-              itemStyle: { color: getDspThemeColorCode("--color-dsp-orange") },
+              itemStyle: { color: getDspThemeColorCode("dsp-orange") },
             },
             axisLine: {
               lineStyle: {

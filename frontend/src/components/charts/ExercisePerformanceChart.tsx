@@ -92,7 +92,7 @@ const ExercisePerformanceChart = memo<ExercisePerformanceChartProps>(
             data: percentages,
             type: "bar",
             itemStyle: {
-              color: getDspThemeColorCode("--color-dsp-orange"),
+              color: getDspThemeColorCode("dsp-orange"),
               borderRadius: [4, 4, 0, 0],
             },
             emphasis: {
