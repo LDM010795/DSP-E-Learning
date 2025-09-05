@@ -8,6 +8,7 @@ import {
   Tooltip,
   Bar,
 } from "recharts";
+import { getDspThemeColorCode } from "../../util/helpers/color_theme_utils";
 
 interface DataPoint {
   day: string;
@@ -41,7 +42,7 @@ const LearningTimeChart: React.FC<Props> = ({ data }) => {
         />
         <Bar
           dataKey="Stunden"
-          fill="#FF8C00"
+          fill={`${getDspThemeColorCode("dsp-orange")}`}
           radius={[4, 4, 0, 0]}
           barSize={35}
         />
