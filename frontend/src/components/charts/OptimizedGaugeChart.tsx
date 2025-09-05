@@ -41,7 +41,7 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
     width = 300,
     height = 300,
     primaryColor = getDspThemeColorCode("dsp-orange"),
-    backgroundColor = "#ffe7d4",
+    backgroundColor = getDspThemeColorCode("dsp-orange_light"),
     showLabels = true,
   }) => {
     // Performance optimization: Memoize expensive chart options calculation

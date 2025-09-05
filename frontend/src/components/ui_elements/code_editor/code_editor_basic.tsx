@@ -34,7 +34,7 @@ const CodeEditorBasic = forwardRef<CodeEditorBasicHandle, CodeEditorBasicProps>(
         inherit: true,
         rules: [{ token: "", foreground: "000000", background: "ffe7d4" }],
         colors: {
-          "editor.background": "#ffe7d4", // Leicht oranger Hintergrund
+          "editor.background": getDspThemeColorCode("dsp-orange_light"), // Leicht oranger Hintergrund
           "editor.foreground": "#000000",
           "editorCursor.foreground": getDspThemeColorCode("dsp-orange"),
           "editor.lineHighlightBackground": "#FFECB3",

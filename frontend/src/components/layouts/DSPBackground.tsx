@@ -6,7 +6,7 @@ const DSPBackground: React.FC = () => {
       className="fixed inset-0 -z-10"
       style={{
         background:
-          "linear-gradient(135deg, #f8fafc 0%, #ffffff 25%, #ffe7d4 50%, #ffffff 75%, #f1f5f9 100%)",
+          "linear-gradient(135deg, #f8fafc 0%, #ffffff 25%, var(--color-dsp-orange_light) 50%, #ffffff 75%, #f1f5f9 100%)",
       }}
     >
       {/* Enhanced Background Pattern */}
@@ -30,10 +30,10 @@ const DSPBackground: React.FC = () => {
               <circle cx="60" cy="20" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
               <circle cx="20" cy="60" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
               <circle cx="60" cy="60" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
-              <circle cx="0" cy="0" r="0.5" fill="#ffe7d4" opacity="0.15" />
-              <circle cx="80" cy="0" r="0.5" fill="#ffe7d4" opacity="0.15" />
-              <circle cx="0" cy="80" r="0.5" fill="#ffe7d4" opacity="0.15" />
-              <circle cx="80" cy="80" r="0.5" fill="#ffe7d4" opacity="0.15" />
+              <circle cx="0" cy="0" r="0.5" fill="var(--color-dsp-orange_light)" opacity="0.15" />
+              <circle cx="80" cy="0" r="0.5" fill="#var(--color-dsp-orange_light)" opacity="0.15" />
+              <circle cx="0" cy="80" r="0.5" fill="#var(--color-dsp-orange_light)" opacity="0.15" />
+              <circle cx="80" cy="80" r="0.5" fill="#var(--color-dsp-orange_light)" opacity="0.15" />
             </pattern>
 
             {/* Elegant Wave Lines */}
@@ -61,7 +61,7 @@ const DSPBackground: React.FC = () => {
               />
               <path
                 d="M100,0 Q150,40 200,0"
-                stroke="#ffe7d4"
+                stroke="#var(--color-dsp-orange_light)"
                 strokeWidth="1"
                 fill="none"
                 opacity="0.08"
@@ -86,7 +86,7 @@ const DSPBackground: React.FC = () => {
               />
               <stop
                 offset="50%"
-                style={{ stopColor: "#ffe7d4", stopOpacity: 0.025 }}
+                style={{ stopColor: "#var(--color-dsp-orange_light)", stopOpacity: 0.025 }}
               />
               <stop
                 offset="75%"
@@ -144,7 +144,7 @@ const DSPBackground: React.FC = () => {
         <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-[600px] h-[600px] bg-dsp-orange/5 rounded-full blur-xl animate-[spin_180s_linear_infinite]" />
 
         {/* Subtle rotating ring */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] border-2 border-[#ffe7d4]/10 rounded-full animate-[spin_160s_linear_reverse_infinite]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] border-2 border-dsp-orange_light/10 rounded-full animate-[spin_160s_linear_reverse_infinite]" />
       </div>
 
       {/* Subtle Texture Overlay */}

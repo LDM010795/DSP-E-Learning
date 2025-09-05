@@ -92,7 +92,7 @@ const Profile: React.FC = () => {
     >
       <SubBackground className="hover:bg-white/80 transition-all duration-200">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-3 rounded-xl bg-[#ffe7d4]">
+          <div className="p-3 rounded-xl bg-dsp-orange_light">
             <IoPersonCircleOutline className="w-6 h-6 text-dsp-orange" />
           </div>
           <div>
@@ -134,7 +134,7 @@ const Profile: React.FC = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="relative group">
-              <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center text-gray-400 group-hover:from-[#ffe7d4] group-hover:to-[#ffe7d4] transition-all duration-200">
+              <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center text-gray-400 group-hover:from-dsp-orange_light group-hover:to-dsp-orange_light transition-all duration-200">
                 <IoPersonCircleOutline className="w-12 h-12" />
               </div>
               <div className="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">

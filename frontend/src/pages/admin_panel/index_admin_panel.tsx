@@ -150,7 +150,7 @@ const IndexAdminPanel: React.FC = () => {
               className="text-center mb-8"
             >
               <div className="flex items-center justify-center space-x-3 mb-4">
-                <div className="p-3 rounded-xl bg-[#ffe7d4]">
+                <div className="p-3 rounded-xl bg-dsp-orange_light">
                   <IoShieldCheckmarkOutline className="w-8 h-8 text-dsp-orange" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-700">

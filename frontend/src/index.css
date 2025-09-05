@@ -48,7 +48,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #ffe7d4; /* Hintergrund der Scrollbar-Spur */
+  background: var(--color-dsp-orange_light); /* Hintergrund der Scrollbar-Spur */
 }
 
 ::-webkit-scrollbar-thumb {

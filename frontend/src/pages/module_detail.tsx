@@ -186,7 +186,7 @@ function ModuleDetail() {
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className="p-3 rounded-xl bg-[#ffe7d4]">
+                    <div className="p-3 rounded-xl bg-dsp-orange_light">
                       <IoBookOutline className="w-6 h-6 text-dsp-orange" />
                     </div>
                     <div>
@@ -300,7 +300,7 @@ function ModuleDetail() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="bg-white rounded-lg border border-gray-200 p-4 hover:border-dsp-orange/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
+                          className="bg-white rounded-lg border border-gray-200 p-4 hover:border-dsp-orange/30 hover:bg-dsp-orange_light transition-all cursor-pointer"
                           onClick={() =>
                             navigate(
                               `/modules/${moduleId}/chapters/${chapter.id}`,
@@ -390,7 +390,7 @@ function ModuleDetail() {
               <SubBackground>
                 <div className="sticky top-8">
                   <div className="flex items-center space-x-3 mb-6">
-                    <div className="p-2 rounded-lg bg-[#ffe7d4]">
+                    <div className="p-2 rounded-lg bg-dsp-orange_light">
                       <IoListOutline className="w-5 h-5 text-dsp-orange" />
                     </div>
                     <h2 className="text-xl font-semibold text-gray-800">

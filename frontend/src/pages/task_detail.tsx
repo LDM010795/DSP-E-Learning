@@ -421,7 +421,7 @@ function TaskDetails() {
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-4">
-                        <div className="p-3 rounded-xl bg-[#ffe7d4]">
+                        <div className="p-3 rounded-xl bg-dsp-orange_light">
                           <IoCodeSlashOutline className="w-6 h-6 text-dsp-orange" />
                         </div>
                         <div className="flex-1">
@@ -468,7 +468,7 @@ function TaskDetails() {
                       <div className="sticky top-8 space-y-6">
                         <div>
                           <div className="flex items-center space-x-2 mb-4">
-                            <div className="p-2 rounded-lg bg-[#ffe7d4]">
+                            <div className="p-2 rounded-lg bg-dsp-orange_light">
                               <IoInformationCircleOutline className="w-5 h-5 text-dsp-orange" />
                             </div>
                             <h2 className="text-xl font-semibold text-gray-800">
@@ -495,7 +495,7 @@ function TaskDetails() {
                               style={{ overflow: "hidden" }}
                               className="mb-4"
                             >
-                              <div className="p-4 rounded-xl bg-[#ffe7d4]/50 border border-dsp-orange/20">
+                              <div className="p-4 rounded-xl bg-dsp-orange_light/50 border border-dsp-orange/20">
                                 <div className="flex items-center space-x-2 text-dsp-orange font-semibold mb-3">
                                   <IoBulbOutline className="w-5 h-5" />
                                   <span>Hinweis</span>

@@ -189,7 +189,7 @@ function ChapterDetail() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-[#ffe7d4]/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-dsp-orange_light/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
                         onClick={() => handleVideoSelect(video)}
                       >
                         <div className="flex items-center gap-4">

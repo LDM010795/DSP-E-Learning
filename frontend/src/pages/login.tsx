@@ -118,7 +118,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
       onClick={handleClose}
     >
       {/* Enhanced Background with gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-dsp-orange/10 via-transparent to-[#ffe7d4]/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-dsp-orange/10 via-transparent to-dsp-orange_light/10"></div>
 
       <div
         className={`relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-5xl mx-4 flex overflow-hidden
@@ -143,12 +143,12 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
           ${isClosing ? "opacity-0 translate-x-[-20px]" : ""}`}
         >
           {/* Background with gradient and pattern */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-[#ffe7d4]/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-dsp-orange_light/30"></div>
 
           {/* Decorative circles mit DSP-Farben */}
           <div className="absolute top-10 left-10 w-32 h-32 bg-dsp-orange/10 rounded-full blur-2xl"></div>
           <div className="absolute bottom-20 right-12 w-40 h-40 bg-dsp-orange/8 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-dsp-orange/5 to-[#ffe7d4]/8 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-dsp-orange/5 to-dsp-orange_light/8 rounded-full blur-3xl"></div>
 
           <div className="relative z-10 text-center p-12">
             <div

@@ -38,7 +38,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
         "transition-all duration-200 ease-in-out",
         "cursor-pointer",
         "hover:border-dsp-orange/30",
-        "hover:bg-[#ffe7d4]",
+        "hover:bg-dsp-orange_light",
         className,
       )}
       onClick={onClick}

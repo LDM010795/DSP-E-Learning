@@ -270,7 +270,7 @@ const ExternalRegister: React.FC = () => {
 
   /** --- Render --- */
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#ffe7d4]/40 to-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-dsp-orange_light/40 to-white px-4">
       <div className="max-w-md w-full bg-white/95 shadow-xl rounded-2xl p-8 space-y-6 border border-white/20">
         {/* Header / Brand */}
         <div className="flex flex-col items-center space-y-2 mb-4">

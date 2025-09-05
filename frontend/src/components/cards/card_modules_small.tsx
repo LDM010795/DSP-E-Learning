@@ -43,7 +43,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
           iconBgColor: "bg-dsp-orange",
           progressColor: "bg-dsp-orange",
           statusColor: "text-dsp-orange",
-          hoverBg: "hover:bg-[#ffe7d4]",
+          hoverBg: "hover:bg-dsp-orange_light",
           borderHover: "hover:border-dsp-orange/30",
         };
       case "Nicht begonnen":

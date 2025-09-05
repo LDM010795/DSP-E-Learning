@@ -89,8 +89,8 @@ const LearningContentVideoLayout: React.FC<LearningContentVideoLayoutProps> = ({
                     onClick={() => onSelectContent?.(rv.id)}
                     className={`w-full text-left p-2 sm:p-3 rounded-lg border transition-colors flex items-start gap-3 bg-white/60 backdrop-blur-sm ${
                       isActive
-                        ? "border-dsp-orange bg-[#ffe7d4]/80"
-                        : "border-white/40 hover:border-dsp-orange/40 hover:bg-[#ffe7d4]/50"
+                        ? "border-dsp-orange bg-dsp-orange_light/80"
+                        : "border-white/40 hover:border-dsp-orange/40 hover:bg-dsp-orange_light/50"
                     }`}
                   >
                     <div className="mt-0.5 flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-dsp-orange/20 text-dsp-orange flex items-center justify-center">

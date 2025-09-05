@@ -29,7 +29,7 @@ const Comparison: React.FC = () => {
     >
       <SubBackground className="hover:bg-white/80 transition-all duration-200">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 rounded-lg bg-[#ffe7d4]">
+          <div className="p-2 rounded-lg bg-dsp-orange_light">
             <IoPeopleOutline className="w-5 h-5 text-dsp-orange" />
           </div>
           <div>
@@ -87,7 +87,7 @@ const Comparison: React.FC = () => {
         </div>
 
         <motion.div
-          className="mt-8 p-4 bg-gradient-to-r from-[#ffe7d4]/50 to-[#ffe7d4]/30 border border-dsp-orange/20 rounded-xl"
+          className="mt-8 p-4 bg-gradient-to-r from-dsp-orange_light/50 to-dsp-orange_light/30 border border-dsp-orange/20 rounded-xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.8 }}

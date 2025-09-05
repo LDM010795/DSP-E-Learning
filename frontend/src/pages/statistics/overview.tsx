@@ -73,7 +73,7 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   const colorConfig = {
     orange: {
-      bg: "bg-[#ffe7d4]",
+      bg: "bg-dsp-orange_light",
       text: "text-dsp-orange",
       border: "border-dsp-orange/20",
     },
@@ -145,7 +145,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
   >
     <SubBackground className="hover:bg-white/80 transition-all duration-200">
       <div className="flex items-center space-x-3 mb-4">
-        <div className="p-2 rounded-lg bg-[#ffe7d4]">
+        <div className="p-2 rounded-lg bg-dsp-orange_light">
           <IoTimeOutline className="w-5 h-5 text-dsp-orange" />
         </div>
         <div>

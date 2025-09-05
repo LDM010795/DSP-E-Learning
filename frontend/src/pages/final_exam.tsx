@@ -702,7 +702,7 @@ function FinalExam() {
                       </p>
                     </div>
                     <div className="flex-shrink-0">
-                      <div className="flex items-center space-x-2 px-3 py-1 bg-[#ffe7d4] border border-dsp-orange/20 rounded-full">
+                      <div className="flex items-center space-x-2 px-3 py-1 bg-dsp-orange_light border border-dsp-orange/20 rounded-full">
                         <IoHourglassOutline
                           className="text-dsp-orange w-4 h-4 animate-pulse"
                           title="In Bearbeitung"
@@ -933,7 +933,7 @@ function FinalExam() {
               </button>
 
               <div className="flex items-center space-x-3 mb-6">
-                <div className="p-3 rounded-xl bg-[#ffe7d4]">
+                <div className="p-3 rounded-xl bg-dsp-orange_light">
                   <IoDocumentTextOutline className="w-6 h-6 text-dsp-orange" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">

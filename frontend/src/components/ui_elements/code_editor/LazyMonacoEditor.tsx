@@ -40,7 +40,7 @@ const MonacoEditorComponent = React.lazy(async () => {
           inherit: true,
           rules: [{ token: "", foreground: "000000", background: "ffe7d4" }],
           colors: {
-            "editor.background": "#ffe7d4",
+            "editor.background": getDspThemeColorCode("dsp-orange_light"),
             "editor.foreground": "#000000",
             "editorCursor.foreground": getDspThemeColorCode("dsp-orange"),
             "editor.lineHighlightBackground": "#FFECB3",

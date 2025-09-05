@@ -53,7 +53,7 @@ const ChartGauge = memo<ChartGaugeProps>(
             axisLine: {
               lineStyle: {
                 width: 10,
-                color: [[1, "#ffe7d4"]],
+                color: [[1, getDspThemeColorCode("dsp-orange_light")]],
               },
             },
             splitLine: { show: false },

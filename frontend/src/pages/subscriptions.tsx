@@ -204,7 +204,7 @@ const SubscriptionsPage: React.FC = () => {
         style={{ x: circle1X, y: circle1Y }}
       />
       <motion.div
-        className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-[#ffe7d4]/40 rounded-full filter blur-2xl opacity-60 z-0"
+        className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-dsp-orange_light/40 rounded-full filter blur-2xl opacity-60 z-0"
         style={{ x: circle2X, y: circle2Y }}
       />
       <motion.div
@@ -215,11 +215,11 @@ const SubscriptionsPage: React.FC = () => {
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute right-0 top-0 w-[800px] h-[800px] bg-dsp-orange opacity-[0.02] rounded-full translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-[#ffe7d4] opacity-[0.05] rounded-full -translate-x-1/3 translate-y-1/3"></div>
+        <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-dsp-orange_light opacity-[0.05] rounded-full -translate-x-1/3 translate-y-1/3"></div>
 
         {/* Animated geometric shapes */}
         <motion.div
-          className="absolute top-[10%] left-[10%] w-16 h-16 bg-[#ffe7d4] opacity-10 rounded-lg"
+          className="absolute top-[10%] left-[10%] w-16 h-16 bg-dsp-orange_light opacity-10 rounded-lg"
           animate={{
             rotate: 360,
             scale: [1, 1.2, 1],
@@ -310,7 +310,7 @@ const SubscriptionsPage: React.FC = () => {
             }}
           />
           <motion.div
-            className="absolute w-4 h-4 bg-[#ffe7d4] opacity-40 rounded-full transform translate-x-5 translate-y-6"
+            className="absolute w-4 h-4 bg-dsp-orange_light opacity-40 rounded-full transform translate-x-5 translate-y-6"
             animate={{
               x: [5, 15, 5, -5, 5],
               y: [6, 0, 12, 6],
@@ -339,7 +339,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Polygone */}
         <motion.div
-          className="absolute top-[15%] left-[40%] w-20 h-20 opacity-20 bg-gradient-to-br from-dsp-orange to-[#ffe7d4]"
+          className="absolute top-[15%] left-[40%] w-20 h-20 opacity-20 bg-gradient-to-br from-dsp-orange to-dsp-orange_light"
           style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
           animate={{
             rotate: [0, 90, 0],
@@ -378,7 +378,7 @@ const SubscriptionsPage: React.FC = () => {
           }}
         />
         <motion.div
-          className="absolute top-[53%] left-[15%] w-32 h-[1px] bg-[#ffe7d4] opacity-25"
+          className="absolute top-[53%] left-[15%] w-32 h-[1px] bg-dsp-orange_light opacity-25"
           animate={{
             rotate: [0, -15, 15, 0],
             width: ["8rem", "12rem", "8rem"],
