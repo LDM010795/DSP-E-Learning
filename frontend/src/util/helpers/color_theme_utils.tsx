@@ -2,6 +2,6 @@
 // (z.B. #ff6d25 für "--color-dsp-orange")
 export function getDspThemeColorCode(colorName: string): string {
   return getComputedStyle(document.documentElement)
-  .getPropertyValue(`--color-${colorName}`)
-  .trim();
+    .getPropertyValue(`--color-${colorName}`)
+    .trim();
 }

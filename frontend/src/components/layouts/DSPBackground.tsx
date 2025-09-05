@@ -25,15 +25,69 @@ const DSPBackground: React.FC = () => {
               height="80"
               patternUnits="userSpaceOnUse"
             >
-              <circle cx="40" cy="40" r="2" fill="var(--color-dsp-orange)" opacity="0.12" />
-              <circle cx="20" cy="20" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
-              <circle cx="60" cy="20" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
-              <circle cx="20" cy="60" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
-              <circle cx="60" cy="60" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
-              <circle cx="0" cy="0" r="0.5" fill="var(--color-dsp-orange_light)" opacity="0.15" />
-              <circle cx="80" cy="0" r="0.5" fill="#var(--color-dsp-orange_light)" opacity="0.15" />
-              <circle cx="0" cy="80" r="0.5" fill="#var(--color-dsp-orange_light)" opacity="0.15" />
-              <circle cx="80" cy="80" r="0.5" fill="#var(--color-dsp-orange_light)" opacity="0.15" />
+              <circle
+                cx="40"
+                cy="40"
+                r="2"
+                fill="var(--color-dsp-orange)"
+                opacity="0.12"
+              />
+              <circle
+                cx="20"
+                cy="20"
+                r="1"
+                fill="var(--color-dsp-orange)"
+                opacity="0.08"
+              />
+              <circle
+                cx="60"
+                cy="20"
+                r="1"
+                fill="var(--color-dsp-orange)"
+                opacity="0.08"
+              />
+              <circle
+                cx="20"
+                cy="60"
+                r="1"
+                fill="var(--color-dsp-orange)"
+                opacity="0.08"
+              />
+              <circle
+                cx="60"
+                cy="60"
+                r="1"
+                fill="var(--color-dsp-orange)"
+                opacity="0.08"
+              />
+              <circle
+                cx="0"
+                cy="0"
+                r="0.5"
+                fill="var(--color-dsp-orange_light)"
+                opacity="0.15"
+              />
+              <circle
+                cx="80"
+                cy="0"
+                r="0.5"
+                fill="#var(--color-dsp-orange_light)"
+                opacity="0.15"
+              />
+              <circle
+                cx="0"
+                cy="80"
+                r="0.5"
+                fill="#var(--color-dsp-orange_light)"
+                opacity="0.15"
+              />
+              <circle
+                cx="80"
+                cy="80"
+                r="0.5"
+                fill="#var(--color-dsp-orange_light)"
+                opacity="0.15"
+              />
             </pattern>
 
             {/* Elegant Wave Lines */}
@@ -78,23 +132,38 @@ const DSPBackground: React.FC = () => {
             >
               <stop
                 offset="0%"
-                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.02 }}
+                style={{
+                  stopColor: "var(--color-dsp-orange)",
+                  stopOpacity: 0.02,
+                }}
               />
               <stop
                 offset="25%"
-                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.015 }}
+                style={{
+                  stopColor: "var(--color-dsp-orange)",
+                  stopOpacity: 0.015,
+                }}
               />
               <stop
                 offset="50%"
-                style={{ stopColor: "#var(--color-dsp-orange_light)", stopOpacity: 0.025 }}
+                style={{
+                  stopColor: "#var(--color-dsp-orange_light)",
+                  stopOpacity: 0.025,
+                }}
               />
               <stop
                 offset="75%"
-                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.015 }}
+                style={{
+                  stopColor: "var(--color-dsp-orange)",
+                  stopOpacity: 0.015,
+                }}
               />
               <stop
                 offset="100%"
-                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.02 }}
+                style={{
+                  stopColor: "var(--color-dsp-orange)",
+                  stopOpacity: 0.02,
+                }}
               />
             </linearGradient>
 
@@ -102,11 +171,17 @@ const DSPBackground: React.FC = () => {
             <radialGradient id="radial-accent" cx="50%" cy="50%" r="50%">
               <stop
                 offset="0%"
-                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.03 }}
+                style={{
+                  stopColor: "var(--color-dsp-orange)",
+                  stopOpacity: 0.03,
+                }}
               />
               <stop
                 offset="70%"
-                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.01 }}
+                style={{
+                  stopColor: "var(--color-dsp-orange)",
+                  stopOpacity: 0.01,
+                }}
               />
               <stop
                 offset="100%"
