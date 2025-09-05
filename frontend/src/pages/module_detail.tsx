@@ -112,7 +112,7 @@ function ModuleDetail() {
                 </p>
                 <button
                   onClick={fetchModules}
-                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
                 </button>
@@ -153,7 +153,7 @@ function ModuleDetail() {
                 </p>
                 <Link
                   to="/modules"
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   <IoArrowBackOutline className="w-5 h-5" />
                   <span>Zurück zur Modulübersicht</span>

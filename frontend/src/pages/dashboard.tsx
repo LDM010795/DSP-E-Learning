@@ -94,7 +94,7 @@ function Dashboard() {
                 </p>
                 <button
                   onClick={() => fetchModules()}
-                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
                 </button>
@@ -295,7 +295,7 @@ function Dashboard() {
                     </h2>
                     <button
                       onClick={() => setShowAllModules(!showAllModules)}
-                      className="text-dsp-orange hover:text-[#fa8c45] font-medium transition-colors"
+                      className="text-dsp-orange hover:text-dsp-orange font-medium transition-colors"
                     >
                       {showAllModules ? "Weniger anzeigen" : "Alle anzeigen"}
                     </button>
@@ -334,7 +334,7 @@ function Dashboard() {
                             </div>
                             <Link
                               to={`/modules/${module.id}`}
-                              className="px-4 py-2 bg-dsp-orange text-white rounded-lg hover:bg-[#fa8c45] transition-colors font-medium text-sm"
+                              className="px-4 py-2 bg-dsp-orange text-white rounded-lg hover:bg-dsp-orange transition-colors font-medium text-sm"
                             >
                               Öffnen
                             </Link>

@@ -152,7 +152,7 @@ const ExamAccordionItem: React.FC<{
           e.stopPropagation(); // Verhindert Klick auf Karte
           onOpenExamDetails(exam.id);
         }}
-        className="ml-auto flex-shrink-0 flex items-center text-sm font-medium text-dsp-orange hover:text-[#fa8c45] cursor-pointer"
+        className="ml-auto flex-shrink-0 flex items-center text-sm font-medium text-dsp-orange hover:text-dsp-orange cursor-pointer"
         aria-label={`Details für ${exam.exam_title} anzeigen`}
       >
         Details <Icons.IoArrowForward className="ml-1 w-4 h-4" />

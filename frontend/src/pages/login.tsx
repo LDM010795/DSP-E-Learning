@@ -147,7 +147,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
 
           {/* Decorative circles mit DSP-Farben */}
           <div className="absolute top-10 left-10 w-32 h-32 bg-dsp-orange/10 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-20 right-12 w-40 h-40 bg-[#fa8c45]/8 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-12 w-40 h-40 bg-dsp-orange/8 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-dsp-orange/5 to-[#ffe7d4]/8 rounded-full blur-3xl"></div>
 
           <div className="relative z-10 text-center p-12">

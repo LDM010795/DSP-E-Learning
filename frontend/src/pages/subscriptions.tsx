@@ -208,7 +208,7 @@ const SubscriptionsPage: React.FC = () => {
         style={{ x: circle2X, y: circle2Y }}
       />
       <motion.div
-        className="absolute top-[40%] right-[30%] w-24 h-24 bg-[#fa8c45]/50 rounded-full filter blur-lg opacity-70 z-0"
+        className="absolute top-[40%] right-[30%] w-24 h-24 bg-dsp-orange/50 rounded-full filter blur-lg opacity-70 z-0"
         style={{ x: circle3X, y: circle3Y }}
       />
 
@@ -244,7 +244,7 @@ const SubscriptionsPage: React.FC = () => {
           }}
         />
         <motion.div
-          className="absolute bottom-[15%] right-[25%] w-24 h-24 bg-[#fa8c45] opacity-10 rounded-lg rotate-45"
+          className="absolute bottom-[15%] right-[25%] w-24 h-24 bg-dsp-orange opacity-10 rounded-lg rotate-45"
           animate={{
             rotate: [45, 90, 45],
             scale: [1, 1.2, 1],
@@ -272,7 +272,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Scharfe Formen */}
         <motion.div
-          className="absolute top-[45%] right-[20%] w-28 h-28 bg-[#fa8c45] opacity-20 rounded-xl"
+          className="absolute top-[45%] right-[20%] w-28 h-28 bg-dsp-orange opacity-20 rounded-xl"
           animate={{
             rotate: [0, 90, 180, 270, 360],
             x: [0, 50, 0, -50, 0],
@@ -298,7 +298,7 @@ const SubscriptionsPage: React.FC = () => {
             }}
           />
           <motion.div
-            className="absolute w-3 h-3 bg-[#fa8c45] opacity-50 rounded-full transform translate-x-8"
+            className="absolute w-3 h-3 bg-dsp-orange opacity-50 rounded-full transform translate-x-8"
             animate={{
               x: [8, 20, 8, -5, 8],
               y: [0, -5, 5, 0],
@@ -353,7 +353,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Starker Blur-Effekt im Hintergrund */}
         <motion.div
-          className="absolute top-[70%] right-[10%] w-96 h-96 bg-[#fa8c45] opacity-5 rounded-full filter blur-[120px]"
+          className="absolute top-[70%] right-[10%] w-96 h-96 bg-dsp-orange opacity-5 rounded-full filter blur-[120px]"
           animate={{
             scale: [1, 1.2, 0.9, 1.2, 1],
             opacity: [0.05, 0.08, 0.05],
