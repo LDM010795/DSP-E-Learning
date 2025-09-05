@@ -1,5 +1,6 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import * as monaco from "monaco-editor";
+import { getDspThemeColorCode } from "../../../util/helpers/color_theme_utils";
 
 // Handle-Typ definieren
 export interface CodeEditorBasicHandle {
@@ -35,9 +36,9 @@ const CodeEditorBasic = forwardRef<CodeEditorBasicHandle, CodeEditorBasicProps>(
         colors: {
           "editor.background": "#ffe7d4", // Leicht oranger Hintergrund
           "editor.foreground": "#000000",
-          "editorCursor.foreground": "#ff863d",
+          "editorCursor.foreground": getDspThemeColorCode("--color-dsp-orange"),
           "editor.lineHighlightBackground": "#FFECB3",
-          "editorLineNumber.foreground": "#ff863d",
+          "editorLineNumber.foreground": getDspThemeColorCode("--color-dsp-orange"),
           "editor.selectionBackground": "#FFD180",
           "editor.inactiveSelectionBackground": "#FFE0B2",
         },

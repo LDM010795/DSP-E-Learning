@@ -10,6 +10,7 @@
 
 import React, { memo, Suspense } from "react";
 import { useShallowMemo, useMemoizedComputation } from "../../util/performance";
+import { getDspThemeColorCode } from "../../util/helpers/color_theme_utils";
 
 // Lazy load ECharts to reduce initial bundle size
 const ReactECharts = React.lazy(() => import("echarts-for-react"));
@@ -91,7 +92,7 @@ const ExercisePerformanceChart = memo<ExercisePerformanceChartProps>(
             data: percentages,
             type: "bar",
             itemStyle: {
-              color: "#ff863d",
+              color: getDspThemeColorCode("--color-dsp-orange"),
               borderRadius: [4, 4, 0, 0],
             },
             emphasis: {
