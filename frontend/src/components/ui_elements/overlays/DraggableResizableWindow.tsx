@@ -182,7 +182,7 @@ const DraggableResizableWindow: React.FC<DraggableResizableWindowProps> = ({
         aria-modal={false}
       >
         <div
-          className="cursor-move rounded-t-xl border-b border-[var(--color-dsp-orange_medium)] bg-[var(--color-dsp-orange)] px-3 py-2 text-sm font-medium text-white flex items-center justify-between"
+          className="cursor-move rounded-t-xl border-b border-dsp-orange_medium bg-dsp-orange px-3 py-2 text-sm font-medium text-white flex items-center justify-between"
           onMouseDown={handleMouseDownHeader}
           title="Zum Verschieben gedrückt halten"
         >
@@ -198,7 +198,7 @@ const DraggableResizableWindow: React.FC<DraggableResizableWindowProps> = ({
         <div className="flex-1 overflow-auto p-2">{children}</div>
         <button
           type="button"
-          className="absolute bottom-2 right-2 h-7 w-7 cursor-se-resize rounded-full bg-[var(--color-dsp-orange)] text-white shadow-md hover:bg-[color-mix(in_oklab,var(--color-dsp-orange)_90%,white)] focus:outline-none focus:ring-2 focus:ring-white/50 flex items-center justify-center"
+          className="absolute bottom-2 right-2 h-7 w-7 cursor-se-resize rounded-full bg-dsp-orange text-white shadow-md hover:bg-[color-mix(in_oklab,var(--color-dsp-orange)_90%,white)] focus:outline-none focus:ring-2 focus:ring-white/50 flex items-center justify-center"
           onMouseDown={handleMouseDownResize}
           aria-label="Größe ändern"
           title="Größe ändern"

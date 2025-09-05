@@ -8,6 +8,7 @@ import {
   Tooltip,
   Bar,
 } from "recharts";
+import { getDspThemeColorCode } from "../../util/helpers/color_theme_utils";
 
 interface DataPoint {
   name: string; // Y-Achse Label (z.B. Themenname, Modulname)
@@ -24,7 +25,7 @@ interface Props {
 const VerticalBarChart: React.FC<Props> = ({
   data,
   xAxisLabel = "Wert",
-  barFill = "#FF8C00",
+  barFill = `${getDspThemeColorCode("dsp-orange")}`,
   height = 300, // Standardhöhe
 }) => {
   return (

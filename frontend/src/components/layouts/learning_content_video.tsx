@@ -89,16 +89,16 @@ const LearningContentVideoLayout: React.FC<LearningContentVideoLayoutProps> = ({
                     onClick={() => onSelectContent?.(rv.id)}
                     className={`w-full text-left p-2 sm:p-3 rounded-lg border transition-colors flex items-start gap-3 bg-white/60 backdrop-blur-sm ${
                       isActive
-                        ? "border-[#ff863d] bg-[#ffe7d4]/80"
-                        : "border-white/40 hover:border-[#ff863d]/40 hover:bg-[#ffe7d4]/50"
+                        ? "border-dsp-orange bg-dsp-orange_light/80"
+                        : "border-white/40 hover:border-dsp-orange/40 hover:bg-dsp-orange_light/50"
                     }`}
                   >
-                    <div className="mt-0.5 flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-[#ff863d]/20 text-[#ff863d] flex items-center justify-center">
+                    <div className="mt-0.5 flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-dsp-orange/20 text-dsp-orange flex items-center justify-center">
                       <IoPlayOutline className="w-4 h-4 sm:w-4 sm:h-4" />
                     </div>
                     <div className="flex-1">
                       <div
-                        className={`font-medium text-sm sm:text-base ${isActive ? "text-[#ff863d]" : "text-gray-800"}`}
+                        className={`font-medium text-sm sm:text-base ${isActive ? "text-dsp-orange" : "text-gray-800"}`}
                       >
                         <span className="text-gray-500 mr-1">{idx + 1}.</span>{" "}
                         {rv.title}

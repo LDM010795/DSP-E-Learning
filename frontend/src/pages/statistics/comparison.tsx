@@ -29,11 +29,11 @@ const Comparison: React.FC = () => {
     >
       <SubBackground className="hover:bg-white/80 transition-all duration-200">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 rounded-lg bg-[#ffe7d4]">
-            <IoPeopleOutline className="w-5 h-5 text-[#ff863d]" />
+          <div className="p-2 rounded-lg bg-dsp-orange_light">
+            <IoPeopleOutline className="w-5 h-5 text-dsp-orange" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+            <h3 className="text-lg font-semibold text-gray-800 group-hover:text-dsp-orange transition-colors duration-200">
               Vergleich mit anderen Lernenden
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -76,7 +76,7 @@ const Comparison: React.FC = () => {
                   <ComparisonBar
                     value={item.user}
                     maxValue={item.maxValue}
-                    colorClass="bg-gradient-to-t from-[#ff863d] to-[#fa8c45]"
+                    colorClass="bg-gradient-to-t from-dsp-orange to-dsp-orange-gradient"
                     label="Du"
                     displayValue={`${item.user}${item.unit || ""}`}
                   />
@@ -87,15 +87,15 @@ const Comparison: React.FC = () => {
         </div>
 
         <motion.div
-          className="mt-8 p-4 bg-gradient-to-r from-[#ffe7d4]/50 to-[#ffe7d4]/30 border border-[#ff863d]/20 rounded-xl"
+          className="mt-8 p-4 bg-gradient-to-r from-dsp-orange_light/50 to-dsp-orange_light/30 border border-dsp-orange/20 rounded-xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.8 }}
           whileHover={{ scale: 1.02 }}
         >
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#ff863d]/10">
-              <IoTrophyOutline className="w-6 h-6 text-[#ff863d]" />
+            <div className="p-2 rounded-lg bg-dsp-orange/10">
+              <IoTrophyOutline className="w-6 h-6 text-dsp-orange" />
             </div>
             <div>
               <p className="font-semibold text-gray-800">Deine Position</p>

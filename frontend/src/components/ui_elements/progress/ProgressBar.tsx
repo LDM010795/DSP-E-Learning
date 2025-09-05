@@ -51,9 +51,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   // Variant color configurations
   const variantConfig = {
     default: {
-      bg: "bg-[#ff863d]",
-      glow: "shadow-[#ff863d]/30",
-      text: "text-[#ff863d]",
+      bg: "bg-dsp-orange",
+      glow: "shadow-dsp-orange/30",
+      text: "text-dsp-orange",
       track: "bg-gray-200",
     },
     success: {

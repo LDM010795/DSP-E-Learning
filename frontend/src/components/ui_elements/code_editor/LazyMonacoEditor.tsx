@@ -18,6 +18,7 @@ import React, {
   forwardRef,
 } from "react";
 import { useShallowMemo } from "../../../util/performance";
+import { getDspThemeColorCode } from "../../../util/helpers/color_theme_utils";
 
 // Lazy load Monaco Editor to reduce initial bundle size (~2MB reduction)
 const MonacoEditorComponent = React.lazy(async () => {
@@ -39,11 +40,11 @@ const MonacoEditorComponent = React.lazy(async () => {
           inherit: true,
           rules: [{ token: "", foreground: "000000", background: "ffe7d4" }],
           colors: {
-            "editor.background": "#ffe7d4",
+            "editor.background": getDspThemeColorCode("dsp-orange_light"),
             "editor.foreground": "#000000",
-            "editorCursor.foreground": "#ff863d",
+            "editorCursor.foreground": getDspThemeColorCode("dsp-orange"),
             "editor.lineHighlightBackground": "#FFECB3",
-            "editorLineNumber.foreground": "#ff863d",
+            "editorLineNumber.foreground": getDspThemeColorCode("dsp-orange"),
             "editor.selectionBackground": "#FFD180",
             "editor.inactiveSelectionBackground": "#FFE0B2",
           },

@@ -61,7 +61,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
       case "completed":
         return <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />;
       case "in-progress":
-        return <IoTimeOutline className="w-5 h-5 text-[#ff863d]" />;
+        return <IoTimeOutline className="w-5 h-5 text-dsp-orange" />;
       default:
         return <IoPlayCircleOutline className="w-5 h-5 text-gray-500" />;
     }
@@ -72,7 +72,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
       case "completed":
         return "bg-green-500";
       case "in-progress":
-        return "bg-[#ff863d]";
+        return "bg-dsp-orange";
       default:
         return "bg-gray-400";
     }
@@ -84,7 +84,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
         // Base card styling - professional SaaS look
         "relative group cursor-pointer",
         "bg-white/90 backdrop-blur-sm",
-        "border border-gray-200/60 hover:border-[#ff863d]/30",
+        "border border-gray-200/60 hover:border-dsp-orange/30",
         "rounded-xl overflow-hidden",
         "shadow-sm hover:shadow-md",
         "transition-all duration-200 ease-in-out",
@@ -118,7 +118,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
           {youtubeId && (
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <IoPlayCircleOutline className="w-8 h-8 text-[#ff863d]" />
+                <IoPlayCircleOutline className="w-8 h-8 text-dsp-orange" />
               </div>
             </div>
           )}
@@ -139,7 +139,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
           <h3
             className={clsx(
               "font-semibold text-gray-900 text-base leading-tight",
-              "group-hover:text-[#ff863d] transition-colors duration-200",
+              "group-hover:text-dsp-orange transition-colors duration-200",
               "line-clamp-2",
               classNameTitle,
             )}
@@ -179,7 +179,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
                 status === "completed"
                   ? "text-green-600"
                   : status === "in-progress"
-                    ? "text-[#ff863d]"
+                    ? "text-dsp-orange"
                     : "text-gray-500",
                 classNameProgressText,
               )}
@@ -218,7 +218,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
       </div>
 
       {/* Subtle hover glow */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#ff863d]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-dsp-orange/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
     </motion.div>
   );
 };

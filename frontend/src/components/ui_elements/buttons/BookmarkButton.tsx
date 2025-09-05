@@ -124,7 +124,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
       (n as HTMLElement).classList.remove(
         "relative",
         "pl-2",
-        "shadow-[inset_3px_0_0_#f59e0b]",
+        "shadow-[inset_3px_0_0_2563eb]",
       );
     });
     bookmarks.forEach((b) => {

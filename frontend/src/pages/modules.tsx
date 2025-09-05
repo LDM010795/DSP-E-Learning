@@ -29,8 +29,11 @@ type ViewMode = "standard" | "table";
 
 function Modules() {
   const { modules, loading, error, fetchModules } = useModules();
-  const [activeFilters, setActiveFilters] = useState<DifficultyLevel[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  // NEU: State für Schwierigkeitsfilter
+  const [activeDifficultyFilters, setActiveDifficultyFilters] = useState<
+    DifficultyLevel[]
+  >([]);
   // NEU: State für Statusfilter
   const [activeStatusFilters, setActiveStatusFilters] = useState<
     ModuleStatus[]
@@ -39,6 +42,7 @@ function Modules() {
   const [activeCategoryFilters, setActiveCategoryFilters] = useState<string[]>(
     [],
   );
+
   // NEU: State für den Ansichtsmodus - Default bleibt "standard"
   const [viewMode, setViewMode] = useState<ViewMode>("standard");
 
@@ -76,16 +80,6 @@ function Modules() {
     return undefined;
   };
 
-  const handleFilterChange = (difficulty: DifficultyLevel) => {
-    setActiveFilters((prevFilters) => {
-      if (prevFilters.includes(difficulty)) {
-        return prevFilters.filter((f) => f !== difficulty);
-      } else {
-        return [...prevFilters, difficulty];
-      }
-    });
-  };
-
   // NEU: Hilfsfunktion zur Bestimmung des Modulstatus
   const getModuleStatus = (module: Module): ModuleStatus => {
     const tasks = module.tasks || [];
@@ -102,16 +96,6 @@ function Modules() {
       return "Abgeschlossen";
     }
     return "In Bearbeitung";
-  };
-
-  const handleStatusFilterChange = (status: ModuleStatus) => {
-    setActiveStatusFilters((prevFilters) => {
-      if (prevFilters.includes(status)) {
-        return prevFilters.filter((f) => f !== status);
-      } else {
-        return [...prevFilters, status];
-      }
-    });
   };
 
   // NEU: Handler für Kategorie-Filter
@@ -169,9 +153,12 @@ function Modules() {
         else return "Schwer";
       };
       const difficultyMatch = (() => {
-        if (activeFilters.length === 0) return true;
+        if (activeDifficultyFilters.length === 0) return true;
         const avgDifficulty = calculateDifficultyForFilter(module.tasks);
-        return avgDifficulty !== null && activeFilters.includes(avgDifficulty);
+        return (
+          avgDifficulty !== null &&
+          activeDifficultyFilters.includes(avgDifficulty)
+        );
       })();
       const searchMatch =
         searchTerm === "" ||
@@ -252,7 +239,7 @@ function Modules() {
                 </p>
                 <button
                   onClick={fetchModules}
-                  className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
                 </button>
@@ -283,7 +270,7 @@ function Modules() {
               {/* Stats indicator */}
               <div className="mt-6 inline-flex items-center space-x-6 px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full border border-white/20 shadow-sm">
                 <div className="flex items-center space-x-2">
-                  <IoLibraryOutline className="text-[#ff863d] w-5 h-5" />
+                  <IoLibraryOutline className="text-dsp-orange w-5 h-5" />
                   <span className="text-sm font-medium text-gray-700">
                     {modules.length} Module verfügbar
                   </span>
@@ -309,11 +296,11 @@ function Modules() {
             <span className="text-sm font-medium text-gray-600">
               {sortedAndFilteredModules.length} von {modules.length} Modulen
             </span>
-            {(activeFilters.length > 0 ||
+            {(activeDifficultyFilters.length > 0 ||
               activeStatusFilters.length > 0 ||
               activeCategoryFilters.length > 0 ||
               searchTerm) && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#ff863d]/10 text-[#ff863d] border border-[#ff863d]/20">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-dsp-orange/10 text-dsp-orange border border-dsp-orange/20">
                 <IoSearchOutline className="w-3 h-3 mr-1" />
                 Gefiltert
               </span>
@@ -339,18 +326,20 @@ function Modules() {
                       "Abgeschlossen",
                     ]}
                     activeOptions={activeStatusFilters}
-                    onOptionClick={handleStatusFilterChange}
+                    onOptionClick={setActiveStatusFilters}
                     onClearClick={() => setActiveStatusFilters([])}
-                    activeClassName="bg-[#ff863d] text-white border-[#ff863d]"
+                    multiSelectEnabled={false}
+                    activeClassName="bg-dsp-orange text-white border-dsp-orange"
                   />
                   <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
                   <ButtonFilterSimple
                     label="Schwierigkeit:"
                     options={["Einfach", "Mittel", "Schwer"]}
-                    activeOptions={activeFilters}
-                    onOptionClick={handleFilterChange}
-                    onClearClick={() => setActiveFilters([])}
-                    activeClassName="bg-[#ff863d] text-white border-[#ff863d]"
+                    activeOptions={activeDifficultyFilters}
+                    onOptionClick={setActiveDifficultyFilters}
+                    onClearClick={() => setActiveDifficultyFilters([])}
+                    multiSelectEnabled={true}
+                    activeClassName="bg-dsp-orange text-white border-dsp-orange"
                   />
                   <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
                   {allCategories.length > 0 && (
@@ -372,10 +361,10 @@ function Modules() {
                       onClick={() => setViewMode("standard")}
                       className={clsx(
                         "relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                        "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
+                        "focus:z-10 focus:outline-none focus:ring-2 focus:ring-dsp-orange/20",
                         viewMode === "standard"
-                          ? "bg-[#ff863d] text-white shadow-sm"
-                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                          ? "bg-dsp-orange text-white shadow-sm"
+                          : "text-gray-600 hover:text-dsp-orange hover:bg-dsp-orange/5",
                       )}
                       aria-label="Standardansicht"
                       title="Standardansicht"
@@ -387,10 +376,10 @@ function Modules() {
                       onClick={() => setViewMode("table")}
                       className={clsx(
                         "relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                        "focus:z-10 focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20",
+                        "focus:z-10 focus:outline-none focus:ring-2 focus:ring-dsp-orange/20",
                         viewMode === "table"
-                          ? "bg-[#ff863d] text-white shadow-sm"
-                          : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                          ? "bg-dsp-orange text-white shadow-sm"
+                          : "text-gray-600 hover:text-dsp-orange hover:bg-dsp-orange/5",
                       )}
                       aria-label="Tabellenansicht"
                       title="Tabellenansicht"
@@ -433,13 +422,13 @@ function Modules() {
                         to={`/modules/${module.id}`}
                         className={clsx("block relative group")}
                       >
-                        <div className="relative overflow-hidden rounded-xl border border-white/40 hover:border-[#ff863d]/30 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] bg-white/60 backdrop-blur-sm hover:bg-white/80">
+                        <div className="relative overflow-hidden rounded-xl border border-white/40 hover:border-dsp-orange/30 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] bg-white/60 backdrop-blur-sm hover:bg-white/80">
                           <CardPreviewSmall
                             title={module.title}
                             youtubeId={getFirstYoutubeId(module)}
                             progress={roundedProgressPercent}
                             className="w-full h-full border-0 bg-transparent hover:bg-transparent"
-                            classNameTitle="text-left text-xl group-hover:text-[#ff863d] transition-colors duration-200"
+                            classNameTitle="text-left text-xl group-hover:text-dsp-orange transition-colors duration-200"
                           />
                           {module.tasks && module.tasks.length > 0 && (
                             <div className="absolute top-4 right-4 z-10">
@@ -448,7 +437,7 @@ function Modules() {
                           )}
 
                           {/* Enhanced hover overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#ff863d]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-dsp-orange/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
                         </div>
                       </Link>
                     );

@@ -86,7 +86,7 @@ const IndexAdminPanel: React.FC = () => {
       <SubBackground className="p-1 mb-8">
         <div ref={tabsRef} className="relative flex space-x-1">
           <div
-            className="absolute inset-y-1 bg-[#ff863d] rounded-lg shadow-sm transition-all duration-200 ease-out pointer-events-none"
+            className="absolute inset-y-1 bg-dsp-orange rounded-lg shadow-sm transition-all duration-200 ease-out pointer-events-none"
             style={sliderStyle}
           />
           {(Object.keys(tabConfig) as TabState[]).map((tab) => {
@@ -120,7 +120,7 @@ const IndexAdminPanel: React.FC = () => {
                     ? "text-white"
                     : isDisabled
                       ? "text-gray-400 cursor-not-allowed"
-                      : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                      : "text-gray-600 hover:text-dsp-orange hover:bg-dsp-orange/5",
                   isDisabled ? "cursor-not-allowed" : "cursor-pointer",
                 )}
                 title={isDisabled ? "Nur für Administratoren" : description}
@@ -150,8 +150,8 @@ const IndexAdminPanel: React.FC = () => {
               className="text-center mb-8"
             >
               <div className="flex items-center justify-center space-x-3 mb-4">
-                <div className="p-3 rounded-xl bg-[#ffe7d4]">
-                  <IoShieldCheckmarkOutline className="w-8 h-8 text-[#ff863d]" />
+                <div className="p-3 rounded-xl bg-dsp-orange_light">
+                  <IoShieldCheckmarkOutline className="w-8 h-8 text-dsp-orange" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-700">
                   Admin Panel

@@ -12,6 +12,7 @@
 
 import React, { memo, Suspense } from "react";
 import { useShallowMemo, useMemoizedComputation } from "../../util/performance";
+import { getDspThemeColorCode } from "../../util/helpers/color_theme_utils";
 
 interface OptimizedGaugeChartProps {
   progressValue: number;
@@ -39,8 +40,8 @@ const OptimizedGaugeChart: React.FC<OptimizedGaugeChartProps> = memo(
     progressValue,
     width = 300,
     height = 300,
-    primaryColor = "#ff863d",
-    backgroundColor = "#ffe7d4",
+    primaryColor = getDspThemeColorCode("dsp-orange"),
+    backgroundColor = getDspThemeColorCode("dsp-orange_light"),
     showLabels = true,
   }) => {
     // Performance optimization: Memoize expensive chart options calculation

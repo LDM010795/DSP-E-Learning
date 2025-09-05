@@ -2,13 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Breadcrumbs from "../../components/ui_elements/breadcrumbs";
 import SubBackground from "../../components/layouts/SubBackground";
+import PaymentMethodsPanel from "../../components/billing/PaymentMethodsPanel";
 import Profile from "./profile";
 import Account from "./account";
 import Notifications from "./notifications";
 import Design from "./design";
 import clsx from "clsx";
 
-type TabState = "profil" | "konto" | "benachrichtigungen" | "design";
+type TabState =
+  | "profil"
+  | "konto"
+  | "benachrichtigungen"
+  | "design"
+  | "zahlungen";
 
 // Tab Labels Mapping für bessere Übersicht
 const tabLabels: Record<TabState, string> = {
@@ -16,10 +22,15 @@ const tabLabels: Record<TabState, string> = {
   konto: "Konto",
   benachrichtigungen: "Benachrichtigungen",
   design: "Design",
+  zahlungen: "Zahlungsmethode",
 };
 
 const IndexUserSettings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabState>("profil");
+  const [activeTab, setActiveTab] = useState<TabState>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("tab") as TabState | null;
+    return t && t in tabLabels ? t : "profil";
+  });
   const [sliderStyle, setSliderStyle] = useState({});
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +59,7 @@ const IndexUserSettings: React.FC = () => {
     <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white/40 shadow-sm p-2 mb-6">
       <div ref={tabsRef} className="relative flex space-x-1">
         <div
-          className="absolute inset-y-0 bg-[#ff863d] rounded-lg shadow-sm transition-all duration-300 ease-out pointer-events-none"
+          className="absolute inset-y-0 bg-dsp-orange rounded-lg shadow-sm transition-all duration-300 ease-out pointer-events-none"
           style={sliderStyle}
         />
         {(Object.keys(tabLabels) as TabState[]).map((tab) => (
@@ -60,7 +71,7 @@ const IndexUserSettings: React.FC = () => {
               "relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer",
               activeTab === tab
                 ? "text-white"
-                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                : "text-gray-600 hover:text-dsp-orange hover:bg-dsp-orange/5",
             )}
           >
             {tabLabels[tab]}
@@ -108,6 +119,7 @@ const IndexUserSettings: React.FC = () => {
               {activeTab === "konto" && <Account />}
               {activeTab === "benachrichtigungen" && <Notifications />}
               {activeTab === "design" && <Design />}
+              {activeTab === "zahlungen" && <PaymentMethodsPanel />}
             </div>
           </SubBackground>
         </div>
