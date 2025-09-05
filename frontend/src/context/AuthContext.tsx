@@ -109,7 +109,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  * @param children - React components that need access to authentication
  * @returns JSX.Element containing the authentication provider
  */
-export const AuthProvider: React.FC<{ children: ReactNode }> = async ({
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   /**
@@ -131,25 +131,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = async ({
    * Checks with server if current cookies are usable
    */
   useEffect(() => {
-    (async () => {
-      try {
+
+      const fetchUserData = async () => {
+          try {
           const response = await api.get("users/me");
           if (response.status == 200){
-              return response.data
+              setUser(response.data);
+              setAuthentification(true)
           }
             else {
                 console.error(response.statusText);
-                // Redirect to landing page
-                window.location.href = "/";
-                return undefined;
           }
         } catch (error) {
           console.error(error);
-          // Redirect to landing page
-          window.location.href = "/";
-          return undefined;
         }
-    })();
+        finally {
+              setIsLoading(false)
+          }
+      }
+
+      fetchUserData();
+
   }, []);
 
   /**
