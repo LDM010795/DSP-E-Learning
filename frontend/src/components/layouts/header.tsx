@@ -55,8 +55,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
         ) : (
           <button
             onClick={item.action}
-            className="flex items-center px-3 py-1.5 text-sm font-medium rounded-lg text-gray-700 hover:text-[#ff863d] 
-                     hover:bg-[#ff863d]/5 transition-colors duration-200 cursor-pointer"
+            className="flex items-center px-3 py-1.5 text-sm font-medium rounded-lg text-gray-700 hover:text-dsp-orange 
+                     hover:bg-dsp-orange/5 transition-colors duration-200 cursor-pointer"
             aria-label={item.title}
           >
             {item.icon && <span className="mr-2">{item.icon}</span>}
@@ -70,7 +70,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
     <>
       <header
         className={clsx(
-          "sticky top-0 z-40 w-full bg-white/95 border-b border-[#ff863d]/10 shadow-sm",
+          "sticky top-0 z-40 w-full bg-white/95 border-b border-dsp-orange/10 shadow-sm",
           "transition-all duration-200",
           className,
         )}
@@ -92,8 +92,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileOpen((prev) => !prev)}
-                className="md:hidden relative p-1.5 rounded-lg text-gray-700 hover:text-[#ff863d] 
-                         hover:bg-[#ff863d]/5 transition-colors duration-200"
+                className="md:hidden relative p-1.5 rounded-lg text-gray-700 hover:text-dsp-orange 
+                         hover:bg-dsp-orange/5 transition-colors duration-200"
                 aria-label="Toggle Navigation"
               >
                 {mobileOpen ? (
@@ -131,7 +131,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
           />
 
           {/* Menu Panel */}
-          <div className="fixed top-14 inset-x-0 bg-white border-b border-[#ff863d]/10 shadow-md">
+          <div className="fixed top-14 inset-x-0 bg-white border-b border-dsp-orange/10 shadow-md">
             <nav className="max-w-[95vw] mx-auto p-4">
               {/* Main Navigation */}
               <div className="mb-4">
@@ -144,8 +144,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                       <LinkSidebar
                         to={link.to}
                         icon={link.icon}
-                        className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-[#ff863d] 
-                                 hover:bg-[#ff863d]/5 rounded-lg transition-colors duration-200"
+                        className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-dsp-orange 
+                                 hover:bg-dsp-orange/5 rounded-lg transition-colors duration-200"
                       >
                         {link.title}
                       </LinkSidebar>
@@ -167,8 +167,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                           <LinkSidebar
                             to={item.to}
                             icon={item.icon}
-                            className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-[#ff863d] 
-                                     hover:bg-[#ff863d]/5 rounded-lg transition-colors duration-200"
+                            className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-dsp-orange 
+                                     hover:bg-dsp-orange/5 rounded-lg transition-colors duration-200"
                           >
                             {item.title}
                           </LinkSidebar>
@@ -178,8 +178,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                               item.action?.();
                               setMobileOpen(false);
                             }}
-                            className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-[#ff863d] 
-                                     hover:bg-[#ff863d]/5 rounded-lg transition-colors duration-200 text-left"
+                            className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-dsp-orange 
+                                     hover:bg-dsp-orange/5 rounded-lg transition-colors duration-200 text-left"
                             aria-label={item.title}
                           >
                             {item.icon && (

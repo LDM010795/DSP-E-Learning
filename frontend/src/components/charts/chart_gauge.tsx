@@ -6,6 +6,7 @@
 
 import React, { memo, Suspense } from "react";
 import { useShallowMemo, useMemoizedComputation } from "../../util/performance";
+import { getDspThemeColorCode } from "../../util/helpers/color_theme_utils";
 
 // Lazy load ECharts to reduce initial bundle size
 const ReactECharts = React.lazy(() => import("echarts-for-react"));
@@ -47,12 +48,12 @@ const ChartGauge = memo<ChartGaugeProps>(
               show: true,
               width: 10,
               roundCap: true,
-              itemStyle: { color: "#ff863d" },
+              itemStyle: { color: getDspThemeColorCode("dsp-orange") },
             },
             axisLine: {
               lineStyle: {
                 width: 10,
-                color: [[1, "#ffe7d4"]],
+                color: [[1, getDspThemeColorCode("dsp-orange_light")]],
               },
             },
             splitLine: { show: false },

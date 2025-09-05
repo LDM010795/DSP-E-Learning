@@ -93,9 +93,9 @@ const NotesEditor: React.FC<NotesEditorProps> = ({
           </button>
           <span className="mx-1 h-5 w-px bg-gray-200" />
           <button
-            onClick={() => exec("foreColor", "#ff6d25")}
+            onClick={() => exec("foreColor", "var(--color-dsp-orange)")}
             className="h-6 w-6 rounded-full border border-white shadow ring-1 ring-orange-300"
-            style={{ backgroundColor: "#ff6d25" }}
+            style={{ backgroundColor: "var(--color-dsp-orange)" }}
             title="Textfarbe DSP-Orange"
             aria-label="Textfarbe DSP-Orange"
           />

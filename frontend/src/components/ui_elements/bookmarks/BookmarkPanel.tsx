@@ -42,7 +42,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
       className="absolute bottom-14 right-0 max-h-80 w-[28rem] overflow-auto rounded-xl border border-gray-200 bg-white/95 shadow-xl backdrop-blur"
     >
       {/* Mini-Toolbar */}
-      <div className="flex items-center justify-between border-b border-[var(--color-dsp-orange_medium)] bg-[var(--color-dsp-orange)] px-2 py-1">
+      <div className="flex items-center justify-between border-b border-dsp-orange_medium bg-dsp-orange px-2 py-1">
         <div className="text-xs font-semibold text-white">Lesezeichen</div>
         <div className="flex items-center gap-1">
           <button

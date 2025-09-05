@@ -1,68 +1,3 @@
-/**
- * SubscriptionsPage (Stripe-integrated)
- * =====================================
- *
- * Purpose
- * -------
- * This page presents subscription plans (Schüler, Standard, Business) with
- * animated cards and integrates Stripe for handling payments.
- *
- * What changed vs your original:
- * - On mount we check if the user has any saved card (listPaymentMethods).
- * - If no: show SaveCardForm (with Skip). If yes/skip: show your original animated pricing.
- * - “Standard” plan wired with SubscribeButton to start Stripe Checkout.
- *
- * Notes:
- * - Replace the `STANDARD_PRICE_ID` with your real Stripe Price ID.
- * - If plans will come from backend later, keep this flow: card → plans → checkout.
- *
- * Flow
- * ----
- * 1. On mount:
- *    - Calls `listPaymentMethods` from backend.
- *    - If user already has a saved card → show plans directly.
- *    - If not → show `SaveCardForm` (Stripe SetupIntent) with option to Skip.
- *
- * 2. SaveCardForm:
- *    - Collects and attaches card to Stripe Customer.
- *    - On success (or Skip) → reloads view and shows plans.
- *
- * 3. Plans:
- *    - Schüler → free registration (no Stripe).
- *    - Standard → wired to Stripe Checkout via `SubscribeButton`.
- *        • Uses backend endpoint `/payments/stripe/checkout-session/`.
- *        • Redirects user to Stripe-hosted checkout page.
- *    - Business → marked as "coming soon".
- *
- * 4. Success/Cancel:
- *    - After Checkout, Stripe redirects back to:
- *      `/payments/success?session_id=...&course=...` or `/payments/cancel?...`
- *    - These routes should be handled in `AnimatedRoutes.tsx`.
- *
- * Performance & UX
- * ----------------
- * - Uses AbortController to cancel API calls on unmount.
- * - Throttled scroll/mouse handlers for smooth animations.
- * - State machine: "loading" | "needsCard" | "ready" | "error".
- * - Preserves original parallax/animated design while layering Stripe logic.
- *
- * Dependencies
- * ------------
- * - Backend endpoints:
- *   • GET /api/elearning/payments/stripe/config/
- *   • POST /api/elearning/payments/stripe/setup-intent/
- *   • GET /api/elearning/payments/stripe/payment-methods/
- *   • POST /api/elearning/payments/stripe/checkout-session/
- * - Frontend helpers/components:
- *   • util/apis/billingApi.ts
- *   • util/payments/stripe.ts
- *   • components/payments/SaveCardForm.tsx
- *   • components/payments/SubscribeButton.tsx
- *
- * Author: DSP Development Team
- * Date: 2025-08-26
- */
-
 import React, { useState, useEffect } from "react";
 import {
   motion,
@@ -89,9 +24,9 @@ function getHttpStatus(e: unknown): number | null {
   if (typeof e !== "object" || e === null) return null;
   const ax = e as { response?: { status?: unknown } };
   if (ax.response && typeof ax.response.status === "number")
-    return ax.response.status;
+    return ax.response.status as number;
   const fx = e as { status?: unknown };
-  if (typeof fx.status === "number") return fx.status;
+  if (typeof fx.status === "number") return fx.status as number;
   return null;
 }
 
@@ -168,11 +103,11 @@ const featureItemVariants = {
 const getAccentColor = (planName: string) => {
   switch (planName) {
     case "Schüler":
-      return "from-[#fa8c45] to-[#ff863d]";
+      return "from-dsp-orange-gradient to-dsp-orange";
     case "Standard":
-      return "from-[#ff863d] to-[#fa8c45]";
+      return "from-dsp-orange to-dsp-orange-gradient";
     case "Business":
-      return "from-[#fa8c45] to-[#e67e22]";
+      return "from-dsp-orange-gradient to-[#e67e22]";
     default:
       return "from-gray-500 to-gray-700";
   }
@@ -418,19 +353,19 @@ const SubscriptionsPage: React.FC = () => {
 
       {/* Animierte Kreise wie auf der Landing Page */}
       <motion.div
-        className="absolute top-[15%] left-[10%] w-32 h-32 bg-[#ff863d]/30 rounded-full filter blur-xl opacity-70 z-0"
+        className="absolute top-[15%] left-[10%] w-32 h-32 bg-dsp-orange/30 rounded-full filter blur-xl opacity-70 z-0"
         style={{ x: circle1X, y: circle1Y }}
       />
       <motion.div
-        className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-[#ffe7d4]/40 rounded-full filter blur-2xl opacity-60 z-0"
+        className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-dsp-orange_light/40 rounded-full filter blur-2xl opacity-60 z-0"
         style={{ x: circle2X, y: circle2Y }}
       />
       <motion.div
-        className="absolute top-[40%] right-[30%] w-24 h-24 bg-[#fa8c45]/50 rounded-full filter blur-lg opacity-70 z-0"
+        className="absolute top-[40%] right-[30%] w-24 h-24 bg-dsp-orange/50 rounded-full filter blur-lg opacity-70 z-0"
         style={{ x: circle3X, y: circle3Y }}
       />
 
-      {/* Decorative Background Elements (unchanged) */}
+      {/* Decorative Background Elements (kept from develop) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute right-0 top-0 w-[800px] h-[800px] bg-[#ff863d] opacity-[0.02] rounded-full translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-[#ffe7d4] opacity-[0.05] rounded-full -translate-x-1/3 translate-y-1/3"></div>

@@ -8,6 +8,7 @@ import {
   Tooltip,
   Line,
 } from "recharts";
+import { getDspThemeColorCode } from "../../util/helpers/color_theme_utils";
 
 interface DataPoint {
   month: string;
@@ -52,7 +53,7 @@ const ProgressOverTimeChart: React.FC<Props> = ({ data }) => {
         <Line
           type="monotone"
           dataKey="Fortschritt"
-          stroke="#FF8C00"
+          stroke={`${getDspThemeColorCode("dsp-orange")}`}
           strokeWidth={2}
           dot={{ r: 4 }}
           activeDot={{ r: 6 }}

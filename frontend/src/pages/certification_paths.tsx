@@ -94,7 +94,7 @@ const ExamAccordionItem: React.FC<{
         "cursor-pointer",
         isCompleted
           ? "bg-green-50/60 border-green-200" // Kein Hover-Effekt für abgeschlossene
-          : "bg-white/60 border-white/40 backdrop-blur-sm hover:bg-[#ffe7d4]/60",
+          : "bg-white/60 border-white/40 backdrop-blur-sm hover:bg-dsp-orange_light/60",
       )}
       // KORREKTUR: Accessibility immer anwenden
       role="button"
@@ -152,7 +152,7 @@ const ExamAccordionItem: React.FC<{
           e.stopPropagation(); // Verhindert Klick auf Karte
           onOpenExamDetails(exam.id);
         }}
-        className="ml-auto flex-shrink-0 flex items-center text-sm font-medium text-[#ff863d] hover:text-[#fa8c45] cursor-pointer"
+        className="ml-auto flex-shrink-0 flex items-center text-sm font-medium text-dsp-orange hover:text-dsp-orange cursor-pointer"
         aria-label={`Details für ${exam.exam_title} anzeigen`}
       >
         Details <Icons.IoArrowForward className="ml-1 w-4 h-4" />

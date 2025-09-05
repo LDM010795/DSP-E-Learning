@@ -37,6 +37,8 @@ h6 {
   --color-dsp-orange_medium: #ffb697;
   --color-dsp-orange_light: #fedac7;
   --color-dsp-white: #ffffff;
+
+  --color-dsp-orange-gradient: #fa8c45;
 }
 
 /* Chrome, Safari und Edge */
@@ -46,11 +48,13 @@ h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #ffe7d4; /* Hintergrund der Scrollbar-Spur */
+  background: var(
+    --color-dsp-orange_light
+  ); /* Hintergrund der Scrollbar-Spur */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff863d; /* Farbe des Daumens */
+  background: var(--color-dsp-orange); /* Farbe des Daumens */
   border-radius: 4px;
 }
 
