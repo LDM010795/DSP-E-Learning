@@ -37,7 +37,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
         "shadow-sm hover:shadow-md",
         "transition-all duration-200 ease-in-out",
         "cursor-pointer",
-        "hover:border-[#ff863d]/30",
+        "hover:border-dsp-orange/30",
         "hover:bg-[#ffe7d4]",
         className,
       )}
@@ -53,7 +53,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
           className={clsx(
             "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center",
             "shadow-sm border border-white/20",
-            "bg-[#ff863d]",
+            "bg-dsp-orange",
           )}
           whileHover={{ rotate: 5 }}
           transition={{ duration: 0.2 }}
@@ -64,7 +64,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
         {/* Content Area */}
         <div className="flex-grow min-w-0">
           {/* Chapter Title */}
-          <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-1 group-hover:text-[#ff863d] transition-colors">
+          <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-1 group-hover:text-dsp-orange transition-colors">
             {chapter.title}
           </h3>
 
@@ -96,7 +96,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
             {/* Progress */}
             {taskCount > 0 && (
               <div className="flex items-center gap-1">
-                <span className="text-[#ff863d] font-medium">
+                <span className="text-dsp-orange font-medium">
                   {progress}% abgeschlossen
                 </span>
               </div>
@@ -106,7 +106,7 @@ const CardChapter: React.FC<CardChapterProps> = ({
 
         {/* Arrow Icon */}
         <motion.div
-          className="flex-shrink-0 text-gray-400 group-hover:text-[#ff863d] transition-colors"
+          className="flex-shrink-0 text-gray-400 group-hover:text-dsp-orange transition-colors"
           whileHover={{ x: 2 }}
           transition={{ duration: 0.2 }}
         >

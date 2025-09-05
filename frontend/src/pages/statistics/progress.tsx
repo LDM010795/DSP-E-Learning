@@ -71,10 +71,10 @@ const ChartCard: React.FC<ChartCardProps> = ({
     <SubBackground className="hover:bg-white/80 transition-all duration-200">
       <div className="flex items-center space-x-3 mb-6">
         <div className="p-2 rounded-lg bg-[#ffe7d4]">
-          <Icon className="w-5 h-5 text-[#ff863d]" />
+          <Icon className="w-5 h-5 text-dsp-orange" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-dsp-orange transition-colors duration-200">
             {title}
           </h3>
           {subtitle && (
@@ -155,7 +155,7 @@ const Progress: React.FC = () => {
                 className="group"
               >
                 <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-semibold text-sm text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+                  <h4 className="font-semibold text-sm text-gray-800 group-hover:text-dsp-orange transition-colors duration-200">
                     {cert.name}
                   </h4>
                   <span className="text-xs font-bold text-gray-600">
@@ -167,7 +167,7 @@ const Progress: React.FC = () => {
                 </p>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                   <motion.div
-                    className="bg-gradient-to-r from-[#ff863d] to-[#fa8c45] h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-dsp-orange to-[#fa8c45] h-2.5 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${cert.progress}%` }}
                     transition={{

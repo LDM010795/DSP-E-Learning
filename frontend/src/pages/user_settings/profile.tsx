@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
       <SubBackground className="hover:bg-white/80 transition-all duration-200">
         <div className="flex items-center space-x-3 mb-6">
           <div className="p-3 rounded-xl bg-[#ffe7d4]">
-            <IoPersonCircleOutline className="w-6 h-6 text-[#ff863d]" />
+            <IoPersonCircleOutline className="w-6 h-6 text-dsp-orange" />
           </div>
           <div>
             <h2 className="text-xl font-semibold text-gray-800">
@@ -173,7 +173,7 @@ const Profile: React.FC = () => {
                 id="username"
                 value={profileData.username}
                 onChange={(e) => handleInputChange("username", e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d] transition-all duration-200 bg-white/60 backdrop-blur-sm"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-dsp-orange/20 focus:border-dsp-orange transition-all duration-200 bg-white/60 backdrop-blur-sm"
               />
             </motion.div>
 
@@ -194,7 +194,7 @@ const Profile: React.FC = () => {
                 value={profileData.fullname}
                 onChange={(e) => handleInputChange("fullname", e.target.value)}
                 placeholder="Max Mustermann"
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d] transition-all duration-200 bg-white/60 backdrop-blur-sm"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-dsp-orange/20 focus:border-dsp-orange transition-all duration-200 bg-white/60 backdrop-blur-sm"
               />
             </motion.div>
           </div>

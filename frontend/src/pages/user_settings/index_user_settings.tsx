@@ -48,7 +48,7 @@ const IndexUserSettings: React.FC = () => {
     <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white/40 shadow-sm p-2 mb-6">
       <div ref={tabsRef} className="relative flex space-x-1">
         <div
-          className="absolute inset-y-0 bg-[#ff863d] rounded-lg shadow-sm transition-all duration-300 ease-out pointer-events-none"
+          className="absolute inset-y-0 bg-dsp-orange rounded-lg shadow-sm transition-all duration-300 ease-out pointer-events-none"
           style={sliderStyle}
         />
         {(Object.keys(tabLabels) as TabState[]).map((tab) => (
@@ -60,7 +60,7 @@ const IndexUserSettings: React.FC = () => {
               "relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer",
               activeTab === tab
                 ? "text-white"
-                : "text-gray-600 hover:text-[#ff863d] hover:bg-[#ff863d]/5",
+                : "text-gray-600 hover:text-dsp-orange hover:bg-dsp-orange/5",
             )}
           >
             {tabLabels[tab]}

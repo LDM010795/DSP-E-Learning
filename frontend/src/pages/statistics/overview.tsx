@@ -74,8 +74,8 @@ const StatCard: React.FC<StatCardProps> = ({
   const colorConfig = {
     orange: {
       bg: "bg-[#ffe7d4]",
-      text: "text-[#ff863d]",
-      border: "border-[#ff863d]/20",
+      text: "text-dsp-orange",
+      border: "border-dsp-orange/20",
     },
     blue: {
       bg: "bg-blue-50",
@@ -113,7 +113,7 @@ const StatCard: React.FC<StatCardProps> = ({
           </div>
           <div className="flex-1">
             <p className="text-sm text-gray-600 font-medium mb-1">{title}</p>
-            <p className="text-2xl font-bold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+            <p className="text-2xl font-bold text-gray-800 group-hover:text-dsp-orange transition-colors duration-200">
               {value}
             </p>
           </div>
@@ -146,10 +146,10 @@ const ChartCard: React.FC<ChartCardProps> = ({
     <SubBackground className="hover:bg-white/80 transition-all duration-200">
       <div className="flex items-center space-x-3 mb-4">
         <div className="p-2 rounded-lg bg-[#ffe7d4]">
-          <IoTimeOutline className="w-5 h-5 text-[#ff863d]" />
+          <IoTimeOutline className="w-5 h-5 text-dsp-orange" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-dsp-orange transition-colors duration-200">
             {title}
           </h3>
           {subtitle && (
@@ -238,14 +238,14 @@ const Overview: React.FC = () => {
                 className="group"
               >
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="font-medium text-gray-700 group-hover:text-[#ff863d] transition-colors duration-200">
+                  <span className="font-medium text-gray-700 group-hover:text-dsp-orange transition-colors duration-200">
                     {item.name}
                   </span>
                   <span className="font-bold text-gray-800">{item.value}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                   <motion.div
-                    className="bg-gradient-to-r from-[#ff863d] to-[#fa8c45] h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-dsp-orange to-[#fa8c45] h-2.5 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${item.value}%` }}
                     transition={{

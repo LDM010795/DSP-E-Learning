@@ -65,10 +65,10 @@ const ChartCard: React.FC<ChartCardProps> = ({
     <SubBackground className="hover:bg-white/80 transition-all duration-200">
       <div className="flex items-center space-x-3 mb-6">
         <div className="p-2 rounded-lg bg-[#ffe7d4]">
-          <Icon className="w-5 h-5 text-[#ff863d]" />
+          <Icon className="w-5 h-5 text-dsp-orange" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200">
+          <h3 className="text-lg font-semibold text-gray-800 group-hover:text-dsp-orange transition-colors duration-200">
             {title}
           </h3>
           {subtitle && (

@@ -97,7 +97,7 @@ function ChapterDetail() {
                 </p>
                 <button
                   onClick={handleBackToModule}
-                  className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Zurück zum Modul
                 </button>
@@ -178,7 +178,7 @@ function ChapterDetail() {
                 // Video List View
                 <SubBackground>
                   <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <IoVideocamOutline className="h-5 w-5 text-[#ff863d]" />
+                    <IoVideocamOutline className="h-5 w-5 text-dsp-orange" />
                     Lernvideos ({chapter.contents.length})
                   </h2>
 
@@ -189,11 +189,11 @@ function ChapterDetail() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4]/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-[#ffe7d4]/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
                         onClick={() => handleVideoSelect(video)}
                       >
                         <div className="flex items-center gap-4">
-                          <div className="flex-shrink-0 w-12 h-12 bg-[#ff863d] rounded-lg flex items-center justify-center">
+                          <div className="flex-shrink-0 w-12 h-12 bg-dsp-orange rounded-lg flex items-center justify-center">
                             <IoPlayCircleOutline className="h-6 w-6 text-white" />
                           </div>
                           <div className="flex-grow">

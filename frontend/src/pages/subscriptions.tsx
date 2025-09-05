@@ -74,9 +74,9 @@ const featureItemVariants = {
 const getAccentColor = (planName: string) => {
   switch (planName) {
     case "Schüler":
-      return "from-[#fa8c45] to-[#ff863d]";
+      return "from-[#fa8c45] to-dsp-orange";
     case "Standard":
-      return "from-[#ff863d] to-[#fa8c45]";
+      return "from-dsp-orange to-[#fa8c45]";
     case "Business":
       return "from-[#fa8c45] to-[#e67e22]";
     default:
@@ -200,7 +200,7 @@ const SubscriptionsPage: React.FC = () => {
 
       {/* Animierte Kreise wie auf der Landing Page */}
       <motion.div
-        className="absolute top-[15%] left-[10%] w-32 h-32 bg-[#ff863d]/30 rounded-full filter blur-xl opacity-70 z-0"
+        className="absolute top-[15%] left-[10%] w-32 h-32 bg-dsp-orange/30 rounded-full filter blur-xl opacity-70 z-0"
         style={{ x: circle1X, y: circle1Y }}
       />
       <motion.div
@@ -214,7 +214,7 @@ const SubscriptionsPage: React.FC = () => {
 
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute right-0 top-0 w-[800px] h-[800px] bg-[#ff863d] opacity-[0.02] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute right-0 top-0 w-[800px] h-[800px] bg-dsp-orange opacity-[0.02] rounded-full translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-[#ffe7d4] opacity-[0.05] rounded-full -translate-x-1/3 translate-y-1/3"></div>
 
         {/* Animated geometric shapes */}
@@ -232,7 +232,7 @@ const SubscriptionsPage: React.FC = () => {
           }}
         />
         <motion.div
-          className="absolute top-[20%] right-[15%] w-20 h-20 bg-[#ff863d] opacity-10 rounded-full"
+          className="absolute top-[20%] right-[15%] w-20 h-20 bg-dsp-orange opacity-10 rounded-full"
           animate={{
             y: [0, -50, 0],
             opacity: [0.1, 0.15, 0.1],
@@ -258,7 +258,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Große verschwommene Form */}
         <motion.div
-          className="absolute top-[35%] left-[5%] w-56 h-56 bg-[#ff863d] opacity-30 rounded-full filter blur-[80px]"
+          className="absolute top-[35%] left-[5%] w-56 h-56 bg-dsp-orange opacity-30 rounded-full filter blur-[80px]"
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.1, 0.3, 0.1],
@@ -287,7 +287,7 @@ const SubscriptionsPage: React.FC = () => {
         {/* Cluster von kleinen Kreisen */}
         <div className="absolute bottom-[25%] left-[25%]">
           <motion.div
-            className="absolute w-5 h-5 bg-[#ff863d] opacity-40 rounded-full"
+            className="absolute w-5 h-5 bg-dsp-orange opacity-40 rounded-full"
             animate={{
               x: [0, 15, 0, -15, 0],
               y: [0, 10, -10, 0],
@@ -325,7 +325,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Leicht verschwommene Elemente */}
         <motion.div
-          className="absolute top-[60%] right-[35%] w-32 h-32 bg-[#ff863d] opacity-10 rounded-full filter blur-[20px]"
+          className="absolute top-[60%] right-[35%] w-32 h-32 bg-dsp-orange opacity-10 rounded-full filter blur-[20px]"
           animate={{
             scale: [1, 1.5, 1],
             x: [0, 30, 0],
@@ -339,7 +339,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Polygone */}
         <motion.div
-          className="absolute top-[15%] left-[40%] w-20 h-20 opacity-20 bg-gradient-to-br from-[#ff863d] to-[#ffe7d4]"
+          className="absolute top-[15%] left-[40%] w-20 h-20 opacity-20 bg-gradient-to-br from-dsp-orange to-[#ffe7d4]"
           style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
           animate={{
             rotate: [0, 90, 0],
@@ -367,7 +367,7 @@ const SubscriptionsPage: React.FC = () => {
 
         {/* Schwebende transparente Linien */}
         <motion.div
-          className="absolute top-[50%] left-[15%] w-40 h-[1px] bg-[#ff863d] opacity-30"
+          className="absolute top-[50%] left-[15%] w-40 h-[1px] bg-dsp-orange opacity-30"
           animate={{
             rotate: [0, 20, -20, 0],
             width: ["10rem", "15rem", "10rem"],
@@ -508,7 +508,7 @@ const SubscriptionsPage: React.FC = () => {
                     plan.isCurrent
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : plan.highlight
-                        ? "bg-gradient-to-r from-[#ff863d] to-[#ff863d] text-white"
+                        ? "bg-gradient-to-r from-dsp-orange to-dsp-orange text-white"
                         : `bg-gradient-to-r ${getAccentColor(
                             plan.name,
                           )} text-white`

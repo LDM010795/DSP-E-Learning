@@ -50,7 +50,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff863d; /* Farbe des Daumens */
+  background: var(--color-dsp-orange); /* Farbe des Daumens */
   border-radius: 4px;
 }
 

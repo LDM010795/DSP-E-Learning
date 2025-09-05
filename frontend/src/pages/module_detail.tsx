@@ -112,7 +112,7 @@ function ModuleDetail() {
                 </p>
                 <button
                   onClick={fetchModules}
-                  className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
                 </button>
@@ -153,7 +153,7 @@ function ModuleDetail() {
                 </p>
                 <Link
                   to="/modules"
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   <IoArrowBackOutline className="w-5 h-5" />
                   <span>Zurück zur Modulübersicht</span>
@@ -187,7 +187,7 @@ function ModuleDetail() {
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="p-3 rounded-xl bg-[#ffe7d4]">
-                      <IoBookOutline className="w-6 h-6 text-[#ff863d]" />
+                      <IoBookOutline className="w-6 h-6 text-dsp-orange" />
                     </div>
                     <div>
                       <h1 className="text-3xl md:text-4xl font-bold text-gray-700">
@@ -202,7 +202,7 @@ function ModuleDetail() {
                   {/* Module Stats */}
                   <div className="flex flex-wrap items-center gap-4 text-sm">
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
-                      <IoListOutline className="w-4 h-4 text-[#ff863d]" />
+                      <IoListOutline className="w-4 h-4 text-dsp-orange" />
                       <span className="font-medium text-gray-700">
                         {chapters.length > 0
                           ? chapters.flatMap((chapter) => chapter.tasks).length
@@ -211,7 +211,7 @@ function ModuleDetail() {
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
-                      <IoTimeOutline className="w-4 h-4 text-[#ff863d]" />
+                      <IoTimeOutline className="w-4 h-4 text-dsp-orange" />
                       <span className="font-medium text-gray-700">
                         {chapters.length > 0
                           ? chapters.flatMap((chapter) => chapter.contents)
@@ -226,7 +226,7 @@ function ModuleDetail() {
                           moduleProgress === 100
                             ? "bg-green-500"
                             : moduleProgress > 0
-                              ? "bg-[#ff863d]"
+                              ? "bg-dsp-orange"
                               : "bg-gray-400"
                         }`}
                       ></div>
@@ -290,7 +290,7 @@ function ModuleDetail() {
                   // Neue Chapter-Struktur
                   <div className="space-y-4">
                     <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                      <IoListOutline className="h-5 w-5 text-[#ff863d]" />
+                      <IoListOutline className="h-5 w-5 text-dsp-orange" />
                       Kapitel ({chapters.length})
                     </h2>
                     <div className="space-y-3">
@@ -300,7 +300,7 @@ function ModuleDetail() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="bg-white rounded-lg border border-gray-200 p-4 hover:border-[#ff863d]/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
+                          className="bg-white rounded-lg border border-gray-200 p-4 hover:border-dsp-orange/30 hover:bg-[#ffe7d4] transition-all cursor-pointer"
                           onClick={() =>
                             navigate(
                               `/modules/${moduleId}/chapters/${chapter.id}`,
@@ -308,7 +308,7 @@ function ModuleDetail() {
                           }
                         >
                           <div className="flex items-center gap-4">
-                            <div className="flex-shrink-0 w-12 h-12 bg-[#ff863d] rounded-lg flex items-center justify-center">
+                            <div className="flex-shrink-0 w-12 h-12 bg-dsp-orange rounded-lg flex items-center justify-center">
                               <IoBookOutline className="h-6 w-6 text-white" />
                             </div>
                             <div className="flex-grow">
@@ -391,7 +391,7 @@ function ModuleDetail() {
                 <div className="sticky top-8">
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="p-2 rounded-lg bg-[#ffe7d4]">
-                      <IoListOutline className="w-5 h-5 text-[#ff863d]" />
+                      <IoListOutline className="w-5 h-5 text-dsp-orange" />
                     </div>
                     <h2 className="text-xl font-semibold text-gray-800">
                       Aufgaben (
@@ -426,7 +426,7 @@ function ModuleDetail() {
                             className={`p-4 rounded-xl border transition-all duration-200 ${
                               task.completed
                                 ? "border-green-200 bg-green-50/50 hover:bg-green-50"
-                                : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-[#ff863d]/30"
+                                : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
                             }`}
                           >
                             <div className="flex items-start justify-between mb-3">
@@ -435,7 +435,7 @@ function ModuleDetail() {
                                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                                     task.completed
                                       ? "bg-green-500"
-                                      : "bg-gray-200 group-hover:bg-[#ff863d]/20"
+                                      : "bg-gray-200 group-hover:bg-dsp-orange/20"
                                   }`}
                                 >
                                   {task.completed ? (
@@ -445,7 +445,7 @@ function ModuleDetail() {
                                       className={`w-5 h-5 ${
                                         task.completed
                                           ? "text-white"
-                                          : "text-gray-500 group-hover:text-[#ff863d]"
+                                          : "text-gray-500 group-hover:text-dsp-orange"
                                       }`}
                                     />
                                   )}
@@ -455,7 +455,7 @@ function ModuleDetail() {
                                     className={`font-medium text-sm leading-tight ${
                                       task.completed
                                         ? "text-gray-700"
-                                        : "text-gray-800 group-hover:text-[#ff863d]"
+                                        : "text-gray-800 group-hover:text-dsp-orange"
                                     }`}
                                   >
                                     {task.title}

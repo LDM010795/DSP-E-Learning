@@ -40,11 +40,11 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
       case "In Bearbeitung":
         return {
           icon: <IoHourglassOutline className="h-4 w-4 text-white" />,
-          iconBgColor: "bg-[#ff863d]",
-          progressColor: "bg-[#ff863d]",
-          statusColor: "text-[#ff863d]",
+          iconBgColor: "bg-dsp-orange",
+          progressColor: "bg-dsp-orange",
+          statusColor: "text-dsp-orange",
           hoverBg: "hover:bg-[#ffe7d4]",
-          borderHover: "hover:border-[#ff863d]/30",
+          borderHover: "hover:border-dsp-orange/30",
         };
       case "Nicht begonnen":
       default:
@@ -103,7 +103,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
             <h3
               className={clsx(
                 "font-semibold text-gray-900 text-sm leading-tight",
-                "group-hover:text-[#ff863d] transition-colors duration-200",
+                "group-hover:text-dsp-orange transition-colors duration-200",
                 "line-clamp-1 flex-1 pr-2",
               )}
             >
@@ -157,10 +157,10 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
       </div>
 
       {/* Subtle hover glow */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#ff863d]/3 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-dsp-orange/3 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
       {/* Professional border highlight on hover */}
-      <div className="absolute inset-0 rounded-xl border border-transparent group-hover:border-[#ff863d]/20 transition-colors duration-200 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl border border-transparent group-hover:border-dsp-orange/20 transition-colors duration-200 pointer-events-none" />
     </motion.div>
   );
 };

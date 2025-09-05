@@ -145,7 +145,7 @@ function FinalExam() {
       <SubBackground className="p-1">
         <div ref={tabsRef} className="relative flex space-x-1">
           <div
-            className="absolute inset-y-1 bg-[#ff863d] rounded-lg shadow-sm transition-all duration-200 ease-out pointer-events-none"
+            className="absolute inset-y-1 bg-dsp-orange rounded-lg shadow-sm transition-all duration-200 ease-out pointer-events-none"
             style={sliderStyle}
           />
           {(Object.keys(tabConfig) as TabState[]).map((tab) => {
@@ -160,7 +160,7 @@ function FinalExam() {
                 className={`relative z-10 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer flex items-center space-x-2 ${
                   activeTab === tab
                     ? "text-white"
-                    : "text-gray-600 hover:text-[#ff863d]"
+                    : "text-gray-600 hover:text-dsp-orange"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -418,7 +418,7 @@ function FinalExam() {
                         "text-lg font-semibold leading-tight mr-2",
                         isLocked
                           ? "text-gray-500"
-                          : "text-gray-800 group-hover:text-[#ff863d] transition-colors duration-200",
+                          : "text-gray-800 group-hover:text-dsp-orange transition-colors duration-200",
                       )}
                     >
                       {exam.exam_title || "Titel nicht verfügbar"}
@@ -438,7 +438,7 @@ function FinalExam() {
                       )}
                       {userExamStatus === "started" && (
                         <IoHourglassOutline
-                          className="text-[#ff863d] w-5 h-5 animate-pulse"
+                          className="text-dsp-orange w-5 h-5 animate-pulse"
                           title="In Bearbeitung"
                         />
                       )}
@@ -602,7 +602,7 @@ function FinalExam() {
             <SubBackground className="h-full hover:bg-white/70 transition-all duration-200">
               <div className="flex-grow">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-semibold text-gray-800 leading-tight mr-2 group-hover:text-[#ff863d] transition-colors duration-200">
+                  <h3 className="text-lg font-semibold text-gray-800 leading-tight mr-2 group-hover:text-dsp-orange transition-colors duration-200">
                     {exam.exam_title || "Titel nicht verfügbar"}
                   </h3>
                   <div className="flex-shrink-0">
@@ -694,7 +694,7 @@ function FinalExam() {
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 mr-4">
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-[#ff863d] transition-colors duration-200">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-dsp-orange transition-colors duration-200">
                         {attempt.exam.exam_title}
                       </h3>
                       <p className="text-sm text-gray-600 leading-relaxed">
@@ -702,12 +702,12 @@ function FinalExam() {
                       </p>
                     </div>
                     <div className="flex-shrink-0">
-                      <div className="flex items-center space-x-2 px-3 py-1 bg-[#ffe7d4] border border-[#ff863d]/20 rounded-full">
+                      <div className="flex items-center space-x-2 px-3 py-1 bg-[#ffe7d4] border border-dsp-orange/20 rounded-full">
                         <IoHourglassOutline
-                          className="text-[#ff863d] w-4 h-4 animate-pulse"
+                          className="text-dsp-orange w-4 h-4 animate-pulse"
                           title="In Bearbeitung"
                         />
-                        <span className="text-sm font-medium text-[#ff863d]">
+                        <span className="text-sm font-medium text-dsp-orange">
                           In Bearbeitung
                         </span>
                       </div>
@@ -811,7 +811,7 @@ function FinalExam() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 mr-4">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-[#ff863d] transition-colors duration-200">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-dsp-orange transition-colors duration-200">
                           {attempt.exam.exam_title}
                         </h3>
                         <p className="text-sm text-gray-600 leading-relaxed">
@@ -934,7 +934,7 @@ function FinalExam() {
 
               <div className="flex items-center space-x-3 mb-6">
                 <div className="p-3 rounded-xl bg-[#ffe7d4]">
-                  <IoDocumentTextOutline className="w-6 h-6 text-[#ff863d]" />
+                  <IoDocumentTextOutline className="w-6 h-6 text-dsp-orange" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">
                   Prüfung abgeben
@@ -954,7 +954,7 @@ function FinalExam() {
                     id="fileUpload"
                     multiple
                     onChange={handleFileUpload}
-                    className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d] transition-all duration-200"
+                    className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-dsp-orange/20 focus:border-dsp-orange transition-all duration-200"
                   />
                   {uploadedFiles.length > 0 && (
                     <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -980,7 +980,7 @@ function FinalExam() {
                   <textarea
                     id="submissionCommentPopup"
                     rows={4}
-                    className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d] transition-all duration-200 resize-none"
+                    className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-dsp-orange/20 focus:border-dsp-orange transition-all duration-200 resize-none"
                     placeholder="Zusätzliche Anmerkungen zu deiner Abgabe..."
                     value={submissionComment}
                     onChange={(e) => setSubmissionComment(e.target.value)}

@@ -94,7 +94,7 @@ function Dashboard() {
                 </p>
                 <button
                   onClick={() => fetchModules()}
-                  className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
                 </button>
@@ -290,12 +290,12 @@ function Dashboard() {
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                      <IoSchoolOutline className="mr-3 text-[#ff863d]" />
+                      <IoSchoolOutline className="mr-3 text-dsp-orange" />
                       Modul-Übersicht
                     </h2>
                     <button
                       onClick={() => setShowAllModules(!showAllModules)}
-                      className="text-[#ff863d] hover:text-[#fa8c45] font-medium transition-colors"
+                      className="text-dsp-orange hover:text-[#fa8c45] font-medium transition-colors"
                     >
                       {showAllModules ? "Weniger anzeigen" : "Alle anzeigen"}
                     </button>
@@ -306,7 +306,7 @@ function Dashboard() {
                       (module) => (
                         <div
                           key={module.id}
-                          className="bg-white rounded-xl p-4 border border-gray-200 hover:border-[#ff863d]/30 transition-all duration-200 hover:shadow-md"
+                          className="bg-white rounded-xl p-4 border border-gray-200 hover:border-dsp-orange/30 transition-all duration-200 hover:shadow-md"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
@@ -334,7 +334,7 @@ function Dashboard() {
                             </div>
                             <Link
                               to={`/modules/${module.id}`}
-                              className="px-4 py-2 bg-[#ff863d] text-white rounded-lg hover:bg-[#fa8c45] transition-colors font-medium text-sm"
+                              className="px-4 py-2 bg-dsp-orange text-white rounded-lg hover:bg-[#fa8c45] transition-colors font-medium text-sm"
                             >
                               Öffnen
                             </Link>
@@ -348,7 +348,7 @@ function Dashboard() {
                     <div className="mt-6 text-center">
                       <Link
                         to="/modules"
-                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#ff863d] to-[#fa8c45] text-white rounded-xl hover:from-[#fa8c45] hover:to-[#ff863d] transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-dsp-orange to-[#fa8c45] text-white rounded-xl hover:from-[#fa8c45] hover:to-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                       >
                         <IoLibraryOutline className="mr-2" />
                         Alle Module anzeigen
@@ -365,7 +365,7 @@ function Dashboard() {
               <SubBackground>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <IoStatsChartOutline className="mr-2 text-[#ff863d]" />
+                    <IoStatsChartOutline className="mr-2 text-dsp-orange" />
                     Schwierigkeitsgrad
                   </h3>
                   <div className="space-y-3">
@@ -392,7 +392,7 @@ function Dashboard() {
               <SubBackground>
                 <div className="p-6 relative">
                   <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <IoTimeOutline className="mr-2 text-[#ff863d]" />
+                    <IoTimeOutline className="mr-2 text-dsp-orange" />
                     Anstehende Deadlines
                   </h3>
                   <div className="space-y-3">
@@ -407,7 +407,7 @@ function Dashboard() {
                         <p className="text-xs text-gray-600 mb-2">
                           {deadline.context}
                         </p>
-                        <p className="text-xs text-[#ff863d] font-medium">
+                        <p className="text-xs text-dsp-orange font-medium">
                           Fällig: {deadline.dueDate}
                         </p>
                       </div>
@@ -455,10 +455,10 @@ const StatCard: React.FC<StatCardProps> = ({
   description,
 }) => {
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-[#ff863d]/30 transition-all duration-200 hover:shadow-md">
+    <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-dsp-orange/30 transition-all duration-200 hover:shadow-md">
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-lg ${accentColor}`}>
-          <div className="text-[#ff863d]">{icon}</div>
+          <div className="text-dsp-orange">{icon}</div>
         </div>
       </div>
       <div>

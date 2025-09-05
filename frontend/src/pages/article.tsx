@@ -91,7 +91,7 @@ const ArticlePage: React.FC = () => {
                 <h2 className="text-2xl font-bold text-gray-700 mb-3">
                   Modul nicht gefunden
                 </h2>
-                <Link to="/modules" className="text-[#ff863d] hover:underline">
+                <Link to="/modules" className="text-dsp-orange hover:underline">
                   Zur Modulübersicht
                 </Link>
               </div>

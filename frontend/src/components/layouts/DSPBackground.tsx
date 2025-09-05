@@ -25,11 +25,11 @@ const DSPBackground: React.FC = () => {
               height="80"
               patternUnits="userSpaceOnUse"
             >
-              <circle cx="40" cy="40" r="2" fill="#ff863d" opacity="0.12" />
+              <circle cx="40" cy="40" r="2" fill="var(--color-dsp-orange)" opacity="0.12" />
               <circle cx="20" cy="20" r="1" fill="#fa8c45" opacity="0.08" />
-              <circle cx="60" cy="20" r="1" fill="#ff863d" opacity="0.08" />
+              <circle cx="60" cy="20" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
               <circle cx="20" cy="60" r="1" fill="#fa8c45" opacity="0.08" />
-              <circle cx="60" cy="60" r="1" fill="#ff863d" opacity="0.08" />
+              <circle cx="60" cy="60" r="1" fill="var(--color-dsp-orange)" opacity="0.08" />
               <circle cx="0" cy="0" r="0.5" fill="#ffe7d4" opacity="0.15" />
               <circle cx="80" cy="0" r="0.5" fill="#ffe7d4" opacity="0.15" />
               <circle cx="0" cy="80" r="0.5" fill="#ffe7d4" opacity="0.15" />
@@ -47,7 +47,7 @@ const DSPBackground: React.FC = () => {
             >
               <path
                 d="M0,100 Q50,60 100,100 T200,100"
-                stroke="#ff863d"
+                stroke="var(--color-dsp-orange)"
                 strokeWidth="0.8"
                 fill="none"
                 opacity="0.06"
@@ -78,7 +78,7 @@ const DSPBackground: React.FC = () => {
             >
               <stop
                 offset="0%"
-                style={{ stopColor: "#ff863d", stopOpacity: 0.02 }}
+                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.02 }}
               />
               <stop
                 offset="25%"
@@ -94,7 +94,7 @@ const DSPBackground: React.FC = () => {
               />
               <stop
                 offset="100%"
-                style={{ stopColor: "#ff863d", stopOpacity: 0.02 }}
+                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.02 }}
               />
             </linearGradient>
 
@@ -102,7 +102,7 @@ const DSPBackground: React.FC = () => {
             <radialGradient id="radial-accent" cx="50%" cy="50%" r="50%">
               <stop
                 offset="0%"
-                style={{ stopColor: "#ff863d", stopOpacity: 0.03 }}
+                style={{ stopColor: "var(--color-dsp-orange)", stopOpacity: 0.03 }}
               />
               <stop
                 offset="70%"
@@ -138,7 +138,7 @@ const DSPBackground: React.FC = () => {
       {/* Subtle Animated Shapes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Large rotating circle */}
-        <div className="absolute -top-72 -left-72 w-[800px] h-[800px] bg-[#ff863d]/5 rounded-full blur-2xl animate-[spin_120s_linear_infinite]" />
+        <div className="absolute -top-72 -left-72 w-[800px] h-[800px] bg-dsp-orange/5 rounded-full blur-2xl animate-[spin_120s_linear_infinite]" />
 
         {/* Medium rotating circle */}
         <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-[600px] h-[600px] bg-[#fa8c45]/5 rounded-full blur-xl animate-[spin_180s_linear_infinite]" />
@@ -151,7 +151,7 @@ const DSPBackground: React.FC = () => {
       <div
         className="absolute inset-0 opacity-[0.015]"
         style={{
-          backgroundImage: `radial-gradient(circle at 25% 25%, #ff863d 1px, transparent 1px),
+          backgroundImage: `radial-gradient(circle at 25% 25%, var(--color-dsp-orange) 1px, transparent 1px),
                            radial-gradient(circle at 75% 75%, #fa8c45 1px, transparent 1px)`,
           backgroundSize: "50px 50px, 80px 80px",
         }}

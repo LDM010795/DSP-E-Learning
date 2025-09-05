@@ -118,7 +118,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
       onClick={handleClose}
     >
       {/* Enhanced Background with gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#ff863d]/10 via-transparent to-[#ffe7d4]/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-dsp-orange/10 via-transparent to-[#ffe7d4]/10"></div>
 
       <div
         className={`relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-5xl mx-4 flex overflow-hidden
@@ -146,9 +146,9 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
           <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-[#ffe7d4]/30"></div>
 
           {/* Decorative circles mit DSP-Farben */}
-          <div className="absolute top-10 left-10 w-32 h-32 bg-[#ff863d]/10 rounded-full blur-2xl"></div>
+          <div className="absolute top-10 left-10 w-32 h-32 bg-dsp-orange/10 rounded-full blur-2xl"></div>
           <div className="absolute bottom-20 right-12 w-40 h-40 bg-[#fa8c45]/8 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-[#ff863d]/5 to-[#ffe7d4]/8 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-dsp-orange/5 to-[#ffe7d4]/8 rounded-full blur-3xl"></div>
 
           <div className="relative z-10 text-center p-12">
             <div
@@ -157,7 +157,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                 ${isClosing ? "opacity-0 scale-95" : ""}`}
             >
               <div className="relative inline-block">
-                <div className="absolute inset-0 bg-[#ff863d]/20 rounded-2xl blur-xl"></div>
+                <div className="absolute inset-0 bg-dsp-orange/20 rounded-2xl blur-xl"></div>
                 <img
                   src={LogoDSP}
                   alt="DataSmart Point Logo"
@@ -192,7 +192,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
             </p>
 
             <div
-              className={`mt-8 inline-flex items-center space-x-2 px-4 py-2 bg-[#ff863d]/10 rounded-full border border-[#ff863d]/20 transition-all duration-200 ease-out
+              className={`mt-8 inline-flex items-center space-x-2 px-4 py-2 bg-dsp-orange/10 rounded-full border border-dsp-orange/20 transition-all duration-200 ease-out
               ${
                 isVisible
                   ? "opacity-100 translate-y-0"
@@ -311,7 +311,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                     Benutzername
                   </label>
                   <div className="relative group">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#ff863d] transition-colors duration-200">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-dsp-orange transition-colors duration-200">
                       <IoMailOutline className="w-5 h-5" />
                     </span>
                     <input
@@ -321,9 +321,9 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm
-                      focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d]
+                      focus:outline-none focus:ring-2 focus:ring-dsp-orange/20 focus:border-dsp-orange
                       transition-all duration-200 ease-in-out
-                      hover:border-[#ff863d]/50 hover:shadow-md
+                      hover:border-dsp-orange/50 hover:shadow-md
                       placeholder:text-gray-400"
                       placeholder="Benutzername eingeben"
                     />
@@ -347,7 +347,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                     Passwort
                   </label>
                   <div className="relative group">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-[#ff863d] transition-colors duration-200">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-dsp-orange transition-colors duration-200">
                       <IoLockClosedOutline className="w-5 h-5" />
                     </span>
                     <input
@@ -357,9 +357,9 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm
-                      focus:outline-none focus:ring-2 focus:ring-[#ff863d]/20 focus:border-[#ff863d]
+                      focus:outline-none focus:ring-2 focus:ring-dsp-orange/20 focus:border-dsp-orange
                       transition-all duration-200 ease-in-out
-                      hover:border-[#ff863d]/50 hover:shadow-md
+                      hover:border-dsp-orange/50 hover:shadow-md
                       placeholder:text-gray-400"
                       placeholder="Passwort eingeben"
                     />
@@ -367,7 +367,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute inset-y-0 right-0 flex items-center pr-4 
-                      text-gray-400 hover:text-[#ff863d] cursor-pointer
+                      text-gray-400 hover:text-dsp-orange cursor-pointer
                       transition-all duration-200 ease-in-out hover:scale-110"
                       aria-label={
                         showPassword
@@ -401,7 +401,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={() => setRememberMe(!rememberMe)}
-                      className="h-4 w-4 text-[#ff863d] focus:ring-[#ff863d]/20 border-gray-300 rounded cursor-pointer transition-all duration-200"
+                      className="h-4 w-4 text-dsp-orange focus:ring-dsp-orange/20 border-gray-300 rounded cursor-pointer transition-all duration-200"
                     />
                     <label
                       htmlFor="remember-me"
@@ -425,11 +425,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                   <ButtonPrimary
                     onClick={handleLoginSubmit}
                     title={isLoading ? "Anmelden..." : "Anmelden"}
-                    classNameButton={`w-full py-3 shadow-lg shadow-[#ff863d]/25 transform transition-all duration-200 ease-in-out
+                    classNameButton={`w-full py-3 shadow-lg shadow-dsp-orange/25 transform transition-all duration-200 ease-in-out
                     ${
                       isLoading
                         ? "opacity-70 cursor-not-allowed"
-                        : "hover:scale-[1.02] hover:shadow-xl hover:shadow-[#ff863d]/30"
+                        : "hover:scale-[1.02] hover:shadow-xl hover:shadow-dsp-orange/30"
                     }`}
                     disabled={isLoading}
                   />

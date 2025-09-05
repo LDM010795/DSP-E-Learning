@@ -11,7 +11,7 @@ const ProgressbarMinimal: React.FC<ProgressbarMinimalProps> = ({
     <div className="w-full">
       <div className="relative w-full h-3 rounded-full bg-[#ffe7d4]">
         <div
-          className="h-full rounded-full bg-[#ff863d]"
+          className="h-full rounded-full bg-dsp-orange"
           style={{ width: `${progressValue}%` }}
         />
         <div className="absolute left-0 -top-6 text-xs text-black">0%</div>

@@ -279,7 +279,7 @@ function TaskDetails() {
                 </p>
                 <button
                   onClick={fetchModules}
-                  className="px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Erneut versuchen
                 </button>
@@ -324,7 +324,7 @@ function TaskDetails() {
                 </p>
                 <Link
                   to="/modules"
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   <IoArrowBackSharp className="w-5 h-5" />
                   <span>Zurück zur Modulübersicht</span>
@@ -371,7 +371,7 @@ function TaskDetails() {
                 </p>
                 <Link
                   to={`/modules/${moduleId}`}
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-[#ff863d] text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-dsp-orange text-white rounded-xl hover:bg-[#fa8c45] transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105"
                 >
                   <IoArrowBackSharp className="w-5 h-5" />
                   <span>Zurück zur Moduldetailseite</span>
@@ -422,7 +422,7 @@ function TaskDetails() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="p-3 rounded-xl bg-[#ffe7d4]">
-                          <IoCodeSlashOutline className="w-6 h-6 text-[#ff863d]" />
+                          <IoCodeSlashOutline className="w-6 h-6 text-dsp-orange" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
@@ -447,7 +447,7 @@ function TaskDetails() {
                       {/* Task Stats */}
                       <div className="flex flex-wrap items-center gap-4 text-sm">
                         <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
-                          <IoListOutline className="w-4 h-4 text-[#ff863d]" />
+                          <IoListOutline className="w-4 h-4 text-dsp-orange" />
                           <span className="font-medium text-gray-700">
                             Aufgabe {currentTaskIndex + 1} von {tasks.length}
                           </span>
@@ -469,7 +469,7 @@ function TaskDetails() {
                         <div>
                           <div className="flex items-center space-x-2 mb-4">
                             <div className="p-2 rounded-lg bg-[#ffe7d4]">
-                              <IoInformationCircleOutline className="w-5 h-5 text-[#ff863d]" />
+                              <IoInformationCircleOutline className="w-5 h-5 text-dsp-orange" />
                             </div>
                             <h2 className="text-xl font-semibold text-gray-800">
                               Aufgabenbeschreibung
@@ -495,8 +495,8 @@ function TaskDetails() {
                               style={{ overflow: "hidden" }}
                               className="mb-4"
                             >
-                              <div className="p-4 rounded-xl bg-[#ffe7d4]/50 border border-[#ff863d]/20">
-                                <div className="flex items-center space-x-2 text-[#ff863d] font-semibold mb-3">
+                              <div className="p-4 rounded-xl bg-[#ffe7d4]/50 border border-dsp-orange/20">
+                                <div className="flex items-center space-x-2 text-dsp-orange font-semibold mb-3">
                                   <IoBulbOutline className="w-5 h-5" />
                                   <span>Hinweis</span>
                                 </div>
