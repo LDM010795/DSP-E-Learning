@@ -42,7 +42,7 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
           "flex items-center gap-3 px-8 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden",
           {
             // Active state - enhanced with subtle animations
-            "bg-gradient-to-r from-dsp-orange to-[#fa8c45] text-white shadow-sm shadow-dsp-orange/20":
+            "bg-gradient-to-r from-dsp-orange to-dsp-orange-gradient text-white shadow-sm shadow-dsp-orange/20":
               isActive,
             // Inactive state - subtle hover effects
             "text-gray-700 hover:text-dsp-orange hover:bg-dsp-orange/5 border border-transparent hover:border-dsp-orange/20":

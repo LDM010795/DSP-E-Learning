@@ -245,7 +245,7 @@ const Overview: React.FC = () => {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                   <motion.div
-                    className="bg-gradient-to-r from-dsp-orange to-[#fa8c45] h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-dsp-orange to-dsp-orange-gradient h-2.5 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${item.value}%` }}
                     transition={{

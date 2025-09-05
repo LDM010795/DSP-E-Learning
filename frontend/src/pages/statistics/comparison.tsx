@@ -76,7 +76,7 @@ const Comparison: React.FC = () => {
                   <ComparisonBar
                     value={item.user}
                     maxValue={item.maxValue}
-                    colorClass="bg-gradient-to-t from-dsp-orange to-[#fa8c45]"
+                    colorClass="bg-gradient-to-t from-dsp-orange to-dsp-orange-gradient"
                     label="Du"
                     displayValue={`${item.user}${item.unit || ""}`}
                   />

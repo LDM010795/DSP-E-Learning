@@ -348,7 +348,7 @@ function Dashboard() {
                     <div className="mt-6 text-center">
                       <Link
                         to="/modules"
-                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-dsp-orange to-[#fa8c45] text-white rounded-xl hover:from-[#fa8c45] hover:to-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-dsp-orange to-dsp-orange-gradient text-white rounded-xl hover:from-dsp-orange-gradient hover:to-dsp-orange transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                       >
                         <IoLibraryOutline className="mr-2" />
                         Alle Module anzeigen

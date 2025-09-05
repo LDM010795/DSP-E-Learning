@@ -74,11 +74,11 @@ const featureItemVariants = {
 const getAccentColor = (planName: string) => {
   switch (planName) {
     case "Schüler":
-      return "from-[#fa8c45] to-dsp-orange";
+      return "from-dsp-orange-gradient to-dsp-orange";
     case "Standard":
-      return "from-dsp-orange to-[#fa8c45]";
+      return "from-dsp-orange to-dsp-orange-gradient";
     case "Business":
-      return "from-[#fa8c45] to-[#e67e22]";
+      return "from-dsp-orange-gradient to-[#e67e22]";
     default:
       return "from-gray-500 to-gray-700";
   }
