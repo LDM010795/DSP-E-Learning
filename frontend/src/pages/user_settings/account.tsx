@@ -9,6 +9,9 @@ import {
 } from "react-icons/io5";
 import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
+import api from "../../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
+
+interface ProfileApiResponse {}
 
 const Account: React.FC = () => {
   const [loadingPassword, setLoadingPassword] = useState(false);
@@ -136,6 +139,11 @@ const Account: React.FC = () => {
         message="Die Konto-Löschung ist noch nicht implementiert."
       />
     ));
+  };
+
+  const UserFetchData = async () => {
+    let response = await api.get<ProfileApiResponse>("/users/me/");
+    return response.data;
   };
 
   return (

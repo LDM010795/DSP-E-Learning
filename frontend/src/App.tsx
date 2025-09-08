@@ -73,18 +73,19 @@ const AppContent: React.FC = () => {
   }, []);
 
   // --- State Management ---
-  const { user, logout, isLoading } = useAuth();
+  const { isAuthenticated, logout, isLoading, user } = useAuth();
   const [isLoginPopupOpen, setLoginPopupOpen] = useState(false);
   const { isLoading: isOAuthLoading } = useMicrosoftAuth();
   const location = useLocation();
+
+  // on refresh, check if user has a cookie by fetching user data
 
   // --- Event Handlers ---
   const openLoginPopup = () => setLoginPopupOpen(true);
   const closeLoginPopup = () => setLoginPopupOpen(false);
 
   // --- Authorization Logic ---
-  const isAdmin = !!(user?.is_staff || user?.is_superuser);
-  const isAuthenticated = !!user;
+  const isAdmin = user?.is_superuser || false;
 
   // --- Navigation Configuration ---
   const mainNav = isAuthenticated
