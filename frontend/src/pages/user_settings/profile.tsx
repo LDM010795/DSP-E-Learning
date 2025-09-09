@@ -3,10 +3,7 @@ import { motion } from "framer-motion";
 import ButtonPrimary from "../../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../../components/ui_elements/buttons/button_secondary";
 import SubBackground from "../../components/layouts/SubBackground";
-import {
-  IoPersonCircleOutline,
-  IoSaveOutline,
-} from "react-icons/io5";
+import { IoPersonCircleOutline, IoSaveOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
 import { useAuth } from "../../context/AuthContext";
@@ -15,7 +12,7 @@ const Profile: React.FC = () => {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [errorProfile, setErrorProfile] = useState<string | null>(null);
   const [successProfile, setSuccessProfile] = useState(false);
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   // Profile data state
   const [profileData, setProfileData] = useState({
