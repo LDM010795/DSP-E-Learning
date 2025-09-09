@@ -3,24 +3,22 @@ import { motion } from "framer-motion";
 import ButtonPrimary from "../../components/ui_elements/buttons/button_primary";
 import ButtonSecondary from "../../components/ui_elements/buttons/button_secondary";
 import SubBackground from "../../components/layouts/SubBackground";
-import {
-  IoPersonCircleOutline,
-  IoSaveOutline,
-  IoCameraOutline,
-} from "react-icons/io5";
+import { IoPersonCircleOutline, IoSaveOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
+import { useAuth } from "../../context/AuthContext";
 
 const Profile: React.FC = () => {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [errorProfile, setErrorProfile] = useState<string | null>(null);
   const [successProfile, setSuccessProfile] = useState(false);
+  const { user } = useAuth();
 
   // Profile data state
   const [profileData, setProfileData] = useState({
-    username: "MaxMustermann",
-    fullname: "",
-    email: "max.mustermann@example.com",
+    username: user?.username,
+    fullname: user?.full_name,
+    email: user?.email,
   });
 
   // Mock API function - replace with actual API call
@@ -126,35 +124,6 @@ const Profile: React.FC = () => {
         )}
 
         <div className="space-y-6">
-          {/* Avatar Section */}
-          <motion.div
-            className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="relative group">
-              <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center text-gray-400 group-hover:from-dsp-orange_light group-hover:to-dsp-orange_light transition-all duration-200">
-                <IoPersonCircleOutline className="w-12 h-12" />
-              </div>
-              <div className="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                <IoCameraOutline className="w-6 h-6 text-white" />
-              </div>
-            </div>
-            <div>
-              <ButtonSecondary
-                title="Profilbild ändern"
-                onClick={() => {}}
-                icon={<IoCameraOutline className="w-4 h-4" />}
-                iconPosition="left"
-                classNameButton="text-sm"
-              />
-              <p className="text-xs text-gray-500 mt-2">
-                JPG, PNG oder SVG. Max. 5MB.
-              </p>
-            </div>
-          </motion.div>
-
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div
@@ -218,7 +187,7 @@ const Profile: React.FC = () => {
               className="w-full p-3 border border-gray-300 rounded-xl bg-gray-100/60 backdrop-blur-sm cursor-not-allowed text-gray-600"
             />
             <p className="text-xs text-gray-500 mt-2">
-              Kontaktiere den Support um deine E-Mail-Adresse zu ändern
+              Kontaktiere den Support, um deine E-Mail-Adresse zu ändern.
             </p>
           </motion.div>
 
