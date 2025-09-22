@@ -22,9 +22,9 @@
 import type { ReactNode } from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AuthProvider } from '@context/AuthContext';
-import { ModuleProvider } from '@context/ModuleContext';
-import { ExamProvider } from '@context/ExamContext';
+import { AuthProvider } from 'DSP-E-Learning/frontend/src/context/AuthContext';
+import { ModuleProvider } from 'DSP-E-Learning/frontend/src/context/ModuleContext';
+import { ExamProvider } from 'DSP-E-Learning/frontend/src/context/ExamContext';
 
 type UI = Parameters<typeof render>[0];
 
