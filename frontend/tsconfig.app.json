@@ -15,6 +15,20 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* resolve imports with @*/
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@context/*": ["src/context/*"],
+      "@apis/*": ["src/util/apis/*"],
+      "@utils/*": ["src/util/*"]
+    },
+
+    /* Make React, Node, and Vitest globals available in tests */
+    "types": ["vitest/globals", "node", "react", "react-dom"],
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -22,5 +36,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "tests", "vite-env.d.ts"]
 }
