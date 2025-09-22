@@ -9,7 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier . --write",
-
     "test": "vitest",
     "test:run": "vitest run",
     "test:watch": "vitest --watch",

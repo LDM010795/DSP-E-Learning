@@ -13,7 +13,7 @@
  * Date: 2025-09-22
  */
 
-import { setupServer } from 'msw/node';
-import { handlers } from './testHandlers.ts';
+import { setupServer } from "msw/node";
+import { handlers } from "./testHandlers.ts";
 
 export const server = setupServer(...handlers);

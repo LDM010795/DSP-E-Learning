@@ -18,17 +18,16 @@
  * Date: 2025-09-22
  */
 
-
-import type { ReactNode } from 'react';
-import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { AuthProvider } from 'DSP-E-Learning/frontend/src/context/AuthContext';
-import { ModuleProvider } from 'DSP-E-Learning/frontend/src/context/ModuleContext';
-import { ExamProvider } from 'DSP-E-Learning/frontend/src/context/ExamContext';
+import type { ReactNode } from "react";
+import { render } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { AuthProvider } from "DSP-E-Learning/frontend/src/context/AuthContext";
+import { ModuleProvider } from "DSP-E-Learning/frontend/src/context/ModuleContext";
+import { ExamProvider } from "DSP-E-Learning/frontend/src/context/ExamContext";
 
 type UI = Parameters<typeof render>[0];
 
-export function renderWithAppProviders(ui: UI, route = '/') {
+export function renderWithAppProviders(ui: UI, route = "/") {
   const Wrapper = ({ children }: { children: ReactNode }) => (
     <MemoryRouter initialEntries={[route]}>
       <AuthProvider>

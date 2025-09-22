@@ -19,23 +19,22 @@
  * Date: 2025-09-22
  */
 
-
-import '@testing-library/jest-dom';
-import 'whatwg-fetch';
+import "@testing-library/jest-dom";
+import "whatwg-fetch";
 
 // Import the MSW server
-import { server } from './testServer';
+import { server } from "./testServer";
 
 // Setup MSW server lifecycle hooks (start server. reset handler, stop server)
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 // JSDOM does not implement ResizeObserver → provide a simple mock
 class ResizeObserverMock {
-    observe(){}
-    unobserve(){}
-    disconnect(){}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
 }
 
 // JSDOM does not implement IntersectionObserver → provide a simple mock
@@ -43,17 +42,28 @@ class IntersectionObserverMock {
   observe() {}
   unobserve() {}
   disconnect() {}
-  takeRecords() { return [] }
+  takeRecords() {
+    return [];
+  }
 }
 
 // Attach mocks to global environment so components using them won’t crash
-(globalThis as unknown as { ResizeObserver: typeof ResizeObserverMock }).ResizeObserver = ResizeObserverMock;
-(globalThis as unknown as { IntersectionObserver: typeof IntersectionObserverMock }).IntersectionObserver = IntersectionObserverMock;
-
+(
+  globalThis as unknown as { ResizeObserver: typeof ResizeObserverMock }
+).ResizeObserver = ResizeObserverMock;
+(
+  globalThis as unknown as {
+    IntersectionObserver: typeof IntersectionObserverMock;
+  }
+).IntersectionObserver = IntersectionObserverMock;
 
 // Mock scrollTo since JSDOM doesn’t implement it
 window.scrollTo = () => {};
 
 // Mock HTMLMediaElement methods to avoid "not implemented" errors in video/audio tests
-Object.defineProperty(window.HTMLMediaElement.prototype, 'play', { value: async () => {} });
-Object.defineProperty(window.HTMLMediaElement.prototype, 'pause', { value: () => {} });
+Object.defineProperty(window.HTMLMediaElement.prototype, "play", {
+  value: async () => {},
+});
+Object.defineProperty(window.HTMLMediaElement.prototype, "pause", {
+  value: () => {},
+});
