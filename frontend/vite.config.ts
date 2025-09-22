@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" /> ///
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -35,6 +36,19 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), ignoreMonacoMarkedSourceMap()],
   server: {
     preTransformRequests: true,
+  },
+
+  test: {
+    environment: "jsdom", // Browser-ähnliche Umgebung
+    setupFiles: "./tests/setupTests.ts",
+    globals: true,
+    css: true,
+    restoreMocks: true,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      reportsDirectory: "coverage/unit",
+    },
   },
 
   build: {
@@ -94,6 +108,12 @@ export default defineConfig({
     alias: {
       // Verhindere Source Map Probleme für Monaco Editor
       "monaco-editor": "monaco-editor/esm/vs/editor/editor.api",
+      "@": "/src",
+      "@components": "/src/components",
+      "@pages": "/src/pages",
+      "@context": "/src/context",
+      "@apis": "/src/util/apis",
+      "@utils": "/src/util",
     },
   },
 
