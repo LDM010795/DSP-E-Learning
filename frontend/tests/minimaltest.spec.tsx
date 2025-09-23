@@ -1,7 +1,5 @@
-import {assert} from "vitest";
+import { assert } from "vitest";
 
-test('helloworld', async () => {
-
-    assert.isTrue(true)
-
-})
+test("helloworld", async () => {
+  assert.isTrue(true);
+});
