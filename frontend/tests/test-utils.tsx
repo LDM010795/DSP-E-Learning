@@ -21,7 +21,7 @@
 import type { ReactNode } from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { AuthProvider } from "../src/context/AuthContext"
+import { AuthProvider } from "../src/context/AuthContext";
 import { ModuleProvider } from "../src/context/ModuleContext";
 import { ExamProvider } from "../src/context/ExamContext";
 
@@ -38,7 +38,7 @@ vi.mock("../src/context/AuthContext", async (importOriginal) => {
   const actual = await importOriginal<any>();
   return {
     ...actual,
-    useAuth: () => mockAuth
+    useAuth: () => mockAuth,
   };
 });
 
