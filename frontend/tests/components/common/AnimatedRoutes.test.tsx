@@ -99,8 +99,9 @@ describe("AnimatedRoutes", () => {
     renderRoute("/Datenschutz");
     expect(
       await screen.findByRole("heading", {
-        name: "Datenschutz" }),
-      ).toBeInTheDocument();
+        name: "Datenschutz",
+      }),
+    ).toBeInTheDocument();
   });
 
   it("renders register", async () => {
