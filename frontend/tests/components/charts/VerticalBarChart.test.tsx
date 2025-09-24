@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import VerticalBarChart from "@components/charts/VerticalBarChart.tsx";
-import { afterAll, beforeAll, vi } from "vitest";
+import { beforeAll } from "vitest";
 
 interface DataPoint {
   name: string; // Y-Achse Label (z.B. Themenname, Modulname)
@@ -108,7 +108,7 @@ describe("VerticalBarChart", async () => {
     expect(screen.getByText("Stunden")).toBeInTheDocument();
   });
 
-  it.skip("applies custom bar fill color", async () => {
+  it.skip("applies custom bar fill color", async () => { //can't get this test to run. Does not like rendering in JSDOM
     const { container } = render(
       <VerticalBarChart data={data} barFill="#123456" />,
     );
