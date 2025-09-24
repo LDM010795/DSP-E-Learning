@@ -96,31 +96,35 @@ describe('TableUserList', () => {
 
     render(<TableUserList users={users} isLoading={false} onDelete={() => {}} stats={baseStats} />);
 
-    // Top stats (labels exist
+    // Top stats (labels exist)
     // Gesamt card
-    const gesamtLabel = screen.getByText('Gesamt');
-    const totalCard = gesamtLabel.parentElement!.parentElement as HTMLElement;
+    const grid = screen.getByText('Gesamt').parentElement!.parentElement as HTMLElement;
+
+    // Gesamt card
+    const gesamtLabel = within(grid).getByText('Gesamt');
+    const totalCard = gesamtLabel.parentElement as HTMLElement;
     expect(within(totalCard).getByText(String(baseStats.totalUsers))).toBeInTheDocument();
 
     // Aktiv card
-    const aktivLabel = screen.getAllByText('Aktiv')[0];
-    const aktivCard = aktivLabel.parentElement!.parentElement as HTMLElement;
+    const aktivLabel = within(grid).getAllByText('Aktiv')[0];
+    const aktivCard = aktivLabel.parentElement as HTMLElement;
     expect(within(aktivCard).getByText(String(baseStats.activeUsers))).toBeInTheDocument();
 
     // Inaktiv card
-    const inaktivLabel = screen.getAllByText('Inaktiv')[0];
-    const inaktivCard = inaktivLabel.parentElement!.parentElement as HTMLElement;
+    const inaktivLabel = within(grid).getAllByText('Inaktiv')[0];
+    const inaktivCard = inaktivLabel.parentElement as HTMLElement;
     expect(within(inaktivCard).getByText(String(baseStats.inactiveUsers))).toBeInTheDocument();
 
     // Staff card
-    const staffLabel = screen.getByText('Staff');
-    const staffCard = staffLabel.parentElement!.parentElement as HTMLElement;
+    const staffLabel = within(grid).getByText('Staff');
+    const staffCard = staffLabel.parentElement as HTMLElement;
     expect(within(staffCard).getByText(String(baseStats.staffUsers))).toBeInTheDocument();
 
     // Admins card
-    const adminLabel = screen.getByText('Admins');
-    const adminCard = adminLabel.parentElement!.parentElement as HTMLElement;
+    const adminLabel = within(grid).getByText('Admins');
+    const adminCard = adminLabel.parentElement as HTMLElement;
     expect(within(adminCard).getByText(String(baseStats.superUsers))).toBeInTheDocument();
+
 
 
 
