@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeAll} from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import LearningTimeChart from "@components/charts/LearningTimeChart.tsx";
 
@@ -91,7 +91,7 @@ describe("LearningTimeChart", () => {
   });
 
   it("renders bars for each data point", () => {
-    const {container} = render(<LearningTimeChart data={mockData} />);
+    const { container } = render(<LearningTimeChart data={mockData} />);
 
     // Bars in Recharts render as <rect> inside the SVG
     const bars = container.querySelectorAll(".recharts-bar-rectangle");

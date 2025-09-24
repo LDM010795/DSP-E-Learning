@@ -4,8 +4,12 @@ import { vi } from "vitest";
 // Mock the lazy-loaded echarts-for-react
 vi.mock("echarts-for-react", () => ({
   __esModule: true,
-  default: ({ option, style}: any) => (
-    <div data-testid="echarts-mock" data-option={JSON.stringify(option)} style={style}>
+  default: ({ option, style }: any) => (
+    <div
+      data-testid="echarts-mock"
+      data-option={JSON.stringify(option)}
+      style={style}
+    >
       Mocked ECharts
     </div>
   ),

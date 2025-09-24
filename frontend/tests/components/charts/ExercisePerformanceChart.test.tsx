@@ -17,26 +17,20 @@ describe("ExercisePerformanceChart", () => {
   it("renders loading fallback initially", () => {
     render(<ExercisePerformanceChart exerciseData={mockData} />);
 
-    expect(
-      screen.getByText("Performance Chart lädt...")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Performance Chart lädt...")).toBeInTheDocument();
   });
 
   it("renders the chart after lazy loading", async () => {
     render(<ExercisePerformanceChart exerciseData={mockData} />);
 
     // Wait for the lazy-loaded chart to appear
-    const chart = await waitFor(() =>
-      screen.getByTestId("echarts-mock")
-    );
+    const chart = await waitFor(() => screen.getByTestId("echarts-mock"));
 
     expect(chart).toBeInTheDocument();
   });
 
   it("passes correct chart options to ReactECharts", async () => {
-    const { default: ReactEChartsMock } = await import(
-      "echarts-for-react"
-    );
+    const { default: ReactEChartsMock } = await import("echarts-for-react");
 
     render(<ExercisePerformanceChart exerciseData={mockData} />);
 
@@ -56,17 +50,13 @@ describe("ExercisePerformanceChart", () => {
         exerciseData={mockData}
         width={500}
         height={400}
-      />
+      />,
     );
 
-    const chart = await waitFor(() =>
-      screen.getByTestId("echarts-mock")
-    );
+    const chart = await waitFor(() => screen.getByTestId("echarts-mock"));
 
     expect(chart).toBeInTheDocument();
-    const { default: ReactEChartsMock } = await import(
-      "echarts-for-react"
-    );
+    const { default: ReactEChartsMock } = await import("echarts-for-react");
     const chartProps = ReactEChartsMock.mock.calls[0][0];
 
     expect(chartProps.style.width).toBe("500px");

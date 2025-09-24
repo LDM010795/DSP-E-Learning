@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 import { describe, it, expect } from "vitest";
 import ComparisonBar from "@components/charts/ComparisonBar.tsx";
 
@@ -12,7 +12,7 @@ describe("ComparisonBar", () => {
         colorClass="bg-dsp-orange"
         label="Du"
         displayValue="50"
-      />
+      />,
     );
 
     expect(screen.getByText("Du")).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe("ComparisonBar", () => {
         colorClass="bg-dsp-orange"
         label="Du"
         displayValue={value}
-      />
+      />,
     );
 
     const bar = screen.getByTestId("comparison-bar");
@@ -47,7 +47,7 @@ describe("ComparisonBar", () => {
         colorClass="bg-gray-200"
         label="Durchschnitt"
         displayValue="30"
-      />
+      />,
     );
 
     const bar = screen.getByTestId("comparison-bar");
@@ -62,7 +62,7 @@ describe("ComparisonBar", () => {
         colorClass="bg-dsp-orange"
         label="Du"
         displayValue="150"
-      />
+      />,
     );
 
     const bar = screen.getByTestId("comparison-bar");
@@ -77,7 +77,7 @@ describe("ComparisonBar", () => {
         colorClass="bg-dsp-orange"
         label="Du"
         displayValue="-50"
-      />
+      />,
     );
 
     const bar = screen.getByTestId("comparison-bar");

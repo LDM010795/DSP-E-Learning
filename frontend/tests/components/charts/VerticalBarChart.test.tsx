@@ -108,7 +108,8 @@ describe("VerticalBarChart", async () => {
     expect(screen.getByText("Stunden")).toBeInTheDocument();
   });
 
-  it.skip("applies custom bar fill color", async () => { //can't get this test to run. Does not like rendering in JSDOM
+  it.skip("applies custom bar fill color", async () => {
+    //can't get this test to run. Does not like rendering in JSDOM
     const { container } = render(
       <VerticalBarChart data={data} barFill="#123456" />,
     );
