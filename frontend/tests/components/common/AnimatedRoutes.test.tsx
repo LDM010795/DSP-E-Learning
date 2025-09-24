@@ -92,12 +92,15 @@ describe("AnimatedRoutes", () => {
       await screen.findByRole("heading", {
         name: "Allgemeine Geschäftsbedingungen",
       }),
-    );
+    ).toBeInTheDocument();
   });
 
   it("renders Datenschutz", async () => {
     renderRoute("/Datenschutz");
-    expect(await screen.findByRole("heading", { name: "Datenschutz" }));
+    expect(
+      await screen.findByRole("heading", {
+        name: "Datenschutz" }),
+      ).toBeInTheDocument();
   });
 
   it("renders register", async () => {
