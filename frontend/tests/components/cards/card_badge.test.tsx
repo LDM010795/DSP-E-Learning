@@ -1,3 +1,19 @@
+/**
+ * CardBadge Component Tests
+ *
+ * These tests verify the rendering and styling of the CardBadge component:
+ *  - Renders the provided text inside the badge
+ *  - Applies the correct default color scheme classes (e.g., gray)
+ *  - Applies custom color scheme classes when `colorScheme` is provided
+ *
+ * Example checks:
+ *  - "Gray" → contains Tailwind class `bg-gray-100`
+ *  - "Orange" with `colorScheme="dsp-orange"` → contains class `bg-dsp-orange`
+ *
+ * Author: DSP Development Team
+ * Date: 25-09-2025
+ */
+
 import { render, screen } from '@testing-library/react';
 import CardBadge from '../../../src/components/cards/card_badge.tsx';
 

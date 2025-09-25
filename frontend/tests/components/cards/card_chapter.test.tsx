@@ -1,3 +1,22 @@
+/**
+ * CardChapter Component Tests
+ *
+ * These tests verify the rendering and behavior of the CardChapter component:
+ *  - Displays the chapter title and optional description
+ *  - Shows the number of videos and tasks with correct pluralization
+ *  - Computes and displays the completion progress percentage
+ *    based on the ratio of completed tasks to total tasks
+ *  - Calls the onClick callback when the card is clicked
+ *
+ * Example test data:
+ *  - 3 videos
+ *  - 3 tasks (2 completed, 1 incomplete) → 67% abgeschlossen
+ *
+ * Author: DSP Development Team
+ * Date: 25-09-2025
+ */
+
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CardChapter from '../../../src/components/cards/card_chapter.tsx';
