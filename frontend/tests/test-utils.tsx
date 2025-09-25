@@ -65,3 +65,11 @@ export function signOut() {
   mockAuth.user = null;
   mockAuth.isAuthenticated = false;
 }
+
+export function mockModules(data: any[] = []) {
+  vi.mock("../src/context/ModuleContext", () => {
+    return {
+      useModules: () => ({ modules: data }),
+    };
+  });
+}
