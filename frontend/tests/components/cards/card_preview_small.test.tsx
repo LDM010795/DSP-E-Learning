@@ -18,19 +18,25 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CardPreviewSmall from '../../../src/components/cards/card_preview_small.tsx';
 
-describe('CardPreviewSmall', () => {
-  test('renders title + description', () => {
+describe("CardPreviewSmall", () => {
+  test("renders title + description", () => {
     render(
-      <CardPreviewSmall title="Intro to DSP" description="Short teaser" progress={0} />
+      <CardPreviewSmall
+        title="Intro to DSP"
+        description="Short teaser"
+        progress={0}
+      />,
     );
-    expect(screen.getByText('Intro to DSP')).toBeInTheDocument();
-    expect(screen.getByText('Short teaser')).toBeInTheDocument();
+    expect(screen.getByText("Intro to DSP")).toBeInTheDocument();
+    expect(screen.getByText("Short teaser")).toBeInTheDocument();
   });
 
-  test('uses YouTube thumbnail when youtubeId is provided', () => {
+  test("uses YouTube thumbnail when youtubeId is provided", () => {
     render(<CardPreviewSmall title="Video" youtubeId="abc123" progress={0} />);
-    const img = screen.getByAltText('Video') as HTMLImageElement;
-    expect(img.src).toContain('https://img.youtube.com/vi/abc123/hqdefault.jpg');
+    const img = screen.getByAltText("Video") as HTMLImageElement;
+    expect(img.src).toContain(
+      "https://img.youtube.com/vi/abc123/hqdefault.jpg",
+    );
   });
 
   test('shows correct status text based on progress (and verifies icon + percentage color)', () => {
