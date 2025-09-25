@@ -67,7 +67,7 @@ export function signOut() {
 }
 
 export function mockModules(data: any[] = []) {
-  vi.mock("../src/context/ModuleContext", () => {
+  vi.doMock("../src/context/ModuleContext", () => {
     return {
       useModules: () => ({ modules: data }),
     };
