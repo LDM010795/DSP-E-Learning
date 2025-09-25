@@ -2,7 +2,7 @@ import { describe } from "vitest";
 import FooterNavigation from "../../../src/components/layouts/footer";
 import { screen } from "@testing-library/react";
 import { renderWithAppProviders } from "../../test-utils";
-import {server} from "../../testServer.ts";
+import { server } from "../../testServer.ts";
 
 beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }));
 
