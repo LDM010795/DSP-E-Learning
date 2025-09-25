@@ -1,6 +1,9 @@
 import HeaderNavigation from "@/components/layouts/header";
 import { renderWithAppProviders } from "../../test-utils";
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import {server} from "../../testServer.ts";
+
+beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }));
 
 describe("HeaderNavigation", () => {
   it("shows logo", () => {
