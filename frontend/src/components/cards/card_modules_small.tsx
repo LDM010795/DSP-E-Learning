@@ -13,7 +13,6 @@ interface CardModulesSmallProps {
   title: string;
   progress: number;
   difficultyTag: React.ReactNode;
-  status: ModuleStatus;
   className?: string;
   onClick?: () => void;
 }
@@ -22,44 +21,46 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
   title,
   progress,
   difficultyTag,
-  status,
   className,
   onClick,
 }) => {
-  const getStatusConfig = () => {
-    switch (status) {
-      case "Abgeschlossen":
-        return {
-          icon: <IoCheckmarkOutline className="h-4 w-4 text-white" />,
-          iconBgColor: "bg-green-500",
-          progressColor: "bg-green-500",
-          statusColor: "text-green-600",
-          hoverBg: "hover:bg-green-50",
-          borderHover: "hover:border-green-200",
-        };
-      case "In Bearbeitung":
-        return {
-          icon: <IoHourglassOutline className="h-4 w-4 text-white" />,
-          iconBgColor: "bg-dsp-orange",
-          progressColor: "bg-dsp-orange",
-          statusColor: "text-dsp-orange",
-          hoverBg: "hover:bg-dsp-orange_light",
-          borderHover: "hover:border-dsp-orange/30",
-        };
-      case "Nicht begonnen":
-      default:
-        return {
-          icon: <IoPlayOutline className="h-4 w-4 text-gray-600" />,
-          iconBgColor: "bg-gray-200",
-          progressColor: "bg-gray-300",
-          statusColor: "text-gray-600",
-          hoverBg: "hover:bg-gray-50",
-          borderHover: "hover:border-gray-300",
-        };
-    }
+  const derivedStatus: ModuleStatus =
+  progress >= 100 ? "Abgeschlossen" : progress > 0 ? "In Bearbeitung" : "Nicht begonnen";
+
+  const getStatusConfig = (s: ModuleStatus) => {
+      switch (s) {
+          case "Abgeschlossen":
+              return {
+                  icon: <IoCheckmarkOutline className="h-4 w-4 text-white" />,
+                  iconBgColor: "bg-green-500",
+                  progressColor: "bg-green-500",
+                  statusColor: "text-green-600",
+                  hoverBg: "hover:bg-green-50",
+                  borderHover: "hover:border-green-200",
+              };
+          case "In Bearbeitung":
+              return {
+                  icon: <IoHourglassOutline className="h-4 w-4 text-white" />,
+                  iconBgColor: "bg-dsp-orange",
+                  progressColor: "bg-dsp-orange",
+                  statusColor: "text-dsp-orange",
+                  hoverBg: "hover:bg-dsp-orange_light",
+                  borderHover: "hover:border-dsp-orange/30",
+              };
+          case "Nicht begonnen":
+          default:
+              return {
+                  icon: <IoPlayOutline className="h-4 w-4 text-gray-600" />,
+                  iconBgColor: "bg-gray-200",
+                  progressColor: "bg-gray-300",
+                  statusColor: "text-gray-600",
+                  hoverBg: "hover:bg-gray-50",
+                  borderHover: "hover:border-gray-300",
+              };
+      }
   };
 
-  const config = getStatusConfig();
+  const config = getStatusConfig(derivedStatus);
 
   return (
     <motion.div
@@ -118,7 +119,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
             {/* Progress info */}
             <div className="flex items-center justify-between">
               <span className={clsx("text-xs font-medium", config.statusColor)}>
-                {status}
+                  {derivedStatus}
               </span>
               <span
                 className={clsx("text-xs font-semibold", config.statusColor)}
