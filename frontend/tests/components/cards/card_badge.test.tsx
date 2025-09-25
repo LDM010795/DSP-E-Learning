@@ -14,22 +14,22 @@
  * Date: 25-09-2025
  */
 
-import { render, screen } from '@testing-library/react';
-import CardBadge from '../../../src/components/cards/card_badge.tsx';
+import { render, screen } from "@testing-library/react";
+import CardBadge from "../../../src/components/cards/card_badge.tsx";
 
-describe('CardBadge', () => {
-  test('renders text', () => {
+describe("CardBadge", () => {
+  test("renders text", () => {
     render(<CardBadge text="New" />);
-    expect(screen.getByText('New')).toBeInTheDocument();
+    expect(screen.getByText("New")).toBeInTheDocument();
   });
 
-  test('applies color scheme classes', () => {
+  test("applies color scheme classes", () => {
     const { rerender } = render(<CardBadge text="Gray" />);
-    const span1 = screen.getByText('Gray');
+    const span1 = screen.getByText("Gray");
     expect(span1.className).toMatch(/bg-gray-100/);
 
     rerender(<CardBadge text="Orange" colorScheme="dsp-orange" />);
-    const span2 = screen.getByText('Orange');
+    const span2 = screen.getByText("Orange");
     expect(span2.className).toMatch(/bg-dsp-orange/);
   });
 });

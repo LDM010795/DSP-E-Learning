@@ -16,10 +16,9 @@
  * Date: 25-09-2025
  */
 
-
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import CardChapter from '../../../src/components/cards/card_chapter.tsx';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import CardChapter from "../../../src/components/cards/card_chapter.tsx";
 
 type ChapterLike = {
   title: string;

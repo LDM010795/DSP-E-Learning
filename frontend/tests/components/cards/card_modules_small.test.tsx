@@ -14,9 +14,9 @@
  * Date: 25-09-2025
  */
 
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import CardModulesSmall from '../../../src/components/cards/card_modules_small.tsx';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import CardModulesSmall from "../../../src/components/cards/card_modules_small.tsx";
 
 describe("CardModulesSmall", () => {
   test("renders title, difficultyTag, status and progress", () => {
@@ -52,38 +52,38 @@ describe("CardModulesSmall", () => {
   });
 
   // verify icon + colors based on status (no component changes needed)
-  test('applies correct icon + colors for each status', () => {
-      const cases: Array<{
-      status: 'Nicht begonnen' | 'In Bearbeitung' | 'Abgeschlossen';
+  test("applies correct icon + colors for each status", () => {
+    const cases: Array<{
+      status: "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
       progress: number;
-      expectIconBoxHas: string;    // bg-* class on the icon container
-      expectSvgHas: string;        // text-* class on the <svg> icon
+      expectIconBoxHas: string; // bg-* class on the icon container
+      expectSvgHas: string; // text-* class on the <svg> icon
       expectStatusTextHas: string; // text-* class on the status text span
-      expectBarHas: string;        // bg-* class on the progress bar
+      expectBarHas: string; // bg-* class on the progress bar
     }> = [
       {
-        status: 'Nicht begonnen',
+        status: "Nicht begonnen",
         progress: 0,
-        expectIconBoxHas: 'bg-gray-200',
-        expectSvgHas: 'text-gray-600',
-        expectStatusTextHas: 'text-gray-600',
-        expectBarHas: 'bg-gray-300',
+        expectIconBoxHas: "bg-gray-200",
+        expectSvgHas: "text-gray-600",
+        expectStatusTextHas: "text-gray-600",
+        expectBarHas: "bg-gray-300",
       },
       {
-        status: 'In Bearbeitung',
+        status: "In Bearbeitung",
         progress: 40,
-        expectIconBoxHas: 'bg-dsp-orange',
-        expectSvgHas: 'text-white',
-        expectStatusTextHas: 'text-dsp-orange',
-        expectBarHas: 'bg-dsp-orange',
+        expectIconBoxHas: "bg-dsp-orange",
+        expectSvgHas: "text-white",
+        expectStatusTextHas: "text-dsp-orange",
+        expectBarHas: "bg-dsp-orange",
       },
       {
-        status: 'Abgeschlossen',
+        status: "Abgeschlossen",
         progress: 100,
-        expectIconBoxHas: 'bg-green-500',
-        expectSvgHas: 'text-white',
-        expectStatusTextHas: 'text-green-600',
-        expectBarHas: 'bg-green-500',
+        expectIconBoxHas: "bg-green-500",
+        expectSvgHas: "text-white",
+        expectStatusTextHas: "text-green-600",
+        expectBarHas: "bg-green-500",
       },
     ];
 
@@ -94,7 +94,7 @@ describe("CardModulesSmall", () => {
           progress={c.progress}
           status={c.status}
           difficultyTag={<span />}
-        />
+        />,
       );
 
       // status text element
@@ -102,18 +102,20 @@ describe("CardModulesSmall", () => {
       expect(statusEl.className).toContain(c.expectStatusTextHas);
 
       // icon box = the small square with width/height 10
-      const iconBox = container.querySelector('div.w-10.h-10.rounded-xl') as HTMLDivElement;
+      const iconBox = container.querySelector(
+        "div.w-10.h-10.rounded-xl",
+      ) as HTMLDivElement;
       expect(iconBox).toBeTruthy();
       expect(iconBox!.className).toContain(c.expectIconBoxHas);
 
       // inside icon box there is an <svg> icon with a text-* color class
-      const iconSvg = iconBox!.querySelector('svg') as SVGElement;
+      const iconSvg = iconBox!.querySelector("svg") as SVGElement;
       expect(iconSvg).toBeTruthy();
-      expect(iconSvg.getAttribute('class') || '').toContain(c.expectSvgHas);
+      expect(iconSvg.getAttribute("class") || "").toContain(c.expectSvgHas);
 
       // progress bar div (the inner moving bar)
       const progressBar = container.querySelector(
-        'div[class*="h-1.5"][class*="rounded-full"][class*="transition-all"]'
+        'div[class*="h-1.5"][class*="rounded-full"][class*="transition-all"]',
       ) as HTMLDivElement;
       expect(progressBar).toBeTruthy();
       expect(progressBar!.className).toContain(c.expectBarHas);
