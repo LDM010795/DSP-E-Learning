@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import {describe, it, expect, beforeAll} from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import SkillDistributionChart from "@components/charts/SkillDistributionChart.tsx";
 
 const originalGetBoundingClientRect =

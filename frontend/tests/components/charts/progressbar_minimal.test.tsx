@@ -18,7 +18,9 @@ describe("ProgressbarMinimal", () => {
     const { container: c1 } = render(<ProgressbarMinimal progressValue={0} />);
     expect(c1.querySelector(".bg-dsp-orange")).toHaveStyle({ width: "0%" });
 
-    const { container: c2 } = render(<ProgressbarMinimal progressValue={100} />);
+    const { container: c2 } = render(
+      <ProgressbarMinimal progressValue={100} />,
+    );
     expect(c2.querySelector(".bg-dsp-orange")).toHaveStyle({ width: "100%" });
   });
 });

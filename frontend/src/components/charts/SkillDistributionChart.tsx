@@ -52,7 +52,10 @@ const SkillDistributionChart: React.FC<Props> = ({ data }) => {
   return (
     // Höhe anpassen für Pie Chart + Legende
     <ResponsiveContainer width="100%" height={300}>
-      <PieChart margin={{ top: 30, right: 30, bottom: 30, left: 30 }} data-testid="pie-chart">
+      <PieChart
+        margin={{ top: 30, right: 30, bottom: 30, left: 30 }}
+        data-testid="pie-chart"
+      >
         {" "}
         {/* Mehr Margin für Labels */}
         <Pie

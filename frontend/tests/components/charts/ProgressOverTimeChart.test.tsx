@@ -1,8 +1,8 @@
 // ProgressOverTimeChart.test.tsx
 import { render, screen } from "@testing-library/react";
 import ProgressOverTimeChart from "@components/charts/ProgressOverTimeChart.tsx";
-import {beforeAll, vi} from "vitest";
-import {getDspThemeColorCode} from "@/util/helpers/color_theme_utils.tsx";
+import { beforeAll, vi } from "vitest";
+import { getDspThemeColorCode } from "@/util/helpers/color_theme_utils.tsx";
 
 const mockData = [
   { month: "Jan", Fortschritt: 20 },
@@ -104,18 +104,20 @@ describe("ProgressOverTimeChart", () => {
     });
   });
 
-it("passes correct stroke to Line", () => {
-  render(<ProgressOverTimeChart data={mockData} />);
-  // check if defautl color was called
-  expect(getDspThemeColorCode).toHaveBeenCalledWith("dsp-orange");
-});
+  it("passes correct stroke to Line", () => {
+    render(<ProgressOverTimeChart data={mockData} />);
+    // check if defautl color was called
+    expect(getDspThemeColorCode).toHaveBeenCalledWith("dsp-orange");
+  });
 
   it("formats tooltip correctly", () => {
     render(<ProgressOverTimeChart data={mockData} />);
     // Tooltip content is not visible until interaction,
     // but you can unit test the formatter by calling it directly.
-    const tooltipProps = (ProgressOverTimeChart as any).defaultProps?.children?.props?.children?.find(
-      (c: any) => c.type?.displayName === "Tooltip"
+    const tooltipProps = (
+      ProgressOverTimeChart as any
+    ).defaultProps?.children?.props?.children?.find(
+      (c: any) => c.type?.displayName === "Tooltip",
     );
     // Alternative: export formatters separately and test directly
   });

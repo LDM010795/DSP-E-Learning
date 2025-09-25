@@ -15,9 +15,7 @@ import OptimizedGaugeChart from "@components/charts/OptimizedGaugeChart.tsx";
 describe("OptimizedGaugeChart", () => {
   it("shows fallback while loading", async () => {
     render(<OptimizedGaugeChart progressValue={50} />);
-    expect(
-      screen.getByText(/loading chart/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/loading chart/i)).toBeInTheDocument();
   });
 
   it("renders echarts after lazy load resolves", async () => {
@@ -33,7 +31,7 @@ describe("OptimizedGaugeChart", () => {
         width={250}
         height={150}
         showLabels={false}
-      />
+      />,
     );
     const echarts = await screen.findByTestId("echarts-mock");
     const props = JSON.parse(echarts.getAttribute("data-props") || "{}");
