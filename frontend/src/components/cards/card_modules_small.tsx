@@ -13,7 +13,6 @@ interface CardModulesSmallProps {
   title: string;
   progress: number;
   difficultyTag: React.ReactNode;
-  status: ModuleStatus;
   className?: string;
   onClick?: () => void;
 }
@@ -22,12 +21,18 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
   title,
   progress,
   difficultyTag,
-  status,
   className,
   onClick,
 }) => {
-  const getStatusConfig = () => {
-    switch (status) {
+  const derivedStatus: ModuleStatus =
+    progress >= 100
+      ? "Abgeschlossen"
+      : progress > 0
+        ? "In Bearbeitung"
+        : "Nicht begonnen";
+
+  const getStatusConfig = (s: ModuleStatus) => {
+    switch (s) {
       case "Abgeschlossen":
         return {
           icon: <IoCheckmarkOutline className="h-4 w-4 text-white" />,
@@ -59,7 +64,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
     }
   };
 
-  const config = getStatusConfig();
+  const config = getStatusConfig(derivedStatus);
 
   return (
     <motion.div
@@ -118,7 +123,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
             {/* Progress info */}
             <div className="flex items-center justify-between">
               <span className={clsx("text-xs font-medium", config.statusColor)}>
-                {status}
+                {derivedStatus}
               </span>
               <span
                 className={clsx("text-xs font-semibold", config.statusColor)}
