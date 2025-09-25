@@ -123,7 +123,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
 
       {/* Mobile Navigation */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-30 md:hidden">
+        <div data-testid="mobile-menu" className="fixed inset-0 z-30 md:hidden">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/10 transition-opacity duration-200"
