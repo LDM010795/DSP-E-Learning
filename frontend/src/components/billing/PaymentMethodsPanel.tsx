@@ -66,7 +66,7 @@ export default function PaymentMethodsPanel() {
   // UI state
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const [items, setItems] = React.useState<PM[]>([]);
+  const [paymentMethods, setPaymentMethods] = React.useState<PM[]>([]);
   const [showAddForm, setShowAddForm] = React.useState(false);
 
   const load = React.useCallback(async () => {
@@ -77,20 +77,20 @@ export default function PaymentMethodsPanel() {
       const raw = res?.payment_methods ?? [];
 
       // default first
-      const list = [...raw].sort(
+      const pmList = [...raw].sort(
         (a, b) => Number(b.is_default) - Number(a.is_default),
       );
 
-      setItems(list);
-      setShowAddForm(list.length === 0);
+      setPaymentMethods(pmList);
+      setShowAddForm(pmList.length === 0);
     } catch {
       setError("Konnte Zahlungsdaten nicht laden.");
       // If we can't load, keep the form visible only if we have nothing cached
-      setShowAddForm((prev) => (items.length === 0 ? true : prev));
+      setShowAddForm((prev) => (paymentMethods.length === 0 ? true : prev));
     } finally {
       setLoading(false);
     }
-  }, [items.length]);
+  }, [paymentMethods.length]);
 
   React.useEffect(() => {
     void load();
@@ -108,18 +108,18 @@ export default function PaymentMethodsPanel() {
       {loading && <div className="text-gray-500">Lade…</div>}
 
       {/* Error state */}
-      {!loading && items.length === 0 && error && (
+      {!loading && paymentMethods.length === 0 && error && (
         <div className="text-red-600 mb-4">{error}</div>
       )}
 
       {/* List saved payment methods if any */}
-      {!loading && items.length > 0 && (
+      {!loading && paymentMethods.length > 0 && (
         <div className="mb-6">
           <h3 className="font-semibold text-gray-700 mb-2">
             Gespeicherte Karten
           </h3>
           <ul className="space-y-2">
-            {items.map((pm) => (
+            {paymentMethods.map((pm) => (
               <li
                 key={pm.id}
                 className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-2"
@@ -156,18 +156,12 @@ export default function PaymentMethodsPanel() {
       {!loading && showAddForm && (
         <SaveCardForm
           title="Kredit- oder Debitkarte hinzufügen"
-          showSkip={items.length === 0} // hide “Später” if we already have a card
+          showSkip={false} // Don't show skip button in User Settings
           onSuccess={async () => {
             await load(); // refresh list
             setShowAddForm(false); // collapse form
           }}
-          onSkip={() => {
-            if (items.length === 0) {
-              window.location.replace("/dashboard");
-            } else {
-              setShowAddForm(false);
-            }
-          }}
+          onSkip={() => {}}
         />
       )}
     </div>

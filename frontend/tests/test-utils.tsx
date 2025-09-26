@@ -21,11 +21,28 @@
 import type { ReactNode } from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+
 import { AuthProvider } from "@context/AuthContext.tsx";
 import { ModuleProvider } from "@context/ModuleContext.tsx";
 import { ExamProvider } from "@context/ExamContext.tsx";
 
+
 type UI = Parameters<typeof render>[0];
+
+export const mockAuth = {
+  user: null as { id: number; name: string } | null,
+  isAuthenticated: false,
+  login: vi.fn(),
+  logout: vi.fn(),
+};
+
+vi.mock("../src/context/AuthContext", async (importOriginal) => {
+  const actual = await importOriginal<any>();
+  return {
+    ...actual,
+    useAuth: () => mockAuth,
+  };
+});
 
 export function renderWithAppProviders(ui: UI, route = "/") {
   const Wrapper = ({ children }: { children: ReactNode }) => (
@@ -40,6 +57,7 @@ export function renderWithAppProviders(ui: UI, route = "/") {
 
   return render(ui, { wrapper: Wrapper });
 }
+
 
 export function renderMocksForResponsiveContainer() {
   const originalGetBoundingClientRect =
@@ -115,4 +133,15 @@ export function renderMocksForResponsiveContainer() {
     disconnect() {}
   }
   (global as any).ResizeObserver = MockResizeObserver;
+    }
+
+export function signIn(user = { id: 1, name: "Test User" }) {
+  mockAuth.user = user;
+  mockAuth.isAuthenticated = true;
+}
+
+export function signOut() {
+  mockAuth.user = null;
+  mockAuth.isAuthenticated = false;
+
 }
