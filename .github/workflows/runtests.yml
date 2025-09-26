@@ -1,0 +1,36 @@
+name: unit tests
+on:
+  pull_request:
+    branches:
+      - 'develop'
+
+jobs:
+  run-vitests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: merge develop
+        run: |
+           git fetch origin
+           git checkout origin/develop
+           git checkout ${{ github.head_ref }}
+           git -c user.email="bot@datasmartpoint.com" -c user.name="runner_script" merge origin/develop -m "merge for tests" --allow-unrelated-histories
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - run: |
+          cd frontend
+          npm ci
+      - name: run vitest
+        run: |
+          cd frontend
+          npm run test:run
+
