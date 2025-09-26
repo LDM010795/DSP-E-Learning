@@ -26,7 +26,6 @@ import { AuthProvider } from "@context/AuthContext.tsx";
 import { ModuleProvider } from "@context/ModuleContext.tsx";
 import { ExamProvider } from "@context/ExamContext.tsx";
 
-
 type UI = Parameters<typeof render>[0];
 
 export const mockAuth = {
@@ -57,7 +56,6 @@ export function renderWithAppProviders(ui: UI, route = "/") {
 
   return render(ui, { wrapper: Wrapper });
 }
-
 
 export function renderMocksForResponsiveContainer() {
   const originalGetBoundingClientRect =
@@ -133,7 +131,7 @@ export function renderMocksForResponsiveContainer() {
     disconnect() {}
   }
   (global as any).ResizeObserver = MockResizeObserver;
-    }
+}
 
 export function signIn(user = { id: 1, name: "Test User" }) {
   mockAuth.user = user;
@@ -143,5 +141,4 @@ export function signIn(user = { id: 1, name: "Test User" }) {
 export function signOut() {
   mockAuth.user = null;
   mockAuth.isAuthenticated = false;
-
 }
