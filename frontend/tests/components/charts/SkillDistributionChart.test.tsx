@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, beforeAll } from "vitest";
 import SkillDistributionChart from "@components/charts/SkillDistributionChart.tsx";
-import {renderMocksForResponsiveContainer} from "../../test-utils.tsx";
+import { renderMocksForResponsiveContainer } from "../../test-utils.tsx";
 
 beforeAll(() => {
-    renderMocksForResponsiveContainer()
-})
+  renderMocksForResponsiveContainer();
+});
 
 const mockData = [
   { name: "JavaScript", value: 40, fill: "#f7df1e" },

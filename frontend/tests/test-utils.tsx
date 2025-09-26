@@ -21,9 +21,9 @@
 import type { ReactNode } from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import {AuthProvider} from "@context/AuthContext.tsx";
-import {ModuleProvider} from "@context/ModuleContext.tsx";
-import {ExamProvider} from "@context/ExamContext.tsx";
+import { AuthProvider } from "@context/AuthContext.tsx";
+import { ModuleProvider } from "@context/ModuleContext.tsx";
+import { ExamProvider } from "@context/ExamContext.tsx";
 
 type UI = Parameters<typeof render>[0];
 
@@ -42,9 +42,8 @@ export function renderWithAppProviders(ui: UI, route = "/") {
 }
 
 export function renderMocksForResponsiveContainer() {
-
-const originalGetBoundingClientRect = HTMLElement.prototype.getBoundingClientRect;
-
+  const originalGetBoundingClientRect =
+    HTMLElement.prototype.getBoundingClientRect;
 
   // Make getBoundingClientRect return non-zero for the recharts wrapper
   HTMLElement.prototype.getBoundingClientRect = function () {

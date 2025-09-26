@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import VerticalBarChart from "@components/charts/VerticalBarChart.tsx";
 import { beforeAll } from "vitest";
-import {renderMocksForResponsiveContainer} from "../../test-utils.tsx";
+import { renderMocksForResponsiveContainer } from "../../test-utils.tsx";
 
 interface DataPoint {
   name: string; // Y-Achse Label (z.B. Themenname, Modulname)
@@ -9,8 +9,8 @@ interface DataPoint {
 }
 
 beforeAll(() => {
-    renderMocksForResponsiveContainer()
-})
+  renderMocksForResponsiveContainer();
+});
 
 describe("VerticalBarChart", async () => {
   // setup testing data

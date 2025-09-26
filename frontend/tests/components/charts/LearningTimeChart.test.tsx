@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import LearningTimeChart from "@components/charts/LearningTimeChart.tsx";
-import {renderMocksForResponsiveContainer} from "../../test-utils.tsx";
+import { renderMocksForResponsiveContainer } from "../../test-utils.tsx";
 
 beforeAll(() => {
-    renderMocksForResponsiveContainer()
-})
-
+  renderMocksForResponsiveContainer();
+});
 
 describe("LearningTimeChart", () => {
   const mockData = [
