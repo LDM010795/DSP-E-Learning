@@ -25,6 +25,7 @@ const ComparisonBar: React.FC<ComparisonBarProps> = ({
     <div className="flex flex-col items-center">
       {/* Der Balken selbst */}
       <div
+        data-testid="comparison-bar"
         className={`w-12 rounded-t-md ${colorClass}`}
         style={{ height: `${barHeight}px` }}
       ></div>

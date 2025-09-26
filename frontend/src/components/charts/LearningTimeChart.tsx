@@ -25,6 +25,7 @@ const LearningTimeChart: React.FC<Props> = ({ data }) => {
       <BarChart
         data={data}
         margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
+        data-testid="learningTimeChart"
       >
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} />
