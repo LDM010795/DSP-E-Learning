@@ -22,9 +22,10 @@ const MS_API_BASE = (
   import.meta.env.VITE_MICROSOFT_API_URL ??
   "http://127.0.0.1:8000/api/microsoft"
 ).replace(/\/+$/, "");
-const API_PAYMENT_BASE = (
-  "http://127.0.0.1:8000/api/payments"
-).replace(/\/+$/, "");
+const API_PAYMENT_BASE = "http://127.0.0.1:8000/api/payments".replace(
+  /\/+$/,
+  "",
+);
 const MS_TOOL = (
   import.meta.env.VITE_MICROSOFT_TOOL_SLUG ?? "e-learning"
 ).replace(/^\/+|\/+$/g, "");
@@ -177,11 +178,11 @@ export const handlers = [
   }),
 
   /* ----------------------------------- Stripe ------------------------------------ */
-  http.post(P(`/stripe/checkout-session/`), (async () =>
+  http.post(P(`/stripe/checkout-session/`), async () =>
     HttpResponse.json({
-      checkout_url: 'https://stripe.test/checkout-session-123',
-      id: 'default'
-    }))
+      checkout_url: "https://stripe.test/checkout-session-123",
+      id: "default",
+    }),
   ),
 
   /* ----------------------------- Microsoft Auth API ------------------------------ */
