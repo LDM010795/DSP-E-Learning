@@ -10,17 +10,17 @@
  * Date: 2025-09-29
  */
 
-import * as Videos from '../../../src/components/videos';
+import * as Videos from "../../../src/components/videos";
 
-describe('videos index exports', () => {
-    test('exposes expected components', () => {
-        expect(Videos).toHaveProperty('VideoPlayer');
-        expect(Videos).toHaveProperty('YouTubePlayer');
-        expect(Videos).toHaveProperty('WasabiPlayer');
+describe("videos index exports", () => {
+  test("exposes expected components", () => {
+    expect(Videos).toHaveProperty("VideoPlayer");
+    expect(Videos).toHaveProperty("YouTubePlayer");
+    expect(Videos).toHaveProperty("WasabiPlayer");
 
-        // Basic sanity: exported values are functions (React components)
-        expect(typeof Videos.VideoPlayer).toBe('function');
-        expect(typeof Videos.YouTubePlayer).toBe('function');
-        expect(typeof Videos.WasabiPlayer).toBe('function');
-    });
+    // Basic sanity: exported values are functions (React components)
+    expect(typeof Videos.VideoPlayer).toBe("function");
+    expect(typeof Videos.YouTubePlayer).toBe("function");
+    expect(typeof Videos.WasabiPlayer).toBe("function");
+  });
 });
