@@ -3,7 +3,6 @@ import SaveCardForm from "@/components/payments/SaveCardForm";
 import { server } from "../../testServer";
 import * as billingApi from "@/util/apis/billingApi";
 
-
 // --- Global FakeStripe ---
 const fakeStripe = {
   elements: () => ({}),

@@ -187,13 +187,13 @@ export const handlers = [
 
   http.post(P(`/stripe/setup-intent/`), async () =>
     HttpResponse.json({
-      client_secret: "cs_test"
+      client_secret: "cs_test",
     }),
   ),
 
   http.get(P(`/stripe/config/`), async () =>
     HttpResponse.json({
-      publishableKey: "pubkey_test"
+      publishableKey: "pubkey_test",
     }),
   ),
 
