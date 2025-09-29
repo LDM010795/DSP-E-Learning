@@ -12,7 +12,7 @@ afterEach(() => {
 
 afterAll(() => server.close());
 
-describe("SaveCardForm", () => {
+describe("SubscribeButton", () => {
   it("renders button text", async () => {
     render(<SubscribeButton courseId="1" priceId="1" label="Jetzt kaufen!" />);
 

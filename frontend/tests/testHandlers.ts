@@ -185,6 +185,18 @@ export const handlers = [
     }),
   ),
 
+  http.post(P(`/stripe/setup-intent/`), async () =>
+    HttpResponse.json({
+      client_secret: "cs_test"
+    }),
+  ),
+
+  http.get(P(`/stripe/config/`), async () =>
+    HttpResponse.json({
+      publishableKey: "pubkey_test"
+    }),
+  ),
+
   /* ----------------------------- Microsoft Auth API ------------------------------ */
   // POST `${MS_API_BASE}/auth/callback/${MS_TOOL}/`
   http.post(M(`/auth/callback/${MS_TOOL}/`), async () => {

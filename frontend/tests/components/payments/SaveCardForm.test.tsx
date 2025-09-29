@@ -1,10 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import SaveCardForm from "@/components/payments/SaveCardForm";
 import { server } from "../../testServer";
-import { http, HttpResponse } from "msw";
 import * as billingApi from "@/util/apis/billingApi";
 
-const STRIPE_PAYMENT_URL = `http://127.0.0.1:8000/api/payments/stripe`;
 
 // --- Global FakeStripe ---
 const fakeStripe = {
@@ -34,16 +32,6 @@ const mockStripeSuccess = () =>
 const mockStripeError = (message = "Card declined") =>
   fakeStripe.confirmSetup.mockResolvedValue({ error: { message } });
 
-const mockStripeApi = () =>
-  server.use(
-    http.post(`${STRIPE_PAYMENT_URL}/setup-intent/`, () =>
-      HttpResponse.json({ client_secret: "cs_test" }),
-    ),
-    http.get(`${STRIPE_PAYMENT_URL}/config/`, () =>
-      HttpResponse.json({ publishableKey: "pubkey_test" }),
-    ),
-  );
-
 beforeEach(() => {
   vi.clearAllMocks(); // clears call counts etc.
   fakeStripe.confirmSetup.mockReset();
@@ -53,7 +41,6 @@ beforeEach(() => {
 describe("SaveCardForm", () => {
   it("renders title and save button", async () => {
     mockStripeSuccess();
-    mockStripeApi();
 
     render(
       <SaveCardForm
@@ -97,7 +84,6 @@ describe("SaveCardForm", () => {
       detail: "ok",
     });
     mockStripeSuccess();
-    mockStripeApi();
 
     const onSuccess = vi.fn();
     render(
@@ -118,7 +104,6 @@ describe("SaveCardForm", () => {
       detail: "ok",
     });
     mockStripeSuccess();
-    mockStripeApi();
 
     render(<SaveCardForm buttonLabel="Speichern" />);
     fireEvent.click(await screen.findByText("Speichern"));
@@ -128,7 +113,6 @@ describe("SaveCardForm", () => {
 
   it("shows error when confirmSetup returns error", async () => {
     mockStripeError("Card declined");
-    mockStripeApi();
 
     const onSuccess = vi.fn();
     render(<SaveCardForm onSuccess={onSuccess} buttonLabel="Speichern" />);
@@ -143,7 +127,6 @@ describe("SaveCardForm", () => {
 
   it("calls onSkip when skip button is clicked", async () => {
     mockStripeError();
-    mockStripeApi();
 
     const onSkip = vi.fn();
     render(<SaveCardForm onSkip={onSkip} showSkip buttonLabel="Speichern" />);
