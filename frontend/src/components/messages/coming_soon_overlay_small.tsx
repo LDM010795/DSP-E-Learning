@@ -29,6 +29,7 @@ const ComingSoonOverlaySmall: React.FC<ComingSoonOverlaySmallProps> = ({
     <div
       className={`absolute inset-0 backdrop-blur-sm rounded-lg flex flex-col overflow-hidden shadow-md ${className}`}
       aria-hidden="true"
+      data-testid="coming-soon-overlay"
     >
       {/* Banner-Bereich */}
       {bannerText && (
