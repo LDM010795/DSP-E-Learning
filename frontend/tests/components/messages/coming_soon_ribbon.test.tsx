@@ -18,12 +18,12 @@ describe("ComingSoonRibbon", () => {
         text="Coming Soon"
         color="black"
         backgroundColor="#123456"
-      />
+      />,
     );
     const ribbon = screen.getByText("Coming Soon");
     expect(ribbon).toHaveStyle({ zIndex: "2" });
-    expect(ribbon.parentElement).toHaveStyle({color: "rgb(0, 0, 0)",});
-    expect(ribbon.parentElement).toHaveStyle({backgroundColor: "#123456",});
+    expect(ribbon.parentElement).toHaveStyle({ color: "rgb(0, 0, 0)" });
+    expect(ribbon.parentElement).toHaveStyle({ backgroundColor: "#123456" });
   });
 
   it("applies top-right position styles by default", () => {
@@ -45,6 +45,4 @@ describe("ComingSoonRibbon", () => {
       transform: "rotate(-45deg)",
     });
   });
-
-
 });

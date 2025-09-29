@@ -8,7 +8,7 @@ describe("ComingSoonOverlaySmall", () => {
     render(<ComingSoonOverlaySmall />);
     expect(screen.getByText("In Entwicklung")).toBeInTheDocument();
     expect(
-      screen.getByText("Wir arbeiten mit Hochdruck an dieser Funktion.")
+      screen.getByText("Wir arbeiten mit Hochdruck an dieser Funktion."),
     ).toBeInTheDocument();
   });
 
@@ -18,7 +18,7 @@ describe("ComingSoonOverlaySmall", () => {
         bannerText="Custom Banner"
         message="Custom Message"
         subMessage="Custom Sub"
-      />
+      />,
     );
     expect(screen.getByText("Custom Banner")).toBeInTheDocument();
     expect(screen.getByText("Custom Message")).toBeInTheDocument();
@@ -31,7 +31,11 @@ describe("ComingSoonOverlaySmall", () => {
   });
 
   it("uses custom icon when provided", () => {
-    render(<ComingSoonOverlaySmall icon={<IoSettingsOutline data-testid="custom-icon" />} />);
+    render(
+      <ComingSoonOverlaySmall
+        icon={<IoSettingsOutline data-testid="custom-icon" />}
+      />,
+    );
     expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
   });
 
@@ -41,11 +45,16 @@ describe("ComingSoonOverlaySmall", () => {
         className="outer-class"
         bannerClassName="banner-class"
         contentClassName="content-class"
-      />
+      />,
     );
     const container = screen.getByTestId("coming-soon-overlay");
     expect(container).toHaveClass("outer-class");
-    expect(screen.getByText("In Entwicklung").parentElement).toHaveClass("banner-class");
-    expect(screen.getByText("Wir arbeiten mit Hochdruck an dieser Funktion.").parentElement).toHaveClass("content-class");
+    expect(screen.getByText("In Entwicklung").parentElement).toHaveClass(
+      "banner-class",
+    );
+    expect(
+      screen.getByText("Wir arbeiten mit Hochdruck an dieser Funktion.")
+        .parentElement,
+    ).toHaveClass("content-class");
   });
 });

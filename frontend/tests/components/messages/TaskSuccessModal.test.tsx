@@ -4,13 +4,13 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import TaskSuccessModal from "@components/messages/TaskSuccessModal.tsx";
 
 describe("TaskSuccessModal", () => {
-    beforeAll(() => {
-        vi.mock("react-confetti", () => {
-  return {
-    default: () => <div data-testid="confetti-mock" />,
-  };
-});
-    })
+  beforeAll(() => {
+    vi.mock("react-confetti", () => {
+      return {
+        default: () => <div data-testid="confetti-mock" />,
+      };
+    });
+  });
 
   it("does not render when isOpen=false", () => {
     render(
@@ -19,7 +19,7 @@ describe("TaskSuccessModal", () => {
         onClose={vi.fn()}
         taskTitle="Test Task"
         onNextTask={vi.fn()}
-      />
+      />,
     );
     expect(screen.queryByText("Wow!")).toBeNull();
   });
@@ -31,7 +31,7 @@ describe("TaskSuccessModal", () => {
         onClose={vi.fn()}
         taskTitle="My Task"
         onNextTask={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText("Wow!")).toBeInTheDocument();
     expect(screen.getByText("My Task")).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe("TaskSuccessModal", () => {
         onClose={onClose}
         taskTitle="My Task"
         onNextTask={vi.fn()}
-      />
+      />,
     );
     fireEvent.click(screen.getByRole("dialog").parentElement!); // backdrop
     expect(onClose).toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe("TaskSuccessModal", () => {
         onClose={onClose}
         taskTitle="My Task"
         onNextTask={vi.fn()}
-      />
+      />,
     );
     fireEvent.click(screen.getByLabelText("Schließen"));
     expect(onClose).toHaveBeenCalled();
@@ -72,10 +72,10 @@ describe("TaskSuccessModal", () => {
         onClose={vi.fn()}
         taskTitle="My Task"
         onNextTask={vi.fn()}
-      />
+      />,
     );
     expect(
-      screen.getByRole("button", { name: "Weiter zur nächsten Aufgabe" })
+      screen.getByRole("button", { name: "Weiter zur nächsten Aufgabe" }),
     ).toBeInTheDocument();
   });
 
@@ -87,10 +87,10 @@ describe("TaskSuccessModal", () => {
         taskTitle="My Task"
         onNextTask={vi.fn()}
         isLastTask
-      />
+      />,
     );
     expect(
-      screen.getByRole("button", { name: "Zur Modulübersicht" })
+      screen.getByRole("button", { name: "Zur Modulübersicht" }),
     ).toBeInTheDocument();
   });
 
@@ -102,10 +102,10 @@ describe("TaskSuccessModal", () => {
         onClose={vi.fn()}
         taskTitle="My Task"
         onNextTask={onNextTask}
-      />
+      />,
     );
     fireEvent.click(
-      screen.getByRole("button", { name: "Weiter zur nächsten Aufgabe" })
+      screen.getByRole("button", { name: "Weiter zur nächsten Aufgabe" }),
     );
     expect(onNextTask).toHaveBeenCalled();
   });
