@@ -48,25 +48,26 @@ export const handlers = [
   }),
 
   http.options(E("/users/me"), async () => {
-    return HttpResponse.json(
-      {
-        status: 200
-      })
+    return HttpResponse.json({
+      status: 200,
+    });
   }),
 
   http.options(E("/users/logout"), async () => {
-    return HttpResponse.json(
-      {
-        status: 200
-      })
+    return HttpResponse.json({
+      status: 200,
+    });
   }),
 
   http.get(E("/users/me"), async () => {
-    return HttpResponse.json(mockUser, { status: 200, })
+    return HttpResponse.json(mockUser, { status: 200 });
   }),
 
   http.post(E("/users/logout"), async () => {
-    return HttpResponse.json({ "detail": "Successfully logged out." }, { status: 205 })
+    return HttpResponse.json(
+      { detail: "Successfully logged out." },
+      { status: 205 },
+    );
   }),
 
   http.post(E("/token/"), async ({ request }) => {
