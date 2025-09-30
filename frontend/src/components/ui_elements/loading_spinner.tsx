@@ -183,6 +183,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   // --- Loading Content Component ---
   const LoadingContent = () => (
     <motion.div
+        data-testid="loading-content"
       className={clsx(
         "flex flex-col items-center justify-center text-center",
         config.spacing,
@@ -196,7 +197,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {/* --- Loading Indicator --- */}
-      <div className="relative">
+      <div className="relative" data-testid="loading-indicator">
         {renderLoadingIndicator()}
 
         {/* Subtle glow effect */}
@@ -209,6 +210,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
+          data-testid="loading-message"
         >
           <p
             className={clsx("font-medium text-gray-700 max-w-sm", config.text)}
@@ -239,6 +241,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.2 }}
+        data-testid="loading-progress"
       >
         <motion.div
           className="h-full bg-gradient-to-r from-dsp-orange to-dsp-orange_medium rounded-full"
