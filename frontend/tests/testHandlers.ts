@@ -185,6 +185,7 @@ export const handlers = [
     }),
   ),
 
+
   /* ----------------------------- Microsoft Auth API ------------------------------ */
   // POST `${MS_API_BASE}/auth/callback/${MS_TOOL}/`
   http.post(M(`/auth/callback/${MS_TOOL}/`), async () => {
