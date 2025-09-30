@@ -183,7 +183,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   // --- Loading Content Component ---
   const LoadingContent = () => (
     <motion.div
-        data-testid="loading-content"
+      data-testid="loading-content"
       className={clsx(
         "flex flex-col items-center justify-center text-center",
         config.spacing,
