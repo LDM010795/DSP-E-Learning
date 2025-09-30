@@ -7,15 +7,14 @@ describe("Breadcrumbs component", () => {
   const items = [
     { label: "Home", path: "/" },
     { label: "Products", path: "/products" },
-    { label: "Shoes" } // last item, no path
+    { label: "Shoes" }, // last item, no path
   ];
-
 
   it("renders breadcrumb items correctly", () => {
     render(
       <MemoryRouter>
         <Breadcrumbs items={items} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // All labels are rendered
@@ -28,7 +27,7 @@ describe("Breadcrumbs component", () => {
     render(
       <MemoryRouter>
         <Breadcrumbs items={items} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const homeLink = screen.getByText("Home");
@@ -47,7 +46,7 @@ describe("Breadcrumbs component", () => {
     render(
       <MemoryRouter>
         <Breadcrumbs items={items} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const lastItem = screen.getByText("Shoes");
@@ -58,7 +57,7 @@ describe("Breadcrumbs component", () => {
     render(
       <MemoryRouter>
         <Breadcrumbs items={items} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Should have 2 separators (n-1)
@@ -70,14 +69,14 @@ describe("Breadcrumbs component", () => {
     const { container: emptyContainer } = render(
       <MemoryRouter>
         <Breadcrumbs items={[]} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(emptyContainer.firstChild).toBeNull();
 
     const { container: undefinedContainer } = render(
       <MemoryRouter>
         <Breadcrumbs items={undefined as any} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(undefinedContainer.firstChild).toBeNull();
   });
@@ -86,7 +85,7 @@ describe("Breadcrumbs component", () => {
     render(
       <MemoryRouter>
         <Breadcrumbs items={items} className="custom-class" />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const nav = screen.getByLabelText("breadcrumb");

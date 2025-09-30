@@ -46,7 +46,11 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = "" }) => {
 
             {/* Trenner anzeigen, außer nach dem letzten Element */}
             {index < items.length - 1 && (
-              <IoChevronForward size={16} className="text-gray-400" data-testid="breadcrumb-separator"/>
+              <IoChevronForward
+                size={16}
+                className="text-gray-400"
+                data-testid="breadcrumb-separator"
+              />
             )}
           </li>
         ))}
