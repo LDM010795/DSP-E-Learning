@@ -1,5 +1,5 @@
 // Accordion.test.tsx
-import { render, screen, fireEvent } from "@testing-library/react";
+import {render, screen, fireEvent, waitForElementToBeRemoved} from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import {Accordion, AccordionItem} from "@components/ui_elements/accordions/accordion.tsx";
 
@@ -14,7 +14,7 @@ describe("Accordion", () => {
         );
 
         expect(screen.getByText("Item 1")).toBeInTheDocument();
-    });
+    })
 
     it("respects defaultOpenId", () => {
         render(
@@ -32,7 +32,7 @@ describe("Accordion", () => {
         expect(screen.queryByText("Content 2")).not.toBeInTheDocument();
     });
 
-    it("toggles content on click", () => {
+    it("toggles content on click", async () => {
         render(
             <Accordion>
                 <AccordionItem id="a1" title="Item 1">
@@ -54,11 +54,13 @@ describe("Accordion", () => {
 
         // close again
         fireEvent.click(button);
+
+        await waitForElementToBeRemoved(() => screen.queryByText("Content 1"));
         expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
         expect(button).toHaveAttribute("aria-expanded", "false");
     });
 
-    it("only one item stays open at a time", () => {
+    it("only one item stays open at a time", async () => {
         render(
             <Accordion>
                 <AccordionItem id="a1" title="Item 1">
@@ -77,6 +79,7 @@ describe("Accordion", () => {
         expect(screen.getByText("Content 1")).toBeInTheDocument();
 
         fireEvent.click(button2);
+        await waitForElementToBeRemoved(() => screen.queryByText("Content 1"));
         expect(screen.getByText("Content 2")).toBeInTheDocument();
         expect(screen.queryByText("Content 1")).not.toBeInTheDocument();
     });
