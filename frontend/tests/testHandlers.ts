@@ -13,6 +13,7 @@
  */
 
 import { http, HttpResponse } from "msw";
+import { mockUser } from "./testMocks";
 
 // Build absolute bases to match axios' absolute requests
 const API_BASE = (
@@ -49,6 +50,10 @@ export const handlers = [
   http.post(E("/token/refresh/"), async () => {
     // Simulate "refresh ok" via cookie-based session; no token body needed
     return HttpResponse.json({ success: true });
+  }),
+
+  http.get(E("/users/me"), async () => {
+    return HttpResponse.json(mockUser, { status: 200 });
   }),
 
   /* ----------------------------- User Admin API ---------------------------------- */
@@ -175,6 +180,17 @@ export const handlers = [
       { error: "Passwords do not match" },
       { status: 400 },
     );
+  }),
+
+  /* ----------------------------------- Modules ----------------------------------- */
+  http.options(E("/modules/user/"), async () => {
+    return HttpResponse.json({
+      status: 200
+    })
+  }),
+
+  http.get(E("/modules/user/"), async () => {
+    return HttpResponse.json([])
   }),
 
   /* ----------------------------------- Stripe ------------------------------------ */
