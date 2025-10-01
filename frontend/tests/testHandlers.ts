@@ -185,12 +185,12 @@ export const handlers = [
   /* ----------------------------------- Modules ----------------------------------- */
   http.options(E("/modules/user/"), async () => {
     return HttpResponse.json({
-      status: 200
-    })
+      status: 200,
+    });
   }),
 
   http.get(E("/modules/user/"), async () => {
-    return HttpResponse.json([])
+    return HttpResponse.json([]);
   }),
 
   /* ----------------------------------- Stripe ------------------------------------ */
