@@ -57,7 +57,7 @@ import { ExamProvider } from "./context/ExamContext.tsx";
 import { Toaster } from "sonner";
 
 // --- Hooks ---
-import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
+import { useMicrosoftAuth } from "./hooks/useMicrosoftAuth.ts";
 import { useAuth } from "./context/AuthContext.tsx";
 
 /**
@@ -90,24 +90,24 @@ const AppContent: React.FC = () => {
   // --- Navigation Configuration ---
   const mainNav = isAuthenticated
     ? [
-        // Nur erlaubte Links anzeigen (einige Routen bewusst ausblenden)
-        ...privateNavLinks.filter(
-          (link) =>
-            ![
-              "/certification-paths", // Zertifikatspfade
-              "/final-exam", // Abschlussprüfungen
-              "/user-stats", // Deine Statistik
-            ].includes(link.to),
-        ),
-        // Kein Back‑Office, keine Content Demo im Header
-      ]
+      // Nur erlaubte Links anzeigen (einige Routen bewusst ausblenden)
+      ...privateNavLinks.filter(
+        (link) =>
+          ![
+            "/certification-paths", // Zertifikatspfade
+            "/final-exam", // Abschlussprüfungen
+            "/user-stats", // Deine Statistik
+          ].includes(link.to),
+      ),
+      // Kein Back‑Office, keine Content Demo im Header
+    ]
     : publicNavLinks;
 
   const rightNav: NavItem[] = isAuthenticated
     ? [
-        { title: "Einstellungen", to: "/settings" },
-        { title: "Ausloggen", action: logout },
-      ]
+      { title: "Einstellungen", to: "/settings" },
+      { title: "Ausloggen", action: logout },
+    ]
     : [{ title: "Einloggen", action: openLoginPopup }];
 
   // --- Check if current page should have full-screen layout (no margins) ---
