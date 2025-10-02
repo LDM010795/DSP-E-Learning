@@ -45,17 +45,48 @@ async function parseJsonObject(
 }
 
 export const handlers = [
-  /* ----------------------------- Auth (token refresh) ----------------------------- */
+  /* ----------------------------- Auth -------------------------------------------- */
   // api.ts calls axios.post(`${API_URL}/token/refresh/`, ...)
   http.post(E("/token/refresh/"), async () => {
     // Simulate "refresh ok" via cookie-based session; no token body needed
     return HttpResponse.json({ success: true });
   }),
 
+  http.options(E("/users/me"), async () => {
+    return HttpResponse.json({
+      status: 200,
+    });
+  }),
+
+  http.options(E("/users/logout"), async () => {
+    return HttpResponse.json({
+      status: 200,
+    });
+  }),
+
   http.get(E("/users/me"), async () => {
     return HttpResponse.json(mockUser, { status: 200 });
   }),
 
+  http.post(E("/users/logout"), async () => {
+    return HttpResponse.json(
+      { detail: "Successfully logged out." },
+      { status: 205 },
+    );
+  }),
+
+  http.post(E("/token/"), async ({ request }) => {
+    const { username, password } = (await request.json()) as {
+      username: string;
+      password: string;
+    };
+
+    if (username === "testuser" && password === "pass") {
+      return HttpResponse.json({ token: 123 });
+    }
+
+    return HttpResponse.json({ detail: "wrong wrong" }, { status: 401 });
+  }),
   /* ----------------------------- User Admin API ---------------------------------- */
   // Base path in userAdminApi: /users/admin/users
   // All requests are relative to API_BASE (elearning)
