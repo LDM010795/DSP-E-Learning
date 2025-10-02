@@ -176,6 +176,7 @@ const TaskSuccessModal: React.FC<TaskSuccessModalProps> = ({
               animate="visible"
               exit="exit"
               onClick={(e) => e.stopPropagation()} // Klick im Modal verhindert Schließen
+              role="dialog"
             >
               {/* Schließen-Button */}
               <button

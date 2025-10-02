@@ -23,6 +23,10 @@ const MS_API_BASE = (
   import.meta.env.VITE_MICROSOFT_API_URL ??
   "http://127.0.0.1:8000/api/microsoft"
 ).replace(/\/+$/, "");
+const API_PAYMENT_BASE = "http://127.0.0.1:8000/api/payments".replace(
+  /\/+$/,
+  "",
+);
 const MS_TOOL = (
   import.meta.env.VITE_MICROSOFT_TOOL_SLUG ?? "e-learning"
 ).replace(/^\/+|\/+$/g, "");
@@ -30,6 +34,7 @@ const MS_TOOL = (
 // Helpers to keep endpoints readable
 const E = (path: string) => `${API_BASE}${path}`;
 const M = (path: string) => `${MS_API_BASE}${path}`;
+const P = (path: string) => `${API_PAYMENT_BASE}${path}`;
 
 // Helper: parse request body as a plain object (TS-safe narrowing)
 async function parseJsonObject(
@@ -207,6 +212,37 @@ export const handlers = [
       { status: 400 },
     );
   }),
+
+  /* ----------------------------------- Modules ----------------------------------- */
+  http.options(E("/modules/user/"), async () => {
+    return HttpResponse.json({
+      status: 200,
+    });
+  }),
+
+  http.get(E("/modules/user/"), async () => {
+    return HttpResponse.json([]);
+  }),
+
+  /* ----------------------------------- Stripe ------------------------------------ */
+  http.post(P(`/stripe/checkout-session/`), async () =>
+    HttpResponse.json({
+      checkout_url: "https://stripe.test/checkout-session-123",
+      id: "default",
+    }),
+  ),
+
+  http.post(P(`/stripe/setup-intent/`), async () =>
+    HttpResponse.json({
+      client_secret: "cs_test",
+    }),
+  ),
+
+  http.get(P(`/stripe/config/`), async () =>
+    HttpResponse.json({
+      publishableKey: "pubkey_test",
+    }),
+  ),
 
   /* ----------------------------- Microsoft Auth API ------------------------------ */
   // POST `${MS_API_BASE}/auth/callback/${MS_TOOL}/`
