@@ -7,14 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isInitialized } = useAuth();
   const location = useLocation();
 
-  if (isLoading) {
-    // Zeige eine Ladeanzeige, während der Auth-Status geprüft wird
-    // Dies verhindert ein kurzes Aufblitzen der Login-Seite oder der geschützten Seite
-    return <div>Authentifizierung wird geprüft...</div>;
-  }
+  if (!isInitialized) return null; // wait for first check to finish
+
 
   if (!isAuthenticated) {
     // Benutzer nicht eingeloggt, leite zur Startseite um.
@@ -24,7 +21,37 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
   }
 
   // Benutzer ist eingeloggt, rendere die angeforderte Route
-  return <Outlet />; // Rendert die Kind-Route (z.B. <Dashboard />)
+  return (
+  <>
+    <Outlet />
+    {isLoading && (
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backdropFilter: "blur(4px)",
+          background: "rgba(0,0,0,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+        }}
+      >
+        <div
+          style={{
+            padding: "12px 16px",
+            borderRadius: 8,
+            background: "rgba(255,255,255,0.85)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+            fontWeight: 600,
+          }}
+        >
+          Wird geladen …
+        </div>
+      </div>
+    )}
+  </>
+);
 };
 
 export default ProtectedRoute;

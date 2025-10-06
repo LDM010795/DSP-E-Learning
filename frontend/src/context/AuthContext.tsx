@@ -86,6 +86,7 @@ interface AuthContextType {
   setOAuthLogin: (dummy: null) => void;
   /** Loading state for authentication operations */
   isLoading: boolean;
+  isInitialized: boolean;
 }
 
 /**
@@ -122,6 +123,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    * Starts as false until logged in
    */
   const [isAuthenticated, setAuthentification] = useState<boolean>(false);
+
+  /**
+   * Initialization state to prevent multiple localStorage reads
+   * Ensures context is fully initialized before rendering children
+   * Starts as false until initialization is complete
+   */
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
   /**
    * Handle user data using /users/me api endpoint
    */
@@ -133,7 +141,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await api.get("users/me");
+        const response = await api.get("/users/me/");
         if (response.status == 200) {
           setUser(response.data);
           setAuthentification(true);
@@ -144,6 +152,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         console.error(error);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -178,14 +187,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           return { success: false, error: "Unerwartete Serverantwort." };
         }
 
-        setAuthentification(true);
-
-        // set user information
+        // set user information FIRST, then flip auth
         try {
-          const response = await api.get("users/me");
-          setUser(response.data);
+          const me = await api.get("/users/me/");
+          setUser(me.data);
         } catch {
           console.error("Nutzerdaten nicht gefunden");
+          return { success: false, error: "Nutzerdaten nicht gefunden." };
         }
 
         return {
@@ -211,6 +219,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         };
       } finally {
         setIsLoading(false);
+        setIsInitialized(true); // ensure initialized after first login
       }
     },
     [],
@@ -263,10 +272,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const setOAuthLogin = useStableCallback(async (): Promise<void> => {
     setIsLoading(true);
     try {
-      setAuthentification(true);
-      // set user information
-      const response = await api.get("users/me");
-      setUser(response.data);
+      // Fetch user first
+      const me = await api.get("/users/me/");
+      setUser(me.data);
+      setAuthentification(true); // after user is set
 
       console.log(
         "Nutzer eingeloggt und Daten auf elearning Plattform gefunden",
@@ -277,6 +286,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       // Cleanup on error
     } finally {
       setIsLoading(false);
+      setIsInitialized(true);
     }
   }, []);
 
@@ -286,14 +296,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-      user,
-      isAuthenticated,
-      login,
-      logout,
-      setOAuthLogin,
-      isLoading,
+        user,
+        isAuthenticated,
+        login,
+        logout,
+        setOAuthLogin,
+        isLoading,
+        isInitialized,
     }),
-    [user, isAuthenticated, login, logout, setOAuthLogin, isLoading],
+    [user, isAuthenticated, login, logout, setOAuthLogin, isLoading, isInitialized],
   );
 
   return (
