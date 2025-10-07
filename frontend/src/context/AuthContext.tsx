@@ -191,6 +191,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         try {
           const me = await api.get("/users/me/");
           setUser(me.data);
+          setAuthentification(true);
         } catch {
           console.error("Nutzerdaten nicht gefunden");
           return { success: false, error: "Nutzerdaten nicht gefunden." };
