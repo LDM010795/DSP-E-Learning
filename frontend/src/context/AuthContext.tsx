@@ -297,15 +297,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
    */
   const contextData = useShallowMemo(
     () => ({
-        user,
-        isAuthenticated,
-        login,
-        logout,
-        setOAuthLogin,
-        isLoading,
-        isInitialized,
+      user,
+      isAuthenticated,
+      login,
+      logout,
+      setOAuthLogin,
+      isLoading,
+      isInitialized,
     }),
-    [user, isAuthenticated, login, logout, setOAuthLogin, isLoading, isInitialized],
+    [
+      user,
+      isAuthenticated,
+      login,
+      logout,
+      setOAuthLogin,
+      isLoading,
+      isInitialized,
+    ],
   );
 
   return (

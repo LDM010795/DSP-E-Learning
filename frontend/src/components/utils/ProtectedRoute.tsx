@@ -12,7 +12,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
 
   if (!isInitialized) return null; // wait for first check to finish
 
-
   if (!isAuthenticated) {
     // Benutzer nicht eingeloggt, leite zur Startseite um.
     // Speichere den ursprünglichen Pfad, um nach dem Login dorthin zurückzukehren (optional)
@@ -22,36 +21,36 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
 
   // Benutzer ist eingeloggt, rendere die angeforderte Route
   return (
-  <>
-    <Outlet />
-    {isLoading && (
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          backdropFilter: "blur(4px)",
-          background: "rgba(0,0,0,0.15)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 9999,
-        }}
-      >
+    <>
+      <Outlet />
+      {isLoading && (
         <div
           style={{
-            padding: "12px 16px",
-            borderRadius: 8,
-            background: "rgba(255,255,255,0.85)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-            fontWeight: 600,
+            position: "fixed",
+            inset: 0,
+            backdropFilter: "blur(4px)",
+            background: "rgba(0,0,0,0.15)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
           }}
         >
-          Wird geladen …
+          <div
+            style={{
+              padding: "12px 16px",
+              borderRadius: 8,
+              background: "rgba(255,255,255,0.85)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+              fontWeight: 600,
+            }}
+          >
+            Wird geladen …
+          </div>
         </div>
-      </div>
-    )}
-  </>
-);
+      )}
+    </>
+  );
 };
 
 export default ProtectedRoute;

@@ -54,12 +54,12 @@ api.interceptors.response.use(
     // Prüfe auf 401 Fehler UND dass es nicht die Refresh-Route selbst ist UND dass es kein Wiederholungsversuch ist
     // Der Pfad ist relativ zur baseURL, daher wird "/api" hier entfernt.
     if (
-        error.response?.status === 401 &&
-        !originalRequest.url?.includes("/token/refresh/") &&
-        !originalRequest._retry &&
-        !originalRequest.url?.includes("/token/") &&
-        !originalRequest.url?.includes("/users/me/") // skip refresh for the probe
-) {
+      error.response?.status === 401 &&
+      !originalRequest.url?.includes("/token/refresh/") &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/token/") &&
+      !originalRequest.url?.includes("/users/me/") // skip refresh for the probe
+    ) {
       if (isRefreshing) {
         // Wenn bereits ein Refresh läuft, füge die Anfrage zur Warteschlange hinzu
         return new Promise((resolve, reject) => {
@@ -77,8 +77,7 @@ api.interceptors.response.use(
 
       try {
         // Refresh erfolgt über Cookie → kein Token im Body mehr nötig
-        await api.post("/token/refresh/", {});  // uses same baseURL + withCredentials
-
+        await api.post("/token/refresh/", {}); // uses same baseURL + withCredentials
 
         processQueue(null);
         return api(originalRequest);
