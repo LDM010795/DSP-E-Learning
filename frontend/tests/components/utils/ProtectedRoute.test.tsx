@@ -27,32 +27,49 @@ describe("ProtectedRoute", () => {
     );
   }
 
-  it("shows loading indicator when isLoading is true", () => {
-    useAuthMock.mockReturnValue({
-      isLoading: true,
-    });
+  it("renders nothing while not initialized", () => {
+      useAuthMock.mockReturnValue({
+          isInitialized: false,
+          isAuthenticated: false,
+          isLoading: true,
+      });
 
-    renderWithRouter();
-    expect(
-      screen.getByText("Authentifizierung wird geprüft..."),
-    ).toBeInTheDocument();
+      const { container } = renderWithRouter();
+      expect(container.firstChild).toBeNull();
   });
 
-  it("redirects to login when not authenticated", () => {
-    useAuthMock.mockReturnValue({
-      isAuthenticated: false,
-    });
+  it("shows blur overlay while authenticated and loading", () => {
+      useAuthMock.mockReturnValue({
+          isInitialized: true,
+          isAuthenticated: true,
+          isLoading: true,
+      });
 
-    renderWithRouter();
-    expect(screen.getByText("Login Page")).toBeInTheDocument();
+      renderWithRouter();
+      expect(screen.getByText("Wird geladen …")).toBeInTheDocument();
   });
 
-  it("renders outlet when authenticated", () => {
-    useAuthMock.mockReturnValue({
-      isAuthenticated: true,
-    });
 
-    renderWithRouter();
-    expect(screen.getByText("Protected Content")).toBeInTheDocument();
+  it("redirects to login when not authenticated after init", () => {
+      useAuthMock.mockReturnValue({
+          isInitialized: true,
+          isAuthenticated: false,
+          isLoading: false,
+      });
+
+      renderWithRouter();
+      expect(screen.getByText("Login Page")).toBeInTheDocument();
+  });
+
+
+  it("renders outlet when authenticated and not loading", () => {
+      useAuthMock.mockReturnValue({
+          isInitialized: true,
+          isAuthenticated: true,
+          isLoading: false,
+      });
+
+      renderWithRouter();
+      expect(screen.getByText("Protected Content")).toBeInTheDocument();
   });
 });
