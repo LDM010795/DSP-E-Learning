@@ -148,14 +148,15 @@ describe("AnimatedRoutes", () => {
   });
 
   it("renders force password change when signed in", async () => {
-    signIn();
-    renderRoute("/force-password-change");
-    expect(
-      await screen.queryByRole("heading", {
-        name: "Passwort ändern erforderlich",
-      }),
-    ).toBeInTheDocument();
+      signIn();
+      renderRoute("/force-password-change");
+      expect(
+          await screen.findByRole("heading", {
+              name: "Passwort ändern erforderlich",
+          }),
+          ).toBeInTheDocument();
   });
+
 
   it("does not render content demo when signed out", async () => {
     signOut();
@@ -166,12 +167,13 @@ describe("AnimatedRoutes", () => {
   });
 
   it("renders content demo change when signed in", async () => {
-    signIn();
-    renderRoute("/content-demo");
-    expect(
-      await screen.queryByRole("heading", { name: "Content Demo" }),
-    ).toBeInTheDocument();
+      signIn();
+      renderRoute("/content-demo");
+      expect(
+          await screen.findByRole("heading", { name: "Content Demo" }),
+          ).toBeInTheDocument();
   });
+
 
   it("does not render Dashboard when signed out", async () => {
     signOut();
@@ -308,12 +310,13 @@ describe("AnimatedRoutes", () => {
   });
 
   it("renders User Statistics when signed in", async () => {
-    signIn();
-    renderRoute("/user-stats");
-    expect(
-      await screen.queryByRole("heading", { name: "Statistiken" }),
-    ).toBeInTheDocument();
+      signIn();
+      renderRoute("/user-stats");
+      expect(
+          await screen.findByRole("heading", { name: "Statistiken" }),
+          ).toBeInTheDocument();
   });
+
 
   it("does not render Settings when signed out", async () => {
     signOut();
@@ -324,12 +327,13 @@ describe("AnimatedRoutes", () => {
   });
 
   it("renders Settings when signed in", async () => {
-    signIn();
-    renderRoute("/settings");
-    expect(
-      await screen.queryByRole("heading", { name: "Einstellungen" }),
-    ).toBeInTheDocument();
+      signIn();
+      renderRoute("/settings");
+      expect(
+          await screen.findByRole("heading", { name: "Einstellungen" }),
+          ).toBeInTheDocument();
   });
+
 
   it("does not render Admin Panel when signed out", async () => {
     signOut();
@@ -350,8 +354,9 @@ describe("AnimatedRoutes", () => {
   });
 
   it("renders Admin Panel when signed in and admin rights", async () => {
-    signIn();
-    renderRoute("/admin", true);
-    expect(screen.queryByText("Mocked Admin Panel")).toBeInTheDocument();
+      signIn();
+      renderRoute("/admin", true);
+      expect(await screen.findByText("Mocked Admin Panel")).toBeInTheDocument();
   });
+
 });
