@@ -132,7 +132,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {/* --- Background and Notifications --- */}
       <DSPBackground />
       <Toaster position="bottom-right" richColors />
@@ -146,7 +146,7 @@ const AppContent: React.FC = () => {
       />
 
       {/* --- Main Content Area --- */}
-      <main className="flex-grow overflow-auto">
+      <main className="flex-grow">
         {isFullScreenPage ? (
           // Full-screen layout for landing page and subscriptions (no margins)
           <AnimatedRoutes isAdmin={isAdmin} />
