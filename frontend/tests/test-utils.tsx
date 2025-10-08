@@ -38,7 +38,6 @@ export const mockAuth = {
   setOAuthLogin: vi.fn(),
 };
 
-
 vi.mock("../src/context/AuthContext", async (importOriginal) => {
   const actual = await importOriginal<any>();
   return {
@@ -46,7 +45,6 @@ vi.mock("../src/context/AuthContext", async (importOriginal) => {
     useAuth: () => mockAuth,
   };
 });
-
 
 export function renderWithAppProviders(ui: UI, route = "/") {
   const Wrapper = ({ children }: { children: ReactNode }) => (
@@ -142,7 +140,7 @@ export function signIn(user = { id: 1, name: "Test User" }) {
   mockAuth.user = user;
   mockAuth.isAuthenticated = true;
   mockAuth.isInitialized = true; // ensure gate is open
-  mockAuth.isLoading = false;    // no overlay
+  mockAuth.isLoading = false; // no overlay
 }
 
 export function signOut() {
@@ -151,4 +149,3 @@ export function signOut() {
   mockAuth.isInitialized = true; // still initialized, but signed out
   mockAuth.isLoading = false;
 }
-
