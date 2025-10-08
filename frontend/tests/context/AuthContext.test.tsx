@@ -28,7 +28,6 @@ const API = (path: string) => {
   return base + (clean.endsWith("/") ? clean : clean + "/");
 };
 
-
 beforeEach(() => {
   vi.clearAllMocks();
 });
@@ -83,11 +82,10 @@ describe("AuthContext", () => {
   it("Login invalid credentials (401)", async () => {
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
     server.use(
-        http.get(API("users/me"), async () =>
-                HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
-            ),
-        );
-
+      http.get(API("users/me"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
+    );
 
     let loginResult: any;
     await act(async () => {
@@ -126,14 +124,13 @@ describe("AuthContext", () => {
   it("Login fails when Backend responds with 500", async () => {
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
     server.use(
-        http.post(API("token/"), async () => {
-            throw new Error("Network Error");
-        }),
-        http.get(API("users/me"), async () =>
-                HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
-            ),
+      http.post(API("token/"), async () => {
+        throw new Error("Network Error");
+      }),
+      http.get(API("users/me"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
     );
-
 
     let loginResult: any;
     await act(async () => {
@@ -169,15 +166,14 @@ describe("AuthContext", () => {
   it("Logout endpoint is called only once", async () => {
     let logoutCalled = 0;
     server.use(
-        http.post(API("users/logout"), async () => {
-            logoutCalled++;
-            return HttpResponse.json(
-                { detail: "Successfully logged out." },
-                { status: 205 },
-                );
-        }),
+      http.post(API("users/logout"), async () => {
+        logoutCalled++;
+        return HttpResponse.json(
+          { detail: "Successfully logged out." },
+          { status: 205 },
+        );
+      }),
     );
-
 
     const { result } = await waitFor(() =>
       renderHook(() => useAuth(), { wrapper: AuthProvider }),
@@ -206,11 +202,10 @@ describe("AuthContext", () => {
 
   it("fails OAuth login when API returns error", async () => {
     server.use(
-        http.get(API("users/me"), async () =>
-                HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
-            ),
+      http.get(API("users/me"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
     );
-
 
     const { result } = await waitFor(() =>
       renderHook(() => useAuth(), { wrapper: AuthProvider }),
@@ -227,19 +222,19 @@ describe("AuthContext", () => {
 
   it("Login mit empty credentials fails", async () => {
     server.use(
-        http.post(API("token/"), async () =>
-                HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
-            ),
-        http.get(API("users/me"), async () =>
-                HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
-            ),
+      http.post(API("token/"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
+      http.get(API("users/me"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
     );
 
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
 
     let loginResult: any;
     await act(async () => {
-        loginResult = await result.current.login({ username: "", password: "" });
+      loginResult = await result.current.login({ username: "", password: "" });
     });
 
     expect(loginResult.success).toBe(false);
