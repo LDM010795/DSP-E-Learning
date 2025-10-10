@@ -14,11 +14,13 @@ describe("HeaderNavigation", () => {
           logo={<img src="logo.png" alt="Logo" className="h-12" />}
           links={[]}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const container = screen.getByTestId("logo-container");
-    const link = within(container).getByRole("link", { name: /zum dashboard/i });
+    const link = within(container).getByRole("link", {
+      name: /zum dashboard/i,
+    });
     expect(link).toHaveAttribute("href", "/dashboard");
     expect(within(link).getByRole("img", { name: "Logo" })).toBeInTheDocument();
   });
