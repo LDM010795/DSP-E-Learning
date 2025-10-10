@@ -4,6 +4,7 @@ import { IoCardOutline } from "react-icons/io5";
 import clsx from "clsx";
 import LinkSidebar from "../ui_elements/links/link_sidebar";
 import { HeaderNavigationProps, NavLink, NavItem } from "./header.types";
+import { Link } from "react-router-dom";
 
 const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
   logo,
@@ -78,15 +79,20 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
         <div className="max-w-[95vw] mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
             {/* Left Section: Logo & Mobile Menu */}
-            <div className="flex items-center gap-3">
+            <div
+              className="flex items-center gap-3"
+              data-testid="logo-container"
+            >
               {logo && (
-                <div className="h-8 flex items-center">
-                  <div className="relative">
-                    <div className="p-1 rounded-lg hover:scale-105 transition-transform duration-200">
-                      {logo}
+                <Link to={"/dashboard"} aria-label={"Zum Dashboard"}>
+                  <div className="h-8 flex items-center">
+                    <div className="relative">
+                      <div className="p-1 rounded-lg hover:scale-105 transition-transform duration-200">
+                        {logo}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               )}
 
               {/* Mobile Menu Button */}
