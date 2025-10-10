@@ -2,20 +2,25 @@ import HeaderNavigation from "@/components/layouts/header";
 import { renderWithAppProviders } from "../../test-utils";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { server } from "../../testServer.ts";
+import { MemoryRouter } from "react-router-dom";
 
 beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }));
 
 describe("HeaderNavigation", () => {
-  it("shows logo", () => {
-    const testLogo = "test-logo.png";
+  it("shows logo with link to  /dashboard", () => {
     render(
-      <HeaderNavigation
-        logo={<img src={testLogo} alt="Logo" className="h-12" />}
-        links={[]}
-      />,
+      <MemoryRouter initialEntries={["/"]}>
+        <HeaderNavigation
+          logo={<img src="logo.png" alt="Logo" className="h-12" />}
+          links={[]}
+        />
+      </MemoryRouter>
     );
-    const logo = screen.getByRole("img", { name: "Logo" });
-    expect(logo).toBeInTheDocument();
+
+    const container = screen.getByTestId("logo-container");
+    const link = within(container).getByRole("link", { name: /zum dashboard/i });
+    expect(link).toHaveAttribute("href", "/dashboard");
+    expect(within(link).getByRole("img", { name: "Logo" })).toBeInTheDocument();
   });
 
   it("shows nav items", () => {
