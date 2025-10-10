@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { useMicrosoftAuth } from "../../../hooks/use_microsoft_auth";
+import { useMicrosoftAuth } from "../../../hooks/useMicrosoftAuth";
 
 interface MicrosoftLoginButtonProps {
   className?: string;

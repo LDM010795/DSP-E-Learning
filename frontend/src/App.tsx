@@ -57,7 +57,7 @@ import { ExamProvider } from "./context/ExamContext.tsx";
 import { Toaster } from "sonner";
 
 // --- Hooks ---
-import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
+import { useMicrosoftAuth } from "./hooks/useMicrosoftAuth.ts";
 import { useAuth } from "./context/AuthContext.tsx";
 
 /**
