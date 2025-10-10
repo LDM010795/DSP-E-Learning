@@ -30,15 +30,14 @@ const { authWithMs, startMsLogin, extractCallback, cleanupUrl } = vi.hoisted(
         ) => Promise<MicrosoftAuthResponse>
       >(),
     startMsLogin: vi.fn(),
-    extractCallback:
-      vi.fn<
-        () => {
-          code?: string;
-          state?: string;
-          error?: string;
-          errorDescription?: string;
-        }
-      >(),
+    extractCallback: vi.fn<
+      () => {
+        code?: string;
+        state?: string;
+        error?: string;
+        errorDescription?: string;
+      }
+    >(),
     cleanupUrl: vi.fn(),
   }),
 );
