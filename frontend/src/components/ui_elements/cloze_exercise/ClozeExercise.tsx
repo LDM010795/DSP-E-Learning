@@ -34,16 +34,11 @@ type ClozeBlank = { type: "blank"; id: string; correct: string[] };
 
 const normalize = (s: string) => s.trim().toLowerCase();
 const isCorrectAnswer = (user: string, correct: string[]) =>
-    correct.some((c) => normalize(c) === normalize(user));
+    correct.some(c => normalize(c) === normalize(user));
 
 export const ClozeExercise = memo<ClozeExerciseProps>(
-    ({
-        title = "Fülle die Lücken aus:",
-        clozeText,
-        showSolutionWords = false,
-        wrongSolutionWords = [],
-        onSubmit,
-    }) => {
+    ({ title = "Fülle die Lücken aus:", clozeText, showSolutionWords = false, wrongSolutionWords = [], onSubmit }) => {
+
         const clozeTextWithIds = useMemo(() => {
             return clozeText.map((part, index) => {
                 if (part.type === "blank") {
@@ -55,33 +50,22 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
 
         const blanks = useMemo(
             () => clozeTextWithIds.filter((t): t is ClozeBlank => t.type === "blank"),
-            [clozeTextWithIds]
+            [clozeTextWithIds],
         );
 
         const [answers, setAnswers] = useState<Record<string, string>>({});
         const [solutionWords, setSolutionWords] = useState<SolutionWord[]>(() => {
-            if (!showSolutionWords)
-                return [];
+            if (!showSolutionWords) return [];
 
             const initialWords = [
-                ...clozeTextWithIds.filter(p => p.type === "blank").map(p => p.correct[0]),
+                ...clozeTextWithIds
+                    .filter((p) => p.type === "blank")
+                    .map((p) => p.correct[0]),
                 ...wrongSolutionWords,
             ].sort();
 
             return initialWords.map((word, i) => ({ id: i.toString(), word, available: true }));
         });
-
-        // --- Feedback-State unter dem Button ---
-        const [feedback, setFeedback] = useState<{
-            type: "success" | "error" | null;
-            message: string;
-        }>({ type: null, message: "" });
-
-        // Feedback zurücksetzen, sobald der/die Nutzer:in weiterarbeitet
-        useEffect(() => {
-            if (feedback.type) setFeedback({ type: null, message: "" });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [answers]);
 
         // Hilfsfunktion: gibt den Text zurück, den wir prüfen wollen (immer ein String)
         const getUserAnswerText = (blankId: string) => {
@@ -90,7 +74,7 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
 
             // Wenn der Drag & Drop-Modus aktiv ist, ist answers[blankId] eine word-id -> löse sie auf
             if (showSolutionWords) {
-                const word = solutionWords.find(w => w.id === val);
+                const word = solutionWords.find((w) => w.id === val);
                 return word?.word ?? "";
             }
 
@@ -99,17 +83,18 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
         };
 
         const allFilled = blanks.every(b => getUserAnswerText(b.id).trim().length > 0);
+        const allCorrect = blanks.every(b => isCorrectAnswer(getUserAnswerText(b.id), b.correct));
 
         const handleDropIntoBlank = (blankId: string, wordId: string) => {
-            const droppedWord = solutionWords.find(w => w.id === wordId);
+            const droppedWord = solutionWords.find((w) => w.id === wordId);
             if (!droppedWord) return;
 
             // Finde, ob das Wort bereits woanders genutzt wurde
             const previousBlankId = Object.entries(answers).find(
-                ([, id]) => id === wordId
+                ([, id]) => id === wordId,
             )?.[0];
 
-            setAnswers(prev => {
+            setAnswers((prev) => {
                 const updated = { ...prev };
 
                 // Wenn das Wort schon irgendwo war → alte Lücke leeren
@@ -120,10 +105,10 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                 // Wenn Ziel-Lücke schon ein anderes Wort hat → das andere Wort freigeben
                 const replacedWordId = prev[blankId];
                 if (replacedWordId && replacedWordId !== wordId) {
-                    setSolutionWords(prevWords =>
-                        prevWords.map(w =>
-                            w.id === replacedWordId ? { ...w, available: true } : w
-                        )
+                    setSolutionWords((prevWords) =>
+                        prevWords.map((w) =>
+                            w.id === replacedWordId ? { ...w, available: true } : w,
+                        ),
                     );
                 }
 
@@ -133,24 +118,20 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
             });
 
             // Das gezogene Wort als „nicht verfügbar“ markieren
-            setSolutionWords(prev =>
-                prev.map(w =>
-                    w.id === wordId ? { ...w, available: false } : w
-                )
+            setSolutionWords((prev) =>
+                prev.map((w) => (w.id === wordId ? { ...w, available: false } : w)),
             );
         };
 
         const handleReturnToBank = (wordId: string) => {
             // Blank finden, in dem dieses Wort aktuell liegt
-            const blankId = Object.keys(answers).find(
-                (key) => answers[key] === wordId
-            );
+            const blankId = Object.keys(answers).find(key => answers[key] === wordId);
             if (!blankId)
                 return;
 
             // Wort wieder aktivieren
-            setSolutionWords(prev =>
-                prev.map(w => (w.id === wordId ? { ...w, available: true } : w))
+            setSolutionWords((prev) =>
+                prev.map((w) => (w.id === wordId ? { ...w, available: true } : w)),
             );
 
             // Blank leeren
@@ -159,7 +140,7 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                 delete copy[blankId];
                 return copy;
             });
-        };
+        }
 
         const handleQuickPlace = (wordId: string) => {
             // erste freie Lücke finden
@@ -174,7 +155,7 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
             if (!wordId) return;
 
             setSolutionWords((prev) =>
-                prev.map((w) => (w.id === wordId ? { ...w, available: true } : w))
+                prev.map((w) => (w.id === wordId ? { ...w, available: true } : w)),
             );
 
             setAnswers((prev) => {
@@ -185,25 +166,8 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
         };
 
         const checkResults = () => {
-            // Zähle korrekte Antworten
-            const correctCount = blanks.reduce((acc, b) => {
-                const user = getUserAnswerText(b.id);
-                return acc + (isCorrectAnswer(user, b.correct) ? 1 : 0);
-            }, 0);
-            const total = blanks.length;
-
-            if (correctCount === total) {
-                setFeedback({
-                    type: "success",
-                    message: "🎉 Alles richtig! Super gemacht!",
-                });
+            if (allCorrect)
                 onSubmit();
-            } else {
-                setFeedback({
-                    type: "error",
-                    message: `Noch nicht ganz: ${correctCount} von ${total} richtig. Schau dir die Lücken nochmal an und probier’s erneut.`,
-                });
-            }
         };
 
         return (
@@ -234,18 +198,15 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                         // --- Drag & Drop Modus ---
                         if (showSolutionWords) {
                             const currentAnswerId = answers[part.id];
-                            const currentWord = solutionWords.find((w) => w.id === currentAnswerId) || null;
+                            const currentWord =
+                                solutionWords.find((w) => w.id === currentAnswerId) || null;
 
                             return (
                                 <ClozeBlank
                                     key={part.id}
                                     id={part.id}
                                     showSolutionWords
-                                    currentWord={
-                                        currentWord
-                                            ? { id: currentWord.id, word: currentWord.word }
-                                            : null
-                                    }
+                                    currentWord={currentWord ? { id: currentWord.id, word: currentWord.word } : null}
                                     onDropWord={(wordId) => handleDropIntoBlank(part.id, wordId)}
                                     onCtrlClear={() => clearBlank(part.id)}
                                 />
@@ -267,32 +228,14 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                     })}
                 </div>
 
-                {/* --- OK-Button --- */}
-                <ClozeSubmitButton
-                    label="Prüfen"
-                    disabled={!allFilled}
-                    onClick={checkResults}
-                />
-
-                {/* --- Feedback unter dem Button --- */}
-                {feedback.type && (
-                    <div
-                        className={[
-                            "mt-3 rounded-md border px-3 py-2 text-sm",
-                            feedback.type === "success"
-                                ? "border-green-200 bg-green-50 text-green-700"
-                                : "border-red-200 bg-red-50 text-red-700",
-                        ].join(" ")}
-                        role="status"
-                        aria-live="polite"
-                    >
-                        {feedback.message}
-                    </div>
-                )}
+                {/* --- OK-Button --- }*/}
+                <ClozeSubmitButton label="Prüfen" disabled={!allFilled} onClick={checkResults} />
             </SubBackground>
         );
     }
 );
 
-ClozeExercise.displayName = "ClozeExercise";
+
+ClozeExercise.displayName = "ClozeExercise"
+
 export default ClozeExercise;
