@@ -193,4 +193,65 @@ describe("ClozeExercise – Drag&Drop-Modus (showSolutionWords=true)", () => {
         const hausInBank = screen.getByTestId("wordbank-0");
         expect(hausInBank).toHaveAttribute("draggable", "true");
     });
+
+    describe("ClozeExercise – Feedback-Anzeige", () => {
+        it("zeigt ein Fehler-Feedback, wenn nicht alle Antworten korrekt sind", async () => {
+            const onSubmit = vi.fn();
+            render(
+                <ClozeExercise
+                    clozeText={baseText}
+                    showSolutionWords={false}
+                    onSubmit={onSubmit}
+                />
+            );
+
+            // Vorher kein Feedback
+            expect(screen.queryByRole("status")).not.toBeInTheDocument();
+
+            // 1x falsch, 1x richtig
+            const inputs = screen.getAllByRole("textbox");
+            fireEvent.change(inputs[0], { target: { value: "falsch" } });
+            fireEvent.change(inputs[1], { target: { value: "GROSS" } });
+
+            // Prüfen
+            fireEvent.click(screen.getByRole("button", { name: "Prüfen" }));
+
+            // onSubmit nicht aufgerufen, Fehlermeldung sichtbar
+            expect(onSubmit).not.toHaveBeenCalled();
+            const status = await screen.findByRole("status");
+            expect(status).toBeInTheDocument();
+            expect(status).toHaveTextContent(/Noch nicht ganz:/i);
+            expect(status).toHaveTextContent(/1\s+von\s+2/i);
+            // Stilklasse für Fehler (aus der Komponente)
+            expect(status).toHaveClass("bg-red-50");
+        });
+
+        it("zeigt ein Erfolgs-Feedback, wenn alle Antworten korrekt sind", async () => {
+            const onSubmit = vi.fn();
+            render(
+                <ClozeExercise
+                    clozeText={baseText}
+                    showSolutionWords={false}
+                    onSubmit={onSubmit}
+                />
+            );
+
+            // Alles korrekt befüllen
+            const inputs = screen.getAllByRole("textbox");
+            fireEvent.change(inputs[0], { target: { value: "Haus" } });
+            fireEvent.change(inputs[1], { target: { value: "gross" } }); // erlaubt per correct[] Alternative
+
+            // Prüfen
+            fireEvent.click(screen.getByRole("button", { name: "Prüfen" }));
+
+            // onSubmit aufgerufen, Erfolgsfeedback sichtbar
+            expect(onSubmit).toHaveBeenCalledTimes(1);
+            const status = await screen.findByRole("status");
+            expect(status).toBeInTheDocument();
+            expect(status).toHaveTextContent(/Alles richtig! Super gemacht!/i);
+            // Stilklasse für Erfolg (aus der Komponente)
+            expect(status).toHaveClass("bg-green-50");
+        });
+    });
+
 });

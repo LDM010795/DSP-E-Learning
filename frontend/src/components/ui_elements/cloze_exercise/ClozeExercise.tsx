@@ -1,10 +1,9 @@
 import { SubBackground } from "@/components/layouts";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo, useState, useEffect } from "react";
 import SolutionWordBank, { SolutionWord } from "./SolutionWordBank";
 import ClozeBlank from "./ClozeBlank";
 import ClozeHeader from "./ClozeHeader";
 import ClozeSubmitButton from "./ClozeSubmitButton";
-
 
 export interface ClozeExerciseProps {
     title?: string;
@@ -35,11 +34,16 @@ type ClozeBlank = { type: "blank"; id: string; correct: string[] };
 
 const normalize = (s: string) => s.trim().toLowerCase();
 const isCorrectAnswer = (user: string, correct: string[]) =>
-    correct.some(c => normalize(c) === normalize(user));
+    correct.some((c) => normalize(c) === normalize(user));
 
 export const ClozeExercise = memo<ClozeExerciseProps>(
-    ({ title = "Fülle die Lücken aus:", clozeText, showSolutionWords = false, wrongSolutionWords = [], onSubmit }) => {
-
+    ({
+        title = "Fülle die Lücken aus:",
+        clozeText,
+        showSolutionWords = false,
+        wrongSolutionWords = [],
+        onSubmit,
+    }) => {
         const clozeTextWithIds = useMemo(() => {
             return clozeText.map((part, index) => {
                 if (part.type === "blank") {
@@ -67,6 +71,18 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
             return initialWords.map((word, i) => ({ id: i.toString(), word, available: true }));
         });
 
+        // --- Feedback-State unter dem Button ---
+        const [feedback, setFeedback] = useState<{
+            type: "success" | "error" | null;
+            message: string;
+        }>({ type: null, message: "" });
+
+        // Feedback zurücksetzen, sobald der/die Nutzer:in weiterarbeitet
+        useEffect(() => {
+            if (feedback.type) setFeedback({ type: null, message: "" });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [answers]);
+
         // Hilfsfunktion: gibt den Text zurück, den wir prüfen wollen (immer ein String)
         const getUserAnswerText = (blankId: string) => {
             const val = answers[blankId];
@@ -83,7 +99,6 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
         };
 
         const allFilled = blanks.every(b => getUserAnswerText(b.id).trim().length > 0);
-        const allCorrect = blanks.every(b => isCorrectAnswer(getUserAnswerText(b.id), b.correct));
 
         const handleDropIntoBlank = (blankId: string, wordId: string) => {
             const droppedWord = solutionWords.find(w => w.id === wordId);
@@ -127,7 +142,9 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
 
         const handleReturnToBank = (wordId: string) => {
             // Blank finden, in dem dieses Wort aktuell liegt
-            const blankId = Object.keys(answers).find(key => answers[key] === wordId);
+            const blankId = Object.keys(answers).find(
+                (key) => answers[key] === wordId
+            );
             if (!blankId)
                 return;
 
@@ -142,7 +159,7 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                 delete copy[blankId];
                 return copy;
             });
-        }
+        };
 
         const handleQuickPlace = (wordId: string) => {
             // erste freie Lücke finden
@@ -168,8 +185,25 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
         };
 
         const checkResults = () => {
-            if (allCorrect)
+            // Zähle korrekte Antworten
+            const correctCount = blanks.reduce((acc, b) => {
+                const user = getUserAnswerText(b.id);
+                return acc + (isCorrectAnswer(user, b.correct) ? 1 : 0);
+            }, 0);
+            const total = blanks.length;
+
+            if (correctCount === total) {
+                setFeedback({
+                    type: "success",
+                    message: "🎉 Alles richtig! Super gemacht!",
+                });
                 onSubmit();
+            } else {
+                setFeedback({
+                    type: "error",
+                    message: `Noch nicht ganz: ${correctCount} von ${total} richtig. Schau dir die Lücken nochmal an und probier’s erneut.`,
+                });
+            }
         };
 
         return (
@@ -207,7 +241,11 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                                     key={part.id}
                                     id={part.id}
                                     showSolutionWords
-                                    currentWord={currentWord ? { id: currentWord.id, word: currentWord.word } : null}
+                                    currentWord={
+                                        currentWord
+                                            ? { id: currentWord.id, word: currentWord.word }
+                                            : null
+                                    }
                                     onDropWord={(wordId) => handleDropIntoBlank(part.id, wordId)}
                                     onCtrlClear={() => clearBlank(part.id)}
                                 />
@@ -229,14 +267,32 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
                     })}
                 </div>
 
-                {/* --- OK-Button --- }*/}
-                <ClozeSubmitButton label="Prüfen" disabled={!allFilled} onClick={checkResults} />
+                {/* --- OK-Button --- */}
+                <ClozeSubmitButton
+                    label="Prüfen"
+                    disabled={!allFilled}
+                    onClick={checkResults}
+                />
+
+                {/* --- Feedback unter dem Button --- */}
+                {feedback.type && (
+                    <div
+                        className={[
+                            "mt-3 rounded-md border px-3 py-2 text-sm",
+                            feedback.type === "success"
+                                ? "border-green-200 bg-green-50 text-green-700"
+                                : "border-red-200 bg-red-50 text-red-700",
+                        ].join(" ")}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        {feedback.message}
+                    </div>
+                )}
             </SubBackground>
         );
     }
 );
 
-
-ClozeExercise.displayName = "ClozeExercise"
-
+ClozeExercise.displayName = "ClozeExercise";
 export default ClozeExercise;
