@@ -41,11 +41,15 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
     }, 50);
 
     // Gespeicherte Anmeldedaten laden
-    const savedUsername = localStorage.getItem("rememberedUsername");
+      try {
+          const savedUsername = localStorage.getItem("rememberedUsername");
     if (savedUsername) {
       setEmail(savedUsername);
       setRememberMe(true);
     }
+      }
+      catch { /* empty */ }
+
 
     return () => clearTimeout(timer);
   }, []);
