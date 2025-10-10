@@ -253,5 +253,4 @@ describe("ClozeExercise – Drag&Drop-Modus (showSolutionWords=true)", () => {
             expect(status).toHaveClass("bg-green-50");
         });
     });
-
 });
