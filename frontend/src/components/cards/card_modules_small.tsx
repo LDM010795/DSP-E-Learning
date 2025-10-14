@@ -70,19 +70,20 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
     <motion.div
       className={clsx(
         // Base professional styling
-        "group relative",
-        "bg-white/90 backdrop-blur-sm",
+          "group relative overflow-hidden isolate",
+        "bg-white",
         "border border-gray-200/60",
         "rounded-xl p-4",
         "shadow-sm hover:shadow-md",
         "transition-all duration-200 ease-in-out",
-        "cursor-pointer",
+        "cursor-pointer hover:z-10",
+        "h-40",
         config.borderHover,
         config.hoverBg,
         className,
       )}
       onClick={onClick}
-      whileHover={{ y: -1, scale: 1.01 }}
+      whileHover={{ y: -2 }}
       whileTap={{ scale: 0.99 }}
       transition={{ duration: 0.15 }}
     >
@@ -102,21 +103,24 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
         </motion.div>
 
         {/* Content Area */}
-        <div className="flex-grow min-w-0">
+        <div className="flex-grow min-w-0 flex flex-col">
           {/* Header with title and difficulty */}
           <div className="flex items-start justify-between mb-2">
             <h3
-              className={clsx(
-                "font-semibold text-gray-900 text-sm leading-tight",
-                "group-hover:text-dsp-orange transition-colors duration-200",
-                "line-clamp-1 flex-1 pr-2",
-              )}
+                title={title}
+                className={clsx(
+                    "font-semibold text-gray-900 text-sm leading-tight",
+                    "group-hover:text-dsp-orange transition-colors duration-200",
+                    "line-clamp-2 flex-1 pr-2",
+                    )}
             >
               {title}
             </h3>
 
             <div className="flex-shrink-0">{difficultyTag}</div>
           </div>
+
+            <div className="flex-1" />
 
           {/* Professional Progress Section */}
           <div className="space-y-2">
@@ -162,7 +166,7 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
       </div>
 
       {/* Subtle hover glow */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-dsp-orange/3 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-dsp-orange/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
       {/* Professional border highlight on hover */}
       <div className="absolute inset-0 rounded-xl border border-transparent group-hover:border-dsp-orange/20 transition-colors duration-200 pointer-events-none" />

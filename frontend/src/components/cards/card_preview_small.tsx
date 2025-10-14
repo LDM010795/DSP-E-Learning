@@ -82,13 +82,13 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
     <motion.div
       className={clsx(
         // Base card styling - professional SaaS look
-        "relative group cursor-pointer",
-        "bg-white/90 backdrop-blur-sm",
+        "relative group cursor-pointer isolate",
+        "bg-white",
         "border border-gray-200/60 hover:border-dsp-orange/30",
-        "rounded-xl overflow-hidden",
+        "rounded-xl overflow-hidden h-40 flex flex-col",
         "shadow-sm hover:shadow-md",
         "transition-all duration-200 ease-in-out",
-        "hover:scale-[1.02] hover:-translate-y-1",
+        "hover:-translate-y-1 hover:z-10",
         className,
       )}
       onClick={onClick}
@@ -99,7 +99,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
       {displayImage && (
         <div
           className={clsx(
-            "relative w-full aspect-video overflow-hidden",
+            "relative w-full h-24 overflow-hidden flex-shrink-0",
             "bg-gradient-to-br from-gray-100 to-gray-200",
             classNameImage,
           )}
@@ -133,9 +133,9 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
       )}
 
       {/* Professional Content Area */}
-      <div className={clsx("p-4", classNameContentWrapper)}>
+      <div className={clsx("p-4 flex-1 flex flex-col", classNameContentWrapper)}>
         {/* Title Section */}
-        <div className="mb-3">
+         <div className="mb-3">
           <h3
             className={clsx(
               "font-semibold text-gray-900 text-base leading-tight",
