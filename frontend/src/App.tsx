@@ -132,36 +132,36 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="page-outer relative">
       {/* --- Background and Notifications --- */}
       <DSPBackground />
       <Toaster position="bottom-right" richColors />
 
-      {/* --- Header Navigation --- */}
-      <HeaderNavigation
-        logo={<img src={LogoDSP} alt="Logo" className="h-12" />}
-        links={mainNav}
-        rightContent={rightNav}
-        isAuthenticated={isAuthenticated}
-      />
+      {/* page wrapper that holds header, content, footer */}
+      <div className="page-inner w-full">
+        <HeaderNavigation
+          logo={<img src={LogoDSP} alt="Logo" className="h-12" />}
+          links={mainNav}
+          rightContent={rightNav}
+          isAuthenticated={isAuthenticated}
+        />
 
-      {/* --- Main Content Area --- */}
-      <main className="flex-grow">
-        {isFullScreenPage ? (
-          // Full-screen layout for landing page and subscriptions (no margins)
-          <AnimatedRoutes isAdmin={isAdmin} />
-        ) : (
-          // Standard layout with margins for all other pages
-          <div className="mx-2 sm:mx-6 md:mx-10 lg:mx-16 xl:mx-20 mt-2 sm:mt-3 md:mt-4 mb-6 lg:mb-8">
+        {/* Content (not flex-grown) */}
+        <main>
+          {isFullScreenPage ? (
             <AnimatedRoutes isAdmin={isAdmin} />
-          </div>
-        )}
-      </main>
+          ) : (
+            <div className="mx-2 sm:mx-6 md:mx-10 lg:mx-16 xl:mx-20 mt-2 sm:mt-3 md:mt-4 mb-6 lg:mb-8">
+              <AnimatedRoutes isAdmin={isAdmin} />
+            </div>
+          )}
+        </main>
 
-      {/* --- Login Popup --- */}
+        {/* Footer rendered below content */}
+        <FooterNavigation />
+      </div>
+
       {isLoginPopupOpen && <LoginPopup onClose={closeLoginPopup} />}
-      {/* Footer Navigation */}
-      <FooterNavigation />
     </div>
   );
 };
