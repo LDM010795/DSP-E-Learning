@@ -13,9 +13,11 @@ describe("ButtonFilterCategory", () => {
         activeCategories={[]}
         onCategoryChange={vi.fn()}
         onClearClick={vi.fn()}
-      />
+      />,
     );
-    expect(screen.getByRole("button", { name: /Kategorie/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Kategorie/i }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
@@ -26,7 +28,7 @@ describe("ButtonFilterCategory", () => {
         activeCategories={[]}
         onCategoryChange={vi.fn()}
         onClearClick={vi.fn()}
-      />
+      />,
     );
 
     const trigger = screen.getByRole("button", { name: /Kategorie/i });
@@ -43,7 +45,7 @@ describe("ButtonFilterCategory", () => {
         activeCategories={[]}
         onCategoryChange={onCategoryChange}
         onClearClick={vi.fn()}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button"));
@@ -52,20 +54,20 @@ describe("ButtonFilterCategory", () => {
     expect(onCategoryChange).toHaveBeenCalledWith("Tech", true);
   });
 
-it("shows 'Filter löschen' when activeCategories non-empty (render initial)", async () => {
-  const user = userEvent.setup();
-  render(
-    <ButtonFilterCategory
-      allCategories={["Tech", "Design", "Finance"]}
-      activeCategories={["Tech"]}
-      onCategoryChange={vi.fn()}
-      onClearClick={vi.fn()}
-    />
-  );
+  it("shows 'Filter löschen' when activeCategories non-empty (render initial)", async () => {
+    const user = userEvent.setup();
+    render(
+      <ButtonFilterCategory
+        allCategories={["Tech", "Design", "Finance"]}
+        activeCategories={["Tech"]}
+        onCategoryChange={vi.fn()}
+        onClearClick={vi.fn()}
+      />,
+    );
 
-  await user.click(screen.getByRole("button", { name: /Kategorie/i }));
-  expect(screen.getByText(/Filter löschen/i)).toBeInTheDocument();
-});
+    await user.click(screen.getByRole("button", { name: /Kategorie/i }));
+    expect(screen.getByText(/Filter löschen/i)).toBeInTheDocument();
+  });
 
   it("calls onClearClick when 'Filter löschen' is clicked", () => {
     const onClearClick = vi.fn();
@@ -75,7 +77,7 @@ it("shows 'Filter löschen' when activeCategories non-empty (render initial)", a
         activeCategories={["Tech"]}
         onCategoryChange={vi.fn()}
         onClearClick={onClearClick}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button"));
@@ -93,7 +95,7 @@ it("shows 'Filter löschen' when activeCategories non-empty (render initial)", a
           onCategoryChange={vi.fn()}
           onClearClick={vi.fn()}
         />
-      </>
+      </>,
     );
 
     fireEvent.click(screen.getByRole("button"));

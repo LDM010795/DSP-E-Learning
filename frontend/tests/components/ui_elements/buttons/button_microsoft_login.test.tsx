@@ -16,7 +16,7 @@ vi.mock("@/hooks/use_microsoft_auth.ts", () => ({
   })),
 }));
 
-import { useMicrosoftAuth} from "@/hooks/use_microsoft_auth.ts";
+import { useMicrosoftAuth } from "@/hooks/use_microsoft_auth.ts";
 
 describe("MicrosoftLoginButton", () => {
   beforeEach(() => {
@@ -32,7 +32,9 @@ describe("MicrosoftLoginButton", () => {
 
   it("renders the button with correct text", () => {
     render(<MicrosoftLoginButton />);
-    expect(screen.getByRole("button", { name: /mit microsoft anmelden/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /mit microsoft anmelden/i }),
+    ).toBeInTheDocument();
   });
 
   it("applies additional className", () => {

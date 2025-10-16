@@ -21,7 +21,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={[]}
         multiSelectEnabled={false}
-      />
+      />,
     );
     expect(screen.getByText("Category")).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /A|B|C/ })).toHaveLength(3);
@@ -33,7 +33,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={[]}
         multiSelectEnabled={false}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "A" }));
@@ -46,7 +46,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={["A"]}
         multiSelectEnabled={false}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "A" }));
@@ -59,7 +59,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={["A"]}
         multiSelectEnabled={true}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "B" }));
@@ -75,7 +75,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={[]}
         multiSelectEnabled={false}
-      />
+      />,
     );
     expect(screen.queryByText("Löschen")).not.toBeInTheDocument();
 
@@ -84,7 +84,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={["A"]}
         multiSelectEnabled={false}
-      />
+      />,
     );
     expect(screen.getByText("Löschen")).toBeInTheDocument();
   });
@@ -95,7 +95,7 @@ describe("ButtonFilterSimple", () => {
         {...baseProps}
         activeOptions={["A"]}
         multiSelectEnabled={false}
-      />
+      />,
     );
     fireEvent.click(screen.getByText("Löschen"));
     expect(baseProps.onClearClick).toHaveBeenCalledTimes(1);
