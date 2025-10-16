@@ -36,7 +36,9 @@ describe("CardModulesSmall (new design)", () => {
     expect(screen.getByText("65%")).toBeInTheDocument();
 
     // Play button is present in header
-    expect(screen.getByRole("button", { name: /starten/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /starten/i }),
+    ).toBeInTheDocument();
   });
 
   test("click triggers onClick", async () => {
@@ -56,44 +58,67 @@ describe("CardModulesSmall (new design)", () => {
 
   // verify status styles and gradient progress bar (new design)
   test("applies correct status styles and renders gradient progress bar", () => {
-      const cases: Array<{
-        progress: number;
-        expectedText: "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
-        expectStatusTextHas: string; // text-* class on status text
-        expectDotBgHas: string;      // bg-* class on status dot
-        expectedPercent: string;
-      }> = [
-        { progress: 0, expectedText: "Nicht begonnen",  expectStatusTextHas: "text-gray-600",  expectDotBgHas: "bg-gray-400",  expectedPercent: "0%" },
-        { progress: 40, expectedText: "In Bearbeitung", expectStatusTextHas: "text-dsp-orange", expectDotBgHas: "bg-dsp-orange", expectedPercent: "40%" },
-        { progress: 100, expectedText: "Abgeschlossen", expectStatusTextHas: "text-green-600", expectDotBgHas: "bg-green-600", expectedPercent: "100%" },
-      ];
+    const cases: Array<{
+      progress: number;
+      expectedText: "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
+      expectStatusTextHas: string; // text-* class on status text
+      expectDotBgHas: string; // bg-* class on status dot
+      expectedPercent: string;
+    }> = [
+      {
+        progress: 0,
+        expectedText: "Nicht begonnen",
+        expectStatusTextHas: "text-gray-600",
+        expectDotBgHas: "bg-gray-400",
+        expectedPercent: "0%",
+      },
+      {
+        progress: 40,
+        expectedText: "In Bearbeitung",
+        expectStatusTextHas: "text-dsp-orange",
+        expectDotBgHas: "bg-dsp-orange",
+        expectedPercent: "40%",
+      },
+      {
+        progress: 100,
+        expectedText: "Abgeschlossen",
+        expectStatusTextHas: "text-green-600",
+        expectDotBgHas: "bg-green-600",
+        expectedPercent: "100%",
+      },
+    ];
 
-      for (const c of cases) {
-        const { container, unmount } = render(
-          <CardModulesSmall title="Probe" progress={c.progress} difficultyTag={<span />} />,
-        );
+    for (const c of cases) {
+      const { container, unmount } = render(
+        <CardModulesSmall
+          title="Probe"
+          progress={c.progress}
+          difficultyTag={<span />}
+        />,
+      );
 
-        // status text + color
-        const statusEl = screen.getByText(c.expectedText);
-        expect(statusEl).toBeInTheDocument();
-        expect(statusEl.className).toContain(c.expectStatusTextHas);
+      // status text + color
+      const statusEl = screen.getByText(c.expectedText);
+      expect(statusEl).toBeInTheDocument();
+      expect(statusEl.className).toContain(c.expectStatusTextHas);
 
-        // percent badge
-        expect(screen.getByText(c.expectedPercent)).toBeInTheDocument();
+      // percent badge
+      expect(screen.getByText(c.expectedPercent)).toBeInTheDocument();
 
-        // status dot element
-        const dot = container.querySelector(
-          "span.inline-flex.h-3.w-3.rounded-full",
-        ) as HTMLSpanElement;
-        expect(dot).toBeTruthy();
-        expect(dot.className).toContain(c.expectDotBgHas);
+      // status dot element
+      const dot = container.querySelector(
+        "span.inline-flex.h-3.w-3.rounded-full",
+      ) as HTMLSpanElement;
+      expect(dot).toBeTruthy();
+      expect(dot.className).toContain(c.expectDotBgHas);
 
-        // gradient progress bar (new design)
-        const gradientBar = container.querySelector("div.bg-gradient-to-r") as HTMLDivElement;
-        expect(gradientBar).toBeTruthy();
+      // gradient progress bar (new design)
+      const gradientBar = container.querySelector(
+        "div.bg-gradient-to-r",
+      ) as HTMLDivElement;
+      expect(gradientBar).toBeTruthy();
 
-        unmount();
-      }
-    });
-
+      unmount();
+    }
+  });
 });

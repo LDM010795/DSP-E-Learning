@@ -31,7 +31,14 @@ describe("CardPreviewSmall", () => {
   });
 
   test("uses YouTube thumbnail when youtubeId is provided", () => {
-    render(<CardPreviewSmall title="Video" youtubeId="abc123" progress={0} imageMode="auto" />);
+    render(
+      <CardPreviewSmall
+        title="Video"
+        youtubeId="abc123"
+        progress={0}
+        imageMode="auto"
+      />,
+    );
     const img = screen.getByAltText("Video") as HTMLImageElement;
     expect(img.src).toContain(
       "https://img.youtube.com/vi/abc123/hqdefault.jpg",
@@ -39,64 +46,69 @@ describe("CardPreviewSmall", () => {
   });
 
   test("shows correct status text + colors and gradient progress bar", () => {
-      const { container, rerender } = render(<CardPreviewSmall title="X" progress={0} />);
+    const { container, rerender } = render(
+      <CardPreviewSmall title="X" progress={0} />,
+    );
 
-      const assertCurrent = (expected: {
-        text: string;
-        progress: number;
-        statusClass: string;  // color class on status text
-        percentClass: string; // color class on % span
-        dotClass: string;     // bg-* class on status dot
-      }) => {
-        // status text + its dynamic color
-        const statusEl = screen.getByText(expected.text);
-        expect(statusEl).toBeInTheDocument();
-        expect(statusEl.className).toContain(expected.statusClass);
+    const assertCurrent = (expected: {
+      text: string;
+      progress: number;
+      statusClass: string; // color class on status text
+      percentClass: string; // color class on % span
+      dotClass: string; // bg-* class on status dot
+    }) => {
+      // status text + its dynamic color
+      const statusEl = screen.getByText(expected.text);
+      expect(statusEl).toBeInTheDocument();
+      expect(statusEl.className).toContain(expected.statusClass);
 
-        // percentage badge + its color
-        const percentEl = screen.getByText(`${expected.progress}%`);
-        expect(percentEl.className).toContain(expected.percentClass);
+      // percentage badge + its color
+      const percentEl = screen.getByText(`${expected.progress}%`);
+      expect(percentEl.className).toContain(expected.percentClass);
 
-        // colored status dot
-        const dot = container.querySelector("span.inline-flex.h-3.w-3.rounded-full") as HTMLSpanElement;
-        expect(dot).toBeTruthy();
-        expect(dot.className).toContain(expected.dotClass);
+      // colored status dot
+      const dot = container.querySelector(
+        "span.inline-flex.h-3.w-3.rounded-full",
+      ) as HTMLSpanElement;
+      expect(dot).toBeTruthy();
+      expect(dot.className).toContain(expected.dotClass);
 
-        // gradient progress bar exists
-        const gradientBar = container.querySelector("div.bg-gradient-to-r") as HTMLDivElement;
-        expect(gradientBar).toBeTruthy();
-      };
+      // gradient progress bar exists
+      const gradientBar = container.querySelector(
+        "div.bg-gradient-to-r",
+      ) as HTMLDivElement;
+      expect(gradientBar).toBeTruthy();
+    };
 
-      // 0% -> Nicht begonnen
-      assertCurrent({
-        text: "Nicht begonnen",
-        progress: 0,
-        statusClass: "text-gray-500",
-        percentClass: "text-gray-500",
-        dotClass: "bg-gray-400",
-      });
-
-      // 1–99% -> In Bearbeitung
-      rerender(<CardPreviewSmall title="X" progress={40} />);
-      assertCurrent({
-        text: "In Bearbeitung",
-        progress: 40,
-        statusClass: "text-dsp-orange",
-        percentClass: "text-dsp-orange",
-        dotClass: "bg-dsp-orange",
-      });
-
-      // 100% -> Abgeschlossen
-      rerender(<CardPreviewSmall title="X" progress={100} />);
-      assertCurrent({
-        text: "Abgeschlossen",
-        progress: 100,
-        statusClass: "text-green-600",
-        percentClass: "text-green-600",
-        dotClass: "bg-green-600",
-      });
+    // 0% -> Nicht begonnen
+    assertCurrent({
+      text: "Nicht begonnen",
+      progress: 0,
+      statusClass: "text-gray-500",
+      percentClass: "text-gray-500",
+      dotClass: "bg-gray-400",
     });
 
+    // 1–99% -> In Bearbeitung
+    rerender(<CardPreviewSmall title="X" progress={40} />);
+    assertCurrent({
+      text: "In Bearbeitung",
+      progress: 40,
+      statusClass: "text-dsp-orange",
+      percentClass: "text-dsp-orange",
+      dotClass: "bg-dsp-orange",
+    });
+
+    // 100% -> Abgeschlossen
+    rerender(<CardPreviewSmall title="X" progress={100} />);
+    assertCurrent({
+      text: "Abgeschlossen",
+      progress: 100,
+      statusClass: "text-green-600",
+      percentClass: "text-green-600",
+      dotClass: "bg-green-600",
+    });
+  });
 
   test("calls onClick when clicked", async () => {
     const user = userEvent.setup();
