@@ -111,11 +111,11 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
             <div className="flex items-start justify-between gap-3 mb-2">
           <h3
             className={clsx(
-              "font-semibold text-gray-900 text-base leading-tight",
-              "group-hover:text-dsp-orange transition-colors duration-300",
-              "line-clamp-2",
-              classNameTitle,
-            )}
+                "ds-title leading-tight",
+                "group-hover:text-dsp-orange transition-colors duration-300",
+                "line-clamp-2",
+                classNameTitle,
+                )}
             title={title}
           >
             {title}

@@ -31,68 +31,72 @@ describe("CardPreviewSmall", () => {
   });
 
   test("uses YouTube thumbnail when youtubeId is provided", () => {
-    render(<CardPreviewSmall title="Video" youtubeId="abc123" progress={0} />);
+    render(<CardPreviewSmall title="Video" youtubeId="abc123" progress={0} imageMode="auto" />);
     const img = screen.getByAltText("Video") as HTMLImageElement;
     expect(img.src).toContain(
       "https://img.youtube.com/vi/abc123/hqdefault.jpg",
     );
   });
 
-  test("shows correct status text based on progress (and verifies icon + percentage color)", () => {
-    const { container, rerender } = render(
-      <CardPreviewSmall title="X" progress={0} />,
-    );
+  test("shows correct status text + colors and gradient progress bar", () => {
+      const { container, rerender } = render(<CardPreviewSmall title="X" progress={0} />);
 
-    // We verify:
-    //  - status text (always visible, label is always gray-700 in component)
-    //  - SVG icon color (varies with status)
-    //  - percentage text color (varies with status)
-    const assertCurrent = (expected: {
-      text: string; // status text
-      progress: number; // current progress (to find the % element)
-      svgClass: string; // color class on the <svg> icon
-      percentClass: string; // color class on the {progress}% span
-    }) => {
-      // status label text (no dynamic color assertion here — it's always gray-700)
-      expect(screen.getByText(expected.text)).toBeInTheDocument();
+      const assertCurrent = (expected: {
+        text: string;
+        progress: number;
+        statusClass: string;  // color class on status text
+        percentClass: string; // color class on % span
+        dotClass: string;     // bg-* class on status dot
+      }) => {
+        // status text + its dynamic color
+        const statusEl = screen.getByText(expected.text);
+        expect(statusEl).toBeInTheDocument();
+        expect(statusEl.className).toContain(expected.statusClass);
 
-      // icon color
-      const svg = container.querySelector(
-        `svg[class*="${expected.svgClass}"]`,
-      ) as SVGElement | null;
-      expect(svg).toBeTruthy();
+        // percentage badge + its color
+        const percentEl = screen.getByText(`${expected.progress}%`);
+        expect(percentEl.className).toContain(expected.percentClass);
 
-      // percentage color
-      const percentEl = screen.getByText(`${expected.progress}%`);
-      expect(percentEl.className).toContain(expected.percentClass);
-    };
+        // colored status dot
+        const dot = container.querySelector("span.inline-flex.h-3.w-3.rounded-full") as HTMLSpanElement;
+        expect(dot).toBeTruthy();
+        expect(dot.className).toContain(expected.dotClass);
 
-    // 0% -> Nicht begonnen
-    assertCurrent({
-      text: "Nicht begonnen",
-      progress: 0,
-      svgClass: "text-gray-500",
-      percentClass: "text-gray-500",
+        // gradient progress bar exists
+        const gradientBar = container.querySelector("div.bg-gradient-to-r") as HTMLDivElement;
+        expect(gradientBar).toBeTruthy();
+      };
+
+      // 0% -> Nicht begonnen
+      assertCurrent({
+        text: "Nicht begonnen",
+        progress: 0,
+        statusClass: "text-gray-500",
+        percentClass: "text-gray-500",
+        dotClass: "bg-gray-400",
+      });
+
+      // 1–99% -> In Bearbeitung
+      rerender(<CardPreviewSmall title="X" progress={40} />);
+      assertCurrent({
+        text: "In Bearbeitung",
+        progress: 40,
+        statusClass: "text-dsp-orange",
+        percentClass: "text-dsp-orange",
+        dotClass: "bg-dsp-orange",
+      });
+
+      // 100% -> Abgeschlossen
+      rerender(<CardPreviewSmall title="X" progress={100} />);
+      assertCurrent({
+        text: "Abgeschlossen",
+        progress: 100,
+        statusClass: "text-green-600",
+        percentClass: "text-green-600",
+        dotClass: "bg-green-600",
+      });
     });
 
-    // 1–99% -> In Bearbeitung
-    rerender(<CardPreviewSmall title="X" progress={40} />);
-    assertCurrent({
-      text: "In Bearbeitung",
-      progress: 40,
-      svgClass: "text-dsp-orange",
-      percentClass: "text-dsp-orange",
-    });
-
-    // 100% -> Abgeschlossen
-    rerender(<CardPreviewSmall title="X" progress={100} />);
-    assertCurrent({
-      text: "Abgeschlossen",
-      progress: 100,
-      svgClass: "text-green-600",
-      percentClass: "text-green-600",
-    });
-  });
 
   test("calls onClick when clicked", async () => {
     const user = userEvent.setup();

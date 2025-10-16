@@ -18,7 +18,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CardModulesSmall from "../../../src/components/cards/card_modules_small.tsx";
 
-describe("CardModulesSmall", () => {
+describe("CardModulesSmall (new design)", () => {
   test("renders title, difficultyTag, derived status and progress", () => {
     render(
       <CardModulesSmall
@@ -34,6 +34,9 @@ describe("CardModulesSmall", () => {
     // status is derived from progress (65 -> "In Bearbeitung")
     expect(screen.getByText("In Bearbeitung")).toBeInTheDocument();
     expect(screen.getByText("65%")).toBeInTheDocument();
+
+    // Play button is present in header
+    expect(screen.getByRole("button", { name: /starten/i })).toBeInTheDocument();
   });
 
   test("click triggers onClick", async () => {
@@ -51,75 +54,46 @@ describe("CardModulesSmall", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  // verify icon + colors based on derived status (from progress)
-  test("applies correct icon + colors for each derived status", () => {
-    const cases: Array<{
-      progress: number;
-      expectedText: "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
-      expectIconBoxHas: string; // bg-* class on the icon container
-      expectSvgHas: string; // text-* class on the <svg> icon
-      expectStatusTextHas: string; // text-* class on the status text span
-      expectBarHas: string; // bg-* class on the progress bar
-    }> = [
-      {
-        progress: 0,
-        expectedText: "Nicht begonnen",
-        expectIconBoxHas: "bg-gray-200",
-        expectSvgHas: "text-gray-600",
-        expectStatusTextHas: "text-gray-600",
-        expectBarHas: "bg-gray-300",
-      },
-      {
-        progress: 40,
-        expectedText: "In Bearbeitung",
-        expectIconBoxHas: "bg-dsp-orange",
-        expectSvgHas: "text-white",
-        expectStatusTextHas: "text-dsp-orange",
-        expectBarHas: "bg-dsp-orange",
-      },
-      {
-        progress: 100,
-        expectedText: "Abgeschlossen",
-        expectIconBoxHas: "bg-green-500",
-        expectSvgHas: "text-white",
-        expectStatusTextHas: "text-green-600",
-        expectBarHas: "bg-green-500",
-      },
-    ];
+  // verify status styles and gradient progress bar (new design)
+  test("applies correct status styles and renders gradient progress bar", () => {
+      const cases: Array<{
+        progress: number;
+        expectedText: "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
+        expectStatusTextHas: string; // text-* class on status text
+        expectDotBgHas: string;      // bg-* class on status dot
+        expectedPercent: string;
+      }> = [
+        { progress: 0, expectedText: "Nicht begonnen",  expectStatusTextHas: "text-gray-600",  expectDotBgHas: "bg-gray-400",  expectedPercent: "0%" },
+        { progress: 40, expectedText: "In Bearbeitung", expectStatusTextHas: "text-dsp-orange", expectDotBgHas: "bg-dsp-orange", expectedPercent: "40%" },
+        { progress: 100, expectedText: "Abgeschlossen", expectStatusTextHas: "text-green-600", expectDotBgHas: "bg-green-600", expectedPercent: "100%" },
+      ];
 
-    for (const c of cases) {
-      const { container, unmount } = render(
-        <CardModulesSmall
-          title="Probe"
-          progress={c.progress}
-          difficultyTag={<span />}
-        />,
-      );
+      for (const c of cases) {
+        const { container, unmount } = render(
+          <CardModulesSmall title="Probe" progress={c.progress} difficultyTag={<span />} />,
+        );
 
-      // status text element (derived)
-      const statusEl = screen.getByText(c.expectedText);
-      expect(statusEl.className).toContain(c.expectStatusTextHas);
+        // status text + color
+        const statusEl = screen.getByText(c.expectedText);
+        expect(statusEl).toBeInTheDocument();
+        expect(statusEl.className).toContain(c.expectStatusTextHas);
 
-      // icon box = the small square with width/height 10
-      const iconBox = container.querySelector(
-        "div.w-10.h-10.rounded-xl",
-      ) as HTMLDivElement;
-      expect(iconBox).toBeTruthy();
-      expect(iconBox!.className).toContain(c.expectIconBoxHas);
+        // percent badge
+        expect(screen.getByText(c.expectedPercent)).toBeInTheDocument();
 
-      // inside icon box there is an <svg> icon with a text-* color class
-      const iconSvg = iconBox!.querySelector("svg") as SVGElement;
-      expect(iconSvg).toBeTruthy();
-      expect(iconSvg.getAttribute("class") || "").toContain(c.expectSvgHas);
+        // status dot element
+        const dot = container.querySelector(
+          "span.inline-flex.h-3.w-3.rounded-full",
+        ) as HTMLSpanElement;
+        expect(dot).toBeTruthy();
+        expect(dot.className).toContain(c.expectDotBgHas);
 
-      // progress bar div (the inner moving bar)
-      const progressBar = container.querySelector(
-        'div[class*="h-1.5"][class*="rounded-full"][class*="transition-all"]',
-      ) as HTMLDivElement;
-      expect(progressBar).toBeTruthy();
-      expect(progressBar!.className).toContain(c.expectBarHas);
+        // gradient progress bar (new design)
+        const gradientBar = container.querySelector("div.bg-gradient-to-r") as HTMLDivElement;
+        expect(gradientBar).toBeTruthy();
 
-      unmount();
-    }
-  });
+        unmount();
+      }
+    });
+
 });

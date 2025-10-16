@@ -59,9 +59,9 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
           <h3
             title={title}
             className={clsx(
-              "font-semibold text-gray-900 text-base leading-tight",
-              "group-hover:text-dsp-orange transition-colors duration-300",
-              "line-clamp-2"
+                "ds-title leading-tight",
+                "group-hover:text-dsp-orange transition-colors duration-300",
+                "line-clamp-2"
             )}
           >
             {title}
