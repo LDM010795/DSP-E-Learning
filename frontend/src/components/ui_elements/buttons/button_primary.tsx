@@ -28,7 +28,7 @@ import { motion } from "framer-motion";
 interface ButtonPrimaryProps {
   title: string;
   icon?: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   classNameButton?: string;
   classNameIcon?: string;
   disabled?: boolean;
