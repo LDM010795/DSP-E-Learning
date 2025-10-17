@@ -105,7 +105,7 @@ const AppContent: React.FC = () => {
 
   const rightNav: NavItem[] = isAuthenticated
     ? [
-        { title: "Einstellungen", to: "/settings" },
+        //{ title: "Einstellungen", to: "/settings" },
         { title: "Ausloggen", action: logout },
       ]
     : [{ title: "Einloggen", action: openLoginPopup }];
