@@ -2,8 +2,7 @@ import { SubBackground } from "@/components/layouts";
 import { memo, useMemo, useState, useEffect } from "react";
 import SolutionWordBank, { SolutionWord } from "./SolutionWordBank";
 import ClozeBlank from "./ClozeBlank";
-import ClozeHeader from "./ClozeHeader";
-import ClozeSubmitButton from "./ClozeSubmitButton";
+import { FaPenToSquare } from "react-icons/fa6";
 
 export interface ClozeExerciseProps {
   title?: string;
@@ -213,7 +212,12 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
     return (
       <SubBackground>
         {/* --- Header --- */}
-        <ClozeHeader title={title} />
+        <div className="inline-flex items-center gap-2">
+          <div className="p-3 rounded-xl bg-dsp-orange_light">
+            <FaPenToSquare className="w-5 h-5 text-dsp-orange" />
+          </div>
+          <h1 className="text-lg text-gray-600">{title}</h1>
+        </div>
 
         {/* --- Lösungsauswahl (nur wenn Lösungswörter sichtbar) --- */}
         {showSolutionWords && (
@@ -273,11 +277,19 @@ export const ClozeExercise = memo<ClozeExerciseProps>(
         </div>
 
         {/* --- OK-Button --- */}
-        <ClozeSubmitButton
-          label="Prüfen"
+        <button
+          type="button"
           disabled={!allFilled}
+          className={`w-auto text-left px-4 py-2 rounded-lg border transition
+        ${allFilled
+              ? "bg-dsp-orange text-white border-orange-500 cursor-pointer"
+              : "bg-gray-50 border-gray-300 opacity-60 cursor-not-allowed"
+            }
+      `}
           onClick={checkResults}
-        />
+        >
+          Prüfen
+        </button>
 
         {/* --- Feedback unter dem Button --- */}
         {feedback.type && (

@@ -42,7 +42,8 @@ const ClozeBlank = memo<ClozeBlankProps>(
       e.preventDefault();
       setHovered(false);
       const wordId = e.dataTransfer.getData("wordId");
-      if (wordId && onDropWord) onDropWord(wordId);
+      if (wordId && onDropWord)
+        onDropWord(wordId);
     };
 
     if (showSolutionWords) {
@@ -89,7 +90,8 @@ const ClozeBlank = memo<ClozeBlankProps>(
           value={inputValue}
           onChange={(e) => {
             const value = e.currentTarget.value;
-            if (onInputChange) onInputChange(value);
+            if (onInputChange)
+              onInputChange(value);
             // dynamische Breite wie bisher
             e.currentTarget.style.width = `${Math.max(6, value.length)}ch`;
           }}

@@ -38,6 +38,20 @@ const baseText: ClozeTextPart[] = [
   { type: "text", content: "." },
 ];
 
+describe("Title", () => {
+  it("renders Title", () => {
+    const title = "Fülle die Lücken aus:";
+    render(<ClozeExercise
+      title="Fülle die Lücken aus:"
+      clozeText={baseText}
+      showSolutionWords={false}
+      onSubmit={vi.fn()}
+    />);
+    const heading = screen.getByRole("heading", { name: title, level: 1 });
+    expect(heading).toBeInTheDocument();
+  });
+})
+
 describe("ClozeExercise – Input-Modus (showSolutionWords=false)", () => {
   it("aktiviert den Submit-Button erst wenn alle Lücken gefüllt sind und ruft onSubmit nur bei korrekten Antworten", () => {
     const onSubmit = vi.fn();
@@ -141,7 +155,7 @@ describe("ClozeExercise – Drag&Drop-Modus (showSolutionWords=true)", () => {
         clozeText={baseText}
         showSolutionWords={true}
         wrongSolutionWords={[]}
-        onSubmit={() => {}}
+        onSubmit={() => { }}
       />,
     );
 
@@ -175,7 +189,7 @@ describe("ClozeExercise – Drag&Drop-Modus (showSolutionWords=true)", () => {
         clozeText={baseText}
         showSolutionWords={true}
         wrongSolutionWords={[]}
-        onSubmit={() => {}}
+        onSubmit={() => { }}
       />,
     );
     const wordHaus = screen.getByTestId("wordbank-0");
