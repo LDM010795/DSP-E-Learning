@@ -28,7 +28,8 @@ const Profile: React.FC = () => {
     return Math.random() > 0.2; // 80% success rate for demo
   };
 
-  const handleProfileSubmit = async () => {
+  const handleProfileSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setLoadingProfile(true);
     setErrorProfile(null);
     setSuccessProfile(false);
@@ -123,7 +124,7 @@ const Profile: React.FC = () => {
           </motion.div>
         )}
 
-        <div className="space-y-6">
+        <form onSubmit={handleProfileSubmit} className="space-y-6">
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div
@@ -208,16 +209,18 @@ const Profile: React.FC = () => {
                 });
               }}
               classNameButton="w-full sm:w-auto"
+              type="button"
             />
             <ButtonPrimary
               title={loadingProfile ? "Speichern..." : "Profil speichern"}
               icon={<IoSaveOutline className="w-4 h-4" />}
-              onClick={handleProfileSubmit}
               disabled={loadingProfile}
               classNameButton="w-full sm:w-auto"
+              type="submit"   // submit via form (enables Enter)
+              onClick={() => {}} // no-op; submission handled by <form>
             />
           </motion.div>
-        </div>
+        </form>
       </SubBackground>
     </motion.div>
   );

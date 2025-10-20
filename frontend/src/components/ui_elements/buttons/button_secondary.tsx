@@ -9,6 +9,7 @@ interface ButtonSecondaryProps extends HoverHandlers {
   classNameIcon?: string;
   disabled?: boolean;
   iconPosition?: "left" | "right";
+  type?: "button" | "submit" | "reset";
 }
 
 const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
@@ -21,6 +22,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
   iconPosition = "right",
   onHoverStart,
   onHoverEnd,
+  type,
 }) => {
   const buttonVariants = {
     initial: { scale: 1 },
@@ -38,6 +40,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
 
   return (
     <motion.button
+      type={type ?? "button"}
       onClick={onClick}
       disabled={disabled}
       onHoverStart={onHoverStart}

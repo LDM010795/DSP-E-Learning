@@ -9,9 +9,8 @@ import {
 } from "react-icons/io5";
 import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
-import api from "../../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
+// import api from "../../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
 
-interface ProfileApiResponse {}
 
 const Account: React.FC = () => {
   const [loadingPassword, setLoadingPassword] = useState(false);
@@ -43,7 +42,8 @@ const Account: React.FC = () => {
     return Math.random() > 0.3; // 70% success rate for demo
   };
 
-  const handlePasswordSubmit = async () => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+     e.preventDefault();
     // Validation
     if (
       !passwordData.current_password ||
@@ -141,10 +141,7 @@ const Account: React.FC = () => {
     ));
   };
 
-  const UserFetchData = async () => {
-    let response = await api.get<ProfileApiResponse>("/users/me/");
-    return response.data;
-  };
+
 
   return (
     <motion.div
@@ -175,7 +172,7 @@ const Account: React.FC = () => {
               </div>
             )}
 
-            <div className="space-y-3">
+            <form onSubmit={handlePasswordSubmit} className="space-y-3">
               <div>
                 <label
                   htmlFor="currentPassword"
@@ -238,15 +235,16 @@ const Account: React.FC = () => {
               </div>
               <div className="flex justify-end">
                 <ButtonPrimary
+                  type="submit"
                   title={
                     loadingPassword ? "Speichern..." : "Passwort speichern"
                   }
                   icon={<IoSaveOutline />}
-                  onClick={handlePasswordSubmit}
+                  onClick={() => {}}
                   disabled={loadingPassword}
                 />
               </div>
-            </div>
+            </form>
           </div>
 
           {/* Konto löschen */}
