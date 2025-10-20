@@ -216,7 +216,7 @@ const Profile: React.FC = () => {
               icon={<IoSaveOutline className="w-4 h-4" />}
               disabled={loadingProfile}
               classNameButton="w-full sm:w-auto"
-              type="submit"   // submit via form (enables Enter)
+              type="submit" // submit via form (enables Enter)
               onClick={() => {}} // no-op; submission handled by <form>
             />
           </motion.div>

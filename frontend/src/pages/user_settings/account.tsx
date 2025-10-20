@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import DspNotification from "../../components/toaster/notifications/DspNotification";
 // import api from "../../util/apis/api"; // Importiere die konfigurierte Axios-Instanz
 
-
 const Account: React.FC = () => {
   const [loadingPassword, setLoadingPassword] = useState(false);
   const [errorPassword, setErrorPassword] = useState<string | null>(null);
@@ -43,7 +42,7 @@ const Account: React.FC = () => {
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
-     e.preventDefault();
+    e.preventDefault();
     // Validation
     if (
       !passwordData.current_password ||
@@ -140,8 +139,6 @@ const Account: React.FC = () => {
       />
     ));
   };
-
-
 
   return (
     <motion.div
