@@ -1,156 +1,216 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, createEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import SolutionWordBank, {
   SolutionWord,
 } from "@/components/ui_elements/cloze_exercise/SolutionWordBank";
 
-// Helfer für DataTransfer
+
 function createDataTransfer(initial: Record<string, string> = {}) {
-  const store = { ...initial };
+  const store: Record<string, string> = { ...initial };
   return {
-    setData: vi.fn((key: string, val: string) => {
-      store[key] = val;
+    setData: vi.fn((type: string, val: string) => { store[type] = val; }),
+    getData: vi.fn((type: string) => store[type] ?? ""),
+    clearData: vi.fn((type?: string) => {
+      if (!type) Object.keys(store).forEach((k) => delete store[k]);
+      else delete store[type];
     }),
-    getData: vi.fn((key: string) => store[key]),
-    dropEffect: "move",
-    effectAllowed: "all",
-    files: [],
-    items: [],
-    types: Object.keys(store),
   } as unknown as DataTransfer;
 }
 
 const words: SolutionWord[] = [
-  { id: "w1", word: "Haus", available: true },
-  { id: "w2", word: "Baum", available: false },
+  { id: "w1", word: "Katze", available: true },
+  { id: "w2", word: "Hund", available: false },
+  { id: "w3", word: "Maus", available: true },
 ];
 
 describe("SolutionWordBank", () => {
-  it("rendert alle Wörter und markiert data-testid='solution-words' auf dem Container", () => {
+  it("rendert alle Wörter und markiert nur verfügbare als draggable", () => {
     render(
       <SolutionWordBank
+        exerciseId="ex1"
         words={words}
         onReturnToBank={vi.fn()}
         onQuickPlace={vi.fn()}
       />,
     );
-    expect(screen.getByTestId("solution-words")).toBeInTheDocument();
-    expect(screen.getByText("Haus")).toBeInTheDocument();
-    expect(screen.getByText("Baum")).toBeInTheDocument();
+
+    const w1 = screen.getByTestId("wordbank-w1");
+    const w2 = screen.getByTestId("wordbank-w2");
+    const w3 = screen.getByTestId("wordbank-w3");
+
+    expect(w1).toHaveTextContent("Katze");
+    expect(w2).toHaveTextContent("Hund");
+    expect(w3).toHaveTextContent("Maus");
+
+    expect(w1).toHaveAttribute("draggable", "true");
+    expect(w2).toHaveAttribute("draggable", "false");
+    expect(w3).toHaveAttribute("draggable", "true");
   });
 
-  it("Ctrl/Cmd-Klick auf verfügbares Wort ruft onQuickPlace mit word.id auf", () => {
-    const onQuickPlace = vi.fn();
+  it("dragstart setzt Payload { exerciseId, wordId } für verfügbare Wörter", () => {
     render(
       <SolutionWordBank
+        exerciseId="ex1"
         words={words}
         onReturnToBank={vi.fn()}
-        onQuickPlace={onQuickPlace}
+        onQuickPlace={vi.fn()}
+      />,
+    );
+    const w1 = screen.getByTestId("wordbank-w1"); // available
+    const dt = createDataTransfer();
+
+    fireEvent.dragStart(w1, { dataTransfer: dt });
+    expect(dt.setData).toHaveBeenCalledTimes(1);
+    const payload = (dt.setData as any).mock.calls[0][1] as string;
+    expect(JSON.parse(payload)).toEqual({ exerciseId: "ex1", wordId: "w1" });
+
+    // Unavailable: handler sollte setData NICHT rufen
+    const w2 = screen.getByTestId("wordbank-w2");
+    const dt2 = createDataTransfer();
+    fireEvent.dragStart(w2, { dataTransfer: dt2 });
+    expect(dt2.setData).not.toHaveBeenCalled();
+  });
+
+  it("dragover auf der Bank verhindert Standardverhalten", () => {
+    render(
+      <SolutionWordBank
+        exerciseId="ex1"
+        words={words}
+        onReturnToBank={vi.fn()}
+        onQuickPlace={vi.fn()}
       />,
     );
 
-    const haus = screen.getByText("Haus");
-    fireEvent.click(haus, { ctrlKey: true });
-
-    expect(onQuickPlace).toHaveBeenCalledTimes(1);
-    expect(onQuickPlace).toHaveBeenCalledWith("w1");
+    const bank = screen.getByTestId("solution-wordbank");
+    const evt = createEvent.dragOver(bank);
+    const preventDefaultSpy = vi.spyOn(evt, "preventDefault");
+    fireEvent(bank, evt);
+    expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("Ctrl/Cmd-Klick auf NICHT verfügbares Wort macht nichts", () => {
-    const onQuickPlace = vi.fn();
-    render(
-      <SolutionWordBank
-        words={words}
-        onReturnToBank={vi.fn()}
-        onQuickPlace={onQuickPlace}
-      />,
-    );
-
-    const baum = screen.getByText("Baum");
-    fireEvent.click(baum, { metaKey: true }); // macOS-Variante
-
-    expect(onQuickPlace).not.toHaveBeenCalled();
-  });
-
-  it("Drop auf den Container ruft onReturnToBank mit wordId aus dataTransfer auf", () => {
+  it("drop mit passender exerciseId ruft onReturnToBank(wordId) auf", () => {
     const onReturnToBank = vi.fn();
+
     render(
       <SolutionWordBank
+        exerciseId="ex1"
         words={words}
         onReturnToBank={onReturnToBank}
         onQuickPlace={vi.fn()}
       />,
     );
 
-    const container = screen.getByTestId("solution-words");
-    const dt = createDataTransfer({ wordId: "w2" });
+    const bank = screen.getByTestId("solution-wordbank");
+    const dt = createDataTransfer({
+      wordId: JSON.stringify({ exerciseId: "ex1", wordId: "w3" }),
+    });
+    const dropEvt = createEvent.drop(bank, { dataTransfer: dt });
+    const preventDefaultSpy = vi.spyOn(dropEvt, "preventDefault");
 
-    fireEvent.dragOver(container, { dataTransfer: dt }); // damit drop akzeptiert wird
-    fireEvent.drop(container, { dataTransfer: dt });
+    fireEvent(bank, dropEvt);
 
-    expect(onReturnToBank).toHaveBeenCalledTimes(1);
-    expect(onReturnToBank).toHaveBeenCalledWith("w2");
+    expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
+    expect(onReturnToBank).toHaveBeenCalledWith("w3");
   });
 
-  it("Drop ohne wordId triggert onReturnToBank NICHT (Edge Case)", () => {
+  it("drop ignoriert leere Payload oder fremde exerciseId", () => {
     const onReturnToBank = vi.fn();
+
     render(
       <SolutionWordBank
+        exerciseId="ex1"
         words={words}
         onReturnToBank={onReturnToBank}
         onQuickPlace={vi.fn()}
       />,
     );
 
-    const container = screen.getByTestId("solution-words");
-    const dt = createDataTransfer(); // leer
+    const bank = screen.getByTestId("solution-wordbank");
 
-    fireEvent.dragOver(container, { dataTransfer: dt });
-    fireEvent.drop(container, { dataTransfer: dt });
+    // 1) Leere Payload
+    const dtEmpty = createDataTransfer();
+    const dropEmpty = createEvent.drop(bank, { dataTransfer: dtEmpty });
+    fireEvent(bank, dropEmpty);
+    expect(onReturnToBank).not.toHaveBeenCalled();
 
+    // 2) Falsche exerciseId
+    const dtWrong = createDataTransfer({
+      wordId: JSON.stringify({ exerciseId: "other", wordId: "w1" }),
+    });
+    const dropWrong = createEvent.drop(bank, { dataTransfer: dtWrong });
+    fireEvent(bank, dropWrong);
     expect(onReturnToBank).not.toHaveBeenCalled();
   });
 
-  it("setzt draggable nur bei verfügbaren Wörtern", () => {
+  it("Ctrl-Klick auf verfügbares Wort triggert onQuickPlace(wordId) und verhindert Default", () => {
+    const onQuickPlace = vi.fn();
+
     render(
       <SolutionWordBank
+        exerciseId="ex1"
         words={words}
         onReturnToBank={vi.fn()}
-        onQuickPlace={vi.fn()}
+        onQuickPlace={onQuickPlace}
       />,
     );
 
-    const haus = screen.getByText("Haus");
-    const baum = screen.getByText("Baum");
+    const w1 = screen.getByTestId("wordbank-w1"); // available
+    const evt = createEvent.click(w1, { ctrlKey: true });
+    const preventDefaultSpy = vi.spyOn(evt, "preventDefault");
 
-    // HTMLElement-Attribut 'draggable' ist ein String-Attribut im DOM
-    expect(haus).toHaveAttribute("draggable", "true");
-    expect(baum).toHaveAttribute("draggable", "false");
+    fireEvent(w1, evt);
+
+    expect(onQuickPlace).toHaveBeenCalledWith("w1");
+    expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("dragStart setzt dataTransfer.wordId nur bei verfügbaren Wörtern (implizit durch Handler-Gate)", () => {
+  it("Meta-Klick (⌘) auf verfügbares Wort triggert ebenfalls onQuickPlace(wordId)", () => {
+    const onQuickPlace = vi.fn();
+
     render(
       <SolutionWordBank
+        exerciseId="ex1"
         words={words}
         onReturnToBank={vi.fn()}
-        onQuickPlace={vi.fn()}
+        onQuickPlace={onQuickPlace}
       />,
     );
 
-    const dt = createDataTransfer();
-    const haus = screen.getByText("Haus");
-    fireEvent.dragStart(haus, { dataTransfer: dt });
+    const w3 = screen.getByTestId("wordbank-w3"); // available
+    const evt = createEvent.click(w3, { metaKey: true });
+    const preventDefaultSpy = vi.spyOn(evt, "preventDefault");
 
-    expect(dt.setData).toHaveBeenCalledWith("wordId", "w1");
+    fireEvent(w3, evt);
 
-    const dt2 = createDataTransfer();
-    const baum = screen.getByText("Baum");
-    // bei nicht verfügbaren gibt es zwar ein dragStart Event, aber das Element hat draggable=false,
-    // Browser feuern i.d.R. kein echtes dragStart. Zur Sicherheit: unser Handler ist durch word.available gegated.
-    fireEvent.dragStart(baum, { dataTransfer: dt2 });
+    expect(onQuickPlace).toHaveBeenCalledWith("w3");
+    expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
+  });
 
-    // keine SetData-Aufrufe für das nicht verfügbare Wort
-    expect(dt2.setData).not.toHaveBeenCalled();
+  it("Ctrl-/Meta-Klick auf NICHT verfügbares Wort macht nichts", () => {
+    const onQuickPlace = vi.fn();
+
+    render(
+      <SolutionWordBank
+        exerciseId="ex1"
+        words={words}
+        onReturnToBank={vi.fn()}
+        onQuickPlace={onQuickPlace}
+      />,
+    );
+
+    const w2 = screen.getByTestId("wordbank-w2"); // unavailable
+
+    const evtCtrl = createEvent.click(w2, { ctrlKey: true });
+    const spyCtrl = vi.spyOn(evtCtrl, "preventDefault");
+    fireEvent(w2, evtCtrl);
+
+    const evtMeta = createEvent.click(w2, { metaKey: true });
+    const spyMeta = vi.spyOn(evtMeta, "preventDefault");
+    fireEvent(w2, evtMeta);
+
+    expect(onQuickPlace).not.toHaveBeenCalled();
+    expect(spyCtrl).not.toHaveBeenCalled();
+    expect(spyMeta).not.toHaveBeenCalled();
   });
 });
