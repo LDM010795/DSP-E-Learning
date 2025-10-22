@@ -11,7 +11,6 @@ export interface SolutionWordBankProps {
 
 const SolutionWordBank = memo<SolutionWordBankProps>(
   ({ words, onReturnToBank, onQuickPlace, exerciseId }) => {
-    
     const handleDragStart = (
       e: React.DragEvent<HTMLDivElement>,
       wordId: string,
@@ -21,17 +20,14 @@ const SolutionWordBank = memo<SolutionWordBankProps>(
 
     const handleReturnToBankEvent = (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
-      
+
       const raw = e.dataTransfer.getData("wordId");
-      if (!raw)
-        return;
+      if (!raw) return;
 
       const { exerciseId: src, wordId } = JSON.parse(raw);
-      if (src !== exerciseId)
-        return; // Wort einer fremden Cloze Exercise → ignorieren
+      if (src !== exerciseId) return; // Wort einer fremden Cloze Exercise → ignorieren
 
-      if (wordId)
-        onReturnToBank(wordId);
+      if (wordId) onReturnToBank(wordId);
     };
 
     return (
@@ -56,10 +52,11 @@ const SolutionWordBank = memo<SolutionWordBankProps>(
               onDragStart={(e) => word.available && handleDragStart(e, word.id)}
               onClick={handleCtrlClick}
               data-testid={`wordbank-${word.id}`}
-              className={`px-3 py-1 border rounded-xl select-none transition-colors ${word.available
-                ? "bg-dsp-orange_light/50 border-dsp-orange_medium/60 cursor-grab hover:text-dsp-orange"
-                : "bg-gray-100 border-gray-100 text-gray-500 cursor-not-allowed"
-                }`}
+              className={`px-3 py-1 border rounded-xl select-none transition-colors ${
+                word.available
+                  ? "bg-dsp-orange_light/50 border-dsp-orange_medium/60 cursor-grab hover:text-dsp-orange"
+                  : "bg-gray-100 border-gray-100 text-gray-500 cursor-not-allowed"
+              }`}
             >
               {word.word}
             </div>

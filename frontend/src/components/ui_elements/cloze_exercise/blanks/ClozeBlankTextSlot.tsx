@@ -1,20 +1,15 @@
 import { memo } from "react";
 import { CLOZE_BLANK_STYLES, ClozeBlankBaseProps } from "./ClozeBlankBase";
 
-export interface ClozeBlankTextSlotProps extends ClozeBlankBaseProps{
+export interface ClozeBlankTextSlotProps extends ClozeBlankBaseProps {
   inputValue: string;
   onInputChange?: (value: string) => void;
 }
 
 const ClozeBlankTextSlot = memo<ClozeBlankTextSlotProps>(
-  ({
-    id,
-    inputValue = "",
-    onInputChange,
-    display_mode: mode = "text",
-  }) => {
+  ({ id, inputValue = "", onInputChange, display_mode: mode = "text" }) => {
     const s = CLOZE_BLANK_STYLES[mode];
-       
+
     return (
       <span key={id} className={s.inputWrap}>
         <input

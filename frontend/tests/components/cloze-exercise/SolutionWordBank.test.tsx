@@ -5,11 +5,12 @@ import SolutionWordBank, {
   SolutionWord,
 } from "@/components/ui_elements/cloze_exercise/SolutionWordBank";
 
-
 function createDataTransfer(initial: Record<string, string> = {}) {
   const store: Record<string, string> = { ...initial };
   return {
-    setData: vi.fn((type: string, val: string) => { store[type] = val; }),
+    setData: vi.fn((type: string, val: string) => {
+      store[type] = val;
+    }),
     getData: vi.fn((type: string) => store[type] ?? ""),
     clearData: vi.fn((type?: string) => {
       if (!type) Object.keys(store).forEach((k) => delete store[k]);

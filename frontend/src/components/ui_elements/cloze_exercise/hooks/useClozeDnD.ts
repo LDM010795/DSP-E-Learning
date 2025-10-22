@@ -18,14 +18,17 @@ function buildBaseWords(blanks: BlankWithId[], wrong: string[]) {
   });
 }
 
-export function useClozeDnD(blanks: BlankWithId[], wrongSolutionWords: string[]) {
+export function useClozeDnD(
+  blanks: BlankWithId[],
+  wrongSolutionWords: string[],
+) {
   // Nur Antworten im State (blankId -> wordId)
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   // Basiseinträge (ohne available)
   const base = useMemo(
     () => buildBaseWords(blanks, wrongSolutionWords),
-    [blanks, wrongSolutionWords]
+    [blanks, wrongSolutionWords],
   );
 
   // Bank inklusive "available" aus den Antworten abgeleitet
@@ -43,7 +46,7 @@ export function useClozeDnD(blanks: BlankWithId[], wrongSolutionWords: string[])
       const found = base.find((w) => w.id === wordId);
       return found?.word ?? "";
     },
-    [answers, base]
+    [answers, base],
   );
 
   // Aktionen
@@ -78,14 +81,17 @@ export function useClozeDnD(blanks: BlankWithId[], wrongSolutionWords: string[])
     });
   }, []);
 
-  const quickPlace = useCallback((wordId: string) => {
-    const firstEmpty = blanks.find((b) => !answers[b.id]);
-    if (firstEmpty) dropIntoBlank(firstEmpty.id, wordId);
-  }, [answers, blanks, dropIntoBlank]);
+  const quickPlace = useCallback(
+    (wordId: string) => {
+      const firstEmpty = blanks.find((b) => !answers[b.id]);
+      if (firstEmpty) dropIntoBlank(firstEmpty.id, wordId);
+    },
+    [answers, blanks, dropIntoBlank],
+  );
 
   const allFilled = useMemo(
     () => blanks.every((b) => getUserAnswerText(b.id).trim().length > 0),
-    [blanks, getUserAnswerText]
+    [blanks, getUserAnswerText],
   );
 
   return {

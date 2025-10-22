@@ -36,7 +36,9 @@ describe("useClozeParts", () => {
   });
 
   it("respektiert den prefix aus opts", () => {
-    const { result } = renderHook(() => useClozeParts(baseCloze, { prefix: "x" }));
+    const { result } = renderHook(() =>
+      useClozeParts(baseCloze, { prefix: "x" }),
+    );
     const { partsWithIds, blanks } = result.current;
 
     expect((partsWithIds[1] as any).id).toBe("x-0");
@@ -47,7 +49,8 @@ describe("useClozeParts", () => {
   it("hält Referenzen stabil, wenn clozeText und prefix gleich bleiben", () => {
     const cloze = baseCloze; // gleiche Referenz
     const { result, rerender } = renderHook(
-      ({ c, p }: { c: ClozeTextPart[]; p?: string }) => useClozeParts(c, { prefix: p }),
+      ({ c, p }: { c: ClozeTextPart[]; p?: string }) =>
+        useClozeParts(c, { prefix: p }),
       { initialProps: { c: cloze, p: "b" } },
     );
 
@@ -115,7 +118,9 @@ describe("useClozeParts", () => {
   });
 
   it("blanks-Array enthält ausschließlich die Blank-Objekte inklusive IDs", () => {
-    const { result } = renderHook(() => useClozeParts(baseCloze, { prefix: "bb" }));
+    const { result } = renderHook(() =>
+      useClozeParts(baseCloze, { prefix: "bb" }),
+    );
     const { blanks } = result.current;
 
     expect(blanks).toHaveLength(2);

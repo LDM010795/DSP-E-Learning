@@ -154,7 +154,9 @@ describe("ClozeExerciseTextInput (ohne Mocks)", () => {
     expect(submitBtn).toBeEnabled();
 
     fireEvent.click(submitBtn);
-    expect(screen.getByTestId("cloze-feedback")).toHaveTextContent("🎉 Alles richtig! Super gemacht!");
+    expect(screen.getByTestId("cloze-feedback")).toHaveTextContent(
+      "🎉 Alles richtig! Super gemacht!",
+    );
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 });

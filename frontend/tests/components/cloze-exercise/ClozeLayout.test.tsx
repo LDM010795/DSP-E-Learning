@@ -1,8 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ClozeFeedbackState, ClozeHeader, ClozeSubmitButton, ClozeSubmitFeedback } from "@/components/ui_elements/cloze_exercise/ClozeLayout";
-
+import {
+  ClozeFeedbackState,
+  ClozeHeader,
+  ClozeSubmitButton,
+  ClozeSubmitFeedback,
+} from "@/components/ui_elements/cloze_exercise/ClozeLayout";
 
 /* ----------------------------- ClozeHeader ----------------------------- */
 
@@ -32,9 +36,7 @@ describe("ClozeHeader", () => {
 describe("ClozeSubmitButton", () => {
   it("ist disabled, wenn allFilled=false, und feuert checkResults nicht", () => {
     const onCheck = vi.fn();
-    render(
-      <ClozeSubmitButton allFilled={false} checkResults={onCheck} />
-    );
+    render(<ClozeSubmitButton allFilled={false} checkResults={onCheck} />);
 
     const btn = screen.getByTestId("cloze-submit");
     expect(btn).toBeDisabled();

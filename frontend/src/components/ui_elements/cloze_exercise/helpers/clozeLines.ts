@@ -10,7 +10,7 @@ export type ClozePart = TextPart | BlankPart;
  */
 export function useClozeLinesDnD(
   parts: ClozePart[],
-  renderBlankById: (blankId: string) => JSX.Element
+  renderBlankById: (blankId: string) => JSX.Element,
 ): Line[] {
   return useMemo(() => {
     const lines: Line[] = [[]];
@@ -44,7 +44,7 @@ export function useClozeLinesDnD(
  */
 export function useClozeLinesTextInput(
   parts: Array<TextPart | { type: "blank" }>,
-  renderBlankByIndex: (index: number) => JSX.Element
+  renderBlankByIndex: (index: number) => JSX.Element,
 ): Line[] {
   return useMemo(() => {
     const lines: Line[] = [[]];
