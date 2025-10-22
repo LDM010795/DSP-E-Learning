@@ -97,23 +97,23 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         )}
 
         {/* Text content (truncate on one line) */}
-          <motion.span
-              className="relative z-10 min-w-0 flex-1"
-              whileHover={{ x: 2 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        <motion.span
+          className="relative z-10 min-w-0 flex-1"
+          whileHover={{ x: 2 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          <span
+            className={clsx(
+              // prevent wrapping & show ellipsis when narrow
+              "block truncate whitespace-nowrap",
+              // responsive max widths to balance truncation vs. readability
+              "max-w-[140px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[260px]",
+            )}
+            title={typeof children === "string" ? children : undefined}
           >
-              <span
-                  className={clsx(
-                      // prevent wrapping & show ellipsis when narrow
-                      "block truncate whitespace-nowrap",
-                      // responsive max widths to balance truncation vs. readability
-                      "max-w-[140px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[260px]"
-                  )}
-                  title={typeof children === "string" ? children : undefined}
-              >
-                  {children}
-              </span>
-          </motion.span>
+            {children}
+          </span>
+        </motion.span>
 
         {/* Ripple effect on click */}
         <motion.div

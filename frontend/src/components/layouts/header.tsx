@@ -94,8 +94,11 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
       >
         <div className="max-w-[95vw] mx-auto px-4 sm:px-6">
           <div className="flex items-center h-14">
-             {/* Left: Logo */}
-            <div className="flex items-center gap-3" data-testid="logo-container">
+            {/* Left: Logo */}
+            <div
+              className="flex items-center gap-3"
+              data-testid="logo-container"
+            >
               {logo && (
                 <Link to={"/dashboard"} aria-label={"Zum Dashboard"}>
                   <div className="h-8 flex items-center">
@@ -107,7 +110,6 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                   </div>
                 </Link>
               )}
-
             </div>
 
             {/* Center: Desktop Navigation */}
@@ -117,27 +119,27 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
               </ul>
             </nav>
 
-             {/* Right: Actions (desktop) + Burger (mobile) */}
-              <div className="ml-auto flex items-center">
-                  {/* Desktop right content */}
-                  <div className="hidden md:flex items-center justify-end">
-                      <ul className="flex items-center gap-1">
-                          {renderRightContentItems(filteredRightContent)}
-                      </ul>
-                  </div>
-                  {/* Mobile burger aligned right */}
-                  <button
-                      onClick={() => setMobileOpen((prev) => !prev)}
-                      className="md:hidden ml-2 relative p-1.5 rounded-lg text-gray-700 hover:text-dsp-orange hover:bg-dsp-orange/5 transition-colors duration-200"
-                      aria-label="Toggle Navigation"
-                  >
-                      {mobileOpen ? (
-                          <IoMdClose className="w-5 h-5" />
-                      ) : (
-                          <IoMdMenu className="w-5 h-5" />
-                      )}
-                  </button>
+            {/* Right: Actions (desktop) + Burger (mobile) */}
+            <div className="ml-auto flex items-center">
+              {/* Desktop right content */}
+              <div className="hidden md:flex items-center justify-end">
+                <ul className="flex items-center gap-1">
+                  {renderRightContentItems(filteredRightContent)}
+                </ul>
               </div>
+              {/* Mobile burger aligned right */}
+              <button
+                onClick={() => setMobileOpen((prev) => !prev)}
+                className="md:hidden ml-2 relative p-1.5 rounded-lg text-gray-700 hover:text-dsp-orange hover:bg-dsp-orange/5 transition-colors duration-200"
+                aria-label="Toggle Navigation"
+              >
+                {mobileOpen ? (
+                  <IoMdClose className="w-5 h-5" />
+                ) : (
+                  <IoMdMenu className="w-5 h-5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -163,9 +165,9 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                   {filteredLinks.map((link, index) => (
                     <li key={index}>
                       <LinkSidebar
-                          to={link.to}
-                          icon={link.icon}
-                          className="flex items-center w-full px-3 py-2 rounded-lg transition-colors duration-200"
+                        to={link.to}
+                        icon={link.icon}
+                        className="flex items-center w-full px-3 py-2 rounded-lg transition-colors duration-200"
                       >
                         {link.title}
                       </LinkSidebar>
@@ -185,9 +187,9 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                       <li key={index}>
                         {item.to ? (
                           <LinkSidebar
-                              to={item.to}
-                              icon={item.icon}
-                              className="flex items-center w-full px-3 py-2 rounded-lg transition-colors duration-200"
+                            to={item.to}
+                            icon={item.icon}
+                            className="flex items-center w-full px-3 py-2 rounded-lg transition-colors duration-200"
                           >
                             {item.title}
                           </LinkSidebar>

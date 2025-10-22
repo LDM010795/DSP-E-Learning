@@ -30,14 +30,14 @@ const ButtonToggleSmall: React.FC<ButtonToggleSmallProps> = ({
           "hover:cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-dsp-orange/50 " +
           // keep rotation
           "rotate-180"
-            }
+        }
       >
         {icon && <span className={classNameIcon}>{icon}</span>}
-          {title && (
-              <span className="truncate whitespace-nowrap max-w-[120px] sm:max-w-[160px] md:max-w-none">
-                  {title}
-              </span>
-          )}
+        {title && (
+          <span className="truncate whitespace-nowrap max-w-[120px] sm:max-w-[160px] md:max-w-none">
+            {title}
+          </span>
+        )}
       </button>
     </div>
   );
