@@ -23,6 +23,12 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
   };
 
   const linksWithSubscriptions = useMemo(() => {
+
+    // SUBSCRIPTIONS AUSGEBLENDET
+    // Abonnements vorerst ausblenden, bis die E-Learning-
+    // Plattform auch von externen Usern verwendet wird
+    return links;
+
     const alreadyHas = links.some((l) => l.to === "/subscriptions");
     return alreadyHas ? links : [...links, subscriptionsLink];
   }, [links]);

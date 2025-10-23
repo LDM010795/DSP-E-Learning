@@ -98,7 +98,7 @@ describe("HeaderNavigation", () => {
 
     expect(screen.getByText("Settings")).toBeInTheDocument();
   });
-
+  /* SUBSCRIPTIONS AUSGEBLENDET
   it("automatically adds /subscriptions link if not present", () => {
     renderWithAppProviders(
       <HeaderNavigation
@@ -115,6 +115,7 @@ describe("HeaderNavigation", () => {
       "/subscriptions",
     );
   });
+  */
 
   it("does not add /subscriptions link if not present and not authenticated", () => {
     renderWithAppProviders(
