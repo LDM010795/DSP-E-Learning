@@ -37,8 +37,16 @@ h6 {
   --color-dsp-orange_medium: #ffb697;
   --color-dsp-orange_light: #fedac7;
   --color-dsp-white: #ffffff;
+  --color-dsp-brown: #3a2a20; /* warm, readable heading color */
 
   --color-dsp-orange-gradient: #fa8c45;
+}
+
+/* Reusable title style for cards */
+@layer utilities {
+  .ds-title {
+    @apply text-[1.25rem] md:text-[1.35rem] font-semibold tracking-tight text-dsp-brown;
+  }
 }
 
 /* Chrome, Safari und Edge */

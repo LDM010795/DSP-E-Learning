@@ -396,7 +396,7 @@ function Modules() {
             {viewMode === "standard" ? (
               <div
                 className={clsx(
-                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
+                  "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 items-stretch content-start",
                 )}
               >
                 {sortedAndFilteredModules.length > 0 ? (
@@ -420,22 +420,20 @@ function Modules() {
                       <Link
                         key={module.id}
                         to={`/modules/${module.id}`}
-                        className={clsx("block relative group")}
+                        className={clsx("block relative group h-full")}
                       >
-                        <div className="relative overflow-hidden rounded-xl border border-white/40 hover:border-dsp-orange/30 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] bg-white/60 backdrop-blur-sm hover:bg-white/80">
+                        <div className="relative overflow-hidden rounded-xl h-full">
+                          {" "}
+                          {/* keep simple wrapper only */}
                           <CardPreviewSmall
                             title={module.title}
                             youtubeId={getFirstYoutubeId(module)}
                             progress={roundedProgressPercent}
+                            badge={difficultyTagElement}
+                            imageMode="none"
                             className="w-full h-full border-0 bg-transparent hover:bg-transparent"
                             classNameTitle="text-left text-xl group-hover:text-dsp-orange transition-colors duration-200"
                           />
-                          {module.tasks && module.tasks.length > 0 && (
-                            <div className="absolute top-4 right-4 z-10">
-                              {difficultyTagElement}
-                            </div>
-                          )}
-
                           {/* Enhanced hover overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-dsp-orange/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
                         </div>

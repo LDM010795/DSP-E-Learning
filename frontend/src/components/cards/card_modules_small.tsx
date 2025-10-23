@@ -1,18 +1,14 @@
-import React from "react";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import {
-  IoCheckmarkOutline,
-  IoHourglassOutline,
-  IoPlayOutline,
-} from "react-icons/io5";
+import { IoPlay } from "react-icons/io5";
+import type { ReactNode } from "react";
 
 type ModuleStatus = "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
 
 interface CardModulesSmallProps {
   title: string;
   progress: number;
-  difficultyTag: React.ReactNode;
+  difficultyTag: ReactNode;
   className?: string;
   onClick?: () => void;
 }
@@ -31,141 +27,108 @@ const CardModulesSmall: React.FC<CardModulesSmallProps> = ({
         ? "In Bearbeitung"
         : "Nicht begonnen";
 
-  const getStatusConfig = (s: ModuleStatus) => {
-    switch (s) {
-      case "Abgeschlossen":
-        return {
-          icon: <IoCheckmarkOutline className="h-4 w-4 text-white" />,
-          iconBgColor: "bg-green-500",
-          progressColor: "bg-green-500",
-          statusColor: "text-green-600",
-          hoverBg: "hover:bg-green-50",
-          borderHover: "hover:border-green-200",
-        };
-      case "In Bearbeitung":
-        return {
-          icon: <IoHourglassOutline className="h-4 w-4 text-white" />,
-          iconBgColor: "bg-dsp-orange",
-          progressColor: "bg-dsp-orange",
-          statusColor: "text-dsp-orange",
-          hoverBg: "hover:bg-dsp-orange_light",
-          borderHover: "hover:border-dsp-orange/30",
-        };
-      case "Nicht begonnen":
-      default:
-        return {
-          icon: <IoPlayOutline className="h-4 w-4 text-gray-600" />,
-          iconBgColor: "bg-gray-200",
-          progressColor: "bg-gray-300",
-          statusColor: "text-gray-600",
-          hoverBg: "hover:bg-gray-50",
-          borderHover: "hover:border-gray-300",
-        };
-    }
-  };
-
-  const config = getStatusConfig(derivedStatus);
+  const statusColor =
+    derivedStatus === "Abgeschlossen"
+      ? "text-green-600"
+      : derivedStatus === "In Bearbeitung"
+        ? "text-dsp-orange"
+        : "text-gray-600";
 
   return (
     <motion.div
       className={clsx(
-        // Base professional styling
-        "group relative",
-        "bg-white/90 backdrop-blur-sm",
-        "border border-gray-200/60",
-        "rounded-xl p-4",
-        "shadow-sm hover:shadow-md",
-        "transition-all duration-200 ease-in-out",
+        "group relative overflow-hidden isolate",
+        "rounded-xl p-4 h-40 flex flex-col",
+        "border border-gray-200/50",
+        "bg-gradient-to-br from-white via-white/98 to-white/95",
+        "transition-all duration-500 hover:border-dsp-orange/30 hover:shadow-[0_12px_30px_-10px_rgba(0,0,0,0.25)]",
         "cursor-pointer",
-        config.borderHover,
-        config.hoverBg,
         className,
       )}
       onClick={onClick}
-      whileHover={{ y: -1, scale: 1.01 }}
+      whileHover={{ y: -2 }}
       whileTap={{ scale: 0.99 }}
       transition={{ duration: 0.15 }}
     >
-      {/* Content Layout */}
-      <div className="flex items-center gap-4">
-        {/* Status Icon */}
-        <motion.div
-          className={clsx(
-            "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center",
-            "shadow-sm border border-white/20",
-            config.iconBgColor,
-          )}
-          whileHover={{ rotate: 5 }}
-          transition={{ duration: 0.2 }}
-        >
-          {config.icon}
-        </motion.div>
+      {/* Hover gradient + glow */}
+      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-dsp-orange/5 via-transparent to-emerald-400/5" />
+      <div className="absolute -inset-0.5 rounded-xl -z-10 pointer-events-none opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500 bg-gradient-to-br from-dsp-orange/20 to-emerald-400/20" />
 
-        {/* Content Area */}
-        <div className="flex-grow min-w-0">
-          {/* Header with title and difficulty */}
-          <div className="flex items-start justify-between mb-2">
-            <h3
+      {/* Header row */}
+      <div className="flex items-start justify-between gap-3">
+        <h3
+          title={title}
+          className={clsx(
+            "ds-title leading-tight",
+            "group-hover:text-dsp-orange transition-colors duration-300",
+            "line-clamp-2",
+          )}
+        >
+          {title}
+        </h3>
+        {/* Play button */}
+        <button
+          className="shrink-0 h-10 w-10 rounded-full bg-gray-100 hover:bg-dsp-orange hover:text-white transition-all duration-300 grid place-items-center shadow-sm"
+          aria-label="Starten"
+          type="button"
+        >
+          <IoPlay className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Optional difficulty pill */}
+      {difficultyTag && <div className="mt-2">{difficultyTag}</div>}
+
+      <div className="flex-1" />
+
+      {/* Status + progress */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span
               className={clsx(
-                "font-semibold text-gray-900 text-sm leading-tight",
-                "group-hover:text-dsp-orange transition-colors duration-200",
-                "line-clamp-1 flex-1 pr-2",
+                "relative inline-flex h-3 w-3 rounded-full",
+                derivedStatus === "Abgeschlossen"
+                  ? "bg-green-600"
+                  : derivedStatus === "In Bearbeitung"
+                    ? "bg-dsp-orange"
+                    : "bg-gray-400",
               )}
             >
-              {title}
-            </h3>
-
-            <div className="flex-shrink-0">{difficultyTag}</div>
-          </div>
-
-          {/* Professional Progress Section */}
-          <div className="space-y-2">
-            {/* Progress info */}
-            <div className="flex items-center justify-between">
-              <span className={clsx("text-xs font-medium", config.statusColor)}>
-                {derivedStatus}
-              </span>
-              <span
-                className={clsx("text-xs font-semibold", config.statusColor)}
-              >
-                {progress}%
-              </span>
-            </div>
-
-            {/* Enhanced progress bar */}
-            <div className="relative">
-              <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                <motion.div
-                  className={clsx(
-                    "h-1.5 rounded-full transition-all duration-300",
-                    config.progressColor,
-                  )}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                />
-              </div>
-
-              {/* Progress glow effect */}
-              {progress > 0 && (
-                <div
-                  className={clsx(
-                    "absolute top-0 left-0 h-1.5 rounded-full opacity-40 blur-sm",
-                    config.progressColor,
-                  )}
-                  style={{ width: `${Math.min(progress, 100)}%` }}
-                />
+              {derivedStatus === "In Bearbeitung" && (
+                <span className="absolute inset-0 rounded-full animate-ping opacity-75 bg-dsp-orange" />
               )}
-            </div>
+            </span>
+            <span className={clsx("text-xs font-medium", statusColor)}>
+              {derivedStatus}
+            </span>
+          </div>
+          <span
+            className={clsx(
+              "text-xs font-semibold",
+              statusColor,
+              "bg-gray-100 px-2 py-0.5 rounded-md",
+            )}
+          >
+            {Math.round(progress)}%
+          </span>
+        </div>
+
+        {/* Gradient progress bar */}
+        <div className="relative">
+          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden shadow-inner">
+            <motion.div
+              className="h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden bg-gradient-to-r from-dsp-orange via-orange-300 to-emerald-400"
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" />
+            </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Subtle hover glow */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-dsp-orange/3 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-
-      {/* Professional border highlight on hover */}
-      <div className="absolute inset-0 rounded-xl border border-transparent group-hover:border-dsp-orange/20 transition-colors duration-200 pointer-events-none" />
+      {/* (Glow handled by the two gradient layers at the top) */}
     </motion.div>
   );
 };
