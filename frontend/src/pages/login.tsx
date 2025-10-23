@@ -423,14 +423,14 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
                   ${isClosing ? "opacity-0 translate-y-4" : ""}`}
                 >
                   <ButtonPrimary
-                    onClick={handleLoginSubmit}
+                    type="submit"
                     title={isLoading ? "Anmelden..." : "Anmelden"}
                     classNameButton={`w-full py-3 shadow-lg shadow-dsp-orange/25 transform transition-all duration-200 ease-in-out
-                    ${
-                      isLoading
-                        ? "opacity-70 cursor-not-allowed"
-                        : "hover:scale-[1.02] hover:shadow-xl hover:shadow-dsp-orange/30"
-                    }`}
+                      ${
+                        isLoading
+                          ? "opacity-70 cursor-not-allowed"
+                          : "hover:scale-[1.02] hover:shadow-xl hover:shadow-dsp-orange/30"
+                      }`}
                     disabled={isLoading}
                   />
                 </div>
