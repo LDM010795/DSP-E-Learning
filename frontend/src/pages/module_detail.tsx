@@ -28,7 +28,20 @@ import {
   Content,
   Chapter,
 } from "../context/ModuleContext";
-import { ExampleNormalWithBank, ExampleNormalNoBank, ExampleCodeWithBank, ExampleCodeNoBank, ExampleComplexCodeWithBank, HL_CSS, HL_JSX, HL_JavaScript, HL_Python, HL_TSX, HL_TypeScript, FindErrorsExample } from "@/components/ui_elements/cloze_exercise/_ClozeTextExamples";
+import {
+  ExampleNormalWithBank,
+  ExampleNormalNoBank,
+  ExampleCodeWithBank,
+  ExampleCodeNoBank,
+  ExampleComplexCodeWithBank,
+  HL_CSS,
+  HL_JSX,
+  HL_JavaScript,
+  HL_Python,
+  HL_TSX,
+  HL_TypeScript,
+  FindErrorsExample,
+} from "@/components/ui_elements/cloze_exercise/_ClozeTextExamples";
 
 function ModuleDetail() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -216,19 +229,20 @@ function ModuleDetail() {
                       <span className="font-medium text-gray-700">
                         {chapters.length > 0
                           ? chapters.flatMap((chapter) => chapter.contents)
-                            .length
+                              .length
                           : totalLessons}{" "}
                         Lektionen
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
                       <div
-                        className={`w-2 h-2 rounded-full ${moduleProgress === 100
-                          ? "bg-green-500"
-                          : moduleProgress > 0
-                            ? "bg-dsp-orange"
-                            : "bg-gray-400"
-                          }`}
+                        className={`w-2 h-2 rounded-full ${
+                          moduleProgress === 100
+                            ? "bg-green-500"
+                            : moduleProgress > 0
+                              ? "bg-dsp-orange"
+                              : "bg-gray-400"
+                        }`}
                       ></div>
                       <span className="font-medium text-gray-700">
                         {moduleProgress}% abgeschlossen
@@ -254,7 +268,7 @@ function ModuleDetail() {
       <SubBackground>
         <div style={{ padding: 16 }}>
           <h1>Playground</h1>
-          <FindErrorsExample/>
+          <FindErrorsExample />
           <ExampleNormalWithBank />
           <ExampleNormalNoBank />
           <ExampleCodeWithBank />
@@ -271,7 +285,6 @@ function ModuleDetail() {
 
       {/* Main Content */}
       <div className="px-4 pb-8">
-
         <div className="max-w-[95vw] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Content Area */}
@@ -442,44 +455,49 @@ function ModuleDetail() {
                           }
                         >
                           <div
-                            className={`p-4 rounded-xl border transition-all duration-200 ${task.completed
-                              ? "border-green-200 bg-green-50/50 hover:bg-green-50"
-                              : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
-                              }`}
+                            className={`p-4 rounded-xl border transition-all duration-200 ${
+                              task.completed
+                                ? "border-green-200 bg-green-50/50 hover:bg-green-50"
+                                : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
+                            }`}
                           >
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex items-center space-x-3 flex-1">
                                 <div
-                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${task.completed
-                                    ? "bg-green-500"
-                                    : "bg-gray-200 group-hover:bg-dsp-orange/20"
-                                    }`}
+                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                                    task.completed
+                                      ? "bg-green-500"
+                                      : "bg-gray-200 group-hover:bg-dsp-orange/20"
+                                  }`}
                                 >
                                   {task.completed ? (
                                     <IoCheckmarkCircleOutline className="w-5 h-5 text-white" />
                                   ) : (
                                     <IoPlayCircleOutline
-                                      className={`w-5 h-5 ${task.completed
-                                        ? "text-white"
-                                        : "text-gray-500 group-hover:text-dsp-orange"
-                                        }`}
+                                      className={`w-5 h-5 ${
+                                        task.completed
+                                          ? "text-white"
+                                          : "text-gray-500 group-hover:text-dsp-orange"
+                                      }`}
                                     />
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <h3
-                                    className={`font-medium text-sm leading-tight ${task.completed
-                                      ? "text-gray-700"
-                                      : "text-gray-800 group-hover:text-dsp-orange"
-                                      }`}
+                                    className={`font-medium text-sm leading-tight ${
+                                      task.completed
+                                        ? "text-gray-700"
+                                        : "text-gray-800 group-hover:text-dsp-orange"
+                                    }`}
                                   >
                                     {task.title}
                                   </h3>
                                   <p
-                                    className={`text-xs mt-1 ${task.completed
-                                      ? "text-green-600"
-                                      : "text-gray-500"
-                                      }`}
+                                    className={`text-xs mt-1 ${
+                                      task.completed
+                                        ? "text-green-600"
+                                        : "text-gray-500"
+                                    }`}
                                   >
                                     {task.completed ? "Abgeschlossen" : "Offen"}
                                   </p>

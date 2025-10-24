@@ -3,10 +3,7 @@ import { memo, useState, useEffect, useId } from "react";
 import SolutionWordBank from "./SolutionWordBank";
 import ClozeBlankDropSlot from "./blanks/ClozeBlankDropSlot";
 import ClozeCodingUi from "./ClozeCodingUi";
-import {
-  ClozeExerciseBaseProps,
-  ClozePartDragDrop,
-} from "./ClozeExerciseBase";
+import { ClozeExerciseBaseProps, ClozePartDragDrop } from "./ClozeExerciseBase";
 import { useClozeDragDropParts } from "./hooks/useClozeDragDropParts";
 import { useClozeDragDropFunctions } from "./hooks/useClozeDragDropFunctions";
 import { useClozeLinesDnD } from "./helpers/clozeLines";

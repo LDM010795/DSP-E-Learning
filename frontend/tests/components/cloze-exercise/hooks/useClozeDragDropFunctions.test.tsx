@@ -12,7 +12,9 @@ describe("useClozeDragDropFunctions", () => {
 
   it("liefert initial leere answers und alle solutionWords als available", () => {
     const wrong = ["Vogel"];
-    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, wrong));
+    const { result } = renderHook(() =>
+      useClozeDragDropFunctions(blanks, wrong),
+    );
 
     expect(result.current.answers).toEqual({});
 
@@ -95,7 +97,9 @@ describe("useClozeDragDropFunctions", () => {
       { id: "b1", correct: ["Katze"], type: "blank" },
       { id: "b2", correct: ["Katze"], type: "blank" },
     ];
-    const { result } = renderHook(() => useClozeDragDropFunctions(blanksWithDup, []));
+    const { result } = renderHook(() =>
+      useClozeDragDropFunctions(blanksWithDup, []),
+    );
 
     const katze1 = result.current.solutionWords.find(
       (w) => w.word === "Katze" && w.id.endsWith("#1"),
@@ -127,7 +131,9 @@ describe("useClozeDragDropFunctions", () => {
 
   it("quickPlace legt ein Wort in die erste leere Lücke (Reihenfolge der blanks)", () => {
     const wrong = ["Vogel"];
-    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, wrong));
+    const { result } = renderHook(() =>
+      useClozeDragDropFunctions(blanks, wrong),
+    );
 
     const vogel = result.current.solutionWords.find((w) => w.word === "Vogel")!;
     act(() => {

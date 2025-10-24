@@ -15,7 +15,7 @@ import {
 import { userInputMatchesCorrectAnswer } from "./helpers/checkClozeInput";
 
 export interface ClozeExerciseTextInputProps extends ClozeExerciseBaseProps {
-  clozeText: ClozePartTextInput[]
+  clozeText: ClozePartTextInput[];
 }
 export const ClozeExerciseTextInput = memo<ClozeExerciseTextInputProps>(
   ({

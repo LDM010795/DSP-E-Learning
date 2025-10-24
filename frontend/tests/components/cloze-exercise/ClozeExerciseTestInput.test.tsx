@@ -164,7 +164,7 @@ describe("ClozeExerciseTextInput", () => {
     { type: "text", text: "Die " },
     { type: "blank", correct: ["Katze"], initialValue: "Katz" }, // falsch
     { type: "text", text: " frisst " },
-    { type: "blank", correct: ["Hund"], initialValue: "Dog" },   // falsch
+    { type: "blank", correct: ["Hund"], initialValue: "Dog" }, // falsch
     { type: "text", text: "." },
   ];
 
@@ -172,7 +172,7 @@ describe("ClozeExerciseTextInput", () => {
     { type: "text", text: "Die " },
     { type: "blank", correct: ["Katze"], initialValue: "Katze" }, // korrekt
     { type: "text", text: " frisst " },
-    { type: "blank", correct: ["Hund"], initialValue: "Dog" },    // falsch
+    { type: "blank", correct: ["Hund"], initialValue: "Dog" }, // falsch
     { type: "text", text: "." },
   ];
 
@@ -236,7 +236,7 @@ describe("ClozeExerciseTextInput", () => {
 
     const [b0, b1] = screen.getAllByRole("textbox");
     expect(b0).toHaveValue("Katze"); // korrekt vorbelegt
-    expect(b1).toHaveValue("Dog");   // falsch vorbelegt
+    expect(b1).toHaveValue("Dog"); // falsch vorbelegt
 
     const submit = screen.getByTestId("cloze-submit");
     expect(submit).toBeEnabled();

@@ -24,7 +24,6 @@ export type ClozePartDragDrop = ClozeTextPart | ClozeBlankDragDrop;
 
 export type ClozePartTextInput = ClozeTextPart | ClozeBlankTextInput;
 
-
 export interface ClozeResult {
   answers: Record<string, string>;
   correct: boolean;
