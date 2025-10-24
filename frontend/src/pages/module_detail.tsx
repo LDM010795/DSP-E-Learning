@@ -28,20 +28,6 @@ import {
   Content,
   Chapter,
 } from "../context/ModuleContext";
-import {
-  ExampleNormalWithBank,
-  ExampleNormalNoBank,
-  ExampleCodeWithBank,
-  ExampleCodeNoBank,
-  ExampleComplexCodeWithBank,
-  HL_CSS,
-  HL_JSX,
-  HL_JavaScript,
-  HL_Python,
-  HL_TSX,
-  HL_TypeScript,
-  FindErrorsExample,
-} from "@/components/ui_elements/cloze_exercise/_ClozeTextExamples";
 
 function ModuleDetail() {
   const { modules, loading, error, fetchModules } = useModules();
@@ -264,24 +250,6 @@ function ModuleDetail() {
           </div>
         </div>
       </div>
-
-      <SubBackground>
-        <div style={{ padding: 16 }}>
-          <h1>Playground</h1>
-          <FindErrorsExample />
-          <ExampleNormalWithBank />
-          <ExampleNormalNoBank />
-          <ExampleCodeWithBank />
-          <ExampleCodeNoBank />
-          <ExampleComplexCodeWithBank />
-          <HL_CSS />
-          <HL_JSX />
-          <HL_JavaScript />
-          <HL_Python />
-          <HL_TSX />
-          <HL_TypeScript />
-        </div>
-      </SubBackground>
 
       {/* Main Content */}
       <div className="px-4 pb-8">
