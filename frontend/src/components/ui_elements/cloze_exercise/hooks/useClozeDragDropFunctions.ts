@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from "react";
-import type { BlankWithId } from "./useClozeParts";
+import type { BlankWithId } from "./useClozeDragDropParts";
 
 export type SolutionWord = { id: string; word: string; available: boolean };
 
@@ -18,7 +18,7 @@ function buildBaseWords(blanks: BlankWithId[], wrong: string[]) {
   });
 }
 
-export function useClozeDnD(
+export function useClozeDragDropFunctions(
   blanks: BlankWithId[],
   wrongSolutionWords: string[],
 ) {

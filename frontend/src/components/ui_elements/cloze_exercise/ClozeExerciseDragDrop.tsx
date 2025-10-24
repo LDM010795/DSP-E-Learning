@@ -5,18 +5,21 @@ import ClozeBlankDropSlot from "./blanks/ClozeBlankDropSlot";
 import ClozeCodingUi from "./ClozeCodingUi";
 import {
   ClozeExerciseBaseProps,
-  userInputMatchesCorrectAnswer,
+  ClozePartDragDrop,
 } from "./ClozeExerciseBase";
-import { useClozeParts } from "./hooks/useClozeParts";
-import { useClozeDnD } from "./hooks/useClozeDnD";
+import { useClozeDragDropParts } from "./hooks/useClozeDragDropParts";
+import { useClozeDragDropFunctions } from "./hooks/useClozeDragDropFunctions";
 import { useClozeLinesDnD } from "./helpers/clozeLines";
 import {
   ClozeHeader,
   ClozeSubmitButton,
   ClozeSubmitFeedback,
 } from "./ClozeLayout";
+import { userInputMatchesCorrectAnswer } from "./helpers/checkClozeInput";
 
 export interface ClozeExerciseDragDropProps extends ClozeExerciseBaseProps {
+  clozeText: ClozePartDragDrop[];
+
   // add wrong answers to the drag'n'droppable
   // solution words to increase difficulty
   wrongSolutionWords?: string[];
@@ -33,7 +36,7 @@ export const ClozeExerciseDragDrop = memo<ClozeExerciseDragDropProps>(
     const exerciseId = `cloze-${useId().replace(/:/g, "")}`;
     const isCodeMode = mode === "code";
 
-    const { partsWithIds, blanks } = useClozeParts(clozeText, {
+    const { partsWithIds, blanks } = useClozeDragDropParts(clozeText, {
       prefix: exerciseId,
     });
     const {
@@ -41,7 +44,7 @@ export const ClozeExerciseDragDrop = memo<ClozeExerciseDragDropProps>(
       solutionWords, // behalte deinen vorhandenen Namen
       actions: { dropIntoBlank, clearBlank, returnToBank, quickPlace },
       derived: { getUserAnswerText, allFilled },
-    } = useClozeDnD(blanks, wrongSolutionWords);
+    } = useClozeDragDropFunctions(blanks, wrongSolutionWords);
 
     // --- Feedback-State unter dem Button ---
     const [feedback, setFeedback] = useState<{

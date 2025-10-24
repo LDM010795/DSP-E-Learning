@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useClozeDnD } from "@/components/ui_elements/cloze_exercise/hooks/useClozeDnD";
-import { BlankWithId } from "@/components/ui_elements/cloze_exercise/hooks/useClozeParts";
+import { useClozeDragDropFunctions } from "@/components/ui_elements/cloze_exercise/hooks/useClozeDragDropFunctions";
+import { BlankWithId } from "@/components/ui_elements/cloze_exercise/hooks/useClozeDragDropParts";
 
-describe("useClozeDnD", () => {
+describe("useClozeDragDropFunctions", () => {
   const blanks: BlankWithId[] = [
     { id: "b1", correct: ["Katze"], type: "blank" },
     { id: "b2", correct: ["Hund"], type: "blank" },
@@ -12,7 +12,7 @@ describe("useClozeDnD", () => {
 
   it("liefert initial leere answers und alle solutionWords als available", () => {
     const wrong = ["Vogel"];
-    const { result } = renderHook(() => useClozeDnD(blanks, wrong));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, wrong));
 
     expect(result.current.answers).toEqual({});
 
@@ -30,12 +30,12 @@ describe("useClozeDnD", () => {
   });
 
   it("getUserAnswerText gibt '' zurück, wenn keine Antwort gesetzt ist", () => {
-    const { result } = renderHook(() => useClozeDnD(blanks, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, []));
     expect(result.current.derived.getUserAnswerText("b1")).toBe("");
   });
 
   it("dropIntoBlank setzt Antwort und markiert das Wort als nicht verfügbar", () => {
-    const { result } = renderHook(() => useClozeDnD(blanks, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, []));
 
     const katze = result.current.solutionWords.find((w) => w.word === "Katze")!;
     act(() => {
@@ -54,7 +54,7 @@ describe("useClozeDnD", () => {
   });
 
   it("dropIntoBlank verschiebt ein bereits gesetztes Wort aus einer anderen Lücke", () => {
-    const { result } = renderHook(() => useClozeDnD(blanks, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, []));
 
     const hund = result.current.solutionWords.find((w) => w.word === "Hund")!;
     act(() => {
@@ -73,7 +73,7 @@ describe("useClozeDnD", () => {
   });
 
   it("clearBlank löscht nur die Antwort der angegebenen Lücke und macht das Wort verfügbar", () => {
-    const { result } = renderHook(() => useClozeDnD(blanks, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, []));
 
     const maus = result.current.solutionWords.find((w) => w.word === "Maus")!;
     act(() => {
@@ -95,7 +95,7 @@ describe("useClozeDnD", () => {
       { id: "b1", correct: ["Katze"], type: "blank" },
       { id: "b2", correct: ["Katze"], type: "blank" },
     ];
-    const { result } = renderHook(() => useClozeDnD(blanksWithDup, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanksWithDup, []));
 
     const katze1 = result.current.solutionWords.find(
       (w) => w.word === "Katze" && w.id.endsWith("#1"),
@@ -127,7 +127,7 @@ describe("useClozeDnD", () => {
 
   it("quickPlace legt ein Wort in die erste leere Lücke (Reihenfolge der blanks)", () => {
     const wrong = ["Vogel"];
-    const { result } = renderHook(() => useClozeDnD(blanks, wrong));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, wrong));
 
     const vogel = result.current.solutionWords.find((w) => w.word === "Vogel")!;
     act(() => {
@@ -146,7 +146,7 @@ describe("useClozeDnD", () => {
   });
 
   it("quickPlace macht nichts, wenn alle Lücken belegt sind", () => {
-    const { result } = renderHook(() => useClozeDnD(blanks, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, []));
 
     const katze = result.current.solutionWords.find((w) => w.word === "Katze")!;
     const hund = result.current.solutionWords.find((w) => w.word === "Hund")!;
@@ -177,7 +177,7 @@ describe("useClozeDnD", () => {
   });
 
   it("allFilled ist true erst, wenn alle getUserAnswerText(...) nicht-leer sind", () => {
-    const { result } = renderHook(() => useClozeDnD(blanks, []));
+    const { result } = renderHook(() => useClozeDragDropFunctions(blanks, []));
 
     expect(result.current.derived.allFilled).toBe(false);
 
@@ -209,7 +209,7 @@ describe("useClozeDnD", () => {
       { id: "x2", correct: ["Apfel"], type: "blank" },
     ];
     const wrong = ["Apfel"]; // drittes Vorkommen aus 'wrong'
-    const { result } = renderHook(() => useClozeDnD(b, wrong));
+    const { result } = renderHook(() => useClozeDragDropFunctions(b, wrong));
 
     const apfelIds = result.current.solutionWords
       .filter((w) => w.word === "Apfel")
