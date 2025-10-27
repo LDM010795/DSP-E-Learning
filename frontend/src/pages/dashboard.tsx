@@ -12,7 +12,7 @@ import {
   IoRadioButtonOnOutline,
   IoCalendarOutline,
   IoBookOutline,
-  IoTrendingUpOutline
+  IoTrendingUpOutline,
 } from "react-icons/io5";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
@@ -61,8 +61,8 @@ function StatPill({
     gradient === "orange"
       ? "bg-gradient-to-br from-[var(--color-dsp-orange)] to-[var(--color-dsp-orange-gradient)]"
       : gradient === "green"
-      ? "bg-gradient-to-br from-emerald-500 to-emerald-600"
-      : "bg-gradient-to-br from-amber-500 to-amber-600";
+        ? "bg-gradient-to-br from-emerald-500 to-emerald-600"
+        : "bg-gradient-to-br from-amber-500 to-amber-600";
   return (
     <div className={`${base} ${bg}`}>
       <div>
@@ -90,25 +90,24 @@ function ActiveModuleCard({
 }) {
   const progress = Math.min(100, Math.max(0, m.progress_percent ?? 0));
   return (
-    <div className="bg-white border border-[var(--color-dsp-orange_light)]/40 rounded-2xl
-    p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-[var(--color-dsp-orange)]/60 hover:-translate-y-0.5">
-
+    <div
+      className="bg-white border border-[var(--color-dsp-orange_light)]/40 rounded-2xl
+    p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-[var(--color-dsp-orange)]/60 hover:-translate-y-0.5"
+    >
       <div className="flex items-center justify-between gap-3">
         <h3 className="font-semibold text-[18px] text-[var(--color-dsp-brown)]">
           {m.title}
         </h3>
         <Link
-            to={`/modules/${m.id}`}
-            className="px-4 py-2 rounded-xl bg-[var(--color-dsp-orange)] text-white font-semibold transition-all duration-200 hover:brightness-110 hover:scale-[1.05] hover:shadow-md active:scale-[0.98]"
+          to={`/modules/${m.id}`}
+          className="px-4 py-2 rounded-xl bg-[var(--color-dsp-orange)] text-white font-semibold transition-all duration-200 hover:brightness-110 hover:scale-[1.05] hover:shadow-md active:scale-[0.98]"
         >
-            Fortfahren
+          Fortfahren
         </Link>
       </div>
 
       <div className="flex items-center gap-3 text-sm text-gray-600 mt-2">
-        <span>
-          ⏱ {(m.study_time_hours ?? 0).toFixed(1)}h
-        </span>
+        <span>⏱ {(m.study_time_hours ?? 0).toFixed(1)}h</span>
         <span>•</span>
         <span>
           {m.lessons_done ?? 0} von {m.lessons_total ?? 0} Lektionen
@@ -133,7 +132,12 @@ function ActiveModuleCard({
 function UpcomingEventCard({
   e,
 }: {
-  e: { id: string; title: string; date_iso: string; type: "Meilenstein" | "Prüfung" | "Aufgabe" };
+  e: {
+    id: string;
+    title: string;
+    date_iso: string;
+    type: "Meilenstein" | "Prüfung" | "Aufgabe";
+  };
 }) {
   const dStr = new Date(e.date_iso).toLocaleDateString("de-DE", {
     day: "2-digit",
@@ -148,8 +152,8 @@ function UpcomingEventCard({
     e.type === "Meilenstein"
       ? "bg-[#ffe6df] text-[#d85c36] border-[#ffd6c7]"
       : e.type === "Prüfung"
-      ? "bg-[#ffe6e6] text-[#d83a3a] border-[#ffd1d1]"
-      : "bg-[#fff2cf] text-[#b07b00] border-[#ffe9ad]";
+        ? "bg-[#ffe6e6] text-[#d83a3a] border-[#ffd1d1]"
+        : "bg-[#fff2cf] text-[#b07b00] border-[#ffe9ad]";
 
   return (
     <div className="rounded-2xl p-4 border border-[var(--color-dsp-orange_light)]/50 bg-[#fffaf5] shadow-sm flex gap-3">
@@ -195,7 +199,6 @@ export default function Dashboard() {
     })();
   }, []);
 
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
@@ -240,11 +243,9 @@ export default function Dashboard() {
   const modulesCompleted = dash.modules_completed;
   const currentGoalPercent = dash.current_goal_percent;
 
-
   // Live collections from API
   const topModules = dash.active_modules.slice(0, 3);
   const upcomingEvents = dash.upcoming_events;
-
 
   return (
     <div className="min-h-screen bg-[#fff7f1]">
@@ -288,8 +289,8 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5">
           <section>
             <h2 className="text-[22px] font-bold text-[var(--color-dsp-brown)] mb-3 flex items-center gap-2">
-                <IoBookOutline className="text-[var(--color-dsp-orange)]" />
-                Aktive Module
+              <IoBookOutline className="text-[var(--color-dsp-orange)]" />
+              Aktive Module
             </h2>
 
             <div className="grid gap-4">
@@ -300,21 +301,20 @@ export default function Dashboard() {
           </section>
 
           <aside>
-              <h2 className="text-[22px] font-bold text-[var(--color-dsp-brown)] mb-3 flex items-center gap-2">
-                  <IoCalendarOutline className="text-[var(--color-dsp-orange)]" />
-                  Anstehende Termine
-              </h2>
+            <h2 className="text-[22px] font-bold text-[var(--color-dsp-brown)] mb-3 flex items-center gap-2">
+              <IoCalendarOutline className="text-[var(--color-dsp-orange)]" />
+              Anstehende Termine
+            </h2>
 
-              {/* Outer white container to match the reference */}
-              <div className="bg-white rounded-2xl border border-[var(--color-dsp-orange_light)]/50 shadow-sm p-4">
-                  <div className="grid gap-3">
-                      {upcomingEvents.map((e) => (
-                          <UpcomingEventCard key={e.id} e={e} />
-                      ))}
-                  </div>
+            {/* Outer white container to match the reference */}
+            <div className="bg-white rounded-2xl border border-[var(--color-dsp-orange_light)]/50 shadow-sm p-4">
+              <div className="grid gap-3">
+                {upcomingEvents.map((e) => (
+                  <UpcomingEventCard key={e.id} e={e} />
+                ))}
               </div>
+            </div>
           </aside>
-
         </div>
       </div>
     </div>
