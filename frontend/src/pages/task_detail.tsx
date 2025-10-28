@@ -21,7 +21,7 @@ import TagDifficulty from "../components/tags/tag_difficulty";
 import type { DifficultyLevel } from "../components/tags/tag_difficulty";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
-import { useModules, Module, Task } from "../context/ModuleContext";
+import { useModules, Module, Task, } from "../context/ModuleContext";
 import TaskSuccessModal from "../components/messages/TaskSuccessModal";
 import type {
   MultipleChoiceConfig,
@@ -42,7 +42,7 @@ function isMultipleChoiceConfig(
 }
 
 function TaskDetails() {
-  const { modules, loading, error, fetchModules } = useModules();
+  const { modules, loading, error, fetchModules, getAllModuleTasks } = useModules();
   const { moduleId, taskId } = useParams<{
     moduleId: string;
     taskId: string;
@@ -93,7 +93,7 @@ function TaskDetails() {
       };
     }
 
-    const moduleTasks = foundModule.tasks || [];
+    const moduleTasks = getAllModuleTasks(foundModule.id);
     const taskIndex = moduleTasks.findIndex((t) => t.id === numericTaskId);
     const foundTask = taskIndex !== -1 ? moduleTasks[taskIndex] : undefined;
 

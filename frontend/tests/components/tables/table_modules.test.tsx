@@ -57,19 +57,34 @@ function makeModule(
     }>;
   } = {},
 ): Module {
-  return {
+   return {
     id,
     title,
-    // fields used by TableModules:
-    category: categoryName
-      ? { id: 1, name: categoryName }
-      : (null as unknown as Module["category"]),
-    tasks,
-    // unused fields can be stubbed as needed
-    description: "",
-    updated_at: "2025-01-01T00:00:00Z",
-    contents: [],
-  } as unknown as Module;
+    category: categoryName ? { id: 1, name: categoryName } : ({ id: 0, name: "" } as any),
+    chapters: [
+      {
+        id: 1,
+        title: "Chapter 1",
+        description: "",
+        order: 1,
+        is_active: true,
+        contents: [],
+        tasks: tasks.map((t, i) => ({
+          id: i + 1,
+          chapter: 1,
+          title: `Task ${i + 1}`,
+          description: "",
+          difficulty: t.difficulty ?? "Mittel",
+          order: i + 1,
+          task_type: "multiple_choice",
+          completed: t.completed,
+        })),
+      },
+    ],
+    articles: [],
+    article_images: {},
+    is_public: true,
+  } as Module;
 }
 
 describe("TableModules", () => {

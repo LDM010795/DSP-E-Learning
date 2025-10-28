@@ -2,12 +2,10 @@ import { ModuleProvider, useModules } from "@/context/ModuleContext";
 import * as authHook from "@/context/AuthContext";
 
 import {
-  act,
   render,
   renderHook,
   screen,
   waitFor,
-  within,
 } from "@testing-library/react";
 import { describe, it } from "vitest";
 import { http, HttpResponse } from "msw";
@@ -279,10 +277,21 @@ describe("ModuleContext", () => {
             title: "Python Grundlagen",
             category: { id: 1, name: "Programmierung" },
             is_public: true,
-            // fallback arrays direkt im Modul
+            chapters: [
+              {
+                id: 10,
+                title: "Kapitel 1",
+                order: 1,
+                description: "",
+                is_active: true,
+                contents: [], // leer => Fallback
+                tasks: [],    // leer => Fallback
+              },
+            ],
             contents: [
               {
                 id: 3002,
+                chapter: 10,
                 title: "Content C",
                 order: 3,
                 description: "",
@@ -290,6 +299,7 @@ describe("ModuleContext", () => {
               },
               {
                 id: 3000,
+                chapter: 10,
                 title: "Content A",
                 order: 1,
                 description: "",
@@ -297,6 +307,7 @@ describe("ModuleContext", () => {
               },
               {
                 id: 3001,
+                chapter: 10,
                 title: "Content B",
                 order: 2,
                 description: "",
@@ -306,6 +317,7 @@ describe("ModuleContext", () => {
             tasks: [
               {
                 id: 4002,
+                chapter: 10,
                 title: "Task C",
                 description: "",
                 difficulty: "Mittel",
@@ -315,6 +327,7 @@ describe("ModuleContext", () => {
               },
               {
                 id: 4000,
+                chapter: 10,
                 title: "Task A",
                 description: "",
                 difficulty: "Mittel",
@@ -324,6 +337,7 @@ describe("ModuleContext", () => {
               },
               {
                 id: 4001,
+                chapter: 10,
                 title: "Task B",
                 description: "",
                 difficulty: "Mittel",
@@ -353,14 +367,14 @@ describe("ModuleContext", () => {
     const module = result.current.modules[0];
 
     // Prüfe, dass Fallback contents korrekt sortiert wurden
-    expect(module.contents!.map((c) => c.title)).toEqual([
+    expect(module.chapters.flatMap(chapter => chapter.contents).map((c) => c.title)).toEqual([
       "Content A",
       "Content B",
       "Content C",
     ]);
 
     // Prüfe, dass Fallback tasks korrekt sortiert wurden
-    expect(module.tasks!.map((t) => t.title)).toEqual([
+    expect(module.chapters.flatMap(chapter => chapter.tasks).map((t) => t.title)).toEqual([
       "Task A",
       "Task B",
       "Task C",
@@ -449,4 +463,5 @@ describe("ModuleContext", () => {
       expect(result.current.error).toBeNull();
     });
   });
+
 });
