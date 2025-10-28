@@ -132,7 +132,7 @@ export interface Module {
 }
 
 // Modulstruktur, wie wir sie vom Backend bekommen
-export interface ModuleApiDto {
+interface ModuleApiDto {
   id: number;
   title: string;
   category: ModuleCategory;
