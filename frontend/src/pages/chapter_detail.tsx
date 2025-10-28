@@ -13,8 +13,16 @@ import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LearningContentVideoLayout from "../components/layouts/learning_content_video";
 import SubBackground from "../components/layouts/SubBackground";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
-import { useModules, Module, Content, Chapter, Task } from "../context/ModuleContext";
-import TagDifficulty, { DifficultyLevel } from "@/components/tags/tag_difficulty";
+import {
+  useModules,
+  Module,
+  Content,
+  Chapter,
+  Task,
+} from "../context/ModuleContext";
+import TagDifficulty, {
+  DifficultyLevel,
+} from "@/components/tags/tag_difficulty";
 
 function ChapterDetail() {
   const { modules, loading, error } = useModules();
@@ -26,23 +34,19 @@ function ChapterDetail() {
   const [selectedVideo, setSelectedVideo] = useState<Content | null>(null);
 
   const module: Module | undefined = useMemo(() => {
-    if (!moduleId)
-      return undefined;
+    if (!moduleId) return undefined;
 
     const numericModuleId = parseInt(moduleId, 10);
-    if (isNaN(numericModuleId))
-      return undefined;
+    if (isNaN(numericModuleId)) return undefined;
 
     return modules.find((mod) => mod.id === numericModuleId);
   }, [modules, moduleId]);
 
   const chapter: Chapter | undefined = useMemo(() => {
-    if (!chapterId || !module?.chapters)
-      return undefined;
+    if (!chapterId || !module?.chapters) return undefined;
 
     const numericChapterId = parseInt(chapterId, 10);
-    if (isNaN(numericChapterId))
-      return undefined;
+    if (isNaN(numericChapterId)) return undefined;
 
     return module.chapters.find((chap) => chap.id === numericChapterId);
   }, [module, chapterId]);
@@ -153,76 +157,75 @@ function ChapterDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               {/* Videos */}
-                {selectedVideo ? (
-                  // Video Player View
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <LearningContentVideoLayout
-                      videoUrl={selectedVideo.video_url || ""}
-                      title={selectedVideo.title}
-                      description={selectedVideo.description}
-                      supplementaryContent={selectedVideo.supplementary_contents}
-                      currentLessonIndex={chapter.contents.findIndex(
-                        (c) => c.id === selectedVideo.id,
-                      )}
-                      totalLessons={chapter.contents.length}
-                      contentId={selectedVideo.id}
-                      relatedVideos={chapter.contents.map((c) => ({
-                        id: c.id,
-                        title: c.title,
-                        video_url: c.video_url,
-                      }))}
-                      onSelectContent={(id) => {
-                        const target = chapter.contents.find((c) => c.id === id);
-                        if (target) setSelectedVideo(target);
-                      }}
-                    />
-                  </motion.div>
-                ) : (
-                  // Video List View
-                  <SubBackground>
-                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                      <IoVideocamOutline className="h-5 w-5 text-dsp-orange" />
-                      Lernvideos ({chapter.contents.length})
-                    </h2>
+              {selectedVideo ? (
+                // Video Player View
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <LearningContentVideoLayout
+                    videoUrl={selectedVideo.video_url || ""}
+                    title={selectedVideo.title}
+                    description={selectedVideo.description}
+                    supplementaryContent={selectedVideo.supplementary_contents}
+                    currentLessonIndex={chapter.contents.findIndex(
+                      (c) => c.id === selectedVideo.id,
+                    )}
+                    totalLessons={chapter.contents.length}
+                    contentId={selectedVideo.id}
+                    relatedVideos={chapter.contents.map((c) => ({
+                      id: c.id,
+                      title: c.title,
+                      video_url: c.video_url,
+                    }))}
+                    onSelectContent={(id) => {
+                      const target = chapter.contents.find((c) => c.id === id);
+                      if (target) setSelectedVideo(target);
+                    }}
+                  />
+                </motion.div>
+              ) : (
+                // Video List View
+                <SubBackground>
+                  <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <IoVideocamOutline className="h-5 w-5 text-dsp-orange" />
+                    Lernvideos ({chapter.contents.length})
+                  </h2>
 
-                    <div className="space-y-3">
-                      {chapter.contents.map((video, index) => (
-                        <motion.div
-                          key={video.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-dsp-orange_light/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
-                          onClick={() => handleVideoSelect(video)}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="flex-shrink-0 w-12 h-12 bg-dsp-orange rounded-lg flex items-center justify-center">
-                              <IoPlayCircleOutline className="h-6 w-6 text-white" />
-                            </div>
-                            <div className="flex-grow">
-                              <h3 className="font-semibold text-gray-900 mb-1">
-                                {video.title}
-                              </h3>
-                              {video.description && (
-                                <p className="text-sm text-gray-600 line-clamp-2">
-                                  {video.description}
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex-shrink-0 text-gray-400">
-                              <IoPlayOutline className="h-4 w-4" />
-                            </div>
+                  <div className="space-y-3">
+                    {chapter.contents.map((video, index) => (
+                      <motion.div
+                        key={video.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-dsp-orange_light/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                        onClick={() => handleVideoSelect(video)}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 bg-dsp-orange rounded-lg flex items-center justify-center">
+                            <IoPlayCircleOutline className="h-6 w-6 text-white" />
                           </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </SubBackground>
-
-                )}
+                          <div className="flex-grow">
+                            <h3 className="font-semibold text-gray-900 mb-1">
+                              {video.title}
+                            </h3>
+                            {video.description && (
+                              <p className="text-sm text-gray-600 line-clamp-2">
+                                {video.description}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex-shrink-0 text-gray-400">
+                            <IoPlayOutline className="h-4 w-4" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </SubBackground>
+              )}
             </div>
 
             {/* Task Sidebar */}
@@ -253,44 +256,49 @@ function ChapterDetail() {
                           }
                         >
                           <div
-                            className={`p-4 rounded-xl border transition-all duration-200 ${task.completed
-                              ? "border-green-200 bg-green-50/50 hover:bg-green-50"
-                              : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
-                              }`}
+                            className={`p-4 rounded-xl border transition-all duration-200 ${
+                              task.completed
+                                ? "border-green-200 bg-green-50/50 hover:bg-green-50"
+                                : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
+                            }`}
                           >
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex items-center space-x-3 flex-1">
                                 <div
-                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${task.completed
-                                    ? "bg-green-500"
-                                    : "bg-gray-200 group-hover:bg-dsp-orange/20"
-                                    }`}
+                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                                    task.completed
+                                      ? "bg-green-500"
+                                      : "bg-gray-200 group-hover:bg-dsp-orange/20"
+                                  }`}
                                 >
                                   {task.completed ? (
                                     <IoCheckmarkCircleOutline className="w-5 h-5 text-white" />
                                   ) : (
                                     <IoPlayCircleOutline
-                                      className={`w-5 h-5 ${task.completed
-                                        ? "text-white"
-                                        : "text-gray-500 group-hover:text-dsp-orange"
-                                        }`}
+                                      className={`w-5 h-5 ${
+                                        task.completed
+                                          ? "text-white"
+                                          : "text-gray-500 group-hover:text-dsp-orange"
+                                      }`}
                                     />
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <h3
-                                    className={`font-medium text-sm leading-tight ${task.completed
-                                      ? "text-gray-700"
-                                      : "text-gray-800 group-hover:text-dsp-orange"
-                                      }`}
+                                    className={`font-medium text-sm leading-tight ${
+                                      task.completed
+                                        ? "text-gray-700"
+                                        : "text-gray-800 group-hover:text-dsp-orange"
+                                    }`}
                                   >
                                     {task.title}
                                   </h3>
                                   <p
-                                    className={`text-xs mt-1 ${task.completed
-                                      ? "text-green-600"
-                                      : "text-gray-500"
-                                      }`}
+                                    className={`text-xs mt-1 ${
+                                      task.completed
+                                        ? "text-green-600"
+                                        : "text-gray-500"
+                                    }`}
                                   >
                                     {task.completed ? "Abgeschlossen" : "Offen"}
                                   </p>

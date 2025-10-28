@@ -115,8 +115,10 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
     }
     return [...modules].sort((module1, module2) => {
       let compareResult = 0;
-      const module1Tasks = module1?.chapters?.flatMap(chapter => chapter.tasks) ?? []
-      const module2Tasks = module2?.chapters?.flatMap(chapter => chapter.tasks) ?? []
+      const module1Tasks =
+        module1?.chapters?.flatMap((chapter) => chapter.tasks) ?? [];
+      const module2Tasks =
+        module2?.chapters?.flatMap((chapter) => chapter.tasks) ?? [];
       const valA =
         sortColumn === "status"
           ? getModuleStatusOrder(getModuleStatus(module1Tasks))
@@ -241,7 +243,8 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {sortedModules.map((module) => {
-            const tasks = module?.chapters?.flatMap(chapter => chapter.tasks) ?? [];
+            const tasks =
+              module?.chapters?.flatMap((chapter) => chapter.tasks) ?? [];
             const status = getModuleStatus(tasks);
             const { icon, progressColor } = getStatusInfo(status);
             const totalTasks = tasks.length;
@@ -261,7 +264,7 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    {module.title} 
+                    {module.title}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

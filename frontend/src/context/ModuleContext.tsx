@@ -150,7 +150,7 @@ interface ModuleContextType {
   loading: boolean;
   error: Error | null;
   fetchModules: () => Promise<void>;
-  getAllModuleTasks: (moduleId: number) => Task[];    // Tasks pro Modul cachen
+  getAllModuleTasks: (moduleId: number) => Task[]; // Tasks pro Modul cachen
   getAllModuleContents: (moduleId: number) => Content[]; // Contents pro Modul cachen
 }
 
@@ -206,30 +206,29 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         "Module",
       );
 
-      const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
+      const byOrder = <T extends { order: number }>(a: T, b: T) =>
+        a.order - b.order;
       const modules = response.data;
 
       const articlesByModuleId: Record<number, Article[]> = Object.fromEntries(
-        modules.map(m => [m.id, m.articles ?? []] as const)
+        modules.map((m) => [m.id, m.articles ?? []] as const),
       );
 
       const chaptersByModuleId: Record<number, Chapter[]> = Object.fromEntries(
-        modules.map(module => [
+        modules.map((module) => [
           module.id,
-          (module.chapters ?? []).map(chapter => {
-            const chapterContents =
-              chapter.contents?.length // Backend liefert (noch) alte und neue Struktur, daher entscheiden
-                ? [...chapter.contents].sort(byOrder) // neue Struktur 
-                : (module.contents ?? []) // alte Struktur
-                  .filter(content => content.chapter === chapter.id)
+          (module.chapters ?? []).map((chapter) => {
+            const chapterContents = chapter.contents?.length // Backend liefert (noch) alte und neue Struktur, daher entscheiden
+              ? [...chapter.contents].sort(byOrder) // neue Struktur
+              : (module.contents ?? []) // alte Struktur
+                  .filter((content) => content.chapter === chapter.id)
                   .slice()
                   .sort(byOrder);
 
-            const chapterTasks =
-              chapter.tasks?.length // Backend liefert (noch) alte und neue Struktur, daher entscheiden
-                ? [...chapter.tasks].sort(byOrder) // neue Struktur 
-                : (module.tasks ?? []) // alte Struktur
-                  .filter(task => task.chapter === chapter.id)
+            const chapterTasks = chapter.tasks?.length // Backend liefert (noch) alte und neue Struktur, daher entscheiden
+              ? [...chapter.tasks].sort(byOrder) // neue Struktur
+              : (module.tasks ?? []) // alte Struktur
+                  .filter((task) => task.chapter === chapter.id)
                   .slice()
                   .sort(byOrder);
 
@@ -239,19 +238,20 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
               tasks: chapterTasks,
             };
           }),
-        ])
+        ]),
       );
 
       // Performance optimization: Memoized sorting to avoid repeated calculations
-      const sortedModules: Module[] = modules.map(module => ({
-        id: module.id,
-        title: module.title,
-        category: module.category,
-        is_public: module.is_public,
-        chapters: chaptersByModuleId[module.id].sort(byOrder),
-        articles: articlesByModuleId[module.id].sort(byOrder),
-        article_images: module.article_images ?? {}
-      }))
+      const sortedModules: Module[] = modules
+        .map((module) => ({
+          id: module.id,
+          title: module.title,
+          category: module.category,
+          is_public: module.is_public,
+          chapters: chaptersByModuleId[module.id].sort(byOrder),
+          articles: articlesByModuleId[module.id].sort(byOrder),
+          article_images: module.article_images ?? {},
+        }))
         .sort((module1, module2) => module1.title.localeCompare(module2.title));
 
       console.log("ModuleContext: Module sortiert und gesetzt");
@@ -273,7 +273,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const tasksByModuleId = useMemo(() => {
     const map = new Map<number, Task[]>();
     for (const m of modules ?? []) {
-      const tasks = m.chapters?.flatMap(ch => ch.tasks ?? []) ?? [];
+      const tasks = m.chapters?.flatMap((ch) => ch.tasks ?? []) ?? [];
       map.set(m.id, tasks);
     }
     return map;
@@ -282,7 +282,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const contentsByModuleId = useMemo(() => {
     const map = new Map<number, Content[]>();
     for (const m of modules ?? []) {
-      const contents = m.chapters?.flatMap(ch => ch.contents ?? []) ?? [];
+      const contents = m.chapters?.flatMap((ch) => ch.contents ?? []) ?? [];
       map.set(m.id, contents);
     }
     return map;
@@ -290,12 +290,12 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
 
   const getAllModuleTasks = useCallback(
     (moduleId: number) => tasksByModuleId.get(moduleId) ?? [],
-    [tasksByModuleId]
+    [tasksByModuleId],
   );
 
   const getAllModuleContents = useCallback(
     (moduleId: number) => contentsByModuleId.get(moduleId) ?? [],
-    [contentsByModuleId]
+    [contentsByModuleId],
   );
 
   // Performance optimization: Memoize context value to prevent unnecessary re-renders
@@ -308,7 +308,14 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       getAllModuleTasks,
       getAllModuleContents,
     }),
-    [modules, loading, error, stableFetchModules, getAllModuleTasks, getAllModuleContents],
+    [
+      modules,
+      loading,
+      error,
+      stableFetchModules,
+      getAllModuleTasks,
+      getAllModuleContents,
+    ],
   );
 
   return (

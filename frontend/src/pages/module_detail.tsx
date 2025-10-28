@@ -23,7 +23,14 @@ import {
 } from "../context/ModuleContext";
 
 function ModuleDetail() {
-  const { modules, loading, error, fetchModules, getAllModuleTasks, getAllModuleContents } = useModules();
+  const {
+    modules,
+    loading,
+    error,
+    fetchModules,
+    getAllModuleTasks,
+    getAllModuleContents,
+  } = useModules();
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
 
@@ -37,12 +44,12 @@ function ModuleDetail() {
   const chapters: Chapter[] = useMemo(() => module?.chapters || [], [module]);
   const articles: Article[] = useMemo(() => module?.articles || [], [module]);
   const tasks: Task[] = module?.id != null ? getAllModuleTasks(module.id) : [];
-  const contents: Content[] = module?.id != null ? getAllModuleContents(module.id) : [];
+  const contents: Content[] =
+    module?.id != null ? getAllModuleContents(module.id) : [];
 
   // Calculate module progress
   const moduleProgress = useMemo(() => {
-    if (tasks.length === 0)
-      return 0;
+    if (tasks.length === 0) return 0;
 
     const completedTasks = tasks.filter((task) => task.completed).length;
     return Math.round((completedTasks / tasks.length) * 100);
@@ -193,12 +200,13 @@ function ModuleDetail() {
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
                       <div
-                        className={`w-2 h-2 rounded-full ${moduleProgress === 100
-                          ? "bg-green-500"
-                          : moduleProgress > 0
-                            ? "bg-dsp-orange"
-                            : "bg-gray-400"
-                          }`}
+                        className={`w-2 h-2 rounded-full ${
+                          moduleProgress === 100
+                            ? "bg-green-500"
+                            : moduleProgress > 0
+                              ? "bg-dsp-orange"
+                              : "bg-gray-400"
+                        }`}
                       ></div>
                       <span className="font-medium text-gray-700">
                         {moduleProgress}% abgeschlossen

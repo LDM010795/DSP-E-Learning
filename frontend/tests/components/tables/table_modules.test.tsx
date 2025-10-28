@@ -57,10 +57,12 @@ function makeModule(
     }>;
   } = {},
 ): Module {
-   return {
+  return {
     id,
     title,
-    category: categoryName ? { id: 1, name: categoryName } : ({ id: 0, name: "" } as any),
+    category: categoryName
+      ? { id: 1, name: categoryName }
+      : ({ id: 0, name: "" } as any),
     chapters: [
       {
         id: 1,

@@ -28,7 +28,8 @@ type ModuleStatus = "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
 type ViewMode = "standard" | "table";
 
 function Modules() {
-  const { modules, loading, error, fetchModules, getAllModuleTasks } = useModules();
+  const { modules, loading, error, fetchModules, getAllModuleTasks } =
+    useModules();
   const [searchTerm, setSearchTerm] = useState<string>("");
   // NEU: State für Schwierigkeitsfilter
   const [activeDifficultyFilters, setActiveDifficultyFilters] = useState<
@@ -60,8 +61,12 @@ function Modules() {
   }, [modules]);
 
   const getFirstYoutubeId = (module: Module): string | undefined => {
-    const moduleContents = module.chapters?.flatMap(chapter => chapter.contents);
-    const firstContentWithVideo = moduleContents?.find((content) => content.video_url);
+    const moduleContents = module.chapters?.flatMap(
+      (chapter) => chapter.contents,
+    );
+    const firstContentWithVideo = moduleContents?.find(
+      (content) => content.video_url,
+    );
     const videoUrl = firstContentWithVideo?.video_url;
     if (!videoUrl) return undefined;
     const patterns = [
@@ -83,7 +88,7 @@ function Modules() {
 
   // NEU: Hilfsfunktion zur Bestimmung des Modulstatus
   const getModuleStatus = (module: Module): ModuleStatus => {
-    const moduleTasks = module.chapters.flatMap(chapter => chapter.tasks);
+    const moduleTasks = module.chapters.flatMap((chapter) => chapter.tasks);
     if (moduleTasks.length === 0) {
       // Module ohne Aufgaben gelten als "Nicht begonnen" oder eine andere Kategorie?
       // Hier erstmal als "Nicht begonnen" behandelt.
@@ -155,7 +160,9 @@ function Modules() {
       };
       const difficultyMatch = (() => {
         if (activeDifficultyFilters.length === 0) return true;
-        const avgDifficulty = calculateDifficultyForFilter(getAllModuleTasks(module.id));
+        const avgDifficulty = calculateDifficultyForFilter(
+          getAllModuleTasks(module.id),
+        );
         return (
           avgDifficulty !== null &&
           activeDifficultyFilters.includes(avgDifficulty)
@@ -402,7 +409,7 @@ function Modules() {
               >
                 {sortedAndFilteredModules.length > 0 ? (
                   sortedAndFilteredModules.map((module: Module) => {
-                    const moduleTasks = getAllModuleTasks(module.id)
+                    const moduleTasks = getAllModuleTasks(module.id);
                     const totalTasksInModule = moduleTasks.length;
                     const completedTasksInModule = moduleTasks.filter(
                       (task) => task.completed,

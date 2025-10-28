@@ -1,12 +1,7 @@
 import { ModuleProvider, useModules } from "@/context/ModuleContext";
 import * as authHook from "@/context/AuthContext";
 
-import {
-  render,
-  renderHook,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { render, renderHook, screen, waitFor } from "@testing-library/react";
 import { describe, it } from "vitest";
 import { http, HttpResponse } from "msw";
 import { server } from "../testServer";
@@ -286,7 +281,7 @@ describe("ModuleContext", () => {
                 description: "",
                 is_active: true,
                 contents: [], // leer => Fallback
-                tasks: [],    // leer => Fallback
+                tasks: [], // leer => Fallback
               },
             ],
             contents: [
@@ -368,18 +363,16 @@ describe("ModuleContext", () => {
     const module = result.current.modules[0];
 
     // Prüfe, dass Fallback contents korrekt sortiert wurden
-    expect(module.chapters.flatMap(chapter => chapter.contents).map((c) => c.title)).toEqual([
-      "Content A",
-      "Content B",
-      "Content C",
-    ]);
+    expect(
+      module.chapters
+        .flatMap((chapter) => chapter.contents)
+        .map((c) => c.title),
+    ).toEqual(["Content A", "Content B", "Content C"]);
 
     // Prüfe, dass Fallback tasks korrekt sortiert wurden
-    expect(module.chapters.flatMap(chapter => chapter.tasks).map((t) => t.title)).toEqual([
-      "Task A",
-      "Task B",
-      "Task C",
-    ]);
+    expect(
+      module.chapters.flatMap((chapter) => chapter.tasks).map((t) => t.title),
+    ).toEqual(["Task A", "Task B", "Task C"]);
   });
 
   it("sets error when API call fails", async () => {
@@ -538,8 +531,8 @@ describe("ModuleContext", () => {
   });
 
   /**
- * 1) Direkt in Kapiteln vorhandene Inhalte/Aufgaben
- */
+   * 1) Direkt in Kapiteln vorhandene Inhalte/Aufgaben
+   */
   it("getAllModuleTasks und getAllModuleContents flacht Chapter-Daten korrekt ab und sortiert (direkt in Kapiteln vorhanden)", async () => {
     server.use(
       http.get(API("modules/user/"), () =>
@@ -557,12 +550,42 @@ describe("ModuleContext", () => {
                 description: "",
                 is_active: true,
                 contents: [
-                  { id: 1001, chapter: 10, title: "C2", order: 2, description: "" },
-                  { id: 1000, chapter: 10, title: "C1", order: 1, description: "" },
+                  {
+                    id: 1001,
+                    chapter: 10,
+                    title: "C2",
+                    order: 2,
+                    description: "",
+                  },
+                  {
+                    id: 1000,
+                    chapter: 10,
+                    title: "C1",
+                    order: 1,
+                    description: "",
+                  },
                 ],
                 tasks: [
-                  { id: 2001, chapter: 10, title: "T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
-                  { id: 2000, chapter: 10, title: "T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                  {
+                    id: 2001,
+                    chapter: 10,
+                    title: "T2",
+                    order: 2,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
+                  {
+                    id: 2000,
+                    chapter: 10,
+                    title: "T1",
+                    order: 1,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
                 ],
               },
               {
@@ -578,8 +601,8 @@ describe("ModuleContext", () => {
             articles: [],
             article_images: {},
           },
-        ])
-      )
+        ]),
+      ),
     );
     const wrapper = ({ children }: any) => (
       <AuthProvider>
@@ -596,8 +619,8 @@ describe("ModuleContext", () => {
     const tasks = result.current.getAllModuleTasks(mod.id);
     const contents = result.current.getAllModuleContents(mod.id);
 
-    expect(tasks.map(t => t.title)).toEqual(["T1", "T2"]);
-    expect(contents.map(c => c.title)).toEqual(["C1", "C2"]);
+    expect(tasks.map((t) => t.title)).toEqual(["T1", "T2"]);
+    expect(contents.map((c) => c.title)).toEqual(["C1", "C2"]);
   });
 
   /**
@@ -629,15 +652,42 @@ describe("ModuleContext", () => {
               { id: 3001, chapter: 10, title: "C2", order: 2, description: "" },
             ],
             tasks: [
-              { id: 4002, chapter: 10, title: "T3", order: 3, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
-              { id: 4000, chapter: 10, title: "T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
-              { id: 4001, chapter: 10, title: "T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+              {
+                id: 4002,
+                chapter: 10,
+                title: "T3",
+                order: 3,
+                task_type: "multiple_choice",
+                description: "",
+                difficulty: "Mittel",
+                completed: false,
+              },
+              {
+                id: 4000,
+                chapter: 10,
+                title: "T1",
+                order: 1,
+                task_type: "multiple_choice",
+                description: "",
+                difficulty: "Mittel",
+                completed: false,
+              },
+              {
+                id: 4001,
+                chapter: 10,
+                title: "T2",
+                order: 2,
+                task_type: "multiple_choice",
+                description: "",
+                difficulty: "Mittel",
+                completed: false,
+              },
             ],
             articles: [],
             article_images: {},
           },
-        ])
-      )
+        ]),
+      ),
     );
 
     const wrapper = ({ children }: any) => (
@@ -655,8 +705,8 @@ describe("ModuleContext", () => {
     const tasks = result.current.getAllModuleTasks(mod.id);
     const contents = result.current.getAllModuleContents(mod.id);
 
-    expect(tasks.map(t => t.title)).toEqual(["T1", "T2", "T3"]);
-    expect(contents.map(c => c.title)).toEqual(["C1", "C2", "C3"]);
+    expect(tasks.map((t) => t.title)).toEqual(["T1", "T2", "T3"]);
+    expect(contents.map((c) => c.title)).toEqual(["C1", "C2", "C3"]);
   });
 
   /**
@@ -675,8 +725,8 @@ describe("ModuleContext", () => {
             articles: [],
             article_images: {},
           },
-        ])
-      )
+        ]),
+      ),
     );
 
     const wrapper = ({ children }: any) => (
@@ -712,15 +762,34 @@ describe("ModuleContext", () => {
                 order: 1,
                 description: "",
                 is_active: true,
-                contents: [{ id: 1000, chapter: 10, title: "C1", order: 1, description: "" }],
-                tasks: [{ id: 2000, chapter: 10, title: "T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false }],
+                contents: [
+                  {
+                    id: 1000,
+                    chapter: 10,
+                    title: "C1",
+                    order: 1,
+                    description: "",
+                  },
+                ],
+                tasks: [
+                  {
+                    id: 2000,
+                    chapter: 10,
+                    title: "T1",
+                    order: 1,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
+                ],
               },
             ],
             articles: [],
             article_images: {},
           },
-        ])
-      )
+        ]),
+      ),
     );
 
     const wrapper = ({ children }: any) => (
