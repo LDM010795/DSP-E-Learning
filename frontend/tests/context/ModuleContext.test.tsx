@@ -34,6 +34,7 @@ const API = (path: string) => `http://127.0.0.1:8000/api/elearning/${path}`;
 beforeEach(() => {
   vi.clearAllMocks();
 });
+
 vi.spyOn(authHook, "useAuth").mockReturnValue({
   user: mockUser,
   isAuthenticated: true,
@@ -464,4 +465,283 @@ describe("ModuleContext", () => {
     });
   });
 
+  it("fällt korrekt auf module.contents und module.tasks zurück, wenn chapter.* leer ist", async () => {
+    server.use(
+      http.get(API("modules/user/"), () =>
+        HttpResponse.json([
+          {
+            id: 1,
+            title: "Python",
+            category: { id: 1, name: "Programmierung" },
+            is_public: true,
+
+            chapters: [
+              {
+                id: 10,
+                title: "Kapitel 1",
+                order: 1,
+                description: "",
+                is_active: true,
+                contents: [], // leer => muss fallbacken
+                tasks: [], // leer => muss fallbacken
+              },
+            ],
+
+            // Fallback-Daten nur global
+            contents: [
+              { id: 3000, chapter: 10, title: "C1", order: 1, description: "" },
+              { id: 3001, chapter: 10, title: "C2", order: 2, description: "" },
+            ],
+            tasks: [
+              {
+                id: 4000,
+                chapter: 10,
+                title: "T1",
+                order: 1,
+                task_type: "multiple_choice",
+                completed: false,
+              },
+              {
+                id: 4001,
+                chapter: 10,
+                title: "T2",
+                order: 2,
+                task_type: "multiple_choice",
+                completed: false,
+              },
+            ],
+          },
+        ]),
+      ),
+    );
+
+    const wrapper = ({ children }: any) => (
+      <AuthProvider>
+        <ModuleProvider>{children}</ModuleProvider>
+      </AuthProvider>
+    );
+
+    const { result } = renderHook(() => useModules(), { wrapper });
+
+    await result.current.fetchModules();
+
+    await waitFor(() => {
+      expect(result.current.modules.length).toBe(1);
+    });
+
+    const module = result.current.modules[0];
+    const chapter = module.chapters![0];
+
+    // ✔ Erwartung: Fallback-Daten landen korrekt im Kapitel
+    expect(chapter.contents.map((c) => c.title)).toEqual(["C1", "C2"]);
+    expect(chapter.tasks.map((t) => t.title)).toEqual(["T1", "T2"]);
+  });
+
+  /**
+ * 1) Direkt in Kapiteln vorhandene Inhalte/Aufgaben
+ */
+  it("getAllModuleTasks und getAllModuleContents flacht Chapter-Daten korrekt ab und sortiert (direkt in Kapiteln vorhanden)", async () => {
+    server.use(
+      http.get(API("modules/user/"), () =>
+        HttpResponse.json([
+          {
+            id: 1,
+            title: "Mod A",
+            category: { id: 1, name: "Cat" },
+            is_public: true,
+            chapters: [
+              {
+                id: 10,
+                title: "K1",
+                order: 2,
+                description: "",
+                is_active: true,
+                contents: [
+                  { id: 1001, chapter: 10, title: "C2", order: 2, description: "" },
+                  { id: 1000, chapter: 10, title: "C1", order: 1, description: "" },
+                ],
+                tasks: [
+                  { id: 2001, chapter: 10, title: "T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                  { id: 2000, chapter: 10, title: "T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                ],
+              },
+              {
+                id: 11,
+                title: "K2",
+                order: 1,
+                description: "",
+                is_active: true,
+                contents: [],
+                tasks: [],
+              },
+            ],
+            articles: [],
+            article_images: {},
+          },
+        ])
+      )
+    );
+    const wrapper = ({ children }: any) => (
+      <AuthProvider>
+        <ModuleProvider>{children}</ModuleProvider>
+      </AuthProvider>
+    );
+    const { result } = renderHook(() => useModules(), { wrapper });
+
+    await result.current.fetchModules();
+    await waitFor(() => expect(result.current.modules.length).toBe(1));
+
+    const mod = result.current.modules[0];
+
+    const tasks = result.current.getAllModuleTasks(mod.id);
+    const contents = result.current.getAllModuleContents(mod.id);
+
+    expect(tasks.map(t => t.title)).toEqual(["T1", "T2"]);
+    expect(contents.map(c => c.title)).toEqual(["C1", "C2"]);
+  });
+
+  /**
+   * 2) Fallback: Kapitel leer, globale Inhalte/Aufgaben mit chapter-IDs
+   */
+  it("getAllModuleTasks und getAllModuleContents fallbackt korrekt auf module.contents/tasks (Kapitel leer)", async () => {
+    server.use(
+      http.get(API("modules/user/"), () =>
+        HttpResponse.json([
+          {
+            id: 1,
+            title: "Mod Fallback",
+            category: { id: 1, name: "Cat" },
+            is_public: true,
+            chapters: [
+              {
+                id: 10,
+                title: "K1",
+                order: 1,
+                description: "",
+                is_active: true,
+                contents: [],
+                tasks: [],
+              },
+            ],
+            contents: [
+              { id: 3002, chapter: 10, title: "C3", order: 3, description: "" },
+              { id: 3000, chapter: 10, title: "C1", order: 1, description: "" },
+              { id: 3001, chapter: 10, title: "C2", order: 2, description: "" },
+            ],
+            tasks: [
+              { id: 4002, chapter: 10, title: "T3", order: 3, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+              { id: 4000, chapter: 10, title: "T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+              { id: 4001, chapter: 10, title: "T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+            ],
+            articles: [],
+            article_images: {},
+          },
+        ])
+      )
+    );
+
+    const wrapper = ({ children }: any) => (
+      <AuthProvider>
+        <ModuleProvider>{children}</ModuleProvider>
+      </AuthProvider>
+    );
+    const { result } = renderHook(() => useModules(), { wrapper });
+
+    await result.current.fetchModules();
+    await waitFor(() => expect(result.current.modules.length).toBe(1));
+
+    const mod = result.current.modules[0];
+
+    const tasks = result.current.getAllModuleTasks(mod.id);
+    const contents = result.current.getAllModuleContents(mod.id);
+
+    expect(tasks.map(t => t.title)).toEqual(["T1", "T2", "T3"]);
+    expect(contents.map(c => c.title)).toEqual(["C1", "C2", "C3"]);
+  });
+
+  /**
+   * 3) Unbekannte Modul-ID → leere Arrays
+   */
+  it("getAllModuleTasks und getAllModuleContents gibt leeres Array zurück, wenn Modul nicht existiert", async () => {
+    server.use(
+      http.get(API("modules/user/"), () =>
+        HttpResponse.json([
+          {
+            id: 1,
+            title: "Mod",
+            category: { id: 1, name: "Cat" },
+            is_public: true,
+            chapters: [],
+            articles: [],
+            article_images: {},
+          },
+        ])
+      )
+    );
+
+    const wrapper = ({ children }: any) => (
+      <AuthProvider>
+        <ModuleProvider>{children}</ModuleProvider>
+      </AuthProvider>
+    );
+    const { result } = renderHook(() => useModules(), { wrapper });
+
+    await result.current.fetchModules();
+    await waitFor(() => expect(result.current.modules.length).toBe(1));
+
+    expect(result.current.getAllModuleTasks(999)).toEqual([]);
+    expect(result.current.getAllModuleContents(999)).toEqual([]);
+  });
+
+  /**
+   * 4) Stabilität: gleiche Referenz bei mehrfacher Abfrage ohne Datenänderung
+   */
+  it("getAllModuleTasks und getAllModuleContents liefert stabile Array-Referenzen innerhalb derselben Datenlage", async () => {
+    server.use(
+      http.get(API("modules/user/"), () =>
+        HttpResponse.json([
+          {
+            id: 1,
+            title: "Mod Stable",
+            category: { id: 1, name: "Cat" },
+            is_public: true,
+            chapters: [
+              {
+                id: 10,
+                title: "K1",
+                order: 1,
+                description: "",
+                is_active: true,
+                contents: [{ id: 1000, chapter: 10, title: "C1", order: 1, description: "" }],
+                tasks: [{ id: 2000, chapter: 10, title: "T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false }],
+              },
+            ],
+            articles: [],
+            article_images: {},
+          },
+        ])
+      )
+    );
+
+    const wrapper = ({ children }: any) => (
+      <AuthProvider>
+        <ModuleProvider>{children}</ModuleProvider>
+      </AuthProvider>
+    );
+    const { result } = renderHook(() => useModules(), { wrapper });
+
+    await result.current.fetchModules();
+    await waitFor(() => expect(result.current.modules.length).toBe(1));
+
+    const mod = result.current.modules[0];
+
+    const tasksA = result.current.getAllModuleTasks(mod.id);
+    const tasksB = result.current.getAllModuleTasks(mod.id);
+    const contentsA = result.current.getAllModuleContents(mod.id);
+    const contentsB = result.current.getAllModuleContents(mod.id);
+
+    // gleiche Referenz -> kein unnötiger Neuaufbau
+    expect(tasksA).toBe(tasksB);
+    expect(contentsA).toBe(contentsB);
+  });
 });
