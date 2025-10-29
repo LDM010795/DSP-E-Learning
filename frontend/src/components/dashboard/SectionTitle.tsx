@@ -18,14 +18,13 @@ export default function SectionTitle({
   icon,
   children,
 }: {
-    icon?: React.ReactNode;
-    children: React.ReactNode;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return (
-        <h2 className="text-[22px] font-bold text-[var(--color-dsp-brown)] mb-3 flex items-center gap-2">
-            {icon && <span data-testid="section-icon">{icon}</span>}
-            {children}
-        </h2>
-    );
+  return (
+    <h2 className="text-[22px] font-bold text-[var(--color-dsp-brown)] mb-3 flex items-center gap-2">
+      {icon && <span data-testid="section-icon">{icon}</span>}
+      {children}
+    </h2>
+  );
 }
-
