@@ -45,6 +45,8 @@ import PaymentsSuccessRoute from "../../pages/payments/PaymentsSuccessRoute";
 import PaymentsSuccess from "../../pages/payments/Success";
 import PaymentsCancel from "../../pages/payments/Cancel";
 import PaymentsReturn from "../../pages/payments/PaymentsReturn";
+import OutputPredictionDemo from "../../pages/OutputPredictionDemo";
+
 
 // --- Component Imports ---
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -125,6 +127,15 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
         />
         <Route path="/payments/return" element={<PaymentsReturn />} />
 
+          <Route
+                path="/output-prediction-demo"
+                element={
+                <PageTransition>
+                    <OutputPredictionDemo />
+                </PageTransition>
+            }
+            />
+
         {/* --- Geschützte Routen --- */}
         <Route element={<ProtectedRoute />}>
           {/* Erzwungene Passwortänderung */}
@@ -146,6 +157,7 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+
 
           {/* Dashboard */}
           <Route
