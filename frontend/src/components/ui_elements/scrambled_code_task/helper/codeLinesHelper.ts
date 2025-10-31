@@ -1,8 +1,7 @@
 import { DraggableCodeLine } from "../CodeEditorDragLines";
 
 export function scramble(array: DraggableCodeLine[]): DraggableCodeLine[] {
-  if (array.length <= 1)
-    return [...array]; // trivial
+  if (array.length <= 1) return [...array]; // trivial
 
   let shuffled: DraggableCodeLine[];
   do {
@@ -20,8 +19,8 @@ export function scramble(array: DraggableCodeLine[]): DraggableCodeLine[] {
 export function reorder(
   list: DraggableCodeLine[],
   from: number,
-  to: number)
-  : DraggableCodeLine[] {
+  to: number,
+): DraggableCodeLine[] {
   const result = [...list];
   const [moved] = result.splice(from, 1);
   result.splice(to, 0, moved);

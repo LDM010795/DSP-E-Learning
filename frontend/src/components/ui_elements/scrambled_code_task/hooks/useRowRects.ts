@@ -1,15 +1,23 @@
 import { useRef, useCallback } from "react";
 
-export type RowRect = { id: string; top: number; bottom: number; height: number };
+export type RowRect = {
+  id: string;
+  top: number;
+  bottom: number;
+  height: number;
+};
 
 export function useRowRects() {
   const mapRef = useRef<Record<string, HTMLDivElement | null>>({});
   const rectsRef = useRef<RowRect[]>([]);
 
   // Zuweisung der Refs
-  const setRowRef = useCallback((id: string) => (el: HTMLDivElement | null) => {
-    mapRef.current[id] = el;
-  }, []);
+  const setRowRef = useCallback(
+    (id: string) => (el: HTMLDivElement | null) => {
+      mapRef.current[id] = el;
+    },
+    [],
+  );
 
   // Vermisst aktuelle DOM-Positionen
   const measureAll = useCallback((): RowRect[] => {

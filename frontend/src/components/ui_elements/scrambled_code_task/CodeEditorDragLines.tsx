@@ -52,7 +52,7 @@ export default function DraggableLinesCodeEditor({
   const { updateFromY } = useInsertIndex({
     getRects,
     getDraggedId: () => dragId,
-    onIndex: (i) => setTargetDragIndex(prev => prev === i ? prev : i),
+    onIndex: (i) => setTargetDragIndex((prev) => (prev === i ? prev : i)),
   });
 
   // Wenn gedroppt wird, Lines neu anordnen
@@ -102,7 +102,9 @@ export default function DraggableLinesCodeEditor({
         <div className="px-3 h-7 flex items-center rounded-t-md bg-neutral-900 border border-neutral-800 border-b-transparent">
           <span className="text-xs text-neutral-200">{filename}</span>
         </div>
-        <span className="ml-auto text-[11px] text-neutral-500 pr-2">{codeLanguage}</span>
+        <span className="ml-auto text-[11px] text-neutral-500 pr-2">
+          {codeLanguage}
+        </span>
       </div>
 
       {/* Code lines */}
@@ -152,7 +154,8 @@ function CodeRow({
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const highlightedCodeHtml = useMemo(() => {
-    const lang = (Prism.languages as any)[language] || Prism.languages.javascript;
+    const lang =
+      (Prism.languages as any)[language] || Prism.languages.javascript;
     return Prism.highlight(line.code || "\u00A0", lang, language);
   }, [line.code, language]);
 
@@ -165,20 +168,25 @@ function CodeRow({
     >
       {/* Line number */}
       <div className="select-none text-neutral-500/80 tabular-nums pr-4 pl-3 h-7 leading-7 flex items-center">
-        {index + 1}{index + 1 < 10 ? "\u00A0" : ""}
+        {index + 1}
+        {index + 1 < 10 ? "\u00A0" : ""}
       </div>
 
       {/* Code line */}
       <div
-        className={`whitespace-pre text-neutral-100 px-3 h-7 leading-7 flex items-center font-mono select-none bg-neutral-900 rounded-lg border border-transparent cursor-grab active:cursor-grabbing ${isDragging ? "ring-2 ring-indigo-400 opacity-80" : "hover:border-neutral-700"
-          }`}
+        className={`whitespace-pre text-neutral-100 px-3 h-7 leading-7 flex items-center font-mono select-none bg-neutral-900 rounded-lg border border-transparent cursor-grab active:cursor-grabbing ${
+          isDragging
+            ? "ring-2 ring-indigo-400 opacity-80"
+            : "hover:border-neutral-700"
+        }`}
         draggable
         onDragStart={(e) => {
           e.dataTransfer.effectAllowed = "move";
 
           // Transparent drag preview
           const img = new Image(); // invisible 1x1-SVG
-          img.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMScgaGVpZ2h0PScxJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnLz4=";
+          img.src =
+            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMScgaGVpZ2h0PScxJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnLz4=";
 
           e.dataTransfer.setDragImage(img, 0, 0);
           onDragStartMeasure(line.id);
