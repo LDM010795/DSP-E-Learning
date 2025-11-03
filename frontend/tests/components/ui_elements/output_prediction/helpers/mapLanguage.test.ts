@@ -17,7 +17,6 @@
  * Date: 03-11-2025
  */
 
-
 import { describe, it, expect } from "vitest";
 import { mapLanguage } from "@/components/ui_elements/output_prediction/helpers/mapLanguage";
 

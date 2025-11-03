@@ -14,7 +14,6 @@
  * Date: 03-11-2025
  */
 
-
 import { describe, it, expect } from "vitest";
 import { matchesExpected } from "@/components/ui_elements/output_prediction/OutputPredictionBase";
 
@@ -31,20 +30,20 @@ describe("matchesExpected", () => {
   });
 
   it("respects caseSensitive=true (must match case exactly)", () => {
-    expect(
-      matchesExpected("Hello", ["hello"], { caseSensitive: true })
-    ).toBe(false);
-    expect(
-      matchesExpected("Hello", ["Hello"], { caseSensitive: true })
-    ).toBe(true);
+    expect(matchesExpected("Hello", ["hello"], { caseSensitive: true })).toBe(
+      false,
+    );
+    expect(matchesExpected("Hello", ["Hello"], { caseSensitive: true })).toBe(
+      true,
+    );
   });
 
   it("applies provided normalizer to both user and expected answers", () => {
     const normalize = trimAndCollapse;
 
-    expect(
-      matchesExpected("  foo \n bar ", ["foo bar"], { normalize })
-    ).toBe(true);
+    expect(matchesExpected("  foo \n bar ", ["foo bar"], { normalize })).toBe(
+      true,
+    );
   });
 
   it("handles multiple expected answers and returns true if any match", () => {
@@ -60,7 +59,9 @@ describe("matchesExpected", () => {
 
   it("trims or normalizes correctly when normalizer collapses whitespace", () => {
     expect(
-      matchesExpected(" Hello   World ", ["Hello World"], { normalize: trimAndCollapse })
+      matchesExpected(" Hello   World ", ["Hello World"], {
+        normalize: trimAndCollapse,
+      }),
     ).toBe(true);
   });
 });

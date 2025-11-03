@@ -19,17 +19,19 @@
  * Date: 03-11-2025
  */
 
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 // --- Mock mapLanguage BEFORE importing the component ---
-vi.mock("@/components/ui_elements/output_prediction/helpers/mapLanguage", () => {
-  return {
-    mapLanguage: vi.fn(() => "javascript"),
-  };
-});
+vi.mock(
+  "@/components/ui_elements/output_prediction/helpers/mapLanguage",
+  () => {
+    return {
+      mapLanguage: vi.fn(() => "javascript"),
+    };
+  },
+);
 
 // --- Mock Prism ---
 vi.mock("prismjs", () => ({
@@ -50,7 +52,9 @@ describe("CodeReadOnly", () => {
   });
 
   it("renders filename and language header", () => {
-    render(<CodeReadOnly code="print('hi')" language="python" filename="demo.py" />);
+    render(
+      <CodeReadOnly code="print('hi')" language="python" filename="demo.py" />,
+    );
     expect(screen.getByText("demo.py")).toBeInTheDocument();
     expect(screen.getByText("python")).toBeInTheDocument();
   });
@@ -61,7 +65,7 @@ describe("CodeReadOnly", () => {
         code={`a = 1\nb = 2\nprint(a + b)`}
         language="python"
         filename="snippet.py"
-      />
+      />,
     );
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
@@ -79,18 +83,34 @@ describe("CodeReadOnly", () => {
     // 2 lines → 2 calls
     expect((Prism as any).highlight).toHaveBeenCalledTimes(2);
     // Because mapLanguage is mocked to 'javascript'
-    expect((Prism as any).highlight).toHaveBeenNthCalledWith(1, "x = 1", {}, "javascript");
-    expect((Prism as any).highlight).toHaveBeenNthCalledWith(2, "y = 2", {}, "javascript");
+    expect((Prism as any).highlight).toHaveBeenNthCalledWith(
+      1,
+      "x = 1",
+      {},
+      "javascript",
+    );
+    expect((Prism as any).highlight).toHaveBeenNthCalledWith(
+      2,
+      "y = 2",
+      {},
+      "javascript",
+    );
   });
 
   it("renders highlighted code correctly", () => {
-    const { container } = render(<CodeReadOnly code="print('Hello')" language="python" />);
+    const { container } = render(
+      <CodeReadOnly code="print('Hello')" language="python" />,
+    );
     expect(container.innerHTML).toContain("highlighted:print('Hello')");
   });
 
   it("renders custom className when provided", () => {
     const { container } = render(
-      <CodeReadOnly code="print(1)" language="python" className="custom-class" />
+      <CodeReadOnly
+        code="print(1)"
+        language="python"
+        className="custom-class"
+      />,
     );
     expect(container.firstChild).toHaveClass("custom-class");
   });

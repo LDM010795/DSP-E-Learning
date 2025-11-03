@@ -18,7 +18,6 @@
  * Date: 03-11-2025
  */
 
-
 import { describe, it, expect } from "vitest";
 import {
   trimEdges,
@@ -55,7 +54,7 @@ describe("normalizers utilities", () => {
     const composed = compose(
       (s) => s.trim(),
       (s) => s.toUpperCase(),
-      (s) => s + "!"
+      (s) => s + "!",
     );
     expect(composed("  hi  ")).toBe("HI!");
   });

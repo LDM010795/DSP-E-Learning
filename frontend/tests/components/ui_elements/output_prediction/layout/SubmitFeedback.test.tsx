@@ -16,11 +16,13 @@
  * Date: 03-11-2025
  */
 
-
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import { SubmitFeedback, FeedbackState } from "@/components/ui_elements/output_prediction/layout/SubmitFeedback";
+import {
+  SubmitFeedback,
+  FeedbackState,
+} from "@/components/ui_elements/output_prediction/layout/SubmitFeedback";
 
 describe("SubmitFeedback", () => {
   it("renders nothing when feedback.type is null", () => {

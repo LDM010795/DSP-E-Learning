@@ -18,7 +18,6 @@
  * Date: 03-11-2025
  */
 
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
@@ -51,7 +50,11 @@ vi.mock("@/components/ui_elements/output_prediction/layout", () => {
         Prüfen
       </button>
     ),
-    SubmitFeedback: ({ feedback }: { feedback: { type: any; message: string } }) =>
+    SubmitFeedback: ({
+      feedback,
+    }: {
+      feedback: { type: any; message: string };
+    }) =>
       feedback?.type ? (
         <div data-testid="outpred-feedback">{feedback.message}</div>
       ) : null,
@@ -155,7 +158,9 @@ describe("OutputPrediction", () => {
     const onSubmit = vi.fn();
     const onWrong = vi.fn();
 
-    render(<OutputPrediction {...baseProps} onSubmit={onSubmit} onWrong={onWrong} />);
+    render(
+      <OutputPrediction {...baseProps} onSubmit={onSubmit} onWrong={onWrong} />,
+    );
 
     const input = screen.getByRole("textbox");
     const btn = screen.getByTestId("outpred-submit");
@@ -186,45 +191,49 @@ describe("OutputPrediction", () => {
     fireEvent.click(btn);
 
     // default normalizer trims trailing newline → matches "5.0"
-    expect(screen.getByTestId("outpred-feedback")).toHaveTextContent(/Richtig/i);
+    expect(screen.getByTestId("outpred-feedback")).toHaveTextContent(
+      /Richtig/i,
+    );
     expect(onSubmit).toHaveBeenCalledWith("5.0\n", true);
   });
 
   it("respects caseSensitive=false by default; a custom normalizer can relax matching", () => {
-      // Expected has no whitespace; user types with spaces/newlines
-      // defaultOutputNormalizer shouldn't match; custom should
-      const props = {
-        ...baseProps,
-        expectedAnswers: ["HelloWorld"],
-        code: "print('HelloWorld')",
-        language: "python",
-      };
+    // Expected has no whitespace; user types with spaces/newlines
+    // defaultOutputNormalizer shouldn't match; custom should
+    const props = {
+      ...baseProps,
+      expectedAnswers: ["HelloWorld"],
+      code: "print('HelloWorld')",
+      language: "python",
+    };
 
-      // Custom normalizer that removes all whitespace
-      const stripAllWhitespace = compose(
-        defaultOutputNormalizer,
-        (s: string) => s.replace(/\s+/g, "")
-      );
+    // Custom normalizer that removes all whitespace
+    const stripAllWhitespace = compose(defaultOutputNormalizer, (s: string) =>
+      s.replace(/\s+/g, ""),
+    );
 
-      const { rerender } = render(
-        <OutputPrediction {...props} normalize={defaultOutputNormalizer} />
-      );
+    const { rerender } = render(
+      <OutputPrediction {...props} normalize={defaultOutputNormalizer} />,
+    );
 
-      const input = screen.getByRole("textbox");
-      const btn = screen.getByTestId("outpred-submit");
+    const input = screen.getByRole("textbox");
+    const btn = screen.getByTestId("outpred-submit");
 
-      // Type with spaces/newlines → should be WRONG with default normalizer
-      fireEvent.change(input, { target: { value: " Hello \n World " } });
-      fireEvent.click(btn);
-      expect(screen.getByTestId("outpred-feedback")).toHaveTextContent(/Nicht ganz/i);
+    // Type with spaces/newlines → should be WRONG with default normalizer
+    fireEvent.change(input, { target: { value: " Hello \n World " } });
+    fireEvent.click(btn);
+    expect(screen.getByTestId("outpred-feedback")).toHaveTextContent(
+      /Nicht ganz/i,
+    );
 
-      // Now rerender with relaxed normalizer → should be RIGHT
-      rerender(<OutputPrediction {...props} normalize={stripAllWhitespace} />);
+    // Now rerender with relaxed normalizer → should be RIGHT
+    rerender(<OutputPrediction {...props} normalize={stripAllWhitespace} />);
 
-      const input2 = screen.getByRole("textbox");
-      fireEvent.change(input2, { target: { value: " Hello \n World " } });
-      fireEvent.click(screen.getByTestId("outpred-submit"));
-      expect(screen.getByTestId("outpred-feedback")).toHaveTextContent(/Richtig/i);
+    const input2 = screen.getByRole("textbox");
+    fireEvent.change(input2, { target: { value: " Hello \n World " } });
+    fireEvent.click(screen.getByTestId("outpred-submit"));
+    expect(screen.getByTestId("outpred-feedback")).toHaveTextContent(
+      /Richtig/i,
+    );
   });
-
 });
