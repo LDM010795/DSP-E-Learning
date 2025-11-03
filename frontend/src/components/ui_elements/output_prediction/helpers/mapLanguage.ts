@@ -18,5 +18,5 @@ export function mapLanguage(label?: string): string {
   if (s.includes("js")) return "javascript";
   if (s.includes("py")) return "python";
   if (s.includes("css")) return "css";
-  return label ?? "javascript";
+  return s || "javascript";
 }
