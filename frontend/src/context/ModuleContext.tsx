@@ -218,19 +218,27 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         modules.map((module) => [
           module.id,
           (module.chapters ?? []).map((chapter) => {
-            const chapterContents = chapter.contents?.length // Backend liefert (noch) alte und neue Struktur, daher entscheiden
-              ? [...chapter.contents].sort(byOrder) // neue Struktur
-              : (module.contents ?? []) // alte Struktur
+            const chapterContents = (() => {
+              if (chapter.contents?.length) {
+                return [...chapter.contents].sort(byOrder); // neue Struktur
+              } else {
+                return (module.contents ?? []) // alte Struktur
                   .filter((content) => content.chapter === chapter.id)
                   .slice()
                   .sort(byOrder);
+              }
+            })();
 
-            const chapterTasks = chapter.tasks?.length // Backend liefert (noch) alte und neue Struktur, daher entscheiden
-              ? [...chapter.tasks].sort(byOrder) // neue Struktur
-              : (module.tasks ?? []) // alte Struktur
+            const chapterTasks = (() => {
+              if (chapter.tasks?.length) {
+                return [...chapter.tasks].sort(byOrder); // neue Struktur
+              } else {
+                return (module.tasks ?? []) // alte Struktur
                   .filter((task) => task.chapter === chapter.id)
                   .slice()
                   .sort(byOrder);
+              }
+            })();
 
             return {
               ...chapter,
