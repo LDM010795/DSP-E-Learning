@@ -68,7 +68,7 @@ export type HeaderNavigationProps = {
  */
 export const publicNavLinks: NavLink[] = [
   { title: "Startseite", to: "/" },
-  { title: "Preise", to: "/subscriptions" },
+  /*{ title: "Preise", to: "/subscriptions" }, SUBSCRIPTIONS AUSGEBLENDET*/
   {
     title: "Homepage",
     to: "https://datasmartpoint.com/?campaign=search&gad_source=1&gclid=Cj0KCQjw2N2_BhCAARIsAK4pEkWFhF857MNP-sEAtIJvfG32jDDe1wbcFucbaaWDH-N9DYaHlNN__X4aAoKqEALw_wcB",
