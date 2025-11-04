@@ -263,13 +263,12 @@ describe("AnimatedRoutes", () => {
     ).not.toBeInTheDocument();
   });
 
-  /*SUBSCRIPTIONS AUSGEBLENDET
-  it("renders Subscription when signed in", async () => {
+  it.skip("renders Subscription when signed in", async () => {
     signIn();
     renderRoute("/subscriptions");
     expect(await screen.findByText("Mocked Subscriptions")).toBeInTheDocument();
   });
-  */
+
   it("does not render Final Exam when signed out", async () => {
     signOut();
     renderRoute("/final-exam");
