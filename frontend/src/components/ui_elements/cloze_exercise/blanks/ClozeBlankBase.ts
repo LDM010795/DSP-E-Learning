@@ -27,7 +27,7 @@ export const CLOZE_BLANK_STYLES: Record<
   code: {
     bankWrap:
       // exakt 24px wie die Code-Zeile, kein Wachstum
-      "inline-flex items-center h-6 leading-6 min-w-[40px] mx-[1px] border-b border-dashed border-neutral-600/70 -mb-px",
+      "inline-flex items-center h-5.5 leading-6 min-w-[40px] mx-[1px] border border-dashed border-neutral-600/70 rounded -mb-px",
     bankHover: "bg-neutral-800/50",
     chip:
       // kleiner Chip, passt in h-6
