@@ -6,12 +6,23 @@ import {
   IoAlertCircleOutline,
   IoVideocamOutline,
   IoPlayOutline,
+  IoListOutline,
+  IoCheckmarkCircleOutline,
 } from "react-icons/io5";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LearningContentVideoLayout from "../components/layouts/learning_content_video";
 import SubBackground from "../components/layouts/SubBackground";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
-import { useModules, Module, Content, Chapter } from "../context/ModuleContext";
+import {
+  useModules,
+  Module,
+  Content,
+  Chapter,
+  Task,
+} from "../context/ModuleContext";
+import TagDifficulty, {
+  DifficultyLevel,
+} from "@/components/tags/tag_difficulty";
 
 function ChapterDetail() {
   const { modules, loading, error } = useModules();
@@ -24,15 +35,19 @@ function ChapterDetail() {
 
   const module: Module | undefined = useMemo(() => {
     if (!moduleId) return undefined;
+
     const numericModuleId = parseInt(moduleId, 10);
     if (isNaN(numericModuleId)) return undefined;
+
     return modules.find((mod) => mod.id === numericModuleId);
   }, [modules, moduleId]);
 
   const chapter: Chapter | undefined = useMemo(() => {
     if (!chapterId || !module?.chapters) return undefined;
+
     const numericChapterId = parseInt(chapterId, 10);
     if (isNaN(numericChapterId)) return undefined;
+
     return module.chapters.find((chap) => chap.id === numericChapterId);
   }, [module, chapterId]);
 
@@ -124,8 +139,6 @@ function ChapterDetail() {
 
           {/* Header */}
           <div className="mb-8">
-            {/* Zurück-zum-Modul Button entfernt */}
-
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-700 mb-2">
@@ -137,15 +150,13 @@ function ChapterDetail() {
                   </p>
                 )}
               </div>
-
-              {/* Progress entfernt (nur in Kapitelübersicht anzeigen) */}
             </div>
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 gap-8">
-            {/* Videos */}
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              {/* Videos */}
               {selectedVideo ? (
                 // Video Player View
                 <motion.div
@@ -217,7 +228,105 @@ function ChapterDetail() {
               )}
             </div>
 
-            {/* Aufgaben-Liste entfernt (nur in Kapitelübersicht anzeigen) */}
+            {/* Task Sidebar */}
+            <div className="lg:col-span-1">
+              <SubBackground>
+                <div className="sticky top-8">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="p-2 rounded-lg bg-dsp-orange_light">
+                      <IoListOutline className="w-5 h-5 text-dsp-orange" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Aufgaben ({chapter.tasks.length})
+                    </h2>
+                  </div>
+
+                  {chapter.tasks.length > 0 ? (
+                    <div className="space-y-3">
+                      {chapter.tasks.map((task: Task, index: number) => (
+                        <motion.div
+                          key={task.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          whileHover={{ y: -2 }}
+                          className="group cursor-pointer"
+                          onClick={() =>
+                            navigate(`/modules/${module?.id}/tasks/${task.id}`)
+                          }
+                        >
+                          <div
+                            className={`p-4 rounded-xl border transition-all duration-200 ${
+                              task.completed
+                                ? "border-green-200 bg-green-50/50 hover:bg-green-50"
+                                : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex items-center space-x-3 flex-1">
+                                <div
+                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                                    task.completed
+                                      ? "bg-green-500"
+                                      : "bg-gray-200 group-hover:bg-dsp-orange/20"
+                                  }`}
+                                >
+                                  {task.completed ? (
+                                    <IoCheckmarkCircleOutline className="w-5 h-5 text-white" />
+                                  ) : (
+                                    <IoPlayCircleOutline
+                                      className={`w-5 h-5 ${
+                                        task.completed
+                                          ? "text-white"
+                                          : "text-gray-500 group-hover:text-dsp-orange"
+                                      }`}
+                                    />
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h3
+                                    className={`font-medium text-sm leading-tight ${
+                                      task.completed
+                                        ? "text-gray-700"
+                                        : "text-gray-800 group-hover:text-dsp-orange"
+                                    }`}
+                                  >
+                                    {task.title}
+                                  </h3>
+                                  <p
+                                    className={`text-xs mt-1 ${
+                                      task.completed
+                                        ? "text-green-600"
+                                        : "text-gray-500"
+                                    }`}
+                                  >
+                                    {task.completed ? "Abgeschlossen" : "Offen"}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex-shrink-0 ml-2">
+                                <TagDifficulty
+                                  difficulty={
+                                    task.difficulty as DifficultyLevel
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <IoListOutline className="mx-auto text-4xl text-gray-400 mb-3" />
+                      <p className="text-gray-500 text-sm">
+                        Keine Aufgaben für dieses Modul verfügbar.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </SubBackground>
+            </div>
           </div>
         </div>
       </div>

@@ -51,7 +51,14 @@ import SubBackground from "../components/layouts/SubBackground";
  */
 function Dashboard() {
   // --- State Management ---
-  const { modules, loading, error, fetchModules } = useModules();
+  const {
+    modules,
+    loading,
+    error,
+    fetchModules,
+    getAllModuleTasks,
+    getAllModuleContents,
+  } = useModules();
   const [showAllModules, setShowAllModules] = useState(false);
   // const navigate = useNavigate();
 
@@ -110,13 +117,15 @@ function Dashboard() {
 
   const totalModules = modules.length;
 
-  const allTasks: ContextTask[] = modules.flatMap((m) => m.tasks || []);
+  const allTasks: ContextTask[] = modules.flatMap((module) =>
+    getAllModuleTasks(module.id),
+  );
   const totalTasks = allTasks.length;
   const averageTasksPerModule =
     totalModules > 0 ? (totalTasks / totalModules).toFixed(1) : "0.0";
 
   const totalLessons = modules.reduce(
-    (sum, m) => sum + (m.contents?.length || 0),
+    (sum, module) => sum + getAllModuleContents(module.id).length,
     0,
   );
   const averageLessonsPerModule =
@@ -180,7 +189,7 @@ function Dashboard() {
   let modulesWithLeastTasks: string[] = [];
 
   modules.forEach((module) => {
-    const taskCount = module.tasks?.length || 0;
+    const taskCount = getAllModuleTasks(module.id).length;
     if (taskCount > maxTasks) {
       maxTasks = taskCount;
       modulesWithMostTasks = [module.title];
@@ -303,44 +312,49 @@ function Dashboard() {
 
                   <div className="space-y-4">
                     {(showAllModules ? modules : modules.slice(0, 3)).map(
-                      (module) => (
-                        <div
-                          key={module.id}
-                          className="bg-white rounded-xl p-4 border border-gray-200 hover:border-dsp-orange/30 transition-all duration-200 hover:shadow-md"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-gray-800 mb-2">
-                                {module.title}
-                              </h3>
-                              <div className="flex items-center space-x-4 text-sm text-gray-600">
-                                <span className="flex items-center">
-                                  <IoPlayCircleOutline className="mr-1" />
-                                  {module.contents?.length || 0} Lektionen
-                                </span>
-                                <span className="flex items-center">
-                                  <IoListOutline className="mr-1" />
-                                  {module.tasks?.length || 0} Aufgaben
-                                </span>
-                                {module.tasks && module.tasks.length > 0 && (
-                                  <TagDifficulty
-                                    difficulty={
-                                      calculateModuleDifficulty(module.tasks) ||
-                                      "Mittel"
-                                    }
-                                  />
-                                )}
+                      (module) => {
+                        const moduleTasks = getAllModuleTasks(module.id);
+                        const moduleContents = getAllModuleContents(module.id);
+                        return (
+                          <div
+                            key={module.id}
+                            className="bg-white rounded-xl p-4 border border-gray-200 hover:border-dsp-orange/30 transition-all duration-200 hover:shadow-md"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-gray-800 mb-2">
+                                  {module.title}
+                                </h3>
+                                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                  <span className="flex items-center">
+                                    <IoPlayCircleOutline className="mr-1" />
+                                    {moduleContents.length} Lektionen
+                                  </span>
+                                  <span className="flex items-center">
+                                    <IoListOutline className="mr-1" />
+                                    {moduleTasks.length} Aufgaben
+                                  </span>
+                                  {moduleTasks.length > 0 && (
+                                    <TagDifficulty
+                                      difficulty={
+                                        calculateModuleDifficulty(
+                                          moduleTasks,
+                                        ) || "Mittel"
+                                      }
+                                    />
+                                  )}
+                                </div>
                               </div>
+                              <Link
+                                to={`/modules/${module.id}`}
+                                className="px-4 py-2 bg-dsp-orange text-white rounded-lg hover:bg-dsp-orange transition-colors font-medium text-sm"
+                              >
+                                Öffnen
+                              </Link>
                             </div>
-                            <Link
-                              to={`/modules/${module.id}`}
-                              className="px-4 py-2 bg-dsp-orange text-white rounded-lg hover:bg-dsp-orange transition-colors font-medium text-sm"
-                            >
-                              Öffnen
-                            </Link>
                           </div>
-                        </div>
-                      ),
+                        );
+                      },
                     )}
                   </div>
 

@@ -42,7 +42,8 @@ function isMultipleChoiceConfig(
 }
 
 function TaskDetails() {
-  const { modules, loading, error, fetchModules } = useModules();
+  const { modules, loading, error, fetchModules, getAllModuleTasks } =
+    useModules();
   const { moduleId, taskId } = useParams<{
     moduleId: string;
     taskId: string;
@@ -93,7 +94,7 @@ function TaskDetails() {
       };
     }
 
-    const moduleTasks = foundModule.tasks || [];
+    const moduleTasks = getAllModuleTasks(foundModule.id);
     const taskIndex = moduleTasks.findIndex((t) => t.id === numericTaskId);
     const foundTask = taskIndex !== -1 ? moduleTasks[taskIndex] : undefined;
 

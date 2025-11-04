@@ -133,7 +133,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await api.get("users/me");
+        const response = await api.get("users/me/");
         if (response.status == 200) {
           setUser(response.data);
           setAuthentification(true);
@@ -182,7 +182,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
         // set user information
         try {
-          const response = await api.get("users/me");
+          const response = await api.get("users/me/");
           setUser(response.data);
         } catch {
           console.error("Nutzerdaten nicht gefunden");
@@ -265,7 +265,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     try {
       setAuthentification(true);
       // set user information
-      const response = await api.get("users/me");
+      const response = await api.get("users/me/");
       setUser(response.data);
 
       console.log(
