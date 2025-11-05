@@ -561,7 +561,6 @@ const ExternalRegister: React.FC = () => {
               title={loading ? "Registriere..." : "Registrieren"}
               disabled={loading || !isFormValid}
               classNameButton="w-full"
-              onClick={() => {}}
             />
           </div>
         </form>

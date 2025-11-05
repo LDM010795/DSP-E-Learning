@@ -57,7 +57,7 @@ import { ExamProvider } from "./context/ExamContext.tsx";
 import { Toaster } from "sonner";
 
 // --- Hooks ---
-import { useMicrosoftAuth } from "./hooks/use_microsoft_auth";
+import { useMicrosoftAuth } from "./hooks/useMicrosoftAuth.ts";
 import { useAuth } from "./context/AuthContext.tsx";
 
 /**
@@ -105,7 +105,7 @@ const AppContent: React.FC = () => {
 
   const rightNav: NavItem[] = isAuthenticated
     ? [
-        { title: "Einstellungen", to: "/settings" },
+        //{ title: "Einstellungen", to: "/settings" },
         { title: "Ausloggen", action: logout },
       ]
     : [{ title: "Einloggen", action: openLoginPopup }];
@@ -132,36 +132,39 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="page-outer relative">
       {/* --- Background and Notifications --- */}
       <DSPBackground />
       <Toaster position="bottom-right" richColors />
 
-      {/* --- Header Navigation --- */}
-      <HeaderNavigation
-        logo={<img src={LogoDSP} alt="Logo" className="h-12" />}
-        links={mainNav}
-        rightContent={rightNav}
-        isAuthenticated={isAuthenticated}
-      />
+      {/* page wrapper that holds header, content, footer */}
+      <div className="page-inner w-full">
+        {/* --- Header Navigation --- */}
+        <HeaderNavigation
+          logo={<img src={LogoDSP} alt="Logo" className="h-12" />}
+          links={mainNav}
+          rightContent={rightNav}
+          isAuthenticated={isAuthenticated}
+        />
 
-      {/* --- Main Content Area --- */}
-      <main className="flex-grow overflow-auto">
-        {isFullScreenPage ? (
-          // Full-screen layout for landing page and subscriptions (no margins)
-          <AnimatedRoutes isAdmin={isAdmin} />
-        ) : (
-          // Standard layout with margins for all other pages
-          <div className="mx-2 sm:mx-6 md:mx-10 lg:mx-16 xl:mx-20 mt-2 sm:mt-3 md:mt-4 mb-6 lg:mb-8">
+        {/* Content */}
+        <main>
+          {isFullScreenPage ? (
+            // Full-screen layout for landing page and subscriptions (no margins)
             <AnimatedRoutes isAdmin={isAdmin} />
-          </div>
-        )}
-      </main>
+          ) : (
+            // Standard layout with margins for all other pages
+            <div className="mx-2 sm:mx-6 md:mx-10 lg:mx-16 xl:mx-20 mt-2 sm:mt-3 md:mt-4 mb-6 lg:mb-8">
+              <AnimatedRoutes isAdmin={isAdmin} />
+            </div>
+          )}
+        </main>
 
+        {/* Footer rendered below content */}
+        <FooterNavigation />
+      </div>
       {/* --- Login Popup --- */}
       {isLoginPopupOpen && <LoginPopup onClose={closeLoginPopup} />}
-      {/* Footer Navigation */}
-      <FooterNavigation />
     </div>
   );
 };

@@ -1,13 +1,10 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import { motion } from "framer-motion";
-import {
-  IoPlayCircleOutline,
-  IoCheckmarkCircleOutline,
-  IoTimeOutline,
-} from "react-icons/io5";
+import { IoPlay } from "react-icons/io5";
 import clsx from "clsx";
 
 // ✨ Props Interface
+type ImageMode = "none" | "auto";
 interface CardPreviewSmallProps {
   imageSrc?: string;
   youtubeId?: string;
@@ -15,6 +12,7 @@ interface CardPreviewSmallProps {
   description?: string;
   progress?: number;
   onClick?: () => void;
+  imageMode?: ImageMode; // default: "none"
 
   // Custom ClassNames
   className?: string;
@@ -25,6 +23,8 @@ interface CardPreviewSmallProps {
   classNameProgressWrapper?: string;
   classNameProgressBar?: string;
   classNameProgressText?: string;
+  /** chip/badge below the title (e.g., difficulty) */
+  badge?: ReactNode;
 }
 
 const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
@@ -34,6 +34,7 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
   description,
   progress = 0,
   onClick,
+  imageMode = "none",
   className,
   classNameTitle,
   classNameDescription,
@@ -42,64 +43,51 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
   classNameProgressWrapper,
   classNameProgressBar,
   classNameProgressText,
+  badge,
 }) => {
   const displayImage = youtubeId
     ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
     : imageSrc;
+  const showImage = imageMode !== "none" && !!displayImage;
 
-  // Determine module status based on progress
-  const getModuleStatus = () => {
-    if (progress >= 100) return "completed";
-    if (progress > 0) return "in-progress";
-    return "not-started";
-  };
-
-  const status = getModuleStatus();
-
-  const getStatusIcon = () => {
-    switch (status) {
-      case "completed":
-        return <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />;
-      case "in-progress":
-        return <IoTimeOutline className="w-5 h-5 text-dsp-orange" />;
-      default:
-        return <IoPlayCircleOutline className="w-5 h-5 text-gray-500" />;
-    }
-  };
-
-  const getProgressBarColor = () => {
-    switch (status) {
-      case "completed":
-        return "bg-green-500";
-      case "in-progress":
-        return "bg-dsp-orange";
-      default:
-        return "bg-gray-400";
-    }
-  };
+  const status =
+    progress >= 100
+      ? "completed"
+      : progress > 0
+        ? "in-progress"
+        : "not-started";
+  const statusText =
+    status === "completed"
+      ? "Abgeschlossen"
+      : status === "in-progress"
+        ? "In Bearbeitung"
+        : "Nicht begonnen";
+  const statusColor =
+    status === "completed"
+      ? "text-green-600"
+      : status === "in-progress"
+        ? "text-dsp-orange"
+        : "text-gray-500";
 
   return (
     <motion.div
       className={clsx(
-        // Base card styling - professional SaaS look
-        "relative group cursor-pointer",
-        "bg-white/90 backdrop-blur-sm",
-        "border border-gray-200/60 hover:border-dsp-orange/30",
-        "rounded-xl overflow-hidden",
-        "shadow-sm hover:shadow-md",
-        "transition-all duration-200 ease-in-out",
-        "hover:scale-[1.02] hover:-translate-y-1",
+        "group relative isolate cursor-pointer",
+        "rounded-xl overflow-hidden h-40 flex flex-col",
+        "border border-gray-200/50 backdrop-blur-sm",
+        "bg-gradient-to-br from-white via-white/98 to-white/95",
+        "transition-all duration-500 hover:border-dsp-orange/30 hover:shadow-[0_12px_30px_-10px_rgba(0,0,0,0.25)]",
         className,
       )}
       onClick={onClick}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.15 }}
     >
-      {/* Professional Image Container */}
-      {displayImage && (
+      {/* Optional image header (disabled by default via imageMode="none") */}
+      {showImage && (
         <div
           className={clsx(
-            "relative w-full aspect-video overflow-hidden",
+            "relative w-full h-24 overflow-hidden flex-shrink-0",
             "bg-gradient-to-br from-gray-100 to-gray-200",
             classNameImage,
           )}
@@ -107,118 +95,120 @@ const CardPreviewSmall: React.FC<CardPreviewSmallProps> = ({
           <img
             src={displayImage}
             alt={title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
+            decoding="async"
           />
+          {/* white overlay gradient for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent" />
 
-          {/* Professional overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-
-          {/* Video play indicator */}
-          {youtubeId && (
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                <IoPlayCircleOutline className="w-8 h-8 text-dsp-orange" />
-              </div>
-            </div>
-          )}
-
-          {/* Status badge */}
-          <div className="absolute top-3 right-3">
-            <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm">
-              {getStatusIcon()}
+          {/* center play button on hover */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="h-10 w-10 rounded-full bg-white/90 backdrop-blur-sm grid place-items-center shadow">
+              <IoPlay className="h-5 w-5 text-dsp-orange" />
             </div>
           </div>
         </div>
       )}
+      {/* Hover gradient + glow */}
+      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-dsp-orange/5 via-transparent to-emerald-400/5" />
+      <div className="absolute -inset-0.5 rounded-xl -z-10 pointer-events-none opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500 bg-gradient-to-br from-dsp-orange/20 to-emerald-400/20" />
 
-      {/* Professional Content Area */}
-      <div className={clsx("p-4", classNameContentWrapper)}>
-        {/* Title Section */}
-        <div className="mb-3">
+      {/* Content */}
+      <div
+        className={clsx(
+          "relative p-4 flex-1 flex flex-col",
+          classNameContentWrapper,
+        )}
+      >
+        {/* Header row: title + play */}
+        <div className="flex items-start justify-between gap-3 mb-2">
           <h3
             className={clsx(
-              "font-semibold text-gray-900 text-base leading-tight",
-              "group-hover:text-dsp-orange transition-colors duration-200",
+              "ds-title leading-tight",
+              "group-hover:text-dsp-orange transition-colors duration-300",
               "line-clamp-2",
               classNameTitle,
             )}
+            title={title}
           >
             {title}
           </h3>
-
-          {description && (
-            <p
-              className={clsx(
-                "text-sm text-gray-600 mt-2 line-clamp-2",
-                classNameDescription,
-              )}
-            >
-              {description}
-            </p>
-          )}
+          <button
+            className="shrink-0 h-10 w-10 rounded-full bg-gray-100 hover:bg-dsp-orange hover:text-white transition-all duration-300 grid place-items-center shadow-sm"
+            aria-label="Starten"
+            type="button"
+          >
+            <IoPlay className="h-5 w-5" />
+          </button>
         </div>
+        {badge && <div className="mt-1">{badge}</div>}
 
-        {/* Professional Progress Section */}
-        <div className={clsx("space-y-2", classNameProgressWrapper)}>
-          {/* Progress header */}
+        {description && (
+          <p
+            className={clsx(
+              "text-sm text-gray-600 mt-2 line-clamp-2",
+              classNameDescription,
+            )}
+          >
+            {description}
+          </p>
+        )}
+
+        {/* Status + progress */}
+        <div className={clsx("mt-auto space-y-2", classNameProgressWrapper)}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              {getStatusIcon()}
-              <span className="text-xs font-medium text-gray-700">
-                {status === "completed"
-                  ? "Abgeschlossen"
-                  : status === "in-progress"
-                    ? "In Bearbeitung"
-                    : "Nicht begonnen"}
+            <div className="flex items-center gap-2">
+              <span
+                className={clsx(
+                  "relative inline-flex h-3 w-3 rounded-full",
+                  status === "completed"
+                    ? "bg-green-600"
+                    : status === "in-progress"
+                      ? "bg-dsp-orange"
+                      : "bg-gray-400",
+                )}
+              >
+                {status === "in-progress" && (
+                  <span className="absolute inset-0 rounded-full animate-ping opacity-75 bg-dsp-orange" />
+                )}
+              </span>
+              <span className={clsx("text-xs font-medium", statusColor)}>
+                {statusText}
               </span>
             </div>
             <span
               className={clsx(
                 "text-xs font-semibold",
-                status === "completed"
-                  ? "text-green-600"
-                  : status === "in-progress"
-                    ? "text-dsp-orange"
-                    : "text-gray-500",
+                statusColor,
+                "bg-gray-100 px-2 py-0.5 rounded-md",
                 classNameProgressText,
               )}
             >
-              {progress}%
+              {Math.round(progress)}%
             </span>
           </div>
 
-          {/* Professional progress bar */}
+          {/* Gradient progress bar with shine */}
           <div className="relative">
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden shadow-inner">
               <motion.div
                 className={clsx(
-                  "h-2 rounded-full transition-all duration-300",
-                  getProgressBarColor(),
+                  "h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden",
+                  "bg-gradient-to-r from-dsp-orange via-orange-300 to-emerald-400",
                   classNameProgressBar,
                 )}
                 initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
+                animate={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" />
+              </motion.div>
             </div>
-
-            {/* Progress glow effect */}
-            {progress > 0 && (
-              <div
-                className={clsx(
-                  "absolute top-0 left-0 h-2 rounded-full opacity-50 blur-sm",
-                  getProgressBarColor(),
-                )}
-                style={{ width: `${Math.min(progress, 100)}%` }}
-              />
-            )}
           </div>
         </div>
       </div>
 
-      {/* Subtle hover glow */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-dsp-orange/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+      {/* (Glow handled above with two layers) */}
     </motion.div>
   );
 };

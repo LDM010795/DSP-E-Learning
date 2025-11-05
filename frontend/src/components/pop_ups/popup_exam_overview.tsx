@@ -92,7 +92,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
   onStartExam,
   onPrepareSubmission,
 }) => {
-  const { modules: userModules } = useModules(); // ModuleContext für User-Module nutzen
+  const { modules: userModules, getAllModuleTasks } = useModules(); // ModuleContext für User-Module nutzen
   const totalMaxPoints = getTotalMaxPoints(exam.criteria);
   const status = attempt ? attempt.status : "available";
 
@@ -248,7 +248,7 @@ const PopupExamOverview: React.FC<PopupExamOverviewProps> = ({
                     );
                     let isModuleCompleted = false;
                     if (userModuleData) {
-                      const tasks = userModuleData.tasks || [];
+                      const tasks = getAllModuleTasks(userModuleData.id);
                       if (tasks.length === 0) {
                         // Module ohne Tasks gelten hier als abgeschlossen
                         isModuleCompleted = true;

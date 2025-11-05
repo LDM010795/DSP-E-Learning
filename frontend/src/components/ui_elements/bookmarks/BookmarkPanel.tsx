@@ -46,6 +46,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
         <div className="text-xs font-semibold text-white">Lesezeichen</div>
         <div className="flex items-center gap-1">
           <button
+            type="button"
             onClick={onToggleSelecting}
             className={[
               "rounded px-2 py-1 text-xs",
@@ -64,6 +65,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
             Setzen
           </button>
           <button
+            type="button"
             onClick={onToggleNotes}
             className={[
               "rounded px-2 py-1 text-xs",
@@ -78,6 +80,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
             Notizen
           </button>
           <button
+            type="button"
             onClick={onClearAll}
             className="rounded px-2 py-1 text-xs text-white hover:bg-white/10"
             aria-label="Alle Lesezeichen löschen"
@@ -86,6 +89,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
             Leeren
           </button>
           <button
+            type="button"
             onClick={onClose}
             className="rounded px-2 py-1 text-xs text-white hover:bg-white/10"
             aria-label="Schließen"
@@ -116,6 +120,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
                     aria-label="Lesezeichen umbenennen"
                   />
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onSaveEdit();
@@ -127,6 +132,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
                     Speichern
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onCancelEdit();
@@ -141,6 +147,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
               ) : (
                 <>
                   <button
+                    type="button"
                     onClick={() => onJump(b.y, b.path)}
                     className="flex-1 rounded-md px-2 py-1 text-left text-sm text-gray-800 hover:bg-amber-50 cursor-pointer"
                     title={b.label ?? `Position ${b.y}px`}
@@ -149,6 +156,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
                     {b.label?.trim() ? b.label : `Lesezeichen ${i + 1}`}
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onStartEdit(b.id, b.label);
@@ -160,6 +168,7 @@ const BookmarkPanel: React.FC<BookmarkPanelProps> = ({
                     ✎
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onRemove(b.id);

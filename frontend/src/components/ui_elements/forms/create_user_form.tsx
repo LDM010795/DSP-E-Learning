@@ -275,7 +275,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
         </div>
       )}
 
-      <form className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label
@@ -395,7 +395,8 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
           )}
           <ButtonPrimary
             title={loading ? "Wird erstellt..." : "Benutzer erstellen"}
-            onClick={() => handleSubmit()}
+            type="submit"
+            onClick={() => {}}
             disabled={loading}
           />
         </div>
