@@ -23,6 +23,11 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
   };
 
   const linksWithSubscriptions = useMemo(() => {
+    // SUBSCRIPTIONS AUSGEBLENDET
+    // Abonnements vorerst ausblenden, bis die E-Learning-
+    // Plattform auch von externen Usern verwendet wird
+    return links;
+
     const alreadyHas = links.some((l) => l.to === "/subscriptions");
     return alreadyHas ? links : [...links, subscriptionsLink];
   }, [links]);
@@ -41,7 +46,11 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
     navLinks.map((link, index) => (
       <li key={index}>
         <LinkSidebar to={link.to} icon={link.icon}>
-          {showTitle ? link.title : null}
+          {showTitle ? (
+            <span className="max-w-[180px] lg:max-w-[220px] xl:max-w-[260px] truncate whitespace-nowrap align-middle">
+              {link.title}
+            </span>
+          ) : null}
         </LinkSidebar>
       </li>
     ));
@@ -51,17 +60,29 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
       <li key={index}>
         {item.to ? (
           <LinkSidebar to={item.to} icon={item.icon}>
-            {showTitle ? item.title : null}
+            {showTitle ? (
+              <span className="max-w-[160px] lg:max-w-[200px] truncate whitespace-nowrap">
+                {item.title}
+              </span>
+            ) : null}
           </LinkSidebar>
         ) : (
           <button
             onClick={item.action}
-            className="flex items-center px-3 py-1.5 text-sm font-medium rounded-lg text-gray-700 hover:text-dsp-orange 
-                     hover:bg-dsp-orange/5 transition-colors duration-200 cursor-pointer"
+            className="flex items-center px-2.5 py-1 text-xs sm:text-sm md:px-3 md:py-1.5 md:text-sm font-medium rounded-lg
+            text-gray-700 hover:text-dsp-orange hover:bg-dsp-orange/5 transition-colors duration-200 cursor-pointer"
             aria-label={item.title}
           >
-            {item.icon && <span className="mr-2">{item.icon}</span>}
-            {showTitle && <span>{item.title}</span>}
+            {item.icon && (
+              <span className="mr-1.5 md:mr-2 [&>svg]:w-4 [&>svg]:h-4 md:[&>svg]:w-5 md:[&>svg]:h-5">
+                {item.icon}
+              </span>
+            )}
+            {showTitle && (
+              <span className="truncate max-w-[140px] sm:max-w-[170px] md:max-w-none">
+                {item.title}
+              </span>
+            )}
           </button>
         )}
       </li>
@@ -77,8 +98,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
         )}
       >
         <div className="max-w-[95vw] mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-14">
-            {/* Left Section: Logo & Mobile Menu */}
+          <div className="flex items-center h-14">
+            {/* Left: Logo */}
             <div
               className="flex items-center gap-3"
               data-testid="logo-container"
@@ -94,20 +115,6 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                   </div>
                 </Link>
               )}
-
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setMobileOpen((prev) => !prev)}
-                className="md:hidden relative p-1.5 rounded-lg text-gray-700 hover:text-dsp-orange 
-                         hover:bg-dsp-orange/5 transition-colors duration-200"
-                aria-label="Toggle Navigation"
-              >
-                {mobileOpen ? (
-                  <IoMdClose className="w-5 h-5" />
-                ) : (
-                  <IoMdMenu className="w-5 h-5" />
-                )}
-              </button>
             </div>
 
             {/* Center: Desktop Navigation */}
@@ -117,11 +124,26 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
               </ul>
             </nav>
 
-            {/* Right Section */}
-            <div className="hidden md:flex items-center justify-end">
-              <ul className="flex items-center gap-1">
-                {renderRightContentItems(filteredRightContent)}
-              </ul>
+            {/* Right: Actions (desktop) + Burger (mobile) */}
+            <div className="ml-auto flex items-center">
+              {/* Desktop right content */}
+              <div className="hidden md:flex items-center justify-end">
+                <ul className="flex items-center gap-1">
+                  {renderRightContentItems(filteredRightContent)}
+                </ul>
+              </div>
+              {/* Mobile burger aligned right */}
+              <button
+                onClick={() => setMobileOpen((prev) => !prev)}
+                className="md:hidden ml-2 relative p-1.5 rounded-lg text-gray-700 hover:text-dsp-orange hover:bg-dsp-orange/5 transition-colors duration-200"
+                aria-label="Toggle Navigation"
+              >
+                {mobileOpen ? (
+                  <IoMdClose className="w-5 h-5" />
+                ) : (
+                  <IoMdMenu className="w-5 h-5" />
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -150,8 +172,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                       <LinkSidebar
                         to={link.to}
                         icon={link.icon}
-                        className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-dsp-orange 
-                                 hover:bg-dsp-orange/5 rounded-lg transition-colors duration-200"
+                        className="flex items-center w-full px-3 py-2 rounded-lg transition-colors duration-200"
                       >
                         {link.title}
                       </LinkSidebar>
@@ -173,8 +194,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({
                           <LinkSidebar
                             to={item.to}
                             icon={item.icon}
-                            className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-dsp-orange 
-                                     hover:bg-dsp-orange/5 rounded-lg transition-colors duration-200"
+                            className="flex items-center w-full px-3 py-2 rounded-lg transition-colors duration-200"
                           >
                             {item.title}
                           </LinkSidebar>

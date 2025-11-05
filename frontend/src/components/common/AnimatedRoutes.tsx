@@ -198,6 +198,7 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+          {/* SUBSCRIPTIONS AUSGEBLENDET
           <Route
             path="/subscriptions"
             element={
@@ -206,6 +207,7 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
+          */}
 
           {/* Prüfungen und Zertifikate */}
           <Route

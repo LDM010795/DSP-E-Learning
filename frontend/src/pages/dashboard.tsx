@@ -1,32 +1,3 @@
-/**
- *
- * High-level dashboard page composed of small, reusable UI components.
- * Renders user-specific KPIs, active modules, and upcoming events using data
- * from the dashboard API (`getDashboard`).
- *
- * Responsibilities:
- * - Fetch dashboard payload on mount and manage loading/error states
- * - Compose presentational components (SectionTitle, StreakBadge, StatPill, etc.)
- * - Keep page-level layout/structure; delegate UI details to child components
- *
- * Data flow:
- * - GET /api/elearning/dashboard/ → `getDashboard()` → `DashboardPayload`
- * - Destructures the payload into the sections rendered below
- *
- * Error/Loading:
- * - Shows `LoadingSpinner` while fetching
- * - Renders a simple error panel on failure
- *
- * Used components:
- * - SectionTitle, StreakBadge, StatPill, ActiveModuleCard, UpcomingEventCard
- *
- * Note:
- * - Keep this file layout-centric. UI details and logic should remain in child components.
- *
- * Author: DSP development team
- * Date: 29-10-2025
- */
-
 import { useEffect, useState } from "react";
 import {
   IoFlashOutline,
@@ -39,7 +10,6 @@ import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LoadingSpinner from "../components/ui_elements/loading_spinner";
 import SubBackground from "../components/layouts/SubBackground";
 import { getDashboard, type DashboardPayload } from "../util/apis/dashboardApi";
-
 import {
   SectionTitle,
   StreakBadge,
@@ -50,7 +20,6 @@ import {
 
 function getGreeting(): string {
   const hour = new Date().getHours();
-
   if (hour < 12) return "Guten Morgen";
   if (hour < 18) return "Guten Tag";
   return "Guten Abend";
@@ -60,7 +29,6 @@ export default function Dashboard() {
   const [dash, setDash] = useState<DashboardPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch dashboard payload when the page mounts
   useEffect(() => {
     (async () => {
       try {
@@ -72,7 +40,6 @@ export default function Dashboard() {
     })();
   }, []);
 
-  // Error state
   if (error) {
     return (
       <div className="min-h-screen p-6">
@@ -83,7 +50,6 @@ export default function Dashboard() {
     );
   }
 
-  // Initial loading state
   if (!dash) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
@@ -96,7 +62,6 @@ export default function Dashboard() {
     );
   }
 
-  // Destructure API payload for clarity in the JSX below
   const {
     greeting_name,
     week_streak_days,
@@ -112,7 +77,6 @@ export default function Dashboard() {
       <div className="px-4 pt-4 pb-10 max-w-[1200px] mx-auto">
         <Breadcrumbs items={[{ label: "Dashboard" }]} className="mb-3" />
 
-        {/* Greeting + Streak */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-[40px] font-extrabold text-[var(--color-dsp-brown)] leading-tight">
@@ -123,7 +87,6 @@ export default function Dashboard() {
           <StreakBadge days={week_streak_days} />
         </div>
 
-        {/* KPI pills */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mb-6">
           <StatPill
             title="Diese Woche"
@@ -145,17 +108,13 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Main grid: active modules (left) + upcoming events (right) */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5">
           <section>
             <SectionTitle
-              icon={
-                <IoBookOutline className="text-[var(--color-dsp-orange)]" />
-              }
+              icon={<IoBookOutline className="text-[var(--color-dsp-orange)]" />}
             >
               Aktive Module
             </SectionTitle>
-
             <div className="grid gap-4">
               {active_modules.slice(0, 3).map((m) => (
                 <ActiveModuleCard key={m.id} m={m} />
@@ -165,13 +124,10 @@ export default function Dashboard() {
 
           <aside>
             <SectionTitle
-              icon={
-                <IoCalendarOutline className="text-[var(--color-dsp-orange)]" />
-              }
+              icon={<IoCalendarOutline className="text-[var(--color-dsp-orange)]" />}
             >
               Anstehende Termine
             </SectionTitle>
-
             <div className="bg-white rounded-2xl border border-[var(--color-dsp-orange_light)]/50 shadow-sm p-4">
               <div className="grid gap-3">
                 {upcoming_events.map((e) => (

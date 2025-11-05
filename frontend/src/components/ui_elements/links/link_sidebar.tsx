@@ -19,6 +19,7 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
 }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
+  const hasIcon = !!icon;
 
   // Determine what to preload based on route
   const handleMouseEnter = () => {
@@ -39,7 +40,16 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         to={to}
         onMouseEnter={handleMouseEnter}
         className={clsx(
-          "flex items-center gap-3 px-8 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden",
+          // flex row with min-w-0 so the text can truncate
+          // NOTE: When active AND no icon, add extra left padding to make room for the dot.
+          hasIcon
+            ? "flex items-center gap-3 px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden"
+            : clsx(
+                "flex items-center gap-3 py-2 sm:py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer group relative overflow-hidden",
+                isActive
+                  ? "pl-8 sm:pl-9 md:pl-10 pr-3 sm:pr-4 md:pr-6 lg:pr-8"
+                  : "px-3 sm:px-4 md:px-6 lg:px-8",
+              ),
           {
             // Active state - enhanced with subtle animations
             "bg-gradient-to-r from-dsp-orange to-dsp-orange-gradient text-white shadow-sm shadow-dsp-orange/20":
@@ -53,9 +63,10 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         aria-current={isActive ? "page" : undefined}
       >
         {/* Active indicator dot */}
-        {isActive && (
+        {isActive && !hasIcon && (
           <motion.div
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm"
+            // Place the dot within the left padding area and keep it behind text.
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm z-0 pointer-events-none"
             animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -74,7 +85,7 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
         {/* Icon with enhanced animations */}
         {icon && (
           <motion.span
-            className={clsx("relative z-10", {
+            className={clsx("relative z-10 shrink-0", {
               "text-white": isActive,
               "text-gray-500 group-hover:text-dsp-orange": !isActive,
             })}
@@ -85,13 +96,23 @@ const LinkSidebar: React.FC<LinkSidebarProps> = ({
           </motion.span>
         )}
 
-        {/* Text content */}
+        {/* Text content (truncate on one line) */}
         <motion.span
-          className="relative z-10"
+          className="relative z-10 min-w-0 flex-1"
           whileHover={{ x: 2 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          {children}
+          <span
+            className={clsx(
+              // prevent wrapping & show ellipsis when narrow
+              "block truncate whitespace-nowrap",
+              // responsive max widths to balance truncation vs. readability
+              "max-w-[140px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[260px]",
+            )}
+            title={typeof children === "string" ? children : undefined}
+          >
+            {children}
+          </span>
         </motion.span>
 
         {/* Ripple effect on click */}

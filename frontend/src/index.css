@@ -11,9 +11,6 @@
   h3 {
     @apply text-2xl;
   }
-  h1 {
-    @apply text-xl;
-  }
 }
 
 body {
@@ -69,3 +66,23 @@ h6 {
 /* Regeln wurden in ComingSoonOverlaySmall.css verschoben */
 /* @keyframes spin-slow { ... } */
 /* .animate-spin-slow { ... } */
+
+/* --- Utilities for header truncation & mobile spacing --- */
+@layer utilities {
+  /* Ensure flex children can actually truncate when placed in a row */
+  .min-w-0 {
+    min-width: 0;
+  }
+
+  /* Convenience class if we ever want to apply one-line ellipsis via className */
+  .no-wrap-ellipsis {
+    @apply truncate whitespace-nowrap;
+  }
+
+  /* smaller buttons on very narrow screens without touching Tailwind config */
+  @media (max-width: 380px) {
+    .btn-xs {
+      @apply px-2 py-1 text-xs;
+    }
+  }
+}

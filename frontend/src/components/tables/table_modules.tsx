@@ -9,7 +9,7 @@ import {
   IoArrowDownOutline,
 } from "react-icons/io5";
 import TagCalculatedDifficulty from "../tags/tag_calculated_difficulty";
-import type { Module } from "../../context/ModuleContext"; // Nur Module importieren
+import { Task, Module } from "../../context/ModuleContext"; // Nur Module importieren
 
 type ModuleStatus = "Nicht begonnen" | "In Bearbeitung" | "Abgeschlossen";
 type SortDirection = "asc" | "desc" | "none";
@@ -21,8 +21,7 @@ type SortableColumn =
   | "progress";
 
 // Helper function (duplicate from modules.tsx, consider moving to a shared utils file)
-const getModuleStatus = (module: Module): ModuleStatus => {
-  const tasks = module.tasks || [];
+const getModuleStatus = (tasks: Task[]): ModuleStatus => {
   if (tasks.length === 0) {
     return "Nicht begonnen";
   }
@@ -57,9 +56,8 @@ const getDifficultyOrder = (difficulty: string | null): number => {
   return 4; // Fallback für unbekannt/null
 };
 
-const calculateDifficultyForSort = (module: Module): string | null => {
-  const tasks = module.tasks;
-  if (!tasks || tasks.length === 0) return null;
+const calculateDifficultyForSort = (tasks: Task[]): string | null => {
+  if (tasks.length === 0) return null;
   const difficultyMap: Record<string, number> = {
     Einfach: 1,
     Mittel: 2,
@@ -75,8 +73,7 @@ const calculateDifficultyForSort = (module: Module): string | null => {
   else return "Schwer";
 };
 
-const calculateProgress = (module: Module): number => {
-  const tasks = module.tasks || [];
+const calculateProgress = (tasks: Task[]): number => {
   const totalTasks = tasks.length;
   if (totalTasks === 0) return 0;
   const completedTasks = tasks.filter((t) => t.completed).length;
@@ -116,24 +113,28 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
     if (sortDirection === "none") {
       return modules;
     }
-    return [...modules].sort((a, b) => {
+    return [...modules].sort((module1, module2) => {
       let compareResult = 0;
+      const module1Tasks =
+        module1?.chapters?.flatMap((chapter) => chapter.tasks) ?? [];
+      const module2Tasks =
+        module2?.chapters?.flatMap((chapter) => chapter.tasks) ?? [];
       const valA =
         sortColumn === "status"
-          ? getModuleStatusOrder(getModuleStatus(a))
+          ? getModuleStatusOrder(getModuleStatus(module1Tasks))
           : sortColumn === "difficulty"
-            ? getDifficultyOrder(calculateDifficultyForSort(a))
+            ? getDifficultyOrder(calculateDifficultyForSort(module1Tasks))
             : sortColumn === "progress"
-              ? calculateProgress(a)
-              : (a[sortColumn as keyof Module] ?? ""); // Handle potential undefined/null
+              ? calculateProgress(module1Tasks)
+              : (module1[sortColumn as keyof Module] ?? ""); // Handle potential undefined/null
       const valB =
         sortColumn === "status"
-          ? getModuleStatusOrder(getModuleStatus(b))
+          ? getModuleStatusOrder(getModuleStatus(module2Tasks))
           : sortColumn === "difficulty"
-            ? getDifficultyOrder(calculateDifficultyForSort(b))
+            ? getDifficultyOrder(calculateDifficultyForSort(module2Tasks))
             : sortColumn === "progress"
-              ? calculateProgress(b)
-              : (b[sortColumn as keyof Module] ?? "");
+              ? calculateProgress(module2Tasks)
+              : (module2[sortColumn as keyof Module] ?? "");
 
       if (typeof valA === "number" && typeof valB === "number") {
         compareResult = valA - valB;
@@ -242,9 +243,10 @@ const TableModules: React.FC<TableModulesProps> = ({ modules }) => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {sortedModules.map((module) => {
-            const status = getModuleStatus(module);
+            const tasks =
+              module?.chapters?.flatMap((chapter) => chapter.tasks) ?? [];
+            const status = getModuleStatus(tasks);
             const { icon, progressColor } = getStatusInfo(status);
-            const tasks = module.tasks || [];
             const totalTasks = tasks.length;
             const completedTasks = tasks.filter((t) => t.completed).length;
             const progress =
