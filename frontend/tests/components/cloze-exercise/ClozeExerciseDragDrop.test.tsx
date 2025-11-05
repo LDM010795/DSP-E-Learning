@@ -8,7 +8,7 @@ import {
   createEvent,
 } from "@testing-library/react";
 import ClozeExerciseDragDrop from "@/components/ui_elements/cloze_exercise/ClozeExerciseDragDrop";
-import { ClozeTextPart } from "@/components/ui_elements/cloze_exercise/ClozeExerciseBase";
+import { ClozePartDragDrop } from "@/components/ui_elements/cloze_exercise/ClozeExerciseBase";
 
 /**
  * --- Stabile useId ---
@@ -24,7 +24,7 @@ vi.mock("react", async (importOriginal) => {
 
 // Hilfsdaten: 2 Lücken
 
-const clozeText: ClozeTextPart[] = [
+const clozeText: ClozePartDragDrop[] = [
   { type: "text", text: "Die " },
   { type: "blank", correct: ["Katze"] },
   { type: "text", text: " frisst " },
