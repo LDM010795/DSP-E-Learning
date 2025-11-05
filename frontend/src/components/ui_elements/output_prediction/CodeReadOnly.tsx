@@ -59,10 +59,11 @@ export default function CodeReadOnly({
               <div className="select-none text-neutral-500/80 tabular-nums pr-4 pl-3 h-6 leading-6 flex items-center">
                 {i + 1}
               </div>
-              <div
-                className="whitespace-pre text-neutral-100 px-3 h-6 leading-6 flex items-center"
-                dangerouslySetInnerHTML={{ __html: highlight(ln || "\u00A0") }}
-              />
+              <div className="px-3">
+                <pre className="m-0 whitespace-pre font-mono text-sm leading-6 text-neutral-100">
+                  <code dangerouslySetInnerHTML={{ __html: highlight(ln || "\u00A0") }} />
+                </pre>
+              </div>
             </React.Fragment>
           ))}
         </div>
