@@ -1,8 +1,10 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 // Die Basis-URL wird jetzt über Umgebungsvariablen gesteuert, mit einem Fallback für die lokale Entwicklung.
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api/elearning";
+// Ensure baseURL always ends with a trailing slash
+const API_URL_RAW =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api/elearning/";
+const API_URL = API_URL_RAW.endsWith("/") ? API_URL_RAW : API_URL_RAW + "/";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -55,7 +57,8 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest.url?.includes("/token/refresh/") &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/token/") // Ignoriere Login-Endpunkt
+      !originalRequest.url?.includes("/token/") &&
+      !originalRequest.url?.includes("/users/me/") // skip refresh for the probe
     ) {
       if (isRefreshing) {
         // Wenn bereits ein Refresh läuft, füge die Anfrage zur Warteschlange hinzu
@@ -74,11 +77,7 @@ api.interceptors.response.use(
 
       try {
         // Refresh erfolgt über Cookie → kein Token im Body mehr nötig
-        await axios.post(
-          `${API_URL}/token/refresh/`,
-          {},
-          { withCredentials: true },
-        );
+        await api.post("/token/refresh/", {}); // uses same baseURL + withCredentials
 
         processQueue(null);
         return api(originalRequest);

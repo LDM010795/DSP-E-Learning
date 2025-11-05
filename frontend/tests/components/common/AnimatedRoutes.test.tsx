@@ -151,7 +151,7 @@ describe("AnimatedRoutes", () => {
     signIn();
     renderRoute("/force-password-change");
     expect(
-      await screen.queryByRole("heading", {
+      await screen.findByRole("heading", {
         name: "Passwort ändern erforderlich",
       }),
     ).toBeInTheDocument();
@@ -169,7 +169,7 @@ describe("AnimatedRoutes", () => {
     signIn();
     renderRoute("/content-demo");
     expect(
-      await screen.queryByRole("heading", { name: "Content Demo" }),
+      await screen.findByRole("heading", { name: "Content Demo" }),
     ).toBeInTheDocument();
   });
 
@@ -311,7 +311,7 @@ describe("AnimatedRoutes", () => {
     signIn();
     renderRoute("/user-stats");
     expect(
-      await screen.queryByRole("heading", { name: "Statistiken" }),
+      await screen.findByRole("heading", { name: "Statistiken" }),
     ).toBeInTheDocument();
   });
 
@@ -327,7 +327,7 @@ describe("AnimatedRoutes", () => {
     signIn();
     renderRoute("/settings");
     expect(
-      await screen.queryByRole("heading", { name: "Einstellungen" }),
+      await screen.findByRole("heading", { name: "Einstellungen" }),
     ).toBeInTheDocument();
   });
 
@@ -352,6 +352,6 @@ describe("AnimatedRoutes", () => {
   it("renders Admin Panel when signed in and admin rights", async () => {
     signIn();
     renderRoute("/admin", true);
-    expect(screen.queryByText("Mocked Admin Panel")).toBeInTheDocument();
+    expect(await screen.findByText("Mocked Admin Panel")).toBeInTheDocument();
   });
 });

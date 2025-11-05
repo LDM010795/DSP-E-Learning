@@ -31,8 +31,11 @@ type UI = Parameters<typeof render>[0];
 export const mockAuth = {
   user: null as { id: number; name: string } | null,
   isAuthenticated: false,
+  isLoading: false,
+  isInitialized: true,
   login: vi.fn(),
   logout: vi.fn(),
+  setOAuthLogin: vi.fn(),
 };
 
 vi.mock("../src/context/AuthContext", async (importOriginal) => {
@@ -136,9 +139,13 @@ export function renderMocksForResponsiveContainer() {
 export function signIn(user = { id: 1, name: "Test User" }) {
   mockAuth.user = user;
   mockAuth.isAuthenticated = true;
+  mockAuth.isInitialized = true; // ensure gate is open
+  mockAuth.isLoading = false; // no overlay
 }
 
 export function signOut() {
   mockAuth.user = null;
   mockAuth.isAuthenticated = false;
+  mockAuth.isInitialized = true; // still initialized, but signed out
+  mockAuth.isLoading = false;
 }

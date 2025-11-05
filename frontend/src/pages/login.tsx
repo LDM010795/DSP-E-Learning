@@ -74,16 +74,12 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose }) => {
 
         // Prüfe, ob Passwortänderung erforderlich ist
         if (loginResponse.require_password_change) {
-          setTimeout(() => {
-            navigate("/force-password-change");
-            onClose();
-          }, 1000);
+          onClose();
+          navigate("/force-password-change");
         } else {
-          await fetchModules();
-          setTimeout(() => {
-            onClose();
-            navigate("/dashboard");
-          }, 1000);
+          await fetchModules().catch(() => {}); // don't block navigation
+          onClose();
+          navigate("/dashboard");
         }
       } else {
         setError(loginResponse.error || "Login fehlgeschlagen.");

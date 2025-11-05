@@ -27,29 +27,44 @@ describe("ProtectedRoute", () => {
     );
   }
 
-  it("shows loading indicator when isLoading is true", () => {
+  it("renders nothing while not initialized", () => {
     useAuthMock.mockReturnValue({
+      isInitialized: false,
+      isAuthenticated: false,
+      isLoading: true,
+    });
+
+    const { container } = renderWithRouter();
+    expect(container.firstChild).toBeNull();
+  });
+
+  it("shows blur overlay while authenticated and loading", () => {
+    useAuthMock.mockReturnValue({
+      isInitialized: true,
+      isAuthenticated: true,
       isLoading: true,
     });
 
     renderWithRouter();
-    expect(
-      screen.getByText("Authentifizierung wird geprüft..."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Wird geladen …")).toBeInTheDocument();
   });
 
-  it("redirects to login when not authenticated", () => {
+  it("redirects to login when not authenticated after init", () => {
     useAuthMock.mockReturnValue({
+      isInitialized: true,
       isAuthenticated: false,
+      isLoading: false,
     });
 
     renderWithRouter();
     expect(screen.getByText("Login Page")).toBeInTheDocument();
   });
 
-  it("renders outlet when authenticated", () => {
+  it("renders outlet when authenticated and not loading", () => {
     useAuthMock.mockReturnValue({
+      isInitialized: true,
       isAuthenticated: true,
+      isLoading: false,
     });
 
     renderWithRouter();

@@ -22,7 +22,11 @@ const DummyComponent = () => {
   );
 };
 
-const API = (path: string) => `http://127.0.0.1:8000/api/elearning/${path}`;
+const API = (path: string) => {
+  const base = "http://127.0.0.1:8000/api/elearning/";
+  const clean = path.replace(/^\//, "");
+  return base + (clean.endsWith("/") ? clean : clean + "/");
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -78,9 +82,9 @@ describe("AuthContext", () => {
   it("Login invalid credentials (401)", async () => {
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
     server.use(
-      http.get(API("users/me"), async () => {
-        return HttpResponse.json(mockUser, { status: 401 });
-      }),
+      http.get(API("users/me"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
     );
 
     let loginResult: any;
@@ -218,6 +222,9 @@ describe("AuthContext", () => {
 
   it("Login mit empty credentials fails", async () => {
     server.use(
+      http.post(API("token/"), async () =>
+        HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
+      ),
       http.get(API("users/me"), async () =>
         HttpResponse.json({ detail: "Unauthorized" }, { status: 401 }),
       ),
@@ -232,6 +239,7 @@ describe("AuthContext", () => {
 
     expect(loginResult.success).toBe(false);
     expect(loginResult.error).toBe("Ungültige Anmeldedaten.");
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeUndefined();
   });
