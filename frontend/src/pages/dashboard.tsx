@@ -111,7 +111,9 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5">
           <section>
             <SectionTitle
-              icon={<IoBookOutline className="text-[var(--color-dsp-orange)]" />}
+              icon={
+                <IoBookOutline className="text-[var(--color-dsp-orange)]" />
+              }
             >
               Aktive Module
             </SectionTitle>
@@ -124,7 +126,9 @@ export default function Dashboard() {
 
           <aside>
             <SectionTitle
-              icon={<IoCalendarOutline className="text-[var(--color-dsp-orange)]" />}
+              icon={
+                <IoCalendarOutline className="text-[var(--color-dsp-orange)]" />
+              }
             >
               Anstehende Termine
             </SectionTitle>
