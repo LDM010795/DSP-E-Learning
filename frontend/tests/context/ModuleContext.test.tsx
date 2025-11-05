@@ -37,6 +37,7 @@ vi.spyOn(authHook, "useAuth").mockReturnValue({
   logout: vi.fn(),
   setOAuthLogin: vi.fn(),
   isLoading: false,
+  isInitialized: true,
 });
 
 describe("ModuleContext", () => {
@@ -92,7 +93,7 @@ describe("ModuleContext", () => {
     expect(screen.getByText("Child Component")).toBeDefined();
   });
 
-  it("ModuleContext sorts modules, chapters, contents and tasks", async () => {
+  it("ModuleContext sorts modules, chapters, contents, tasks and articles", async () => {
     server.use(
       http.get(API("modules/user/"), () =>
         HttpResponse.json([
@@ -107,40 +108,16 @@ describe("ModuleContext", () => {
                 title: "Kapitel 2",
                 order: 2,
                 contents: [
-                  {
-                    id: 1001,
-                    title: "C2",
-                    order: 2,
-                    description: "",
-                    video_url: undefined,
-                  },
-                  {
-                    id: 1000,
-                    title: "C1",
-                    order: 1,
-                    description: "",
-                    video_url: undefined,
-                  },
+                  { id: 1001, title: "C2", order: 2, description: "", video_url: undefined },
+                  { id: 1000, title: "C1", order: 1, description: "", video_url: undefined },
                 ],
                 tasks: [
-                  {
-                    id: 2001,
-                    title: "T2",
-                    description: "",
-                    difficulty: "Mittel",
-                    order: 2,
-                    task_type: "multiple_choice",
-                    completed: false,
-                  },
-                  {
-                    id: 2000,
-                    title: "T1",
-                    description: "",
-                    difficulty: "Mittel",
-                    order: 1,
-                    task_type: "multiple_choice",
-                    completed: false,
-                  },
+                  { id: 2001, title: "T2", description: "", difficulty: "Mittel", order: 2, task_type: "multiple_choice", completed: false },
+                  { id: 2000, title: "T1", description: "", difficulty: "Mittel", order: 1, task_type: "multiple_choice", completed: false },
+                ],
+                articles: [
+                  { id: 3001, title: "Testartikel 2", order: 1, url: null, json_content: null },
+                  { id: 3000, title: "Testartikel 1", order: 0, url: null, json_content: null },
                 ],
                 description: "",
                 is_active: true,
@@ -150,37 +127,12 @@ describe("ModuleContext", () => {
                 title: "Kapitel 1",
                 order: 1,
                 contents: [
-                  {
-                    id: 1002,
-                    title: "C3",
-                    order: 1,
-                    description: "",
-                    video_url: undefined,
-                  },
+                  { id: 1002, title: "C3", order: 1, description: "", video_url: undefined },
                 ],
                 tasks: [],
+                articles: [],
                 description: "",
                 is_active: true,
-              },
-            ],
-            contents: [
-              {
-                id: 3000,
-                title: "Old Content",
-                order: 1,
-                description: "",
-                video_url: undefined,
-              },
-            ],
-            tasks: [
-              {
-                id: 4000,
-                title: "Old Task",
-                order: 1,
-                description: "",
-                difficulty: "Mittel",
-                task_type: "multiple_choice",
-                completed: false,
               },
             ],
           },
@@ -195,31 +147,16 @@ describe("ModuleContext", () => {
                 title: "Kapitel 1",
                 order: 1,
                 contents: [
-                  {
-                    id: 1003,
-                    title: "C4",
-                    order: 1,
-                    description: "",
-                    video_url: undefined,
-                  },
+                  { id: 1003, title: "C4", order: 1, description: "", video_url: undefined },
                 ],
                 tasks: [
-                  {
-                    id: 2002,
-                    title: "T3",
-                    description: "",
-                    difficulty: "Mittel",
-                    order: 1,
-                    task_type: "multiple_choice",
-                    completed: false,
-                  },
+                  { id: 2002, title: "T3", description: "", difficulty: "Mittel", order: 1, task_type: "multiple_choice", completed: false },
                 ],
+                articles: [],
                 description: "",
                 is_active: true,
               },
             ],
-            contents: [],
-            tasks: [],
           },
         ]),
       ),
@@ -232,148 +169,59 @@ describe("ModuleContext", () => {
     );
 
     const { result } = renderHook(() => useModules(), { wrapper });
-    await result.current.fetchModules();
 
-    // Warten, bis modules State gefüllt ist
-    await waitFor(() => {
-      expect(result.current.modules.length).toBeGreaterThan(0);
-    });
+    // Warten, bis Module geladen sind
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     const sortedModules = result.current.modules;
 
-    // Module-Titel sortiert
+    // ✅ Module sortiert nach Titel
     expect(sortedModules.map((m) => m.title)).toEqual([
       "Python Fortgeschritten",
       "Python Grundlagen",
     ]);
 
-    // Chapters "Python Grundlagen"
-    const chapters = sortedModules.find(
-      (m) => m.title === "Python Grundlagen",
-    )!.chapters!;
-    expect(chapters.map((c) => c.title)).toEqual(["Kapitel 1", "Kapitel 2"]);
+    // ✅ Kapitel sortiert nach order (Kapitel 1, Kapitel 2)
+    const grundlagen = sortedModules.find((m) => m.title === "Python Grundlagen")!;
+    expect(grundlagen.chapters.map((c) => c.title)).toEqual([
+      "Kapitel 1",
+      "Kapitel 2",
+    ]);
+    expect(grundlagen.chapters.map((c) => c.order)).toEqual([1, 2]);
 
-    // Contents Kapitel 2
-    const chapter2Contents = chapters.find(
-      (c) => c.title === "Kapitel 2",
-    )!.contents!;
-    expect(chapter2Contents.map((c) => c.title)).toEqual(["C1", "C2"]);
+    // ✅ Inhalte in Kapitel 2 sortiert
+    const kapitel2 = grundlagen.chapters.find((c) => c.title === "Kapitel 2")!;
+    expect(kapitel2.contents.map((c) => c.title)).toEqual(["C1", "C2"]);
+    expect(kapitel2.contents.map((c) => c.order)).toEqual([1, 2]);
 
-    // Tasks Kapitel 2
-    const chapter2Tasks = chapters.find((c) => c.title === "Kapitel 2")!.tasks!;
-    expect(chapter2Tasks.map((t) => t.title)).toEqual(["T1", "T2"]);
+    // ✅ Aufgaben in Kapitel 2 sortiert
+    expect(kapitel2.tasks.map((t) => t.title)).toEqual(["T1", "T2"]);
+    expect(kapitel2.tasks.map((t) => t.order)).toEqual([1, 2]);
+
+    // ✅ Artikel in Kapitel 2 sortiert
+    expect(kapitel2.articles.map((a) => a.title)).toEqual([
+      "Testartikel 1",
+      "Testartikel 2",
+    ]);
+    expect(kapitel2.articles.map((a) => a.order)).toEqual([0, 1]);
+
+    // ✅ Überprüfen, dass Artikel korrekt im Mapping vorhanden sind
+    const { getAllModuleArticles } = result.current;
+    const moduleArticles = getAllModuleArticles(grundlagen.id);
+    expect(moduleArticles.map((a) => a.title)).toEqual([
+      "Testartikel 1",
+      "Testartikel 2",
+    ]);
+
+    // ✅ Inhalte und Tasks auch über die Getter abrufbar
+    const { getAllModuleContents, getAllModuleTasks } = result.current;
+    const moduleContents = getAllModuleContents(grundlagen.id);
+    const moduleTasks = getAllModuleTasks(grundlagen.id);
+
+    expect(moduleContents.length).toBeGreaterThan(0);
+    expect(moduleTasks.length).toBeGreaterThan(0);
   });
 
-  it("sorts fallback contents and tasks correctly", async () => {
-    server.use(
-      http.get(API("modules/user/"), () =>
-        HttpResponse.json([
-          {
-            id: 1,
-            title: "Python Grundlagen",
-            category: { id: 1, name: "Programmierung" },
-            is_public: true,
-            chapters: [
-              {
-                id: 10,
-                title: "Kapitel 1",
-                order: 1,
-                description: "",
-                is_active: true,
-                contents: [], // leer => Fallback
-                tasks: [], // leer => Fallback
-              },
-            ],
-            contents: [
-              {
-                id: 3002,
-                chapter: 10,
-                title: "Content C",
-                order: 3,
-                description: "",
-                video_url: undefined,
-              },
-              {
-                id: 3000,
-                chapter: 10,
-                title: "Content A",
-                order: 1,
-                description: "",
-                video_url: undefined,
-              },
-              {
-                id: 3001,
-                chapter: 10,
-                title: "Content B",
-                order: 2,
-                description: "",
-                video_url: undefined,
-              },
-            ],
-            tasks: [
-              {
-                id: 4002,
-                chapter: 10,
-                title: "Task C",
-                description: "",
-                difficulty: "Mittel",
-                order: 3,
-                task_type: "multiple_choice",
-                completed: false,
-              },
-              {
-                id: 4000,
-                chapter: 10,
-                title: "Task A",
-                description: "",
-                difficulty: "Mittel",
-                order: 1,
-                task_type: "multiple_choice",
-                completed: false,
-              },
-              {
-                id: 4001,
-                chapter: 10,
-                title: "Task B",
-                description: "",
-                difficulty: "Mittel",
-                order: 2,
-                task_type: "multiple_choice",
-                completed: false,
-              },
-            ],
-          },
-        ]),
-      ),
-    );
-
-    const wrapper = ({ children }: any) => (
-      <AuthProvider>
-        <ModuleProvider>{children}</ModuleProvider>
-      </AuthProvider>
-    );
-
-    const { result } = renderHook(() => useModules(), { wrapper });
-    await result.current.fetchModules();
-
-    await waitFor(() => {
-      expect(result.current.modules.length).toBe(1);
-    });
-
-    const module = result.current.modules[0];
-
-    // Prüfe, dass Fallback contents korrekt sortiert wurden
-    expect(
-      module.chapters
-        .flatMap((chapter) => chapter.contents)
-        .map((c) => c.title),
-    ).toEqual(["Content A", "Content B", "Content C"]);
-
-    // Prüfe, dass Fallback tasks korrekt sortiert wurden
-    expect(
-      module.chapters.flatMap((chapter) => chapter.tasks).map((t) => t.title),
-    ).toEqual(["Task A", "Task B", "Task C"]);
-  });
 
   it("sets error when API call fails", async () => {
     server.use(
@@ -423,6 +271,7 @@ describe("ModuleContext", () => {
       logout: vi.fn(),
       setOAuthLogin: vi.fn(),
       isLoading: false,
+      isInitialized: true
     });
 
     const wrapper = ({ children }: any) => (
@@ -458,82 +307,7 @@ describe("ModuleContext", () => {
     });
   });
 
-  it("fällt korrekt auf module.contents und module.tasks zurück, wenn chapter.* leer ist", async () => {
-    server.use(
-      http.get(API("modules/user/"), () =>
-        HttpResponse.json([
-          {
-            id: 1,
-            title: "Python",
-            category: { id: 1, name: "Programmierung" },
-            is_public: true,
-
-            chapters: [
-              {
-                id: 10,
-                title: "Kapitel 1",
-                order: 1,
-                description: "",
-                is_active: true,
-                contents: [], // leer => muss fallbacken
-                tasks: [], // leer => muss fallbacken
-              },
-            ],
-
-            // Fallback-Daten nur global
-            contents: [
-              { id: 3000, chapter: 10, title: "C1", order: 1, description: "" },
-              { id: 3001, chapter: 10, title: "C2", order: 2, description: "" },
-            ],
-            tasks: [
-              {
-                id: 4000,
-                chapter: 10,
-                title: "T1",
-                order: 1,
-                task_type: "multiple_choice",
-                completed: false,
-              },
-              {
-                id: 4001,
-                chapter: 10,
-                title: "T2",
-                order: 2,
-                task_type: "multiple_choice",
-                completed: false,
-              },
-            ],
-          },
-        ]),
-      ),
-    );
-
-    const wrapper = ({ children }: any) => (
-      <AuthProvider>
-        <ModuleProvider>{children}</ModuleProvider>
-      </AuthProvider>
-    );
-
-    const { result } = renderHook(() => useModules(), { wrapper });
-
-    await result.current.fetchModules();
-
-    await waitFor(() => {
-      expect(result.current.modules.length).toBe(1);
-    });
-
-    const module = result.current.modules[0];
-    const chapter = module.chapters![0];
-
-    // ✔ Erwartung: Fallback-Daten landen korrekt im Kapitel
-    expect(chapter.contents.map((c) => c.title)).toEqual(["C1", "C2"]);
-    expect(chapter.tasks.map((t) => t.title)).toEqual(["T1", "T2"]);
-  });
-
-  /**
-   * 1) Direkt in Kapiteln vorhandene Inhalte/Aufgaben
-   */
-  it("getAllModuleTasks und getAllModuleContents flacht Chapter-Daten korrekt ab und sortiert (direkt in Kapiteln vorhanden)", async () => {
+  it("sammelt und sortiert contents, tasks und articles über mehrere Chapter hinweg", async () => {
     server.use(
       http.get(API("modules/user/"), () =>
         HttpResponse.json([
@@ -543,6 +317,27 @@ describe("ModuleContext", () => {
             category: { id: 1, name: "Cat" },
             is_public: true,
             chapters: [
+              // K2 hat order=1 -> kommt in der Flatten-Order zuerst
+              {
+                id: 11,
+                title: "K2",
+                order: 1,
+                description: "",
+                is_active: true,
+                contents: [
+                  { id: 1102, chapter: 11, title: "K2-C2", order: 2, description: "" },
+                  { id: 1101, chapter: 11, title: "K2-C1", order: 1, description: "" },
+                ],
+                tasks: [
+                  { id: 2102, chapter: 11, title: "K2-T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                  { id: 2101, chapter: 11, title: "K2-T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                ],
+                articles: [
+                  { id: 3102, title: "K2-A2", order: 2, url: null, json_content: null },
+                  { id: 3101, title: "K2-A1", order: 1, url: null, json_content: null },
+                ],
+              },
+              // K1 hat order=2 -> kommt in der Flatten-Order danach
               {
                 id: 10,
                 title: "K1",
@@ -550,140 +345,19 @@ describe("ModuleContext", () => {
                 description: "",
                 is_active: true,
                 contents: [
-                  {
-                    id: 1001,
-                    chapter: 10,
-                    title: "C2",
-                    order: 2,
-                    description: "",
-                  },
-                  {
-                    id: 1000,
-                    chapter: 10,
-                    title: "C1",
-                    order: 1,
-                    description: "",
-                  },
+                  { id: 1002, chapter: 10, title: "K1-C2", order: 2, description: "" },
+                  { id: 1001, chapter: 10, title: "K1-C1", order: 1, description: "" },
                 ],
                 tasks: [
-                  {
-                    id: 2001,
-                    chapter: 10,
-                    title: "T2",
-                    order: 2,
-                    task_type: "multiple_choice",
-                    description: "",
-                    difficulty: "Mittel",
-                    completed: false,
-                  },
-                  {
-                    id: 2000,
-                    chapter: 10,
-                    title: "T1",
-                    order: 1,
-                    task_type: "multiple_choice",
-                    description: "",
-                    difficulty: "Mittel",
-                    completed: false,
-                  },
+                  { id: 2002, chapter: 10, title: "K1-T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                  { id: 2001, chapter: 10, title: "K1-T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                ],
+                articles: [
+                  { id: 3002, title: "K1-A2", order: 2, url: null, json_content: null },
+                  { id: 3001, title: "K1-A1", order: 1, url: null, json_content: null },
                 ],
               },
-              {
-                id: 11,
-                title: "K2",
-                order: 1,
-                description: "",
-                is_active: true,
-                contents: [],
-                tasks: [],
-              },
             ],
-            articles: [],
-            article_images: {},
-          },
-        ]),
-      ),
-    );
-    const wrapper = ({ children }: any) => (
-      <AuthProvider>
-        <ModuleProvider>{children}</ModuleProvider>
-      </AuthProvider>
-    );
-    const { result } = renderHook(() => useModules(), { wrapper });
-
-    await result.current.fetchModules();
-    await waitFor(() => expect(result.current.modules.length).toBe(1));
-
-    const mod = result.current.modules[0];
-
-    const tasks = result.current.getAllModuleTasks(mod.id);
-    const contents = result.current.getAllModuleContents(mod.id);
-
-    expect(tasks.map((t) => t.title)).toEqual(["T1", "T2"]);
-    expect(contents.map((c) => c.title)).toEqual(["C1", "C2"]);
-  });
-
-  /**
-   * 2) Fallback: Kapitel leer, globale Inhalte/Aufgaben mit chapter-IDs
-   */
-  it("getAllModuleTasks und getAllModuleContents fallbackt korrekt auf module.contents/tasks (Kapitel leer)", async () => {
-    server.use(
-      http.get(API("modules/user/"), () =>
-        HttpResponse.json([
-          {
-            id: 1,
-            title: "Mod Fallback",
-            category: { id: 1, name: "Cat" },
-            is_public: true,
-            chapters: [
-              {
-                id: 10,
-                title: "K1",
-                order: 1,
-                description: "",
-                is_active: true,
-                contents: [],
-                tasks: [],
-              },
-            ],
-            contents: [
-              { id: 3002, chapter: 10, title: "C3", order: 3, description: "" },
-              { id: 3000, chapter: 10, title: "C1", order: 1, description: "" },
-              { id: 3001, chapter: 10, title: "C2", order: 2, description: "" },
-            ],
-            tasks: [
-              {
-                id: 4002,
-                chapter: 10,
-                title: "T3",
-                order: 3,
-                task_type: "multiple_choice",
-                description: "",
-                difficulty: "Mittel",
-                completed: false,
-              },
-              {
-                id: 4000,
-                chapter: 10,
-                title: "T1",
-                order: 1,
-                task_type: "multiple_choice",
-                description: "",
-                difficulty: "Mittel",
-                completed: false,
-              },
-              {
-                id: 4001,
-                chapter: 10,
-                title: "T2",
-                order: 2,
-                task_type: "multiple_choice",
-                description: "",
-                difficulty: "Mittel",
-                completed: false,
-              },
-            ],
-            articles: [],
             article_images: {},
           },
         ]),
@@ -695,18 +369,40 @@ describe("ModuleContext", () => {
         <ModuleProvider>{children}</ModuleProvider>
       </AuthProvider>
     );
+
     const { result } = renderHook(() => useModules(), { wrapper });
 
-    await result.current.fetchModules();
-    await waitFor(() => expect(result.current.modules.length).toBe(1));
+    // Aufgeladenen Zustand abwarten (robuster als nur auf length zu prüfen)
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.modules).toHaveLength(1);
 
     const mod = result.current.modules[0];
 
-    const tasks = result.current.getAllModuleTasks(mod.id);
+    // 🔽 flatten über Chapter in der Reihenfolge der Kapitel (K2, dann K1)
     const contents = result.current.getAllModuleContents(mod.id);
+    const tasks = result.current.getAllModuleTasks(mod.id);
+    const articles = result.current.getAllModuleArticles(mod.id);
 
-    expect(tasks.map((t) => t.title)).toEqual(["T1", "T2", "T3"]);
-    expect(contents.map((c) => c.title)).toEqual(["C1", "C2", "C3"]);
+    // ✅ Contents: erst K2 (nach order: C1, C2), dann K1 (C1, C2)
+    expect(contents.map(c => c.title)).toEqual([
+      "K2-C1", "K2-C2",
+      "K1-C1", "K1-C2",
+    ]);
+    expect(contents.map(c => c.order)).toEqual([1, 2, 1, 2]);
+
+    // ✅ Tasks: erst K2 (T1, T2), dann K1 (T1, T2)
+    expect(tasks.map(t => t.title)).toEqual([
+      "K2-T1", "K2-T2",
+      "K1-T1", "K1-T2",
+    ]);
+    expect(tasks.map(t => t.order)).toEqual([1, 2, 1, 2]);
+
+    // ✅ Articles: erst K2 (A1, A2), dann K1 (A1, A2)
+    expect(articles.map(a => a.title)).toEqual([
+      "K2-A1", "K2-A2",
+      "K1-A1", "K1-A2",
+    ]);
+    expect(articles.map(a => a.order)).toEqual([1, 2, 1, 2]);
   });
 
   /**

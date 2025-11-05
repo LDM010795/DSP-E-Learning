@@ -98,6 +98,7 @@ export interface Chapter {
   is_active: boolean;
   contents: Content[];
   tasks: Task[];
+  articles: Article[];
 }
 
 /**
@@ -113,6 +114,7 @@ export interface ModuleCategory {
  */
 export interface Article {
   id: number;
+  chapter: number;
   title: string;
   order: number;
   url?: string | null;
@@ -126,22 +128,8 @@ export interface Module {
   title: string;
   category: ModuleCategory;
   is_public: boolean;
-  chapters: Chapter[]; // Contents und Tasks sind in den Chapter-Objekten
-  articles: Article[];
+  chapters: Chapter[];
   article_images: Record<string, string>; // Mapping image_name -> cloud_url
-}
-
-// Modulstruktur, wie wir sie vom Backend bekommen
-interface ModuleApiDto {
-  id: number;
-  title: string;
-  category: ModuleCategory;
-  is_public: boolean;
-  chapters?: Chapter[];
-  contents?: Content[];
-  tasks?: Task[];
-  articles?: Article[]; // Lernbeiträge
-  article_images?: Record<string, string>; // Mapping image_name -> cloud_url
 }
 
 // --- Context Type Definition ---
@@ -152,6 +140,7 @@ interface ModuleContextType {
   fetchModules: () => Promise<void>;
   getAllModuleTasks: (moduleId: number) => Task[]; // Tasks pro Modul cachen
   getAllModuleContents: (moduleId: number) => Content[]; // Contents pro Modul cachen
+  getAllModuleArticles: (moduleId: number) => Article[]; // Articles pro Modul cachen
 }
 
 // --- Create Context ---
@@ -164,6 +153,7 @@ const ModuleContext = createContext<ModuleContextType>({
   },
   getAllModuleTasks: () => [],
   getAllModuleContents: () => [],
+  getAllModuleArticles: () => [],
 });
 
 // --- Provider Component ---
@@ -199,7 +189,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       }
 
       console.log("ModuleContext: Lade Module für authentifizierten Benutzer");
-      const response = await api.get<ModuleApiDto[]>("/modules/user/");
+      const response = await api.get<Module[]>("/modules/user/");
       console.log(
         "ModuleContext: API-Antwort erhalten",
         response.data.length,
@@ -208,42 +198,21 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
 
       const byOrder = <T extends { order: number }>(a: T, b: T) =>
         a.order - b.order;
+
       const modules = response.data;
-
-      const articlesByModuleId: Record<number, Article[]> = Object.fromEntries(
-        modules.map((m) => [m.id, m.articles ?? []] as const),
-      );
-
       const chaptersByModuleId: Record<number, Chapter[]> = Object.fromEntries(
         modules.map((module) => [
           module.id,
           (module.chapters ?? []).map((chapter) => {
-            const chapterContents = (() => {
-              if (chapter.contents?.length) {
-                return [...chapter.contents].sort(byOrder); // neue Struktur
-              } else {
-                return (module.contents ?? []) // alte Struktur
-                  .filter((content) => content.chapter === chapter.id)
-                  .slice()
-                  .sort(byOrder);
-              }
-            })();
-
-            const chapterTasks = (() => {
-              if (chapter.tasks?.length) {
-                return [...chapter.tasks].sort(byOrder); // neue Struktur
-              } else {
-                return (module.tasks ?? []) // alte Struktur
-                  .filter((task) => task.chapter === chapter.id)
-                  .slice()
-                  .sort(byOrder);
-              }
-            })();
+            const chapterContents = (() => [...(chapter.contents ?? [])].sort(byOrder))();
+            const chapterTasks = (() => [...(chapter.tasks ?? [])].sort(byOrder))();
+            const chapterArticles = (() => [...(chapter.articles ?? [])].sort(byOrder))();
 
             return {
               ...chapter,
               contents: chapterContents,
               tasks: chapterTasks,
+              articles: chapterArticles,
             };
           }),
         ]),
@@ -257,12 +226,11 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
           category: module.category,
           is_public: module.is_public,
           chapters: chaptersByModuleId[module.id].sort(byOrder),
-          articles: articlesByModuleId[module.id].sort(byOrder),
           article_images: module.article_images ?? {},
         }))
         .sort((module1, module2) => module1.title.localeCompare(module2.title));
 
-      console.log("ModuleContext: Module sortiert und gesetzt");
+        console.log("ModuleContext: Module sortiert und gesetzt");
       return sortedModules;
     },
     {
@@ -281,7 +249,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const tasksByModuleId = useMemo(() => {
     const map = new Map<number, Task[]>();
     for (const m of modules ?? []) {
-      const tasks = m.chapters?.flatMap((ch) => ch.tasks ?? []) ?? [];
+      const tasks = m.chapters?.flatMap((chapter) => chapter.tasks ?? []) ?? [];
       map.set(m.id, tasks);
     }
     return map;
@@ -290,8 +258,17 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const contentsByModuleId = useMemo(() => {
     const map = new Map<number, Content[]>();
     for (const m of modules ?? []) {
-      const contents = m.chapters?.flatMap((ch) => ch.contents ?? []) ?? [];
+      const contents = m.chapters?.flatMap((chapter) => chapter.contents ?? []) ?? [];
       map.set(m.id, contents);
+    }
+    return map;
+  }, [modules]);
+
+  const articlesByModuleId = useMemo(() => {
+    const map = new Map<number, Article[]>();
+    for (const m of modules ?? []) {
+      const articles = m.chapters?.flatMap((chapter) => chapter.articles ?? []) ?? [];
+      map.set(m.id, articles);
     }
     return map;
   }, [modules]);
@@ -306,6 +283,11 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
     [contentsByModuleId],
   );
 
+  const getAllModuleArticles = useCallback(
+    (moduleId: number) => articlesByModuleId.get(moduleId) ?? [],
+    [articlesByModuleId],
+  );
+
   // Performance optimization: Memoize context value to prevent unnecessary re-renders
   const value = useShallowMemo(
     () => ({
@@ -315,6 +297,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       fetchModules: stableFetchModules,
       getAllModuleTasks,
       getAllModuleContents,
+      getAllModuleArticles,
     }),
     [
       modules,
@@ -323,6 +306,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
       stableFetchModules,
       getAllModuleTasks,
       getAllModuleContents,
+      getAllModuleArticles,
     ],
   );
 

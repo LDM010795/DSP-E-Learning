@@ -81,9 +81,9 @@ function makeModule(
           task_type: "multiple_choice",
           completed: t.completed,
         })),
+        articles: [],
       },
     ],
-    articles: [],
     article_images: {},
     is_public: true,
   } as Module;

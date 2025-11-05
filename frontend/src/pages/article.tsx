@@ -5,7 +5,7 @@ import SubBackground from "../components/layouts/SubBackground";
 import {
   useModules,
   Module,
-  Article as ModuleArticle,
+  Article,
 } from "../context/ModuleContext";
 import ContentRenderer from "../components/contributions/ContentRenderer";
 import BackToTopButton from "../components/ui_elements/buttons/BackToTopButton";
@@ -13,7 +13,7 @@ import BookmarkButton from "../components/ui_elements/buttons/BookmarkButton";
 import BookmarkLayer from "../components/ui_elements/BookmarkLayer";
 
 const ArticlePage: React.FC = () => {
-  const { modules, loading } = useModules();
+  const { modules, loading, getAllModuleArticles } = useModules();
   const { moduleId } = useParams<{ moduleId: string }>();
   // const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -25,21 +25,18 @@ const ArticlePage: React.FC = () => {
     return modules.find((m) => m.id === id);
   }, [modules, moduleId]);
 
-  const articles: ModuleArticle[] = useMemo(
-    () => module?.articles || [],
-    [module],
-  );
-  const total = articles.length;
+  const moduleArticles: Article[] = module?.id != null ? getAllModuleArticles(module.id) : [];
+  const totalArticles = moduleArticles.length;
 
   const activeIndex = useMemo(() => {
     const aParam = params.get("a");
     const idx = aParam ? parseInt(aParam, 10) : 0;
     if (Number.isNaN(idx) || idx < 0) return 0;
-    if (idx >= total) return Math.max(0, total - 1);
+    if (idx >= totalArticles) return Math.max(0, totalArticles - 1);
     return idx;
-  }, [params, total]);
+  }, [params, totalArticles]);
 
-  const currentArticle = total > 0 ? articles[activeIndex] : undefined;
+  const currentArticle = totalArticles > 0 ? moduleArticles[activeIndex] : undefined;
   const [showJson, setShowJson] = useState(false);
   const [bookmarks] = useState<
     import("../components/ui_elements/BookmarkLayer").Bookmark[]
@@ -59,7 +56,7 @@ const ArticlePage: React.FC = () => {
     if (activeIndex > 0) setParams({ a: String(activeIndex - 1) });
   };
   const handleNext = () => {
-    if (activeIndex < total - 1) setParams({ a: String(activeIndex + 1) });
+    if (activeIndex < totalArticles - 1) setParams({ a: String(activeIndex + 1) });
   };
 
   if (loading) {
@@ -74,7 +71,7 @@ const ArticlePage: React.FC = () => {
 
   // Debug: Module-Daten loggen
   console.log("📦 ArticlePage: Module found:", module);
-  console.log("📄 ArticlePage: Articles in module:", module?.articles);
+  console.log("📄 ArticlePage: Articles in module:", moduleArticles);
   console.log(
     "🖼️ ArticlePage: Article images in module:",
     module?.article_images,
@@ -116,20 +113,20 @@ const ArticlePage: React.FC = () => {
                   {module.title} – Lernbeiträge
                 </h1>
                 <p className="text-gray-600">
-                  Artikel {total === 0 ? 0 : activeIndex + 1} von {total}
+                  Artikel {totalArticles === 0 ? 0 : activeIndex + 1} von {totalArticles}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handlePrev}
-                  disabled={activeIndex === 0 || total === 0}
+                  disabled={activeIndex === 0 || totalArticles === 0}
                   className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Zurück
                 </button>
                 <button
                   onClick={handleNext}
-                  disabled={activeIndex >= total - 1 || total === 0}
+                  disabled={activeIndex >= totalArticles - 1 || totalArticles === 0}
                   className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Weiter
@@ -188,7 +185,7 @@ const ArticlePage: React.FC = () => {
               </>
             ) : (
               <div className="text-center py-12 text-gray-600">
-                {total === 0
+                {totalArticles === 0
                   ? "Für dieses Modul sind keine Lernbeiträge vorhanden."
                   : "Dieser Beitrag enthält noch keinen Inhalt."}
               </div>
