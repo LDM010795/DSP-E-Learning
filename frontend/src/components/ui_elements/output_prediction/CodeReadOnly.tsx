@@ -61,7 +61,11 @@ export default function CodeReadOnly({
               </div>
               <div className="px-3">
                 <pre className="m-0 whitespace-pre font-mono text-sm leading-6 text-neutral-100">
-                  <code dangerouslySetInnerHTML={{ __html: highlight(ln || "\u00A0") }} />
+                  <code
+                    dangerouslySetInnerHTML={{
+                      __html: highlight(ln || "\u00A0"),
+                    }}
+                  />
                 </pre>
               </div>
             </React.Fragment>
