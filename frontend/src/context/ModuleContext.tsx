@@ -42,6 +42,7 @@ export interface SupplementaryContentItem {
   order: number;
 }
 
+// {"options": [{ "answer": "Option A" },{ "answer": "Option B" },{ "answer": "Option C" },{ "answer": "Option D" }] , "correct_answer": 1 } beispiel config
 export interface MultipleChoiceConfig {
   options: { answer: string }[];
   correct_answer: number; // 0-based index
