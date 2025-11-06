@@ -2,11 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
-import {
-  useModules,
-  Module,
-  Article,
-} from "../context/ModuleContext";
+import { useModules, Module, Article } from "../context/ModuleContext";
 import ContentRenderer from "../components/contributions/ContentRenderer";
 import BackToTopButton from "../components/ui_elements/buttons/BackToTopButton";
 import BookmarkButton from "../components/ui_elements/buttons/BookmarkButton";
@@ -25,7 +21,8 @@ const ArticlePage: React.FC = () => {
     return modules.find((m) => m.id === id);
   }, [modules, moduleId]);
 
-  const moduleArticles: Article[] = module?.id != null ? getAllModuleArticles(module.id) : [];
+  const moduleArticles: Article[] =
+    module?.id != null ? getAllModuleArticles(module.id) : [];
   const totalArticles = moduleArticles.length;
 
   const activeIndex = useMemo(() => {
@@ -36,7 +33,8 @@ const ArticlePage: React.FC = () => {
     return idx;
   }, [params, totalArticles]);
 
-  const currentArticle = totalArticles > 0 ? moduleArticles[activeIndex] : undefined;
+  const currentArticle =
+    totalArticles > 0 ? moduleArticles[activeIndex] : undefined;
   const [showJson, setShowJson] = useState(false);
   const [bookmarks] = useState<
     import("../components/ui_elements/BookmarkLayer").Bookmark[]
@@ -56,7 +54,8 @@ const ArticlePage: React.FC = () => {
     if (activeIndex > 0) setParams({ a: String(activeIndex - 1) });
   };
   const handleNext = () => {
-    if (activeIndex < totalArticles - 1) setParams({ a: String(activeIndex + 1) });
+    if (activeIndex < totalArticles - 1)
+      setParams({ a: String(activeIndex + 1) });
   };
 
   if (loading) {
@@ -113,7 +112,8 @@ const ArticlePage: React.FC = () => {
                   {module.title} – Lernbeiträge
                 </h1>
                 <p className="text-gray-600">
-                  Artikel {totalArticles === 0 ? 0 : activeIndex + 1} von {totalArticles}
+                  Artikel {totalArticles === 0 ? 0 : activeIndex + 1} von{" "}
+                  {totalArticles}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -126,7 +126,9 @@ const ArticlePage: React.FC = () => {
                 </button>
                 <button
                   onClick={handleNext}
-                  disabled={activeIndex >= totalArticles - 1 || totalArticles === 0}
+                  disabled={
+                    activeIndex >= totalArticles - 1 || totalArticles === 0
+                  }
                   className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 >
                   Weiter

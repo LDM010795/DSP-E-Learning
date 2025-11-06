@@ -108,16 +108,56 @@ describe("ModuleContext", () => {
                 title: "Kapitel 2",
                 order: 2,
                 contents: [
-                  { id: 1001, title: "C2", order: 2, description: "", video_url: undefined },
-                  { id: 1000, title: "C1", order: 1, description: "", video_url: undefined },
+                  {
+                    id: 1001,
+                    title: "C2",
+                    order: 2,
+                    description: "",
+                    video_url: undefined,
+                  },
+                  {
+                    id: 1000,
+                    title: "C1",
+                    order: 1,
+                    description: "",
+                    video_url: undefined,
+                  },
                 ],
                 tasks: [
-                  { id: 2001, title: "T2", description: "", difficulty: "Mittel", order: 2, task_type: "multiple_choice", completed: false },
-                  { id: 2000, title: "T1", description: "", difficulty: "Mittel", order: 1, task_type: "multiple_choice", completed: false },
+                  {
+                    id: 2001,
+                    title: "T2",
+                    description: "",
+                    difficulty: "Mittel",
+                    order: 2,
+                    task_type: "multiple_choice",
+                    completed: false,
+                  },
+                  {
+                    id: 2000,
+                    title: "T1",
+                    description: "",
+                    difficulty: "Mittel",
+                    order: 1,
+                    task_type: "multiple_choice",
+                    completed: false,
+                  },
                 ],
                 articles: [
-                  { id: 3001, title: "Testartikel 2", order: 1, url: null, json_content: null },
-                  { id: 3000, title: "Testartikel 1", order: 0, url: null, json_content: null },
+                  {
+                    id: 3001,
+                    title: "Testartikel 2",
+                    order: 1,
+                    url: null,
+                    json_content: null,
+                  },
+                  {
+                    id: 3000,
+                    title: "Testartikel 1",
+                    order: 0,
+                    url: null,
+                    json_content: null,
+                  },
                 ],
                 description: "",
                 is_active: true,
@@ -127,7 +167,13 @@ describe("ModuleContext", () => {
                 title: "Kapitel 1",
                 order: 1,
                 contents: [
-                  { id: 1002, title: "C3", order: 1, description: "", video_url: undefined },
+                  {
+                    id: 1002,
+                    title: "C3",
+                    order: 1,
+                    description: "",
+                    video_url: undefined,
+                  },
                 ],
                 tasks: [],
                 articles: [],
@@ -147,10 +193,24 @@ describe("ModuleContext", () => {
                 title: "Kapitel 1",
                 order: 1,
                 contents: [
-                  { id: 1003, title: "C4", order: 1, description: "", video_url: undefined },
+                  {
+                    id: 1003,
+                    title: "C4",
+                    order: 1,
+                    description: "",
+                    video_url: undefined,
+                  },
                 ],
                 tasks: [
-                  { id: 2002, title: "T3", description: "", difficulty: "Mittel", order: 1, task_type: "multiple_choice", completed: false },
+                  {
+                    id: 2002,
+                    title: "T3",
+                    description: "",
+                    difficulty: "Mittel",
+                    order: 1,
+                    task_type: "multiple_choice",
+                    completed: false,
+                  },
                 ],
                 articles: [],
                 description: "",
@@ -182,7 +242,9 @@ describe("ModuleContext", () => {
     ]);
 
     // ✅ Kapitel sortiert nach order (Kapitel 1, Kapitel 2)
-    const grundlagen = sortedModules.find((m) => m.title === "Python Grundlagen")!;
+    const grundlagen = sortedModules.find(
+      (m) => m.title === "Python Grundlagen",
+    )!;
     expect(grundlagen.chapters.map((c) => c.title)).toEqual([
       "Kapitel 1",
       "Kapitel 2",
@@ -221,7 +283,6 @@ describe("ModuleContext", () => {
     expect(moduleContents.length).toBeGreaterThan(0);
     expect(moduleTasks.length).toBeGreaterThan(0);
   });
-
 
   it("sets error when API call fails", async () => {
     server.use(
@@ -271,7 +332,7 @@ describe("ModuleContext", () => {
       logout: vi.fn(),
       setOAuthLogin: vi.fn(),
       isLoading: false,
-      isInitialized: true
+      isInitialized: true,
     });
 
     const wrapper = ({ children }: any) => (
@@ -325,16 +386,58 @@ describe("ModuleContext", () => {
                 description: "",
                 is_active: true,
                 contents: [
-                  { id: 1102, chapter: 11, title: "K2-C2", order: 2, description: "" },
-                  { id: 1101, chapter: 11, title: "K2-C1", order: 1, description: "" },
+                  {
+                    id: 1102,
+                    chapter: 11,
+                    title: "K2-C2",
+                    order: 2,
+                    description: "",
+                  },
+                  {
+                    id: 1101,
+                    chapter: 11,
+                    title: "K2-C1",
+                    order: 1,
+                    description: "",
+                  },
                 ],
                 tasks: [
-                  { id: 2102, chapter: 11, title: "K2-T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
-                  { id: 2101, chapter: 11, title: "K2-T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                  {
+                    id: 2102,
+                    chapter: 11,
+                    title: "K2-T2",
+                    order: 2,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
+                  {
+                    id: 2101,
+                    chapter: 11,
+                    title: "K2-T1",
+                    order: 1,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
                 ],
                 articles: [
-                  { id: 3102, title: "K2-A2", order: 2, url: null, json_content: null },
-                  { id: 3101, title: "K2-A1", order: 1, url: null, json_content: null },
+                  {
+                    id: 3102,
+                    title: "K2-A2",
+                    order: 2,
+                    url: null,
+                    json_content: null,
+                  },
+                  {
+                    id: 3101,
+                    title: "K2-A1",
+                    order: 1,
+                    url: null,
+                    json_content: null,
+                  },
                 ],
               },
               // K1 hat order=2 -> kommt in der Flatten-Order danach
@@ -345,16 +448,58 @@ describe("ModuleContext", () => {
                 description: "",
                 is_active: true,
                 contents: [
-                  { id: 1002, chapter: 10, title: "K1-C2", order: 2, description: "" },
-                  { id: 1001, chapter: 10, title: "K1-C1", order: 1, description: "" },
+                  {
+                    id: 1002,
+                    chapter: 10,
+                    title: "K1-C2",
+                    order: 2,
+                    description: "",
+                  },
+                  {
+                    id: 1001,
+                    chapter: 10,
+                    title: "K1-C1",
+                    order: 1,
+                    description: "",
+                  },
                 ],
                 tasks: [
-                  { id: 2002, chapter: 10, title: "K1-T2", order: 2, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
-                  { id: 2001, chapter: 10, title: "K1-T1", order: 1, task_type: "multiple_choice", description: "", difficulty: "Mittel", completed: false },
+                  {
+                    id: 2002,
+                    chapter: 10,
+                    title: "K1-T2",
+                    order: 2,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
+                  {
+                    id: 2001,
+                    chapter: 10,
+                    title: "K1-T1",
+                    order: 1,
+                    task_type: "multiple_choice",
+                    description: "",
+                    difficulty: "Mittel",
+                    completed: false,
+                  },
                 ],
                 articles: [
-                  { id: 3002, title: "K1-A2", order: 2, url: null, json_content: null },
-                  { id: 3001, title: "K1-A1", order: 1, url: null, json_content: null },
+                  {
+                    id: 3002,
+                    title: "K1-A2",
+                    order: 2,
+                    url: null,
+                    json_content: null,
+                  },
+                  {
+                    id: 3001,
+                    title: "K1-A1",
+                    order: 1,
+                    url: null,
+                    json_content: null,
+                  },
                 ],
               },
             ],
@@ -384,25 +529,31 @@ describe("ModuleContext", () => {
     const articles = result.current.getAllModuleArticles(mod.id);
 
     // ✅ Contents: erst K2 (nach order: C1, C2), dann K1 (C1, C2)
-    expect(contents.map(c => c.title)).toEqual([
-      "K2-C1", "K2-C2",
-      "K1-C1", "K1-C2",
+    expect(contents.map((c) => c.title)).toEqual([
+      "K2-C1",
+      "K2-C2",
+      "K1-C1",
+      "K1-C2",
     ]);
-    expect(contents.map(c => c.order)).toEqual([1, 2, 1, 2]);
+    expect(contents.map((c) => c.order)).toEqual([1, 2, 1, 2]);
 
     // ✅ Tasks: erst K2 (T1, T2), dann K1 (T1, T2)
-    expect(tasks.map(t => t.title)).toEqual([
-      "K2-T1", "K2-T2",
-      "K1-T1", "K1-T2",
+    expect(tasks.map((t) => t.title)).toEqual([
+      "K2-T1",
+      "K2-T2",
+      "K1-T1",
+      "K1-T2",
     ]);
-    expect(tasks.map(t => t.order)).toEqual([1, 2, 1, 2]);
+    expect(tasks.map((t) => t.order)).toEqual([1, 2, 1, 2]);
 
     // ✅ Articles: erst K2 (A1, A2), dann K1 (A1, A2)
-    expect(articles.map(a => a.title)).toEqual([
-      "K2-A1", "K2-A2",
-      "K1-A1", "K1-A2",
+    expect(articles.map((a) => a.title)).toEqual([
+      "K2-A1",
+      "K2-A2",
+      "K1-A1",
+      "K1-A2",
     ]);
-    expect(articles.map(a => a.order)).toEqual([1, 2, 1, 2]);
+    expect(articles.map((a) => a.order)).toEqual([1, 2, 1, 2]);
   });
 
   /**

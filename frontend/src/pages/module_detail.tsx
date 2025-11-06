@@ -202,12 +202,13 @@ function ModuleDetail() {
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-full border border-white/40">
                       <div
-                        className={`w-2 h-2 rounded-full ${moduleProgress === 100
+                        className={`w-2 h-2 rounded-full ${
+                          moduleProgress === 100
                             ? "bg-green-500"
                             : moduleProgress > 0
                               ? "bg-dsp-orange"
                               : "bg-gray-400"
-                          }`}
+                        }`}
                       ></div>
                       <span className="font-medium text-gray-700">
                         {moduleProgress}% abgeschlossen

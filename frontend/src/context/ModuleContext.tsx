@@ -204,9 +204,12 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         modules.map((module) => [
           module.id,
           (module.chapters ?? []).map((chapter) => {
-            const chapterContents = (() => [...(chapter.contents ?? [])].sort(byOrder))();
-            const chapterTasks = (() => [...(chapter.tasks ?? [])].sort(byOrder))();
-            const chapterArticles = (() => [...(chapter.articles ?? [])].sort(byOrder))();
+            const chapterContents = (() =>
+              [...(chapter.contents ?? [])].sort(byOrder))();
+            const chapterTasks = (() =>
+              [...(chapter.tasks ?? [])].sort(byOrder))();
+            const chapterArticles = (() =>
+              [...(chapter.articles ?? [])].sort(byOrder))();
 
             return {
               ...chapter,
@@ -230,7 +233,7 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
         }))
         .sort((module1, module2) => module1.title.localeCompare(module2.title));
 
-        console.log("ModuleContext: Module sortiert und gesetzt");
+      console.log("ModuleContext: Module sortiert und gesetzt");
       return sortedModules;
     },
     {
@@ -258,7 +261,8 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const contentsByModuleId = useMemo(() => {
     const map = new Map<number, Content[]>();
     for (const m of modules ?? []) {
-      const contents = m.chapters?.flatMap((chapter) => chapter.contents ?? []) ?? [];
+      const contents =
+        m.chapters?.flatMap((chapter) => chapter.contents ?? []) ?? [];
       map.set(m.id, contents);
     }
     return map;
@@ -267,7 +271,8 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({ children }) => {
   const articlesByModuleId = useMemo(() => {
     const map = new Map<number, Article[]>();
     for (const m of modules ?? []) {
-      const articles = m.chapters?.flatMap((chapter) => chapter.articles ?? []) ?? [];
+      const articles =
+        m.chapters?.flatMap((chapter) => chapter.articles ?? []) ?? [];
       map.set(m.id, articles);
     }
     return map;
