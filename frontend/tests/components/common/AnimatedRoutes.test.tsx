@@ -1,4 +1,3 @@
-import React from "react";
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
@@ -42,8 +41,8 @@ vi.mock("../../../src/pages/payments/PaymentsReturn", () => ({
 vi.mock("../../../src/pages/modules", () => ({
   default: () => <div>Mocked Modules</div>,
 }));
-vi.mock("../../../src/pages/article", () => ({
-  default: () => <div>Mocked Articles</div>,
+vi.mock("../../../src/pages/article_detail", () => ({
+  default: () => <div>Mocked Article Detail</div>,
 }));
 vi.mock("../../../src/pages/chapter_detail", () => ({
   default: () => <div>Mocked Chapter Detail</div>,
@@ -213,16 +212,28 @@ describe("AnimatedRoutes", () => {
     expect(await screen.findByText("Lade Moduldetails...")).toBeInTheDocument();
   });
 
+  it("redirects to module on /chapters", async () => {
+    signIn();
+    renderRoute("/modules/1/chapters");
+    expect(await screen.findByText("Lade Moduldetails...")).toBeInTheDocument();
+  });
+
   it("does not render Articles when signed out", async () => {
     signOut();
-    renderRoute("/modules/123/articles");
-    expect(await screen.queryByText("Mocked Articles")).not.toBeInTheDocument();
+    renderRoute("/modules/1/chapters/2/articles/3");
+    expect(await screen.queryByText("Mocked Article Detail")).not.toBeInTheDocument();
   });
 
   it("renders Articles when signed in", async () => {
     signIn();
-    renderRoute("/modules/123/articles");
-    expect(await screen.findByText("Mocked Articles")).toBeInTheDocument();
+    renderRoute("/modules/1/chapters/2/articles/3");
+    expect(await screen.findByText("Mocked Article Detail")).toBeInTheDocument();
+  });
+
+  it("redirects to chapter on /articles", async () => {
+    signIn();
+    renderRoute("/modules/1/chapters/2/articles");
+    expect(await screen.findByText("Mocked Chapter Detail")).toBeInTheDocument();
   });
 
   it("does not render Chapter when signed out", async () => {

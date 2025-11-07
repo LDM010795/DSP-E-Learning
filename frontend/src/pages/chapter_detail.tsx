@@ -8,6 +8,7 @@ import {
   IoPlayOutline,
   IoListOutline,
   IoCheckmarkCircleOutline,
+  IoReaderOutline,
 } from "react-icons/io5";
 import Breadcrumbs from "../components/ui_elements/breadcrumbs";
 import LearningContentVideoLayout from "../components/layouts/learning_content_video";
@@ -193,7 +194,7 @@ function ChapterDetail() {
                     Lernvideos ({chapter.contents.length})
                   </h2>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 mb-8">
                     {chapter.contents.map((video, index) => (
                       <motion.div
                         key={video.id}
@@ -216,6 +217,38 @@ function ChapterDetail() {
                                 {video.description}
                               </p>
                             )}
+                          </div>
+                          <div className="flex-shrink-0 text-gray-400">
+                            <IoPlayOutline className="h-4 w-4" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <IoReaderOutline className="h-5 w-5 text-dsp-orange" />
+                    Lernbeiträge ({chapter.articles.length})
+                  </h2>
+
+                  <div className="space-y-3 mb-8">
+                    {chapter.articles.map((article, index) => (
+                      <motion.div
+                        key={article.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-dsp-orange_light/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                        onClick={() => navigate(`/modules/${module.id}/chapters/${chapter.id}/articles/${article.id}`)}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 bg-dsp-orange rounded-lg flex items-center justify-center">
+                            <IoReaderOutline className="h-6 w-6 text-white" />
+                          </div>
+                          <div className="flex-grow">
+                            <h3 className="font-semibold text-gray-900 mb-1">
+                              {article.title}
+                            </h3>
                           </div>
                           <div className="flex-shrink-0 text-gray-400">
                             <IoPlayOutline className="h-4 w-4" />
@@ -256,49 +289,44 @@ function ChapterDetail() {
                           }
                         >
                           <div
-                            className={`p-4 rounded-xl border transition-all duration-200 ${
-                              task.completed
+                            className={`p-4 rounded-xl border transition-all duration-200 ${task.completed
                                 ? "border-green-200 bg-green-50/50 hover:bg-green-50"
                                 : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
-                            }`}
+                              }`}
                           >
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex items-center space-x-3 flex-1">
                                 <div
-                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                                    task.completed
-                                      ? "bg-green-500"
-                                      : "bg-gray-200 group-hover:bg-dsp-orange/20"
-                                  }`}
+                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${task.completed
+                                    ? "bg-green-500"
+                                    : "bg-gray-200 group-hover:bg-dsp-orange/20"
+                                    }`}
                                 >
                                   {task.completed ? (
                                     <IoCheckmarkCircleOutline className="w-5 h-5 text-white" />
                                   ) : (
                                     <IoPlayCircleOutline
-                                      className={`w-5 h-5 ${
-                                        task.completed
-                                          ? "text-white"
-                                          : "text-gray-500 group-hover:text-dsp-orange"
-                                      }`}
+                                      className={`w-5 h-5 ${task.completed
+                                        ? "text-white"
+                                        : "text-gray-500 group-hover:text-dsp-orange"
+                                        }`}
                                     />
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <h3
-                                    className={`font-medium text-sm leading-tight ${
-                                      task.completed
-                                        ? "text-gray-700"
-                                        : "text-gray-800 group-hover:text-dsp-orange"
-                                    }`}
+                                    className={`font-medium text-sm leading-tight ${task.completed
+                                      ? "text-gray-700"
+                                      : "text-gray-800 group-hover:text-dsp-orange"
+                                      }`}
                                   >
                                     {task.title}
                                   </h3>
                                   <p
-                                    className={`text-xs mt-1 ${
-                                      task.completed
-                                        ? "text-green-600"
-                                        : "text-gray-500"
-                                    }`}
+                                    className={`text-xs mt-1 ${task.completed
+                                      ? "text-green-600"
+                                      : "text-gray-500"
+                                      }`}
                                   >
                                     {task.completed ? "Abgeschlossen" : "Offen"}
                                   </p>

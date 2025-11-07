@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { IoChevronForward } from "react-icons/io5"; // Icon für Trenner
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
   label: string;
   path?: string; // Pfad ist optional für das letzte Element
 }
