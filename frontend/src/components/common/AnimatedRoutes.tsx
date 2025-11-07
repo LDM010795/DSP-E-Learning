@@ -21,7 +21,13 @@
 
 import React from "react";
 import { AnimatePresence } from "framer-motion";
-import { Routes, Route, useLocation, Navigate, useParams } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+  useParams,
+} from "react-router-dom";
 import PageTransition from "./PageTransition";
 
 // --- Page Imports ---
@@ -64,15 +70,16 @@ interface AnimatedRoutesProps {
  */
 function RedirectToModule() {
   const { moduleId } = useParams();
-  if (moduleId)
-    return <Navigate to={`/modules/${moduleId}`} replace />;
+  if (moduleId) return <Navigate to={`/modules/${moduleId}`} replace />;
   return null;
 }
 
 function RedirectToChapter() {
   const { moduleId, chapterId } = useParams();
   if (moduleId && chapterId)
-    return <Navigate to={`/modules/${moduleId}/chapters/${chapterId}`} replace />;
+    return (
+      <Navigate to={`/modules/${moduleId}/chapters/${chapterId}`} replace />
+    );
   return null;
 }
 
@@ -191,7 +198,10 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
-          <Route path="/modules/:moduleId/chapters" element={<RedirectToModule />} />
+          <Route
+            path="/modules/:moduleId/chapters"
+            element={<RedirectToModule />}
+          />
           <Route
             path="/modules/:moduleId/chapters/:chapterId"
             element={
@@ -200,7 +210,10 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
               </PageTransition>
             }
           />
-          <Route path="/modules/:moduleId/chapters/:chapterId/articles" element={<RedirectToChapter />} />
+          <Route
+            path="/modules/:moduleId/chapters/:chapterId/articles"
+            element={<RedirectToChapter />}
+          />
           <Route
             path="/modules/:moduleId/chapters/:chapterId/articles/:articleId"
             element={

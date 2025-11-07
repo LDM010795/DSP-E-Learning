@@ -221,19 +221,25 @@ describe("AnimatedRoutes", () => {
   it("does not render Articles when signed out", async () => {
     signOut();
     renderRoute("/modules/1/chapters/2/articles/3");
-    expect(await screen.queryByText("Mocked Article Detail")).not.toBeInTheDocument();
+    expect(
+      await screen.queryByText("Mocked Article Detail"),
+    ).not.toBeInTheDocument();
   });
 
   it("renders Articles when signed in", async () => {
     signIn();
     renderRoute("/modules/1/chapters/2/articles/3");
-    expect(await screen.findByText("Mocked Article Detail")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Mocked Article Detail"),
+    ).toBeInTheDocument();
   });
 
   it("redirects to chapter on /articles", async () => {
     signIn();
     renderRoute("/modules/1/chapters/2/articles");
-    expect(await screen.findByText("Mocked Chapter Detail")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Mocked Chapter Detail"),
+    ).toBeInTheDocument();
   });
 
   it("does not render Chapter when signed out", async () => {

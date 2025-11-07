@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Breadcrumbs, { BreadcrumbItem } from "../components/ui_elements/breadcrumbs";
+import Breadcrumbs, {
+  BreadcrumbItem,
+} from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
 import { useModules, Module, Chapter } from "../context/ModuleContext";
 import ContentRenderer from "../components/contributions/ContentRenderer";
@@ -33,8 +35,11 @@ const ArticleDetail: React.FC = () => {
   }, [module, chapterId]);
 
   const chapterArticles = chapter?.articles || []; // hält alle Artikel dieses Kapitels
-  const currentArticleIndex = chapterArticles.findIndex(article => article.id === parseInt(articleId, 10));
-  const currentArticle = currentArticleIndex >= 0 ? chapterArticles[currentArticleIndex] : undefined;
+  const currentArticleIndex = chapterArticles.findIndex(
+    (article) => article.id === parseInt(articleId, 10),
+  );
+  const currentArticle =
+    currentArticleIndex >= 0 ? chapterArticles[currentArticleIndex] : undefined;
 
   const [showJson, setShowJson] = useState(false);
   const [bookmarks] = useState<
@@ -52,29 +57,38 @@ const ArticleDetail: React.FC = () => {
     items.push({ label: module.title, path: `/modules/${module.id}` });
     if (!chapter) return items;
 
-    items.push({ label: chapter.title, path: `/modules/${module.id}/chapters/${chapter.id}` });
+    items.push({
+      label: chapter.title,
+      path: `/modules/${module.id}/chapters/${chapter.id}`,
+    });
     if (!currentArticle) return items;
 
     items.push({ label: currentArticle.title });
     return items;
   }, [module, chapter, currentArticle]);
 
-  console.log(breadcrumbItems)
+  console.log(breadcrumbItems);
 
   const handlePrev = () => {
-    if (currentArticleIndex <= 0)
-      return;
+    if (currentArticleIndex <= 0) return;
 
     const prevArticle = chapterArticles[currentArticleIndex - 1];
-    navigate(`/modules/${moduleId}/chapters/${chapterId}/articles/${prevArticle.id}`);
+    navigate(
+      `/modules/${moduleId}/chapters/${chapterId}/articles/${prevArticle.id}`,
+    );
   };
 
   const handleNext = () => {
-    if (currentArticleIndex < 0 || currentArticleIndex === chapterArticles.length - 1)
+    if (
+      currentArticleIndex < 0 ||
+      currentArticleIndex === chapterArticles.length - 1
+    )
       return;
 
     const nextArticle = chapterArticles[currentArticleIndex + 1];
-    navigate(`/modules/${moduleId}/chapters/${chapterId}/articles/${nextArticle.id}`);
+    navigate(
+      `/modules/${moduleId}/chapters/${chapterId}/articles/${nextArticle.id}`,
+    );
   };
 
   if (loading) {
@@ -88,20 +102,31 @@ const ArticleDetail: React.FC = () => {
   }
 
   // Debug: Module-Daten loggen
-  console.log("📦 ArticleDetail: Module found:", module?.title, "Chapter found:", chapter?.title);
+  console.log(
+    "📦 ArticleDetail: Module found:",
+    module?.title,
+    "Chapter found:",
+    chapter?.title,
+  );
   console.log("📄 ArticleDetail: Articles in chapter:", chapterArticles.length);
   console.log(
     "🖼️ ArticleDetail: Article images in module:",
     module?.article_images,
   );
 
-  const NotFoundMessage = ({ title, link, linkText }: { title: string; link: string; linkText: string }) => (
+  const NotFoundMessage = ({
+    title,
+    link,
+    linkText,
+  }: {
+    title: string;
+    link: string;
+    linkText: string;
+  }) => (
     <div className="min-h-screen px-4 py-8 max-w-[95vw] mx-auto">
       <SubBackground className="max-w-2xl mx-auto">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-700 mb-3">
-            {title}
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-700 mb-3">{title}</h2>
           <Link to={link} className="text-dsp-orange hover:underline">
             {linkText}
           </Link>
@@ -110,9 +135,30 @@ const ArticleDetail: React.FC = () => {
     </div>
   );
 
-  if (!module) return <NotFoundMessage title="Modul nicht gefunden" link="/modules" linkText="Zur Modulübersicht" />;
-  if (!chapter) return <NotFoundMessage title="Kapitel nicht gefunden" link={`/modules/${module.id}`} linkText="Zur Kapitelübersicht" />;
-  if (!currentArticle) return <NotFoundMessage title="Artikel nicht gefunden" link={`/modules/${module.id}/chapters/${chapter.id}`} linkText="Zum Kapitel" />;
+  if (!module)
+    return (
+      <NotFoundMessage
+        title="Modul nicht gefunden"
+        link="/modules"
+        linkText="Zur Modulübersicht"
+      />
+    );
+  if (!chapter)
+    return (
+      <NotFoundMessage
+        title="Kapitel nicht gefunden"
+        link={`/modules/${module.id}`}
+        linkText="Zur Kapitelübersicht"
+      />
+    );
+  if (!currentArticle)
+    return (
+      <NotFoundMessage
+        title="Artikel nicht gefunden"
+        link={`/modules/${module.id}/chapters/${chapter.id}`}
+        linkText="Zum Kapitel"
+      />
+    );
 
   return (
     <div className="min-h-screen">
@@ -135,7 +181,9 @@ const ArticleDetail: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handlePrev}
-                    disabled={currentArticleIndex === 0 || chapterArticles.length === 0}
+                    disabled={
+                      currentArticleIndex === 0 || chapterArticles.length === 0
+                    }
                     className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                   >
                     Zurück
@@ -143,7 +191,8 @@ const ArticleDetail: React.FC = () => {
                   <button
                     onClick={handleNext}
                     disabled={
-                      currentArticleIndex >= chapterArticles.length - 1 || chapterArticles.length === 0
+                      currentArticleIndex >= chapterArticles.length - 1 ||
+                      chapterArticles.length === 0
                     }
                     className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                   >
@@ -159,13 +208,13 @@ const ArticleDetail: React.FC = () => {
                   )}
                 </div>
               )}
-
             </div>
           </SubBackground>
 
           {/* Content */}
           <SubBackground className="max-w-[1100px] mx-auto">
-            {currentArticleIndex >= 0 && currentArticle.json_content?.content ? (
+            {currentArticleIndex >= 0 &&
+            currentArticle.json_content?.content ? (
               <>
                 {/* Debug: Aktueller Artikel */}
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
@@ -266,5 +315,3 @@ const ArticleDetail: React.FC = () => {
 };
 
 export default ArticleDetail;
-
-

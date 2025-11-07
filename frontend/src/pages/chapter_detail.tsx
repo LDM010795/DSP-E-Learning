@@ -239,7 +239,11 @@ function ChapterDetail() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                         className="bg-white/80 backdrop-blur-sm rounded-lg border border-white/60 p-4 hover:border-dsp-orange/30 hover:bg-dsp-orange_light/80 transition-all cursor-pointer shadow-sm hover:shadow-md"
-                        onClick={() => navigate(`/modules/${module.id}/chapters/${chapter.id}/articles/${article.id}`)}
+                        onClick={() =>
+                          navigate(
+                            `/modules/${module.id}/chapters/${chapter.id}/articles/${article.id}`,
+                          )
+                        }
                       >
                         <div className="flex items-center gap-4">
                           <div className="flex-shrink-0 w-12 h-12 bg-dsp-orange rounded-lg flex items-center justify-center">
@@ -289,44 +293,49 @@ function ChapterDetail() {
                           }
                         >
                           <div
-                            className={`p-4 rounded-xl border transition-all duration-200 ${task.completed
+                            className={`p-4 rounded-xl border transition-all duration-200 ${
+                              task.completed
                                 ? "border-green-200 bg-green-50/50 hover:bg-green-50"
                                 : "border-gray-200 bg-white/50 hover:bg-white/80 hover:border-dsp-orange/30"
-                              }`}
+                            }`}
                           >
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex items-center space-x-3 flex-1">
                                 <div
-                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${task.completed
-                                    ? "bg-green-500"
-                                    : "bg-gray-200 group-hover:bg-dsp-orange/20"
-                                    }`}
+                                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                                    task.completed
+                                      ? "bg-green-500"
+                                      : "bg-gray-200 group-hover:bg-dsp-orange/20"
+                                  }`}
                                 >
                                   {task.completed ? (
                                     <IoCheckmarkCircleOutline className="w-5 h-5 text-white" />
                                   ) : (
                                     <IoPlayCircleOutline
-                                      className={`w-5 h-5 ${task.completed
-                                        ? "text-white"
-                                        : "text-gray-500 group-hover:text-dsp-orange"
-                                        }`}
+                                      className={`w-5 h-5 ${
+                                        task.completed
+                                          ? "text-white"
+                                          : "text-gray-500 group-hover:text-dsp-orange"
+                                      }`}
                                     />
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <h3
-                                    className={`font-medium text-sm leading-tight ${task.completed
-                                      ? "text-gray-700"
-                                      : "text-gray-800 group-hover:text-dsp-orange"
-                                      }`}
+                                    className={`font-medium text-sm leading-tight ${
+                                      task.completed
+                                        ? "text-gray-700"
+                                        : "text-gray-800 group-hover:text-dsp-orange"
+                                    }`}
                                   >
                                     {task.title}
                                   </h3>
                                   <p
-                                    className={`text-xs mt-1 ${task.completed
-                                      ? "text-green-600"
-                                      : "text-gray-500"
-                                      }`}
+                                    className={`text-xs mt-1 ${
+                                      task.completed
+                                        ? "text-green-600"
+                                        : "text-gray-500"
+                                    }`}
                                   >
                                     {task.completed ? "Abgeschlossen" : "Offen"}
                                   </p>
