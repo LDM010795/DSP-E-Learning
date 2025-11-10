@@ -1,61 +1,94 @@
 import React, { useMemo, useState } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
-import Breadcrumbs from "../components/ui_elements/breadcrumbs";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import Breadcrumbs, {
+  BreadcrumbItem,
+} from "../components/ui_elements/breadcrumbs";
 import SubBackground from "../components/layouts/SubBackground";
-import { useModules, Module, Article } from "../context/ModuleContext";
+import { useModules, Module, Chapter } from "../context/ModuleContext";
 import ContentRenderer from "../components/contributions/ContentRenderer";
 import BackToTopButton from "../components/ui_elements/buttons/BackToTopButton";
 import BookmarkButton from "../components/ui_elements/buttons/BookmarkButton";
 import BookmarkLayer from "../components/ui_elements/BookmarkLayer";
 
-const ArticlePage: React.FC = () => {
-  const { modules, loading, getAllModuleArticles } = useModules();
-  const { moduleId } = useParams<{ moduleId: string }>();
-  // const navigate = useNavigate();
-  const [params, setParams] = useSearchParams();
+const ArticleDetail: React.FC = () => {
+  const { modules, loading } = useModules();
+  const { moduleId, chapterId, articleId } = useParams() as {
+    moduleId: string;
+    chapterId: string;
+    articleId: string;
+  };
+
+  const navigate = useNavigate();
 
   const module: Module | undefined = useMemo(() => {
     if (!moduleId) return undefined;
     const id = parseInt(moduleId, 10);
     if (Number.isNaN(id)) return undefined;
-    return modules.find((m) => m.id === id);
+    return modules.find((module) => module.id === id);
   }, [modules, moduleId]);
 
-  const moduleArticles: Article[] =
-    module?.id != null ? getAllModuleArticles(module.id) : [];
-  const totalArticles = moduleArticles.length;
+  const chapter: Chapter | undefined = useMemo(() => {
+    if (!chapterId) return undefined;
+    const id = parseInt(chapterId, 10);
+    if (Number.isNaN(id)) return undefined;
+    return module?.chapters.find((chapter) => chapter.id === id);
+  }, [module, chapterId]);
 
-  const activeIndex = useMemo(() => {
-    const aParam = params.get("a");
-    const idx = aParam ? parseInt(aParam, 10) : 0;
-    if (Number.isNaN(idx) || idx < 0) return 0;
-    if (idx >= totalArticles) return Math.max(0, totalArticles - 1);
-    return idx;
-  }, [params, totalArticles]);
-
+  const chapterArticles = chapter?.articles || []; // hält alle Artikel dieses Kapitels
+  const currentArticleIndex = chapterArticles.findIndex(
+    (article) => article.id === parseInt(articleId, 10),
+  );
   const currentArticle =
-    totalArticles > 0 ? moduleArticles[activeIndex] : undefined;
+    currentArticleIndex >= 0 ? chapterArticles[currentArticleIndex] : undefined;
+
   const [showJson, setShowJson] = useState(false);
   const [bookmarks] = useState<
     import("../components/ui_elements/BookmarkLayer").Bookmark[]
   >([]);
 
-  const breadcrumbItems = useMemo(
-    () => [
+  const breadcrumbItems = useMemo(() => {
+    const items = [
       { label: "Dashboard", path: "/dashboard" },
       { label: "Module", path: "/modules" },
-      { label: module?.title || "Modul" },
-      { label: "Lernbeiträge" },
-    ],
-    [module?.title],
-  );
+    ] as BreadcrumbItem[];
+
+    if (!module) return items;
+
+    items.push({ label: module.title, path: `/modules/${module.id}` });
+    if (!chapter) return items;
+
+    items.push({
+      label: chapter.title,
+      path: `/modules/${module.id}/chapters/${chapter.id}`,
+    });
+    if (!currentArticle) return items;
+
+    items.push({ label: currentArticle.title });
+    return items;
+  }, [module, chapter, currentArticle]);
+
+  console.log(breadcrumbItems);
 
   const handlePrev = () => {
-    if (activeIndex > 0) setParams({ a: String(activeIndex - 1) });
+    if (currentArticleIndex <= 0) return;
+
+    const prevArticle = chapterArticles[currentArticleIndex - 1];
+    navigate(
+      `/modules/${moduleId}/chapters/${chapterId}/articles/${prevArticle.id}`,
+    );
   };
+
   const handleNext = () => {
-    if (activeIndex < totalArticles - 1)
-      setParams({ a: String(activeIndex + 1) });
+    if (
+      currentArticleIndex < 0 ||
+      currentArticleIndex === chapterArticles.length - 1
+    )
+      return;
+
+    const nextArticle = chapterArticles[currentArticleIndex + 1];
+    navigate(
+      `/modules/${moduleId}/chapters/${chapterId}/articles/${nextArticle.id}`,
+    );
   };
 
   if (loading) {
@@ -69,34 +102,63 @@ const ArticlePage: React.FC = () => {
   }
 
   // Debug: Module-Daten loggen
-  console.log("📦 ArticlePage: Module found:", module);
-  console.log("📄 ArticlePage: Articles in module:", moduleArticles);
   console.log(
-    "🖼️ ArticlePage: Article images in module:",
+    "📦 ArticleDetail: Module found:",
+    module?.title,
+    "Chapter found:",
+    chapter?.title,
+  );
+  console.log("📄 ArticleDetail: Articles in chapter:", chapterArticles.length);
+  console.log(
+    "🖼️ ArticleDetail: Article images in module:",
     module?.article_images,
   );
 
-  if (!module) {
-    console.warn("❌ ArticlePage: Module not found for moduleId:", moduleId);
-    return (
-      <div className="min-h-screen">
-        <div className="px-4 py-8">
-          <div className="max-w-[95vw] mx-auto">
-            <SubBackground className="max-w-2xl mx-auto">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-700 mb-3">
-                  Modul nicht gefunden
-                </h2>
-                <Link to="/modules" className="text-dsp-orange hover:underline">
-                  Zur Modulübersicht
-                </Link>
-              </div>
-            </SubBackground>
-          </div>
+  const NotFoundMessage = ({
+    title,
+    link,
+    linkText,
+  }: {
+    title: string;
+    link: string;
+    linkText: string;
+  }) => (
+    <div className="min-h-screen px-4 py-8 max-w-[95vw] mx-auto">
+      <SubBackground className="max-w-2xl mx-auto">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-3">{title}</h2>
+          <Link to={link} className="text-dsp-orange hover:underline">
+            {linkText}
+          </Link>
         </div>
-      </div>
+      </SubBackground>
+    </div>
+  );
+
+  if (!module)
+    return (
+      <NotFoundMessage
+        title="Modul nicht gefunden"
+        link="/modules"
+        linkText="Zur Modulübersicht"
+      />
     );
-  }
+  if (!chapter)
+    return (
+      <NotFoundMessage
+        title="Kapitel nicht gefunden"
+        link={`/modules/${module.id}`}
+        linkText="Zur Kapitelübersicht"
+      />
+    );
+  if (!currentArticle)
+    return (
+      <NotFoundMessage
+        title="Artikel nicht gefunden"
+        link={`/modules/${module.id}/chapters/${chapter.id}`}
+        linkText="Zum Kapitel"
+      />
+    );
 
   return (
     <div className="min-h-screen">
@@ -112,42 +174,47 @@ const ArticlePage: React.FC = () => {
                   {module.title} – Lernbeiträge
                 </h1>
                 <p className="text-gray-600">
-                  Artikel {totalArticles === 0 ? 0 : activeIndex + 1} von{" "}
-                  {totalArticles}
+                  Artikel {currentArticleIndex + 1} von {chapterArticles.length}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handlePrev}
-                  disabled={activeIndex === 0 || totalArticles === 0}
-                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
-                >
-                  Zurück
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={
-                    activeIndex >= totalArticles - 1 || totalArticles === 0
-                  }
-                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
-                >
-                  Weiter
-                </button>
-                {currentArticle?.json_content && (
+              {chapterArticles.length > 0 && (
+                <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setShowJson(true)}
-                    className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 cursor-pointer"
+                    onClick={handlePrev}
+                    disabled={
+                      currentArticleIndex === 0 || chapterArticles.length === 0
+                    }
+                    className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                   >
-                    JSON ansehen
+                    Zurück
                   </button>
-                )}
-              </div>
+                  <button
+                    onClick={handleNext}
+                    disabled={
+                      currentArticleIndex >= chapterArticles.length - 1 ||
+                      chapterArticles.length === 0
+                    }
+                    className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+                  >
+                    Weiter
+                  </button>
+                  {currentArticle.json_content && (
+                    <button
+                      onClick={() => setShowJson(true)}
+                      className="px-4 py-2 rounded-lg border border-gray-200 bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 cursor-pointer"
+                    >
+                      JSON ansehen
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </SubBackground>
 
           {/* Content */}
           <SubBackground className="max-w-[1100px] mx-auto">
-            {currentArticle && currentArticle.json_content?.content ? (
+            {currentArticleIndex >= 0 &&
+            currentArticle.json_content?.content ? (
               <>
                 {/* Debug: Aktueller Artikel */}
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
@@ -187,7 +254,7 @@ const ArticlePage: React.FC = () => {
               </>
             ) : (
               <div className="text-center py-12 text-gray-600">
-                {totalArticles === 0
+                {chapterArticles.length === 0
                   ? "Für dieses Modul sind keine Lernbeiträge vorhanden."
                   : "Dieser Beitrag enthält noch keinen Inhalt."}
               </div>
@@ -247,4 +314,4 @@ const ArticlePage: React.FC = () => {
   );
 };
 
-export default ArticlePage;
+export default ArticleDetail;

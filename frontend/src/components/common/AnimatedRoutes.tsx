@@ -21,7 +21,13 @@
 
 import React from "react";
 import { AnimatePresence } from "framer-motion";
-import { Routes, Route, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+  useParams,
+} from "react-router-dom";
 import PageTransition from "./PageTransition";
 
 // --- Page Imports ---
@@ -39,7 +45,7 @@ import IndexAdminPanel from "../../pages/admin_panel/index_admin_panel";
 import ForcePasswordChangePage from "../../pages/ForcePasswordChangePage";
 import CertificationPaths from "../../pages/certification_paths";
 import ContentDemo from "../../pages/ContentDemo";
-import ArticlePage from "../../pages/article";
+import ArticleDetail from "../../pages/article_detail.tsx";
 import ExternalRegister from "../../pages/ExternalRegister";
 import PaymentsSuccessRoute from "../../pages/payments/PaymentsSuccessRoute";
 import PaymentsSuccess from "../../pages/payments/Success";
@@ -57,6 +63,24 @@ import AGBs from "../../pages/AGBs.tsx";
  */
 interface AnimatedRoutesProps {
   isAdmin: boolean;
+}
+
+/**
+ * Automatische Redirects
+ */
+function RedirectToModule() {
+  const { moduleId } = useParams();
+  if (moduleId) return <Navigate to={`/modules/${moduleId}`} replace />;
+  return null;
+}
+
+function RedirectToChapter() {
+  const { moduleId, chapterId } = useParams();
+  if (moduleId && chapterId)
+    return (
+      <Navigate to={`/modules/${moduleId}/chapters/${chapterId}`} replace />
+    );
+  return null;
 }
 
 /**
@@ -175,18 +199,26 @@ const AnimatedRoutes: React.FC<AnimatedRoutesProps> = ({ isAdmin }) => {
             }
           />
           <Route
-            path="/modules/:moduleId/articles"
-            element={
-              <PageTransition>
-                <ArticlePage />
-              </PageTransition>
-            }
+            path="/modules/:moduleId/chapters"
+            element={<RedirectToModule />}
           />
           <Route
             path="/modules/:moduleId/chapters/:chapterId"
             element={
               <PageTransition>
                 <ChapterDetail />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/modules/:moduleId/chapters/:chapterId/articles"
+            element={<RedirectToChapter />}
+          />
+          <Route
+            path="/modules/:moduleId/chapters/:chapterId/articles/:articleId"
+            element={
+              <PageTransition>
+                <ArticleDetail />
               </PageTransition>
             }
           />

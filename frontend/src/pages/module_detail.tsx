@@ -19,7 +19,6 @@ import {
   Task,
   Content,
   Chapter,
-  Article,
 } from "../context/ModuleContext";
 
 function ModuleDetail() {
@@ -30,7 +29,6 @@ function ModuleDetail() {
     fetchModules,
     getAllModuleTasks,
     getAllModuleContents,
-    getAllModuleArticles,
   } = useModules();
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
@@ -46,8 +44,6 @@ function ModuleDetail() {
   const tasks: Task[] = module?.id != null ? getAllModuleTasks(module.id) : [];
   const contents: Content[] =
     module?.id != null ? getAllModuleContents(module.id) : [];
-  const articles: Article[] =
-    module?.id != null ? getAllModuleArticles(module.id) : [];
 
   // Calculate module progress
   const moduleProgress = useMemo(() => {
@@ -167,7 +163,7 @@ function ModuleDetail() {
           <div className="max-w-[95vw] mx-auto">
             <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
-            <SubBackground className="mb-8">
+            <SubBackground className="mb-2">
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-4">
@@ -216,15 +212,6 @@ function ModuleDetail() {
                     </div>
                   </div>
                 </div>
-
-                {/* Chapter Navigation */}
-                {chapters.length > 0 && (
-                  <div className="flex gap-3 flex-shrink-0">
-                    <div className="text-sm text-gray-600">
-                      {chapters.length} Kapitel verfügbar
-                    </div>
-                  </div>
-                )}
               </div>
             </SubBackground>
           </div>
@@ -237,34 +224,6 @@ function ModuleDetail() {
           <div className="grid grid-cols-1">
             {/* Content Area */}
             <SubBackground>
-              {/* Lernbeiträge CTA */}
-              {articles && articles.length > 0 && (
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
-                    {articles.length} Lernbeitr
-                    {articles.length === 1 ? "ag" : "äge"} verfügbar
-                  </div>
-                  <button
-                    onClick={() => navigate(`/modules/${module.id}/articles`)}
-                    className="group flex items-center justify-center space-x-2 rounded-lg px-4 py-2.5
-                        bg-white/60 hover:bg-white/80 backdrop-blur-sm
-                        border border-orange-200/50 hover:border-orange-300/70
-                        text-gray-700 hover:text-orange-600
-                        shadow-sm hover:shadow-md
-                        transition-all duration-200 ease-in-out
-                        focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:ring-offset-1
-                        hover:cursor-pointer active:scale-[0.98]"
-                  >
-                    {/* Subtle accent bar */}
-                    <div className="w-1 h-4 bg-orange-400/70 rounded-full group-hover:bg-orange-500 transition-colors duration-200"></div>
-
-                    {/* Content */}
-                    <span className="text-sm font-medium">
-                      Lernbeiträge anzeigen
-                    </span>
-                  </button>
-                </div>
-              )}
               {chapters.length > 0 ? (
                 <div className="space-y-4">
                   <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
