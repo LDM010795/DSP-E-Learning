@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { ClozeTextPart } from "@/components/ui_elements/cloze_exercise/ClozeExerciseBase";
-import { useClozeParts } from "@/components/ui_elements/cloze_exercise/hooks/useClozeParts";
+import { ClozePartDragDrop } from "@/components/ui_elements/cloze_exercise/ClozeExerciseBase";
+import { useClozeDragDropParts } from "@/components/ui_elements/cloze_exercise/hooks/useClozeDragDropParts";
 
 describe("useClozeParts", () => {
-  const baseCloze: ClozeTextPart[] = [
+  const baseCloze: ClozePartDragDrop[] = [
     { type: "text", text: "Die " },
     { type: "blank", correct: ["Katze"] },
     { type: "text", text: " frisst " },
@@ -13,7 +13,7 @@ describe("useClozeParts", () => {
   ];
 
   it("vergibt IDs nur an Blanks mit standard prefix 'b' und inkrementiert ab 0", () => {
-    const { result } = renderHook(() => useClozeParts(baseCloze));
+    const { result } = renderHook(() => useClozeDragDropParts(baseCloze));
 
     const { partsWithIds, blanks } = result.current;
 
@@ -37,7 +37,7 @@ describe("useClozeParts", () => {
 
   it("respektiert den prefix aus opts", () => {
     const { result } = renderHook(() =>
-      useClozeParts(baseCloze, { prefix: "x" }),
+      useClozeDragDropParts(baseCloze, { prefix: "x" }),
     );
     const { partsWithIds, blanks } = result.current;
 
@@ -49,8 +49,8 @@ describe("useClozeParts", () => {
   it("hält Referenzen stabil, wenn clozeText und prefix gleich bleiben", () => {
     const cloze = baseCloze; // gleiche Referenz
     const { result, rerender } = renderHook(
-      ({ c, p }: { c: ClozeTextPart[]; p?: string }) =>
-        useClozeParts(c, { prefix: p }),
+      ({ c, p }: { c: ClozePartDragDrop[]; p?: string }) =>
+        useClozeDragDropParts(c, { prefix: p }),
       { initialProps: { c: cloze, p: "b" } },
     );
 
@@ -66,7 +66,7 @@ describe("useClozeParts", () => {
 
   it("recomputet und vergibt neue IDs, wenn prefix geändert wird", () => {
     const { result, rerender } = renderHook(
-      ({ p }: { p: string }) => useClozeParts(baseCloze, { prefix: p }),
+      ({ p }: { p: string }) => useClozeDragDropParts(baseCloze, { prefix: p }),
       { initialProps: { p: "b" } },
     );
 
@@ -83,7 +83,7 @@ describe("useClozeParts", () => {
 
   it("recomputet, wenn clozeText-Referenz sich ändert (IDs starten wieder bei 0)", () => {
     const { result, rerender } = renderHook(
-      ({ c }: { c: ClozeTextPart[] }) => useClozeParts(c),
+      ({ c }: { c: ClozePartDragDrop[] }) => useClozeDragDropParts(c),
       { initialProps: { c: baseCloze } },
     );
 
@@ -100,11 +100,11 @@ describe("useClozeParts", () => {
   });
 
   it("mutiert Original-Parts nicht: Text bleibt by-ref, Blank wird kopiert", () => {
-    const local: ClozeTextPart[] = [
+    const local: ClozePartDragDrop[] = [
       { type: "text", text: "A" },
       { type: "blank", correct: ["B"] },
     ];
-    const { result } = renderHook(() => useClozeParts(local));
+    const { result } = renderHook(() => useClozeDragDropParts(local));
 
     const parts = result.current.partsWithIds;
 
@@ -119,7 +119,7 @@ describe("useClozeParts", () => {
 
   it("blanks-Array enthält ausschließlich die Blank-Objekte inklusive IDs", () => {
     const { result } = renderHook(() =>
-      useClozeParts(baseCloze, { prefix: "bb" }),
+      useClozeDragDropParts(baseCloze, { prefix: "bb" }),
     );
     const { blanks } = result.current;
 

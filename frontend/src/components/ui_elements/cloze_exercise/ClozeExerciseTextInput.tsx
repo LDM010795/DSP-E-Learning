@@ -4,7 +4,7 @@ import ClozeBlankTextSlot from "./blanks/ClozeBlankTextSlot";
 import ClozeCodingUi from "./ClozeCodingUi";
 import {
   ClozeExerciseBaseProps,
-  userInputMatchesCorrectAnswer,
+  ClozePartTextInput,
 } from "./ClozeExerciseBase";
 import { useClozeLinesTextInput } from "./helpers/clozeLines";
 import {
@@ -12,8 +12,11 @@ import {
   ClozeSubmitFeedback,
   ClozeSubmitButton,
 } from "./ClozeLayout";
+import { userInputMatchesCorrectAnswer } from "./helpers/checkClozeInput";
 
-export interface ClozeExerciseTextInputProps extends ClozeExerciseBaseProps {}
+export interface ClozeExerciseTextInputProps extends ClozeExerciseBaseProps {
+  clozeText: ClozePartTextInput[];
+}
 export const ClozeExerciseTextInput = memo<ClozeExerciseTextInputProps>(
   ({
     title = "Fülle die Lücken aus:",
@@ -33,8 +36,11 @@ export const ClozeExerciseTextInput = memo<ClozeExerciseTextInputProps>(
     }, [clozeText]);
 
     const [answers, setAnswers] = useState<string[]>(() =>
-      Array(blanksPossibleAnswers.length).fill(""),
+      clozeText
+        .filter((p) => p.type === "blank")
+        .map((p) => (p.type === "blank" ? p.initialValue : "")),
     );
+
     // --- Feedback-State unter dem Button ---
     const [feedback, setFeedback] = useState<{
       type: "success" | "error" | null;
