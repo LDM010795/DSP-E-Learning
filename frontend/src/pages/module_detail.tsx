@@ -30,6 +30,7 @@ function ModuleDetail() {
     fetchModules,
     getAllModuleTasks,
     getAllModuleContents,
+    getAllModuleArticles,
   } = useModules();
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
@@ -42,10 +43,11 @@ function ModuleDetail() {
   }, [modules, moduleId]);
 
   const chapters: Chapter[] = useMemo(() => module?.chapters || [], [module]);
-  const articles: Article[] = useMemo(() => module?.articles || [], [module]);
   const tasks: Task[] = module?.id != null ? getAllModuleTasks(module.id) : [];
   const contents: Content[] =
     module?.id != null ? getAllModuleContents(module.id) : [];
+  const articles: Article[] =
+    module?.id != null ? getAllModuleArticles(module.id) : [];
 
   // Calculate module progress
   const moduleProgress = useMemo(() => {
