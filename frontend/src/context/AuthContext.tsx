@@ -176,13 +176,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       password: string;
     }): Promise<LoginResult> => {
       setIsLoading(true);
+
       try {
-        const response = await api.post("/token/", {
+        let response = await api.post("/session/", {
           username: credentials.username,
           password: credentials.password,
         });
 
-        const error = response.status != 200;
+        let error = response.status != 200;
+        if (error) {
+          return { success: false, error: "Unerwartete Serverantwort." };
+        }
+
+        response = await api.post("/token/", {
+          username: credentials.username,
+          password: credentials.password,
+        });
+
+        error = response.status != 200;
         if (error) {
           return { success: false, error: "Unerwartete Serverantwort." };
         }
